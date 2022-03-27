@@ -15,7 +15,7 @@
 
 -   This config is inspired by many emacs user configs around the internet.
 -   This config can be reproduced on vanilla emacs as I was previously an vanilla emacs user.
--   If you want to use this config just use one part at a time as this is an experimental co+ Include links to packages & external things where possible
+-   If you want to use this config just use one part at a time as this is an experimental Config
 
 
 <a id="org1d41d79"></a>
