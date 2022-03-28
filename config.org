@@ -4,7 +4,7 @@
 #+STARTUP: fold
 #+PROPERTY: header-args:emacs-lisp :tangle config.el
 
-* ABOUT THIS CONFIG
+ABOUT THIS CONFIG
 This is my personal Doom Emacs config.  Doom Emacs is a distribution of Emacs that uses the "evil" keybindings (Vim keybindings) and includes a number of nice extensions and a bit of configuration out of the box.  I am maintaining this config not just for myself, but also for those that want to explore some of what is possible with Emacs.  I will add a lot of examples of plugins and settings, some of them I may not even use personally.  I do this because many people following me on YouTube look at my configs as "documentation".
 
 * Loading instructions
@@ -84,6 +84,10 @@ To install ~some-package~ from MELPA, ELPA or emacsmirror:
 
 ;; (require 'myplugin)
   (package! easy-kill)
+  (package! exotica-theme)
+  (package! underwater-theme)
+  (package! volatile-highlights)
+  (package! shell-pop)
   (package! key-chord)
   (package! undo-tree)
   (package! recursion-indicator)
@@ -3178,6 +3182,15 @@ Prepends the value of `exwm-autostart-environmwnt' to
 #+RESULTS:
 : setup-ui
 
+** volatile hilights
+  #+begin_src emacs-lisp
+    (use-package volatile-highlights
+      :config
+      (volatile-highlights-mode t))
+  #+end_src
+
+  #+RESULTS:
+  : t
 ** Windows
 I find it rather handy to be asked which buffer I want to see after splitting
 the window. Let's make that happen.
@@ -3217,6 +3230,25 @@ default to be something roughly 80% of that size.
 
 #+RESULTS:
 : ((right-divider-width . 1) (bottom-divider-width . 1) (font . -*-Input Mono Narrow-semilight-*-*-*-15-*-*-*-*-*-*-*) (width . 80) (height . 24) (fullscreen . maximized) (alpha 95 . 80) (vertical-scroll-bars) (tool-bar-lines . 0) (menu-bar-lines . 0) (internal-border-width . 1) (buffer-predicate . exwm-layout--other-buffer-predicate))
+
+** transparency
+  #+begin_src emacs-lisp
+    (defun toggle-transparency ()
+      (interactive)
+      (let ((alpha (frame-parameter nil 'alpha)))
+	(set-frame-parameter
+	 nil 'alpha
+	 (if (eql (cond ((numberp alpha) alpha)
+			((numberp (cdr alpha)) (cdr alpha))
+			;; also handle undocumented (<active> <inactive>) form.
+			((numberp (cadr alpha)) (cadr alpha)))
+		  100)
+	     '(85 . 50) '(100 . 100)))))
+    (global-set-key (kbd "C-c T") 'toggle-transparency)
+  #+end_src
+
+  #+RESULTS:
+  : toggle-transparency
 
 ** FONTS
 *** Shortcut for changing font-size
@@ -6531,6 +6563,16 @@ configurations and documentation for [[#h:6c6759c8-3ae3-40b0-8356-05cc0975e12a][
 : t
 
 * Buffers
+** snails
+  #+begin_src emacs-lisp
+    (add-to-list 'load-path "~/.config/doom/lisp/snails") ; add snails to your load-path
+    (require 'snails)
+
+  #+end_src
+
+  #+RESULTS:
+  : snails
+
 ** Helper functions to clean up the gazillion buffers
 
 When switching projects in Emacs, it can be prudent to clean up every
@@ -7049,6 +7091,13 @@ are just some tweaks to make it work the way I prefer.
 #+end_src
 
 * window managment
+** golden ratio
+  #+begin_src emacs-lisp :tangle no
+    (use-package golden-ratio
+      :ensure t)
+    (golden-ratio-mode 1)
+
+  #+end_src
 ** Window configuration
 :PROPERTIES:
 :CUSTOM_ID: h:12591f89-eeea-4b12-93e8-9293504e5a12
@@ -19223,8 +19272,14 @@ let's change that, and do a few other similar tweaks while we're at it.
 #+begin_src emacs-lisp
  (use-package expand-region
   :bind (("M-[" . er/expand-region)
+     ("C--" . er/contract-region)
          ("C-(" . er/mark-outside-pairs)))
+
 #+end_src
+
+#+RESULTS:
+: er/mark-outside-pairs
+
 * EMMS
 One of the media players available for Emacs is emms, which stands for Emacs Multimedia System.  By default, Doom Emacs does not use 'SPC a',' so the format I use for these bindings is 'SPC a' plus 'key'.
 
@@ -19824,6 +19879,19 @@ Emacs registers are compartments where you can save text, rectangles and positio
 : point-to-register
 
 * SHELLS
+** shell-pop
+  #+begin_src emacs-lisp
+    (use-package shell-pop
+      :bind (("<f4>" . shell-pop))
+      :config
+      (setq shell-pop-shell-type (quote ("ansi-term" "*ansi-term*" (lambda nil (ansi-term shell-pop-term-shell)))))
+      (setq shell-pop-term-shell "/bin/fish")
+      (shell-pop--set-shell-type 'shell-pop-shell-type shell-pop-shell-type))
+  #+end_src
+
+  #+RESULTS:
+  : shell-pop
+
 ** Eshell
 #+begin_src emacs-lisp
 (use-package eshell-bookmark
@@ -20550,8 +20618,9 @@ This is how a boxquote looks:
  (require 'eaf-image-viewer)
  (require 'eaf-file-manager)
  (require 'eaf-evil)
-
-
+(setq eaf-browser-translate-language "es")
+(setq eaf-browser-continue-where-left-off t)
+(setq eaf-browser-download-path "~/Downloads/")
   ;; (eaf-bind-key scroll_up "C-n" eaf-pdf-viewer-keybinding)
   ;; (eaf-bind-key scroll_down "C-p" eaf-pdf-viewer-keybinding)
   ;; (eaf-bind-key take_photo "p" eaf-camera-keybinding)
@@ -20580,23 +20649,26 @@ This is how a boxquote looks:
 ;; use `emacs-application-framework' to open PDF file: link
 (add-to-list 'org-file-apps '("\\.pdf\\'" . eaf-org-open-file))
 
-;; (require 'eaf-evil)
-;; (define-key key-translation-map (kbd "SPC")
-;;     (lambda (prompt)
-;;       (if (derived-mode-p 'eaf-mode)
-;;           (pcase eaf--buffer-app-name
-;;             ("browser" (if  (string= (eaf-call-sync "call_function" eaf--buffer-id "is_focus") "True")
-;;                            (kbd "SPC")
-;;                          (kbd eaf-evil-leader-key)))
-;;             ("pdf-viewer" (kbd eaf-evil-leader-key))
-;;             ("image-viewer" (kbd eaf-evil-leader-key))
-;;             (_  (kbd "SPC")))
-;;         (kbd "SPC"))))
 #+end_src
 
 #+RESULTS:
 : ((\.pdf\' . eaf-org-open-file) (remote . emacs) (auto-mode . emacs) (directory . emacs) (\.mm\' . default) (\.x?html?\' . default) (\.pdf\' . default))
+#+begin_src emacs-lisp
+(require 'eaf-evil)
 
+(define-key key-translation-map (kbd "SPC")
+    (lambda (prompt)
+      (if (derived-mode-p 'eaf-mode)
+          (pcase eaf--buffer-app-name
+            ("browser" (if  (string= (eaf-call-sync "call_function" eaf--buffer-id "is_focus") "True")
+                           (kbd "SPC")
+                         (kbd eaf-evil-leader-key)))
+            ("pdf-viewer" (kbd eaf-evil-leader-key))
+            ("image-viewer" (kbd eaf-evil-leader-key))
+            (_  (kbd "SPC")))
+        (kbd "SPC"))))
+
+#+end_src
 ** Awesome Tab eaf
 AceJump
 Call command awesome-tab-ace-jump, and a sequence of 1 or 2 characters will show on tabs in the current tab group. Type them to jump to that tab.
@@ -21007,3 +21079,4 @@ participation in a mailing list thread, etc.  Do not hesitate to add
 your part and become a member of this wonderful community.
 
 A big thank you to everyone!
+
