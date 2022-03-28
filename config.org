@@ -6563,16 +6563,6 @@ configurations and documentation for [[#h:6c6759c8-3ae3-40b0-8356-05cc0975e12a][
 : t
 
 * Buffers
-** snails
-  #+begin_src emacs-lisp
-    (add-to-list 'load-path "~/.config/doom/lisp/snails") ; add snails to your load-path
-    (require 'snails)
-
-  #+end_src
-
-  #+RESULTS:
-  : snails
-
 ** Helper functions to clean up the gazillion buffers
 
 When switching projects in Emacs, it can be prudent to clean up every
