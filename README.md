@@ -1,16 +1,16 @@
 
 # Table of Contents
 
-1.  [Description](#org82d9181)
-    1.  [Maintainers](#orgfd75546)
-2.  [Prerequisites](#orgb1acd50)
-3.  [Features](#org87c64aa)
-4.  [Configuration](#orgf1b54d0)
-5.  [Troubleshooting](#orgb5d2404)
+1.  [Description](#orgc003bed)
+    1.  [Maintainers](#org784703b)
+2.  [Prerequisites](#org72bd4ba)
+3.  [Features](#org94801ed)
+4.  [Configuration](#org961c28c)
+5.  [Troubleshooting](#orgf0c9951)
 
 
 
-<a id="org82d9181"></a>
+<a id="orgc003bed"></a>
 
 # Description
 
@@ -26,37 +26,35 @@
     -   and many more which I can&rsquo;t recall at the moment
 
 
-<a id="orgfd75546"></a>
+<a id="org784703b"></a>
 
 ## Maintainers
 
 -   @akhil3417(Author)
 
--   I was lost in the rabbit hole of Emacs customization for months, Now my Main focus is to optimize the Code
 
-
-<a id="orgb1acd50"></a>
+<a id="org72bd4ba"></a>
 
 # Prerequisites
 
-Doom-Emacs 
+Doom-Emacs
 
 
-<a id="org87c64aa"></a>
+<a id="org94801ed"></a>
 
 # Features
 
 -   Includes everything to make your life easy
 
 
-<a id="orgf1b54d0"></a>
+<a id="org961c28c"></a>
 
 # Configuration
 
 -   You Already Know What to do
 
 
-<a id="orgb5d2404"></a>
+<a id="orgf0c9951"></a>
 
 # Troubleshooting
 
