@@ -321,7 +321,7 @@ Specify a ~:branch~ to install a package from a particular branch or tag.
 * Desktop Configuration
 ** Personal Information
 It's useful to have some basic personal information
-#+begin_src emacs-lisp :tangle nu
+#+begin_src emacs-lisp
 ;;; $DOOMDIR/config.el -*- lexical-binding: t; -*-
 ;;    let's get encryption established
     (setenv "GPG_AGENT_INFO" nil)  ;; use emacs pinentry
@@ -12608,7 +12608,8 @@ EWW is the Emacs Web Wowser, the builtin browser in Emacs.  Below I set urls to 
 ;; "https://www.cnn.com/search?q="
 ;; :keybinding "c")
 
-  (engine/set-keymap-prefix (kbd "C-c w s"))
+  ;; (engine/set-keymap-prefix (kbd "C-c w s"))
+  (engine/set-keymap-prefix (kbd "s-b"))
   (engine-mode t))
 #+END_SRC
 
@@ -12858,7 +12859,7 @@ some of the above.
 
   (define-prefix-command 'prot-eww-map)
   ;; (define-key global-map (kbd "C-c w") 'prot-eww-map)
-  (define-key global-map (kbd "s-b") 'prot-eww-map)
+  (define-key global-map (kbd "s-B") 'prot-eww-map)
   (let ((map prot-eww-map))
     (define-key map (kbd "B") #'prot-eww-visit-bookmark)
     (define-key map (kbd "e") #'prot-eww-browse-dwim)
