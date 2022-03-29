@@ -86,7 +86,7 @@
   (with-temp-buffer
     (yank)
     (beginning-of-buffer)
-    (delete-blank-lines) 
+    (delete-blank-lines)
     (kill-new (buffer-substring-no-properties
                (point-min)
                (point-max))
