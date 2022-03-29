@@ -11,11 +11,9 @@ killall emacs
 xhost +SI:localuser:$USER
 
 ## you might need to append the TTY you are working on
-xinit
+# xinit
 
 wmname LG3D
-# Make Java applications aware this is a non-reparenting window manager.
-export _JAVA_AWT_WM_NONREPARENTING=1
 
 # ## Run site init scripts. Usually not necessary.
 # if [ -d /etc/X11/xinit/xinitrc.d ] ; then
@@ -43,14 +41,14 @@ xsetroot -cursor_name left_ptr
 # Hide the mouse pointer if unused for a duration
 # /usr/bin/unclutter &
 
-unclutter --jitter 3 --ignore-scrolling &
+# unclutter --jitter 3 --ignore-scrolling &
 # One can also start processes unrelated to X11, just ensure that they will exit when this process exits.
 
 # Enable "Num Lock" mode, on keyboard keypad
 # /usr/bin/numlockx on &
 
   # Run the screen compositor
-picom &
+# picom &
 
   # xsettingsd_preset_file="${XDG_DATA_HOME:-$HOME/.local/share}/xsettingsd/presets/dark"
   # xsettingsd_config_file="${XDG_CONFIG_HOME:-$HOME/.config}/xsettingsd/xsettingsd"
@@ -76,11 +74,14 @@ export EDITOR="$VISUAL"
 # Finally start Emacs
 # Scrolling gtk3 apps won't work, unless GDK_CORE_DEVICE_EVENTS is defined
 export GDK_CORE_DEVICE_EVENTS=1
+# Make Java applications aware this is a non-reparenting window manager.
+export _JAVA_AWT_WM_NONREPARENTING=1
+
 # exec dbus-launch --exit-with-session /usr/local/bin/emacs --eval "(progn (require 'exwm) (exwm-enable))"
 # "exwm-enable" has to be called before the frame is spawned.
 # usr/local/bin/emacs --daemon --eval "(require 'exwm)" -f exwm-enable
 # emacs --daemon --eval "(require 'exwm)" -f exwm-enable
-# exec dbus-launch --exit-with-session emacs -mm --debug-init
+# exec dbus-launch --exit-with-session emacs -mm #--debug-init
 
 # exec emacs --daemon && emacsclient -c --eval "(exwm-enable)"
 exec dbus-launch --exit-with-session emacs --eval "(exwm-enable)"
