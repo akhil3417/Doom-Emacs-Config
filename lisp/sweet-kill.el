@@ -1,12 +1,13 @@
-;; Set of defadvices and functions to sweeten Emacs messages. I expect to get better at this soon.
+;; -*- lexical-binding: t -*-
 
+;; Set of defadvices and functions to sweeten Emacs messages. I expect to get better at this soon.
 (defadvice save-buffers-kill-terminal (before sweet-kill activate)
   (delete-other-windows)
   (switch-to-buffer "*Exit*")
   (delete-region (point-min) (point-max))
   (let ((h (1- (/ (window-height) 2))) (l (length haiku-emacs)))
     (open-line (1- (/ (window-height) 2)))
-    (goto-line (1- (/ (window-height) 2)))
+    (forward-line (1- (/ (window-height) 2)))
     (mapc (lambda (x)
             (insert x)
             (center-line)

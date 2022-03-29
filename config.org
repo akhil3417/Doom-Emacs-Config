@@ -113,7 +113,6 @@ To install ~some-package~ from MELPA, ELPA or emacsmirror:
   (package! flymake-diagnostic-at-point)
   (package! package-lint-flymake)
   (package! desktop)
-  (package! saveplace)
   (package! amx)
   (package! framemove)
   (package! edwina)
@@ -331,7 +330,7 @@ Specify a ~:branch~ to install a package from a particular branch or tag.
 * Desktop Configuration
 ** Personal Information
 It's useful to have some basic personal information
-#+begin_src emacs-lisp
+#+begin_src emacs-lisp :tangle no
 ;;; $DOOMDIR/config.el -*- lexical-binding: t; -*-
 ;;    let's get encryption established
     (setenv "GPG_AGENT_INFO" nil)  ;; use emacs pinentry
@@ -1865,6 +1864,7 @@ animation-charging-1 = 
 animation-charging-2 = 
 animation-charging-3 = 
 animation-charging-4 = 
+animation-charging-foreground = ${colors.draculagreen}
 animation-charging-framerate = 750
 
 [module/temperature]
@@ -7085,6 +7085,21 @@ are just some tweaks to make it work the way I prefer.
 #+end_src
 
 * window managment
+** SPLITS
+I set splits to default to opening on the right using 'prefer-horizontal-split'.  I set a keybinding for 'clone-indirect-buffer-other-window' for when I want to have the same document in two splits.  The text of the indirect buffer is always identical to the text of its base buffer; changes made by editing either one are visible immediately in the other.  But in all other respects, the indirect buffer and its base buffer are completely separate.  For example, I can fold one split but other will be unfolded.
+
+#+BEGIN_SRC emacs-lisp
+(defun prefer-horizontal-split ()
+  (set-variable 'split-height-threshold nil t)
+  (set-variable 'split-width-threshold 40 t)) ; make this as low as needed
+(add-hook 'markdown-mode-hook 'prefer-horizontal-split)
+(map! :leader
+      :desc "Clone indirect buffer other window" "b c" #'clone-indirect-buffer-other-window)
+#+END_SRC
+
+#+RESULTS:
+: clone-indirect-buffer-other-window
+
 ** golden ratio
   #+begin_src emacs-lisp :tangle no
     (use-package golden-ratio
@@ -8418,13 +8433,13 @@ to, and navigate therefrom.  It really is an efficient workflow:
     ;; ;; NOTE 2021-07-25: Those two are already defined (emacs28).
     ;; (define-key map (kbd "TAB") #'outline-cycle)
     ;; (define-key map (kbd "<backtab>") #'outline-cycle-buffer) ; S-TAB
-    (define-key map (kbd "C-c C-n") #'outline-next-visible-heading)
-    (define-key map (kbd "C-c C-p") #'outline-previous-visible-heading)
-    (define-key map (kbd "C-c C-f") #'outline-forward-same-level)
-    (define-key map (kbd "C-c C-b") #'outline-backward-same-level)
+    (define-key map (kbd "C-c C-n") #'outline-next-visible-heading) ;;def
+    (define-key map (kbd "C-c C-p") #'outline-previous-visible-heading) ;;def
+    (define-key map (kbd "C-c C-f") #'outline-forward-same-level) ;;]h
+    (define-key map (kbd "C-c C-b") #'outline-backward-same-level) ;;[h
     (define-key map (kbd "C-c C-a") #'outline-show-all)
     (define-key map (kbd "C-c C-o") #'outline-hide-other)
-    (define-key map (kbd "C-c C-u") #'outline-up-heading)))
+    (define-key map (kbd "C-c C-u") #'outline-up-heading))) ;;def
 (load "prot-outline")
 (use-package prot-outline
   :config
@@ -8455,7 +8470,7 @@ we pass to those presets mirror those we can pass for the various
 built-in variables for the cursor.  Check the =prot-cursor.el= code, which
 is reproduced right after the following package configurations.
 
-#+begin_src emacs-lisp :tangle no
+#+begin_src emacs-lisp
 ;;; Cursor appearance and tweaks (prot-cursor.el)
 (load "prot-cursor")
 (use-package prot-cursor
@@ -8489,11 +8504,11 @@ is reproduced right after the following package configurations.
     (prot-cursor-set-cursor 'underscore))
 
   ;; The other side of `prot-cursor-restore-last-preset'.
-  (add-hook 'kill-emacs-hook #'prot-cursor-store-last-preset)
+  (add-hook 'kill-emacs-hook #'prot-cursor-store-last-preset))
 
   ;; We have to use the "point" mnemonic, because C-c c is for
   ;; `org-capture'.
-  (define-key global-map (kbd "C-c p") #'prot-cursor-set-cursor))
+  ;; (define-key global-map (kbd "C-c p p") #'prot-cursor-set-cursor))
 #+end_src
 
 #+RESULTS:
@@ -8667,13 +8682,7 @@ likely to change over the near term.
 #+end_src
 
 ** Conveniences and minor extras
-:PROPERTIES:
-:CUSTOM_ID: h:271c9122-280b-424e-98f0-af9e4f09bbdb
-:END:
 *** Automatic time stamps for files (time-stamp.el)
-:PROPERTIES:
-:CUSTOM_ID: h:24c2ac42-a537-4658-8a08-9aebb0de1a73
-:END:
 
 The built-in =time-stamp.el= provides the means to automatically update a
 predefined header with the time its file was last edited/saved.  This
@@ -8733,9 +8742,6 @@ A change can happen externally or by some other tool inside of Emacs
 : t
 
 *** Preserve contents of system clipboard
-:PROPERTIES:
-:CUSTOM_ID: h:9eae0d2a-eef1-4b14-b883-39094be4de71
-:END:
 
 Say you copied a link from your web browser, then switched to Emacs to
 paste it somewhere.  Before you do that, you notice something you want
@@ -8743,7 +8749,7 @@ to kill.  Doing that will place the last kill to the clipboard, thus
 overriding the thing you copied earlier.  We can have a kill ring
 solution to this with the following:
 
-#+begin_src emacs-lisp  :tangle no
+#+begin_src emacs-lisp
 ;;; Preserve contents of system clipboard
 (setq save-interprogram-paste-before-kill t)
 #+end_src
@@ -8752,9 +8758,6 @@ Now the contents of the clipboard are stored in the kill ring and can
 be retrieved from there (e.g. with =M-y=).
 
 *** Newline characters for file ending
-:PROPERTIES:
-:CUSTOM_ID: h:c0f0a2c1-1920-4bcf-8eb4-45f80cf1b874
-:END:
 
 For some major modes, such as =diff-mode=, a final newline is of paramount
 importance.  Without it you cannot, for instance, apply a patch cleanly.
@@ -8768,30 +8771,6 @@ when visiting or saving a buffer of relevance.
 
 #+RESULTS:
 : visit-save
-
-*** Zap characters
-:PROPERTIES:
-:CUSTOM_ID: h:5f6ffe61-f0cc-41ad-9d2f-46ad181c3a00
-:END:
-
-There are two kinds of "zap" functionality:
-
-+ =zap-up-to-char= will delete everything from point up to the character
-  you provide it with.  Think of how you may want to remove a file name
-  but keep its file type extension, so =M-x zap-up-to-char RET .= will do
-  just that.
-+ =zap-to-char=, which is bound to =M-z= by default, will delete the target
-  character as well.
-
-I bind the former to =M-z= as I use it more often and leave its
-counterpart on =M-Z= (=M-S-z=).
-
-#+begin_src emacs-lisp :tangle no
-;;; Zap characters
-(let ((map global-map))
-  (define-key map (kbd "M-z") #'zap-up-to-char)
-  (define-key map (kbd "M-Z") #'zap-to-char)) ; M-S-z
-#+end_src
 
 *** Package lists
 :PROPERTIES:
@@ -17213,7 +17192,7 @@ xset r rate <delay> <rate>
 (defun kmonad-keyboard ()
   (interactive)
   ;; (shell-command "setxkbmap -option 'ctrl:nocaps'")
-  ;; (shell-command "sudo kmonad /home/shiva/test.kbd")
+  (shell-command "kmonad /home/shiva/test.kbd")
   (shell-command "xset r rate 160 100"))
 #+end_src
 
@@ -17402,7 +17381,7 @@ In a screenshot, it looks like this:
 
 ** Generate passwords
 
-#+BEGIN_SRC emacs-lisp :tangle no
+#+BEGIN_SRC emacs-lisp
   (defun generate-password-non-interactive ()
      (string-trim (shell-command-to-string "pwgen -A 24")))
 
@@ -17456,7 +17435,8 @@ Thi s is the converse function to the built-in =server-start=.
 
 ** Helper function to measure the running time of a function
 
-#+BEGIN_SRC emacs-lisp :tangle no
+For example =(measure-time (prettier-eslint)=.
+#+BEGIN_SRC emacs-lisp
   (defmacro measure-time (&rest body)
     "Measure the time it takes to evaluate BODY."
     `(let ((time (current-time)))
@@ -17466,8 +17446,6 @@ Thi s is the converse function to the built-in =server-start=.
 
 #+RESULTS:
 : measure-time
-
-For example =(measure-time (prettier-eslint)=.
 ** Sudo Save
 
 If the current buffer is not writable, ask if it should be saved with
@@ -17475,7 +17453,7 @@ If the current buffer is not writable, ask if it should be saved with
 
 Happily taken from Pascals configuration: https://github.com/SirPscl/emacs.d#sudo-save
 
-#+BEGIN_SRC emacs-lisp :tangle no
+#+BEGIN_SRC emacs-lisp
   (defun ph/sudo-file-name (filename)
     "Prepend '/sudo:root@`system-name`:' to FILENAME if appropriate.
   This is, when it doesn't already have a sudo-prefix."
@@ -17513,7 +17491,7 @@ emacsclient somefile:1234
 
 This will open file 'somefile' and set cursor on line 1234.
 
-#+BEGIN_SRC emacs-lisp :tangle no
+#+BEGIN_SRC emacs-lisp
 (defadvice server-visit-files (before parse-numbers-in-lines (files proc &optional nowait) activate)
   "Open file with emacsclient with cursors positioned on requested line.
 Most of console-based utilities prints filename in format
@@ -17531,21 +17509,10 @@ and file 'filename' will be opened and cursor set on line 'linenumber'"
                                      (string-to-number (or (match-string 3 name) ""))))
                             fn))) files)))
 #+END_SRC
-** Emacs takes SVG screenshot of itself
 
-   #+begin_src emacs-lisp
-    ;; https://www.reddit.com/r/emacs/comments/idz35e/emacs_27_can_take_svg_screenshots_of_itself/
-    (defun screenshot-svg ()
-      "Save a screenshot of the current frame as an SVG image.
-    Saves to a temp file and puts the filename in the kill ring."
-      (interactive)
-      (let* ((filename (make-temp-file "Emacs" nil ".svg"))
-             (data (x-export-frames nil 'svg)))
-        (with-temp-file filename
-          (insert data))
-        (kill-new filename)
-        (message filename)))
-   #+end_src
+#+RESULTS:
+: server-visit-files
+
 ** Disable =evil-mode= for some modes
    Since Emacs is a multi-purpose LISP REPL, there are many modes that
    are not primarily (or not at all) centered about text-manipulation.
@@ -17577,10 +17544,13 @@ Turning off evil when working in =cider--debug= minor mode:
 
 ** Paste in Visual Mode
 
-#+BEGIN_SRC emacs-lisp :tangle no
+#+BEGIN_SRC emacs-lisp
   (define-key evil-insert-state-map (kbd "C-v") 'evil-visual-paste)
 
 #+END_SRC
+
+#+RESULTS:
+: evil-visual-paste
 
 ** =evil-escape=
 https://github.com/syl20bnr/evil-escape
@@ -17589,7 +17559,7 @@ Escape from insert state and everything else.
 
 #+BEGIN_SRC emacs-lisp :tangle no
   (setq-default evil-escape-delay 0.2)
-  (setq-default evil-escape-key-sequence "jk")
+  (setq-default evil-escape-key-sequence "hh")
   (evil-escape-mode)
 #+END_SRC
 
@@ -17760,6 +17730,8 @@ Emacs provides a 'zap-to-char' command that kills from the current point to a ch
 | SPC u - SPC z e           | deletes all chars to the previous occurrence of 'e'        |
 | SPC u -2 SPC z e          | deletes all chars to the fourth previous occurrence of 'e' |
 | SPC u 1 0 0 SPC u SPC z e | deletes all chars to the 100th occurrence of 'e'           |
+| M-z                       | zap to char                                                |
+| M-Z                       | zap up to char                                             |
 
 =TIP:= The universal argument (SPC u) can only take a single integer by default.  If you need to use a multi-digit number (like 100 in the last example in the table above), then you must terminate the universal argument with another 'SPC u' after typing the number.
 
@@ -17773,6 +17745,25 @@ Emacs provides a 'zap-to-char' command that kills from the current point to a ch
       :desc "Zap up to char" "Z" #'zap-up-to-char)
 #+END_SRC
 
+There are two kinds of "zap" functionality:
+
++ =zap-up-to-char= will delete everything from point up to the character
+  you provide it with.  Think of how you may want to remove a file name
+  but keep its file type extension, so =M-x zap-up-to-char RET .= will do
+  just that.
+
++ =zap-to-char=, which is bound to =M-z= by default, will delete the target
+  character as well.
+
+I bind the former to =M-z= as I use it more often and leave its
+counterpart on =M-Z= (=M-S-z=).
+
+#+begin_src emacs-lisp
+;;; Zap characters
+(let ((map global-map))
+  (define-key map (kbd "M-z") #'zap-up-to-char) ;;def
+  (define-key map (kbd "M-Z") #'zap-to-char)) ; M-S-z
+#+end_src
 ** Tools for manual pages (manpages)
 :PROPERTIES:
 :CUSTOM_ID: h:ce420306-c40c-4d9a-bc01-205c5e49a5d1
@@ -17825,18 +17816,12 @@ canonical.
 : t
 
 ** History and state
-:PROPERTIES:
-:CUSTOM_ID: h:1d9437fe-1355-4c2f-8ea7-6668b4d0399b
-:END:
 
 This section contains configurations for packages that are dedicated to
 the task of recording the state of various Emacs tools, such as the
 history of the minibuffer.
 
 *** Emacs server and desktop
-:PROPERTIES:
-:CUSTOM_ID: h:68d57dd2-4df1-4b7a-8766-231216e6cd9c
-:END:
 
 
 With some exceptions aside, I only ever use Emacs in a single frame.
@@ -17875,50 +17860,21 @@ it to restore everything in the variable =desktop-globals-to-save=.
 #+RESULTS:
 : t
 
-*** Record various types of history
-:PROPERTIES:
-:CUSTOM_ID: h:ab868c1a-7ca6-4f54-83d8-eab49447da82
-:END:
-**** Record cursor position
-:PROPERTIES:
-:CUSTOM_ID: h:ae1cad56-c12c-4bd5-a5cc-e85c0ad4b978
-:END:
-
-Just remember where the point is in any given file.  This can often be a
-subtle reminder of what you were doing the last time you visited that
-file, allowing you to pick up from there.
-
-#+begin_src emacs-lisp
-;;; Record cursor position
-(use-package saveplace
-  :ensure nil
-  :config
-  (setq save-place-file (locate-user-emacs-file "saveplace"))
-  (setq save-place-forget-unreadable-files t)
-  (save-place-mode 1))
-#+end_src
-
-#+RESULTS:
-: t
-
-**** Backups
-:PROPERTIES:
-:CUSTOM_ID: h:3d2e3e65-b860-4ad7-87d2-24e4e9d0e296
-:END:
+*** Backups
 
 And here are some settings pertaining to backups.  I rarely need those,
 but I prefer to be safe in the knowledge that if something goes awry
 there is something to fall back to.
 
-#+begin_src emacs-lisp
+#+begin_src emacs-lisp :tangle no
 ;;; Backups
 (setq backup-directory-alist
-      `(("." . ,(concat user-emacs-directory "backup/"))))
+      `(("." . ,(concat user-emacs-directory "~/.emacs.d/"))))
 (setq backup-by-copying t)
 (setq version-control t)
 (setq delete-old-versions t)
 (setq kept-new-versions 6)
-(setq kept-old-versions 2)
+(setq kept-old-versions 5)
 (setq create-lockfiles nil)
 #+end_src
 
@@ -17949,21 +17905,6 @@ Neotree is a file tree viewer.  When you open neotree, it jumps to the current f
       :desc "Toggle neotree file viewer" "t n" #'neotree-toggle
       :desc "Open directory in neotree" "d n" #'neotree-dir)
 #+END_SRC
-
-** SPLITS
-I set splits to default to opening on the right using 'prefer-horizontal-split'.  I set a keybinding for 'clone-indirect-buffer-other-window' for when I want to have the same document in two splits.  The text of the indirect buffer is always identical to the text of its base buffer; changes made by editing either one are visible immediately in the other.  But in all other respects, the indirect buffer and its base buffer are completely separate.  For example, I can fold one split but other will be unfolded.
-
-#+BEGIN_SRC emacs-lisp
-(defun prefer-horizontal-split ()
-  (set-variable 'split-height-threshold nil t)
-  (set-variable 'split-width-threshold 40 t)) ; make this as low as needed
-(add-hook 'markdown-mode-hook 'prefer-horizontal-split)
-(map! :leader
-      :desc "Clone indirect buffer other window" "b c" #'clone-indirect-buffer-other-window)
-#+END_SRC
-
-#+RESULTS:
-: clone-indirect-buffer-other-window
 
 ** EMOJIS
 Emojify is an Emacs extension to display emojis. It can display github style emojis like :smile: or plain ascii ones like :).
@@ -20944,11 +20885,11 @@ send a notification when the process has exited."
   :disabled
   :hook ((comint-mode) . capf-autosuggest-mode))
 
-(provide 'setup-shells)
+(provide 'setup-shell)
 #+end_src
 
 #+RESULTS:
-: setup-shells
+: setup-shell
 
 * Box Quote
 

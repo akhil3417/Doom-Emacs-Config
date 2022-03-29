@@ -106,7 +106,7 @@ Puts the filename in the kill ring and displays it using an
 X-sink (Executable dragon-drag-and-drop if available)."
   (interactive)
   (let ((filename (concat (file-name-as-directory
-                           (concat (getenv "HOME") "/Pictures/screenshots"))
+                           (concat (getenv "HOME") "/Screenshots"))
                            (format "%s_%sx%s_emacs.svg"
                                    (format-time-string "%Y-%m-%d-%H%M%S")
                                    (frame-pixel-width)
