@@ -19869,7 +19869,7 @@ Emacs registers are compartments where you can save text, rectangles and positio
       :bind (("<f4>" . shell-pop))
       :config
       (setq shell-pop-shell-type (quote ("ansi-term" "*ansi-term*" (lambda nil (ansi-term shell-pop-term-shell)))))
-      (setq shell-pop-term-shell "/bin/fish")
+      (setq shell-pop-term-shell "/bin/zsh")
       (shell-pop--set-shell-type 'shell-pop-shell-type shell-pop-shell-type))
   #+end_src
 
@@ -19894,6 +19894,8 @@ Emacs registers are compartments where you can save text, rectangles and positio
                    (define-key eshell-mode-map (kbd "C-c r") 'counsel-esh-history)
                    (define-key eshell-mode-map (kbd "C-c d") 'counsel-esh-dir-history)
                    (define-key eshell-mode-map (kbd "C-c l") 'eshell/clear)
+                   (define-key eshell-mode-map (kbd "C-c b") 'op/eshell-narrow-to-output)
+                   (define-key eshell-mode-map (kbd "C-c a") 'op/append-to-buffer)
                    (define-key eshell-mode-map (kbd "C-<return>") 'my/eshell-send-detached-input)
                    ;; When calling dabbrev, hippie-expand uses strings
                    ;; containing words and symbols to:
@@ -20029,12 +20031,53 @@ send a notification when the process has exited."
     (setq eshell-highlight-prompt nil
           eshell-prompt-function 'my/epe-theme-prompt)))
 
+;; Eshell can interact with other Emacs buffers, but the syntax is quite verbose. op/append-to-buffer (bound to C-c C-B) helps with this: it prompts for a buffer and inserts (but not execute) the redirect. This is especially useful when working with the OpenBSD ports tree: I can type cvs -q diff and then C-c C-B to redirect the diff to the mail buffer!
 
+(defun op/append-to-buffer (buf)
+  (interactive "Bbuffer: ")
+  (insert ">>> " "#<" buf ">"))
+;; Being able to narrow to the output of the command at point seems very useful, so here's a quick implementation:
 
+(defun op/eshell-narrow-to-output ()
+  "Narrow to the output of the command at point."
+  (interactive)
+  (save-excursion
+    (let* ((start (progn (eshell-previous-prompt 1)
+                         (forward-line +1)
+                         (point)))
+           (end (progn (eshell-next-prompt 1)
+                       (forward-line -1)
+                       (point))))
+      (narrow-to-region start end))))
+
+;; I like to sync the $PWD with the buffer name, so an eshell in my home has as buffer name *eshell /home/op*.
+
+;; <2021-06-16 Wed> Instead of advice-add I should use the eshell-directory-change-hook hook.
+  (defun op/eshell-bufname (dir)
+    (concat "*doom:eshell " (expand-file-name dir) "*"))
+
+(defun op/eshell-after-cd (&rest _)
+  (rename-buffer (op/eshell-bufname default-directory) t))
+
+(advice-add #'eshell/cd :after #'op/eshell-after-cd)
+;; To define custom commands in eshell (what would be functions or scripts in other shells), say whatever, one can define a eshell/whatever function. These are some aliases I find useful:
+
+(defun eshell/emacs (&rest args)
+  "Open a file in emacs (from the wiki)."
+  (if (null args)
+      (bury-buffer)
+    (mapc #'find-file
+          (mapcar #'expand-file-name
+                  (eshell-flatten-list (nreverse args))))))
+
+(defalias 'eshell/less #'find-file)
+
+(defun eshell/dired ()
+  (dired (eshell/pwd)))
 #+end_src
 
 #+RESULTS:
-: #s(hash-table size 65 test eql rehash-size 1.5 rehash-threshold 0.8125 data (:use-package (25132 63247 302725 802000) :init (25132 63247 302693 311000) :config (25132 63247 302654 910000) :config-secs (0 0 1628 494000) :init-secs (0 0 1720 773000) :use-package-secs (0 0 1850 984000)))
+: eshell/dired
 
 Settings for the various shells and terminal emulators within Emacs.
 + 'shell-file-name' -- sets the shell to be used in M-x shell, M-x term, M-x ansi-term and M-x vterm.
@@ -20062,120 +20105,6 @@ Settings for the various shells and terminal emulators within Emacs.
 #+RESULTS:
 : +vterm/toggle
 
-** eshell ex
-#+begin_src emacs-lisp :tangle no
-;; Eshell is the Emacs Shell. It's a strange combo, because it isn't a full-blown elisp REPL like ielm, but neither a UNIX shell like shell. It seems fun to use though.
-
-(use-package eshell
-  :bind (("C-c e" . op/eshell))
-  :hook (eshell-mode . op/setup-eshell)
-  :custom ((eshell-compl-dir-ignore
-            "\\`\\(\\.\\.?\\|CVS\\|\\.svn\\|\\.git\\|\\.got\\)/\\'")
-           (eshell-save-history-on-exit t)
-           (eshell-prompt-regexp "[#$] ")
-           (eshell-prompt-function (lambda () "$ "))
-           (eshell-history-size 1024))
-  :config
-  ;; <<eshell/aliases>>
-
-  ;; <<eshell/cl>>
-
-  (defun op/eshell-bufname (dir)
-    (concat "*eshell " (expand-file-name dir) "*")))
-
-  ;; <<eshell/after-cd>>
-
-  (defun op/eshell (arg)
-    "Run or jump to eshell in the current project.
-If called with a prefix argument ARG, always create a new eshell
-buffer."
-    (interactive "P")
-    (let* ((proj (project-current))
-           (dir (cond (proj (project-root proj))
-                      (t default-directory)))
-           (default-directory dir)
-           (eshell-buffer-name (let ((name (op/eshell-bufname dir)))
-                                 (if arg
-                                     (generate-new-buffer name)
-                                   name))))
-      (eshell)))
-
-  ;; <<op/append-to-buffer>>
-
-  ;; <<op/eshell-narrow-to-output>>
-
-  ;; <<op/setup-eshell>>)
-;; I like to sync the $PWD with the buffer name, so an eshell in my home has as buffer name *eshell /home/op*.
-
-;; <2021-06-16 Wed> Instead of advice-add I should use the eshell-directory-change-hook hook.
-
-(defun op/eshell-after-cd (&rest _)
-  (rename-buffer (op/eshell-bufname default-directory) t))
-
-(advice-add #'eshell/cd :after #'op/eshell-after-cd)
-;; To define custom commands in eshell (what would be functions or scripts in other shells), say whatever, one can define a eshell/whatever function. These are some aliases I find useful:
-
-(defun eshell/emacs (&rest args)
-  "Open a file in emacs (from the wiki)."
-  (if (null args)
-      (bury-buffer)
-    (mapc #'find-file
-          (mapcar #'expand-file-name
-                  (eshell-flatten-list (nreverse args))))))
-
-(defalias 'eshell/less #'find-file)
-
-(defun eshell/dired ()
-  (dired (eshell/pwd)))
-;; cl is a better clear function, because the built in clear is a joke.
-
-(defun eshell/cl ()
-  "Clear the eshell buffer."
-  (let ((inhibit-read-only t))
-    (erase-buffer)))
-;; Eshell can interact with other Emacs buffers, but the syntax is quite verbose. op/append-to-buffer (bound to C-c C-B) helps with this: it prompts for a buffer and inserts (but not execute) the redirect. This is especially useful when working with the OpenBSD ports tree: I can type cvs -q diff and then C-c C-B to redirect the diff to the mail buffer!
-
-(defun op/append-to-buffer (buf)
-  (interactive "Bbuffer: ")
-  (insert ">>> " "#<" buf ">"))
-;; Being able to narrow to the output of the command at point seems very useful, so here's a quick implementation:
-
-(defun op/eshell-narrow-to-output ()
-  "Narrow to the output of the command at point."
-  (interactive)
-  (save-excursion
-    (let* ((start (progn (eshell-previous-prompt 1)
-                         (forward-line +1)
-                         (point)))
-           (end (progn (eshell-next-prompt 1)
-                       (forward-line -1)
-                       (point))))
-      (narrow-to-region start end))))
-;; Eshell unfortunately doesn't uses from comint, so it lacks some niceties that were added to it. One of these things is the minibuffer completion for history navigation. I like to select an history item using the minibuffer:
-
-(defun op/eshell-select-from-history ()
-  (interactive)
-  (let ((item (completing-read "Select from history: "
-                               (seq-uniq (ring-elements eshell-history-ring)))))
-    (when item
-      ;; from eshell-previous-matching-input
-      (delete-region eshell-last-output-end (point))
-      (insert-and-inherit item))))
-;; The weirdest thing about eshell is how it manages its own keys. eshell-mode-map, unlike other *-mode-map variables, is buffer-local, so a
-
-;; just an example!
-(define-key eshell-mode-map (kbd "...") #'some-function)
-;; won't work. One needs to define a function and call it during the eshell-mode-hook like this:
-
-(defun op/setup-eshell ()
-  (define-key eshell-mode-map (kbd "C-c C-B") #'op/append-to-buffer)
-  (define-key eshell-mode-map (kbd "C-c M-l") #'op/eshell-narrow-to-output)
-  (message "before binding M-r")
-  (define-key eshell-mode-map (kbd "M-r") #'op/eshell-select-from-history))
-#+end_src
-
-#+RESULTS:
-: op/setup-eshell
 ** eshell recom
 #+begin_src emacs-lisp :tangle no
 
