@@ -1367,6 +1367,9 @@ sudo ln -f ~/.config/doom/exwm/EXWM.desktop /usr/share/xsessions/EXWM.desktop
 # Very important: Avoid spawning daemons here.
 # They will not exit with this process, so we will no longer have a clean X11 shutdown.
 
+xset -dpms
+xset s off
+
 killall emacs
 # Disable access control for the current user.
 xhost +SI:localuser:$USER
@@ -1402,8 +1405,9 @@ export _JAVA_AWT_WM_NONREPARENTING=1
 xsetroot -cursor_name left_ptr
 
 # Hide the mouse pointer if unused for a duration
-/usr/bin/unclutter &
+# /usr/bin/unclutter &
 
+unclutter --jitter 3 --ignore-scrolling &
 # One can also start processes unrelated to X11, just ensure that they will exit when this process exits.
 
 # Enable "Num Lock" mode, on keyboard keypad
@@ -1411,6 +1415,15 @@ xsetroot -cursor_name left_ptr
 
   # Run the screen compositor
 picom &
+
+  # xsettingsd_preset_file="${XDG_DATA_HOME:-$HOME/.local/share}/xsettingsd/presets/dark"
+  # xsettingsd_config_file="${XDG_CONFIG_HOME:-$HOME/.config}/xsettingsd/xsettingsd"
+
+  # ln -sf "$xsettingsd_preset_file" "$xsettingsd_config_file" \
+  #     && xsettingsd -c "$xsettingsd_config_file" &
+
+eval $(gnome-keyring-daemon -s)
+export SSH_AUTH_SOCK
   # Enable screen locking on suspend
 xss-lock -- slock &
 # Uncomment the following block to use the exwm-xim module. Not something I use.
@@ -12441,6 +12454,59 @@ An RSS newsfeed reader for Emacs.
 | http://www.masteringemacs.org/feed/                      | emacs         |             |
 
 ** EWW
+*** oantolin'eww
+#+begin_src emacs-lisp
+;; consult-eww-source.el --- eww bookmark source for consult-buffer   -*- lexical-binding: t; -*-
+
+(require 'consult)
+(require 'eww)
+
+;;; consult-buffer source
+;; Taken with very minor modifications from the Consult wiki
+(defvar consult--source-eww
+  (list
+   :name     "Eww"
+   :narrow   ?e
+   :category 'eww-bookmark
+   :action   (lambda (bm)
+               (eww-browse-url (get-text-property 0 'url bm)))
+   :items    (lambda ()
+               (eww-read-bookmarks)
+               (mapcar (lambda (bm)
+                         (propertize
+                          (plist-get bm :title)
+                          'url (plist-get bm :url)))
+                       eww-bookmarks))))
+
+;;; annotate with URL
+(add-to-list 'consult-buffer-sources 'consult--source-eww 'append)
+
+(defun annotate-eww-bookmark (bm)
+  (concat
+   (propertize " " 'display `(space :align-to (- right 50)))
+   (propertize (get-text-property 0 'url bm) 'face 'completions-annotations)))
+
+(defvar marginalia-annotator-registry)
+(with-eval-after-load 'marginalia
+  (add-to-list 'marginalia-annotator-registry
+               '(eww-bookmark annotate-eww-bookmark builtin none)))
+
+;;; Have Embark treat them as just URLs
+(defun transform-eww-bookmark-to-url (target)
+  (if (eq (car target) 'eww-bookmark)
+      (cons 'url (get-text-property 0 'url (cdr target)))
+    target))
+
+(with-eval-after-load 'embark
+  (advice-add 'embark--refine-multi-category
+              :filter-return #'transform-eww-bookmark-to-url))
+
+(provide 'consult-eww-source)
+#+end_src
+
+#+RESULTS:
+: consult-eww-source
+
 *** general eww
 EWW is the Emacs Web Wowser, the builtin browser in Emacs.  Below I set urls to open in a specific browser (eww) with browse-url-browser-function.  By default, Doom Emacs does not use 'SPC e' for anything, so I choose to use the format 'SPC e' plus 'key' for these (I also use 'SPC e' for 'eval' keybindings).  I chose to use 'SPC s w' for eww-search-words because Doom Emacs uses 'SPC s' for 'search' commands.
 

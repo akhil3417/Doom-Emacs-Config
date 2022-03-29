@@ -3,6 +3,9 @@
 # Very important: Avoid spawning daemons here.
 # They will not exit with this process, so we will no longer have a clean X11 shutdown.
 
+xset -dpms
+xset s off
+
 killall emacs
 # Disable access control for the current user.
 xhost +SI:localuser:$USER
@@ -38,8 +41,9 @@ export _JAVA_AWT_WM_NONREPARENTING=1
 xsetroot -cursor_name left_ptr
 
 # Hide the mouse pointer if unused for a duration
-/usr/bin/unclutter &
+# /usr/bin/unclutter &
 
+unclutter --jitter 3 --ignore-scrolling &
 # One can also start processes unrelated to X11, just ensure that they will exit when this process exits.
 
 # Enable "Num Lock" mode, on keyboard keypad
@@ -47,6 +51,15 @@ xsetroot -cursor_name left_ptr
 
   # Run the screen compositor
 picom &
+
+  # xsettingsd_preset_file="${XDG_DATA_HOME:-$HOME/.local/share}/xsettingsd/presets/dark"
+  # xsettingsd_config_file="${XDG_CONFIG_HOME:-$HOME/.config}/xsettingsd/xsettingsd"
+
+  # ln -sf "$xsettingsd_preset_file" "$xsettingsd_config_file" \
+  #     && xsettingsd -c "$xsettingsd_config_file" &
+
+eval $(gnome-keyring-daemon -s)
+export SSH_AUTH_SOCK
   # Enable screen locking on suspend
 xss-lock -- slock &
 # Uncomment the following block to use the exwm-xim module. Not something I use.
