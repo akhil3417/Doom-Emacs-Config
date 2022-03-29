@@ -5,7 +5,7 @@
 #+PROPERTY: header-args:emacs-lisp :tangle config.el
 ╭────
 │ ABOUT THIS CONFIG
-│ This is my personal Doom Emacs config.  Doom Emacs is a distribution of Emacs that uses the "evil" keybindings (Vim keybindings) and includes a number of nice |extensions and a bit of configuration out of the box.  I am maintaining this config not just for myself, but also for those that want to explore some of what is |possible with Emacs.  I will add a lot of examples of plugins and settings, some of them I may not even use personally.  I do this because many people following me on |YouTube look at my configs as "documentation".
+│ This is my personal Doom Emacs config.  Doom Emacs is a distribution of Emacs |that uses the "evil" keybindings (Vim keybindings) and includes a number of nice |extensions and a bit of configuration out of the box.  I am maintaining this |config not just for myself, but also for those that want to explore some of what |is possible with Emacs.  I will add a lot of examples of plugins and settings, |some of them I may not even use personally.  I am doing this so that others can save their time and so that people can use ready snippets without errors.
 ╰────
 
 * Loading instructions
@@ -4941,6 +4941,79 @@ tweaks. Namely:
                 ))))
 #+end_src
 
+** brightness
+#+begin_src emacs-lisp :tangle no
+(setq my/brightness-min 1)
+(setq my/brightness-max 100)
+(setq my/brightness-step 5)
+
+(defun my/get-brightness ()
+  (* my/brightness-step (round (string-to-number
+                                (shell-command-to-string "xbacklight -get"))
+                               my/brightness-step)))
+
+(defun my/set-brightness (level)
+  (interactive "nBrightness level: ")
+  (let ((safe-level
+         (cond ((< level my/brightness-min) my/brightness-min)
+               ((> level my/brightness-max) my/brightness-max)
+               (t level))))
+    (save-window-excursion
+      (shell-command
+       (format "xbacklight -set %s &" safe-level) nil nil))))
+
+(defun my/brightness-step-change (delta)
+  (my/set-brightness (+ delta (my/get-brightness))))
+
+(defun my/brightness-increase ()
+  (interactive)
+  (my/brightness-step-change my/brightness-step))
+
+(defun my/brightness-decrease ()
+  (interactive)
+  (my/brightness-step-change (- my/brightness-step)))
+
+;; (map! "<XF86MonBrightnessDown>" 'my/brightness-decrease)
+;; (map! "<XF86MonBrightnessUp>" 'my/brightness-increase)
+
+
+;; (defun my/set-brightness-lg-5k (level)
+;;   (interactive "nBrightness level: ")
+;;   (save-window-excursion
+;;     (shell-command
+;;      (format "echo \"0i%s\n\" | sudo /home/shiva/repos/LG-ultrafine-brightness/build/LG_ultrafine_brightness
+#+end_src
+
+#+RESULTS:
+: my/brightness-decrease
+
+** red shift
+#+begin_src emacs-lisp
+(setq my/redshift-min 500)
+(setq my/redshift-max 6000)
+(setq my/redshift-step 250)
+;; Since get-redshift is slow
+(setq my/redshift-val-cache nil)
+(defun my/set-redshift (redness brightness-percent)
+  (interactive "nRedshift level: \nnBrightess percent: ")
+  (let* ((safe-redness
+          (cond ((< redness my/redshift-min) my/redshift-min)
+                ((> redness my/redshift-max) my/redshift-max)
+                (t redness)))
+         (safe-brightness-percent
+          (cond ((< brightness-percent 10) 10)
+                ((> brightness-percent 100) 100)
+                (t brightness-percent)))
+         (redshift-command (format "redshift -P -O %s -b %s" safe-redness (/ safe-brightness-percent 100.0))))
+    (message redshift-command)
+    (save-window-excursion
+      (shell-command redshift-command nil nil))))
+
+#+end_src
+
+#+RESULTS:
+: my/set-redshift
+
 ** Treemacs
 #+begin_quote
 From the =:ui treemacs= module.
@@ -7096,6 +7169,31 @@ are just some tweaks to make it work the way I prefer.
 (with-eval-after-load 'org
   (define-key ctl-x-x-map "i" #'prot-org-id-headlines)
   (define-key ctl-x-x-map "h" #'prot-org-ox-html))
+#+end_src
+
+** PERSPECTIVE
+Perspective provides multiple named workspaces (or "perspectives") in Emacs, similar to having multiple desktops in window managers like Awesome and XMonad.  Each perspective has its own buffer list and its own window layout, making it easy to work on many separate projects without getting lost in all the buffers.  Switching to a perspective activates its window configuration, and when in a perspective, only its buffers are available (by default).  Doom Emacs uses 'SPC some_key' for binding some of the perspective commands, so I used this binging format for the perspective bindings that I created..
+
+╭────
+│ | COMMAND                    | DESCRIPTION                         | KEYBINDING |
+│ |----------------------------+-------------------------------------+------------|
+│ | persp-switch               | Switch to perspective NAME          | SPC DEL    |
+│ | persp-switch-to-buffer     | Switch to buffer in perspective     | SPC ,      |
+│ | persp-next                 | Switch to next perspective          | SPC ]      |
+│ | persp-prev                 | Switch to previous perspective      | SPC [      |
+│ | persp-add-buffer           | Add a buffer to current perspective | SPC +      |
+│ | persp-remove-by-name       | Remove perspective by name          | SPC -      |
+│ | +workspace/switch-to-{0-9} | Switch to workspace /n/               | SPC 0-9    |
+╰────
+
+#+begin_src emacs-lisp
+(map! :leader
+      :desc "Switch to perspective NAME" "DEL" #'persp-switch
+      :desc "Switch to buffer in perspective" "," #'persp-switch-to-buffer
+      :desc "Switch to next perspective" "]" #'persp-next
+      :desc "Switch to previous perspective" "[" #'persp-prev
+      :desc "Add a buffer current perspective" "+" #'persp-add-buffer
+      :desc "Remove perspective by name" "-" #'persp-remove-by-name)
 #+end_src
 
 * window managment
@@ -17088,17 +17186,19 @@ actually useful.  Well done, Daniel!
 #+RESULTS:
 : t
 
-** Selectric
+** Elcord
 
-Every so often, you want everyone else to /know/ that you're typing, or just to
-amuse oneself. Introducing: typewriter sounds!
+What's even the point of using Emacs unless you're constantly telling everyone
+about it?
 #+begin_src emacs-lisp :tangle packages.el
-(package! selectric-mode :pin "1840de71f7414b7cd6ce425747c8e26a413233aa")
+(package! elcord :pin "eb4ae2e7e03a5fc26b054ba2fa9a1d308e239c76")
 #+end_src
 
 #+begin_src emacs-lisp
-(use-package! selectic-mode
-  :commands selectic-mode)
+(use-package! elcord
+  :commands elcord-mode
+  :config
+  (setq elcord-use-major-mode-as-main-icon t))
 #+end_src
 
 ** Spray
@@ -17136,22 +17236,6 @@ we're at it.
         "l" #'spray-backward-word
         "q" #'spray-quit))
 #+end_src
-
-** Elcord
-
-What's even the point of using Emacs unless you're constantly telling everyone
-about it?
-#+begin_src emacs-lisp :tangle packages.el
-(package! elcord :pin "eb4ae2e7e03a5fc26b054ba2fa9a1d308e239c76")
-#+end_src
-
-#+begin_src emacs-lisp
-(use-package! elcord
-  :commands elcord-mode
-  :config
-  (setq elcord-use-major-mode-as-main-icon t))
-#+end_src
-
 ** calc
 #+begin_src emacs-lisp :tangle no
 
@@ -17281,117 +17365,6 @@ xset r rate <delay> <rate>
 #+RESULTS:
 : kmonad-keyboard
 
-** brightness
-#+begin_src emacs-lisp :tangle no
-(setq my/brightness-min 1)
-(setq my/brightness-max 100)
-(setq my/brightness-step 5)
-
-(defun my/get-brightness ()
-  (* my/brightness-step (round (string-to-number
-                                (shell-command-to-string "xbacklight -get"))
-                               my/brightness-step)))
-
-(defun my/set-brightness (level)
-  (interactive "nBrightness level: ")
-  (let ((safe-level
-         (cond ((< level my/brightness-min) my/brightness-min)
-               ((> level my/brightness-max) my/brightness-max)
-               (t level))))
-    (save-window-excursion
-      (shell-command
-       (format "xbacklight -set %s &" safe-level) nil nil))))
-
-(defun my/brightness-step-change (delta)
-  (my/set-brightness (+ delta (my/get-brightness))))
-
-(defun my/brightness-increase ()
-  (interactive)
-  (my/brightness-step-change my/brightness-step))
-
-(defun my/brightness-decrease ()
-  (interactive)
-  (my/brightness-step-change (- my/brightness-step)))
-
-;; (map! "<XF86MonBrightnessDown>" 'my/brightness-decrease)
-;; (map! "<XF86MonBrightnessUp>" 'my/brightness-increase)
-
-
-;; (defun my/set-brightness-lg-5k (level)
-;;   (interactive "nBrightness level: ")
-;;   (save-window-excursion
-;;     (shell-command
-;;      (format "echo \"0i%s\n\" | sudo /home/shiva/repos/LG-ultrafine-brightness/build/LG_ultrafine_brightness
-#+end_src
-
-#+RESULTS:
-: my/brightness-decrease
-
-** red shift
-#+begin_src emacs-lisp
-(setq my/redshift-min 500)
-(setq my/redshift-max 6000)
-(setq my/redshift-step 250)
-;; Since get-redshift is slow
-(setq my/redshift-val-cache nil)
-(defun my/set-redshift (redness brightness-percent)
-  (interactive "nRedshift level: \nnBrightess percent: ")
-  (let* ((safe-redness
-          (cond ((< redness my/redshift-min) my/redshift-min)
-                ((> redness my/redshift-max) my/redshift-max)
-                (t redness)))
-         (safe-brightness-percent
-          (cond ((< brightness-percent 10) 10)
-                ((> brightness-percent 100) 100)
-                (t brightness-percent)))
-         (redshift-command (format "redshift -P -O %s -b %s" safe-redness (/ safe-brightness-percent 100.0))))
-    (message redshift-command)
-    (save-window-excursion
-      (shell-command redshift-command nil nil))))
-
-#+end_src
-
-#+RESULTS:
-: my/set-redshift
-
-** volume
-#+begin_src emacs-lisp
-(setq my/volume-min 1)
-(setq my/volume-max 100)
-(setq my/volume-step 5)
-
-(defun my/get-volume ()
-  (* my/volume-step (round (string-to-number
-                                (shell-command-to-string "awk -F\"[][]\" '/dB/ { print $2 }' <(amixer sget Master)"))
-                               my/volume-step)))
-
-(defun my/set-volume (level)
-  (interactive "nVolume level: ")
-  (let ((clipped-level
-         (cond ((< level my/volume-min) my/volume-min)
-               ((> level my/volume-max) my/volume-max)
-               (t level))))
-    (save-window-excursion
-      (shell-command
-       (format "amixer set Master %s%% &" clipped-level) nil nil))))
-
-(defun my/volume-step-change (delta)
-  (my/set-volume (+ delta (my/get-volume))))
-
-(defun my/volume-increase ()
-  (interactive)
-  (my/volume-step-change my/volume-step))
-
-(defun my/volume-decrease ()
-  (interactive)
-  (my/volume-step-change (- my/volume-step)))
-
-;; (map! "<XF86AudioRaiseVolume>" 'my/volume-increase)
-;; (map! "<XF86AudioLowerVolume>" 'my/volume-decrease)
-#+end_src
-
-#+RESULTS:
-
 ** Convenience functions when working with PDF exports
 
 When working on markdown or org-mode files that will be converted to
@@ -17461,7 +17434,8 @@ In a screenshot, it looks like this:
 
 #+RESULTS:
 
-** Generate passwords
+** Password
+*** Generate passwords
 
 #+BEGIN_SRC emacs-lisp
   (defun generate-password-non-interactive ()
@@ -17478,7 +17452,7 @@ In a screenshot, it looks like this:
 #+RESULTS:
 : generate-password
 
-** Passwords file
+*** Passwords file
 
 Open the GPG encrypted password file.
 
@@ -17490,14 +17464,14 @@ When the right header is found, I'll copy the password under the
 current header to the clipboard from where I can use it where I need
 it (for example a browser):
 
-*** Copy password to clipboard
+**** Copy password to clipboard
 
  #+BEGIN_SRC emacs-lisp :tangle no
  (fset 'copy-password-to-clipboard
     [?\C-s ?P ?a ?s ?s ?w ?o ?r ?d ?: return ?w ?v ?$ ?y C-up C-up C-up tab])
  #+END_SRC
 
-*** Open passwords file
+**** Open passwords file
 
 #+BEGIN_SRC emacs-lisp :tangle no
   (defun passwords ()
@@ -17505,6 +17479,13 @@ it (for example a browser):
     (interactive)
     (find-file (concat org-directory "vault/primary.org.gpg")))
 #+END_SRC
+*** PASSWORD STORE
+Uses the standard Unix password store "pass".
+
+#+begin_src emacs-lisp
+(use-package! password-store)
+#+end_src
+
 ** =server-shutdown=
 Thi s is the converse function to the built-in =server-start=.
 #+BEGIN_SRC emacs-lisp :tangle no
@@ -17528,160 +17509,6 @@ For example =(measure-time (prettier-eslint)=.
 
 #+RESULTS:
 : measure-time
-** Sudo Save
-
-If the current buffer is not writable, ask if it should be saved with
-=sudo=.
-
-Happily taken from Pascals configuration: https://github.com/SirPscl/emacs.d#sudo-save
-
-#+BEGIN_SRC emacs-lisp
-  (defun ph/sudo-file-name (filename)
-    "Prepend '/sudo:root@`system-name`:' to FILENAME if appropriate.
-  This is, when it doesn't already have a sudo-prefix."
-    (if (not (or (string-prefix-p "/sudo:root@localhost:"
-                                  filename)
-                 (string-prefix-p (format "/sudo:root@%s:" system-name)
-                                  filename)))
-        (format "/sudo:root@%s:%s" system-name filename)
-      filename))
-
-  (defun ph/sudo-save-buffer ()
-    "Save FILENAME with sudo if the user approves."
-    (interactive)
-    (when buffer-file-name
-      (let ((file (ph/sudo-file-name buffer-file-name)))
-        (if (yes-or-no-p (format "Save file as %s ? " file))
-            (write-file file)))))
-
-  (advice-add 'save-buffer :around
-              '(lambda (fn &rest args)
-                 (when (or (not (buffer-file-name))
-                           (not (buffer-modified-p))
-                           (file-writable-p (buffer-file-name))
-                           (not (ph/sudo-save-buffer)))
-                   (call-interactively fn args))))
-#+END_SRC
-
-#+RESULTS:
-
-** Open file with emacsclient using =filename:line= path
-   This configuration is originally from the great [[https://github.com/bbatsov/prelude/commit/8c55c6f4bb8fab04040e178b97a9e68006525403][bbatsov's prelude]].
-
-```bash
-emacsclient somefile:1234
-
-This will open file 'somefile' and set cursor on line 1234.
-
-#+BEGIN_SRC emacs-lisp
-(defadvice server-visit-files (before parse-numbers-in-lines (files proc &optional nowait) activate)
-  "Open file with emacsclient with cursors positioned on requested line.
-Most of console-based utilities prints filename in format
-'filename:linenumber'.  So you may wish to open filename in that format.
-Just call:
-  emacsclient filename:linenumber
-and file 'filename' will be opened and cursor set on line 'linenumber'"
-  (ad-set-arg 0
-              (mapcar (lambda (fn)
-                        (let ((name (car fn)))
-                          (if (string-match "^\\(.*?\\):\\([0-9]+\\)\\(?::\\([0-9]+\\)\\)?$" name)
-                              (cons
-                               (match-string 1 name)
-                               (cons (string-to-number (match-string 2 name))
-                                     (string-to-number (or (match-string 3 name) ""))))
-                            fn))) files)))
-#+END_SRC
-
-#+RESULTS:
-: server-visit-files
-
-** Disable =evil-mode= for some modes
-   Since Emacs is a multi-purpose LISP REPL, there are many modes that
-   are not primarily (or not at all) centered about text-manipulation.
-   For those, it is reasonable to disable =evil-mode=, because it will
-   bring nothing to the table, but might just shadow some keyboard
-   shortcuts.
-#+BEGIN_SRC emacs-lisp :tangle no
-  (mapc (lambda (mode)
-          (evil-set-initial-state mode 'emacs)) '(elfeed-show-mode
-                                                  elfeed-search-mode
-                                                  forge-pullreq-list-mode
-                                                  forge-topic-list-mode
-                                                  dired-mode
-                                                  tide-references-mode
-                                                  image-dired-mode
-                                                  image-dired-thumbnail-mode
-                                                  eww-mode))
-#+END_SRC
-
-Turning off evil when working in =cider--debug= minor mode:
-
-#+BEGIN_SRC emacs-lisp :tangle no
-  (defadvice cider--debug-mode (after toggle-evil activate)
-    "Turn off `evil-local-mode' when enabling
-  `cider--debug-mode', and turn it back on when disabling
-  `cider--debug-mode'."
-    (evil-local-mode (if cider--debug-mode -1 1)))
-#+END_SRC
-
-** Paste in Visual Mode
-
-#+BEGIN_SRC emacs-lisp
-  (define-key evil-insert-state-map (kbd "C-v") 'evil-visual-paste)
-
-#+END_SRC
-
-#+RESULTS:
-: evil-visual-paste
-
-** =evil-escape=
-https://github.com/syl20bnr/evil-escape
-
-Escape from insert state and everything else.
-
-#+BEGIN_SRC emacs-lisp :tangle no
-  (setq-default evil-escape-delay 0.2)
-  (setq-default evil-escape-key-sequence "hh")
-  (evil-escape-mode)
-#+END_SRC
-
-** Unbind certain Emacs keybindings in =evil-mode=
-=M-.= and =M-,= are popular keybindings for "jump to definition" and
-"back". =evil-mode= by default binds those to rather rarely used
-functions =evil-repeat-pop-next= and =xref-pop-marker-stack=, for some reason.
-
-#+BEGIN_SRC emacs-lisp :tangle no
-  (define-key evil-normal-state-map (kbd "M-.") nil)
-  (define-key evil-normal-state-map (kbd "M-,") nil)
-#+END_SRC
-
-=M-l= and =M-l M-l= is =downcase-word=. This happens a lot by accident
-for me. And undoing it often undoes _a lot_ more - like deleting whole
-paragraphs of text. Also, I don't need it, because I'd use evil
-bindings for that.
-
-#+begin_src emacs-lisp :tangle no
-  (define-key global-map (kbd "M-l") nil)
-  (define-key evil-insert-state-map (kbd "M-l M-l") nil)
-#+end_src
-
-=M-k= is =kill-sentence=. That happens by accident, as well. And
-sometimes, when in insert-mode, it even erases the history. I don't
-need it, I'd use evil for that.
-
-#+begin_src emacs-lisp :tangle no
-  (define-key global-map (kbd "M-k") nil)
-  (define-key evil-insert-state-map (kbd "M-k M-k") nil)
-#+end_src
-
-=TAB= is =evil-jump-forward=: Go to newer position in jump list.
-
-#+begin_src emacs-lisp :tangle no
-  (define-key global-map (kbd "<tab>") nil)
-  (define-key evil-insert-state-map (kbd "<tab>") nil)
-  (evil-define-key 'normal org-mode-map (kbd "<tab>") #'org-cycle)
-#+end_src
-
 ** Repeatable key chords (repeat-mode)
 
 Emacs28 comes with a built-in utility for repeating selected commands in
@@ -17754,6 +17581,26 @@ sort, consider Emacs' registers or bookmarks.
   (repeat-mode 1))
 #+end_src
 ** File types
+*** Auth Sources
+#+begin_src emacs-lisp :tangle no
+
+;;; Auth Source
+(use-package auth-source
+  ;; :ensure nil
+  :custom
+  (auth-source-save-behavior nil)
+  ;; Read credentials from KeepassXC too via the Secret Service API.
+  ;; For this to work, KXC has to have this integration enabled and
+  ;; some password groups shared via SS API. Also, those secrets must
+  ;; expose attributes (advanced tab) like 'host', 'port' and/or
+  ;; 'user' so they can be found by auth-source. Ex:
+  ;; (auth-source-search :type 'secrets :host "irc.libera.chat")
+  (auth-sources '("secrets:Passwords")))
+#+end_src
+
+#+RESULTS:
+: auth-source
+
 *** Authinfo
 
 My patch giving my patch giving =authinfo-mode= syntax highlighting is only
@@ -17785,13 +17632,6 @@ For editing systemd unit files
   :defer t)
 #+end_src
 
-** PASSWORD STORE
-Uses the standard Unix password store "pass".
-
-#+begin_src emacs-lisp
-(use-package! password-store)
-#+end_src
-
 ** WINNER MODE
 Winner mode has been included with GNU Emacs since version 20.  This is a global minor mode and, when activated, it allows you to “undo” (and “redo”) changes in the window configuration with the key commands 'SCP w <left>' and 'SPC w <right>'.
 
@@ -17802,50 +17642,6 @@ Winner mode has been included with GNU Emacs since version 20.  This is a global
        :desc "Winner undo" "<left>" #'winner-undo))
 #+END_SRC
 
-** ZAP TO CHAR
-Emacs provides a 'zap-to-char' command that kills from the current point to a character.  It is bound to 'M-z' in standard GNU Emacs but since Doom Emacs uses 'SPC' as its leader key and does not have 'SPC z' binded to anything, it just makes since to use it for 'zap-to-char'.  Note that 'zap-to-char' can be used with the universal argument 'SPC u' to modify its behavior.  Examples of 'zap-to-char' usage are listed in the table below:
-
-| KEYBINDING                | WHAT IS DOES                                               |
-|---------------------------+------------------------------------------------------------|
-| SPC z e                   | deletes all chars to the next occurrence of 'e'            |
-| SPC u 2 SPC z e           | deletes all chars to the second occurrence of 'e'          |
-| SPC u - SPC z e           | deletes all chars to the previous occurrence of 'e'        |
-| SPC u -2 SPC z e          | deletes all chars to the fourth previous occurrence of 'e' |
-| SPC u 1 0 0 SPC u SPC z e | deletes all chars to the 100th occurrence of 'e'           |
-| M-z                       | zap to char                                                |
-| M-Z                       | zap up to char                                             |
-
-=TIP:= The universal argument (SPC u) can only take a single integer by default.  If you need to use a multi-digit number (like 100 in the last example in the table above), then you must terminate the universal argument with another 'SPC u' after typing the number.
-
-'zap-up-to-char' is an alternative command that does not zap the char specified.  It is binded to 'SPC Z'.  It can also be used in conjunction with the universal argument 'SPC u' in similar fashion to the the 'zap-to-char' examples above.
-
-=NOTE:= Vim (evil mode) has similar functionality builtin.  You can delete to the next occurrence of 'e' by using 'dte' in normal.  To delete to the next occurrence of 'e' including the 'e', then you would use 'dfe'.  And you can modify 'dt' and 'df' by prefixing them with numbers, so '2dte' would delete to the second occurrence of 'e'.
-
-#+BEGIN_SRC emacs-lisp
-(map! :leader
-      :desc "Zap to char" "z" #'zap-to-char
-      :desc "Zap up to char" "Z" #'zap-up-to-char)
-#+END_SRC
-
-There are two kinds of "zap" functionality:
-
-+ =zap-up-to-char= will delete everything from point up to the character
-  you provide it with.  Think of how you may want to remove a file name
-  but keep its file type extension, so =M-x zap-up-to-char RET .= will do
-  just that.
-
-+ =zap-to-char=, which is bound to =M-z= by default, will delete the target
-  character as well.
-
-I bind the former to =M-z= as I use it more often and leave its
-counterpart on =M-Z= (=M-S-z=).
-
-#+begin_src emacs-lisp
-;;; Zap characters
-(let ((map global-map))
-  (define-key map (kbd "M-z") #'zap-up-to-char) ;;def
-  (define-key map (kbd "M-Z") #'zap-to-char)) ; M-S-z
-#+end_src
 ** Tools for manual pages (manpages)
 :PROPERTIES:
 :CUSTOM_ID: h:ce420306-c40c-4d9a-bc01-205c5e49a5d1
@@ -17962,13 +17758,6 @@ there is something to fall back to.
 
 #+RESULTS:
 
-** MOUSE SUPPORT
-Adding mouse support in the terminal version of Emacs.
-
-#+begin_src emacs-lisp
-(xterm-mouse-mode 1)
-#+end_src
-
 ** NEOTREE
 Neotree is a file tree viewer.  When you open neotree, it jumps to the current file thanks to neo-smart-open.  The neo-window-fixed-size setting makes the neotree width be adjustable.  Doom Emacs had no keybindings set for neotree.  Since Doom Emacs uses 'SPC t' for 'toggle' keybindings, I used 'SPC t n' for toggle-neotree.
 
@@ -17988,29 +17777,6 @@ Neotree is a file tree viewer.  When you open neotree, it jumps to the current f
       :desc "Open directory in neotree" "d n" #'neotree-dir)
 #+END_SRC
 
-** EMOJIS
-Emojify is an Emacs extension to display emojis. It can display github style emojis like :smile: or plain ascii ones like :).
-
-#+begin_src emacs-lisp
-(use-package emojify
-  :hook (after-init . global-emojify-mode))
-#+end_src
-
-** monkeytype
-#+begin_src emacs-lisp :tangle no
-(defun my/monkeytype-mode-hook ()
-  "Hooks for monkeytype-mode."
-  ;; (centered-cursor-mode)
-  ;; (evil-escape-mode -1)
-  (evil-insert -1))
-(add-hook 'monkeytype-mode-hook #'my/monkeytype-mode-hook)
-#+end_src
-** Speed type
-#+begin_src emacs-lisp
-;; Speed-type: Type a text and measure your speed
-(use-package speed-type
-  :defer t)
-#+end_src
 ** RAINBOW MODE
 Rainbox mode displays the actual color for any hex value color.  It's such a nice feature that I wanted it turned on all the time, regardless of what mode I am in.  The following creates a global minor mode for rainbow-mode and enables it.
 
@@ -18287,20 +18053,8 @@ Stolen from the ``ns'' yasnippet from yasnippet-snippets."
 #+RESULTS:
 : t
 
-** easy kill
-#+begin_src emacs-lisp
-
-(use-package! easy-kill
-  :bind*
-  (([remap kill-ring-save] . easy-kill)))
-(global-set-key [remap kill-ring-save] 'easy-kill)
-#+end_src
-
-#+RESULTS:
-: easy-kill
-
 ** smartparens
-#+begin_src emacs-lisp
+#+begin_src emacs-lisp :tangle no
 
 (use-package! smartparens
   :init
@@ -18489,26 +18243,6 @@ Mainly useful in C and derived, and only when ACTION is insert."
 #+RESULTS:
 : #s(hash-table size 65 test eql rehash-size 1.5 rehash-threshold 0.8125 data (:use-package (25134 3983 706869 375000) :init (25134 3983 706498 821000) :init-secs (0 0 94934 396000) :use-package-secs (0 0 95376 547000) :config (25134 3983 706480 126000) :config-secs (0 0 94860 423000)))
 
-** Auth Sources
-#+begin_src emacs-lisp :tangle no
-
-;;; Auth Source
-(use-package auth-source
-  ;; :ensure nil
-  :custom
-  (auth-source-save-behavior nil)
-  ;; Read credentials from KeepassXC too via the Secret Service API.
-  ;; For this to work, KXC has to have this integration enabled and
-  ;; some password groups shared via SS API. Also, those secrets must
-  ;; expose attributes (advanced tab) like 'host', 'port' and/or
-  ;; 'user' so they can be found by auth-source. Ex:
-  ;; (auth-source-search :type 'secrets :host "irc.libera.chat")
-  (auth-sources '("secrets:Passwords")))
-#+end_src
-
-#+RESULTS:
-: auth-source
-
 ** undo tree
 #+begin_src emacs-lisp
 
@@ -18520,32 +18254,6 @@ Mainly useful in C and derived, and only when ACTION is insert."
   (undo-tree-visualizer-timestamps t)
   (undo-tree-visualizer-relative-timestamps t))
 #+end_src
-** atomic-chrome / GhostText: Edit text area in browser
-You need to install the Firefox extension [[https://github.com/GhostText/GhostText][GhostText]]
-#+BEGIN_SRC emacs-lisp :tangle no
-(use-package atomic-chrome
-  :if (daemonp)
-  :defer 10
-  :config
-  ;; Set port to a less common one
-  ;; Must be changed in Firefox too!
-  (setq atomic-chrome-server-ghost-text-port 8326)
-  (setq atomic-chrome-default-major-mode 'gfm-mode)
-  (setq atomic-chrome-url-major-mode-alist
-        '(("reddit\\.com" . markdown-mode)
-          ("github\\.com" . gfm-mode)
-          ("gitlab\\.com" . gfm-mode)
-          ("gitlab\\.paesslergmbh\\.de" . gfm-mode)
-          ("gitlab\\.sovendus\\.com" . gfm-mode)
-          ("lab\\.ebenefuenf\\.com" . gfm-mode)
-          ("jira.sovendus.com" . jira-markup-mode)
-          ("jira.paesslergmbh.de" . jira-markup-mode)))
-  (atomic-chrome-start-server))
-#+END_SRC
-
-#+RESULTS:
-: #s(hash-table size 65 test eql rehash-size 1.5 rehash-threshold 0.8125 data (:use-package (25098 24336 620398 905000) :use-package-secs (0 0 15 123000)))
-
 ** Nicer buffer name for buffers with same name
 #+BEGIN_SRC emacs-lisp
 (use-package uniquify
@@ -18561,24 +18269,6 @@ You need to install the Firefox extension [[https://github.com/GhostText/GhostTe
 #+RESULTS:
 : /
 
-** Automatically remove trailing whitespace (only if I put them there)
-#+BEGIN_SRC emacs-lisp :tangle no
-(use-package ws-butler
-  :hook ((text-mode prog-mode) . ws-butler-mode)
-  :config (setq ws-butler-keep-whitespace-before-point nil))
-(use-package whitespace
-  :config
-  (global-whitespace-mode)
-  :hook
-  (prog-mode . (lambda () (setq show-trailing-whitespace t)))
-  (text-mode . (lambda () (setq show-trailing-whitespace t)))
-  (conf-mode . (lambda () (setq show-trailing-whitespace t)))
-  :custom
-  (whitespace-style '(face trailing tabs empty big-indent))
-  (whitespace-global-modes '(not erc-mode magit-mode)))
-
-
-#+END_SRC
 ** Abbrev
 Thanks to [[https://emacs.stackexchange.com/questions/45462/use-a-single-abbrev-table-for-multiple-modes/45476#45476][use a single abbrev-table for multiple modes? - Emacs Stack Exchange]] I
 have the following.
@@ -18626,39 +18316,6 @@ could be slightly nicer though.
 
 #+RESULTS:
 : ⟹
-
-** EVIL
-#+begin_quote
-From the =:editor evil= module.
-#+end_quote
-
-When I want to make a substitution, I want it to be global more often than not
---- so let's make that the default.
-
-Now, EVIL cares a fair bit about keeping compatibility with Vim's default
-behaviour. I don't. There are some particular settings that I'd rather be
-something else, so let's change them.
-
-#+begin_src emacs-lisp
-(after! evil
-  (setq evil-ex-substitute-global t     ; I like my s/../.. to by global by default
-        evil-move-cursor-back nil       ; Don't move the block cursor when toggling insert mode
-        evil-kill-on-visual-paste nil)) ; Don't put overwritten text in the kill ring
-#+end_src
-
-#+RESULTS:
-
-I don't use ~evil-escape-mode~, so I may as well turn it off, I've heard it
-contributes a typing delay. I'm not sure it's much, but it is an extra
-~pre-command-hook~ that I don't benefit from, so...
-It seems that there's a dedicated package for this, so instead of just disabling
-the mode on startup, let's prevent installation of the package.
-#+begin_src emacs-lisp :tangle packages.el
-(package! evil-escape :disable t)
-#+end_src
-
-#+RESULTS:
-| vlf | evil-escape |
 
 ** Smerg
 
@@ -19077,17 +18734,6 @@ let's change that, and do a few other similar tweaks while we're at it.
    ))
 #+end_src
 
-** Emacs as external editor
-#+begin_src emacs-lisp :tangle no
-
-(defun dw/show-server-edit-buffer (buffer)
-  ;; TODO: Set a transient keymap to close with 'C-c C-c'
-  (split-window-vertically -15)
-  (other-window 1)
-  (set-buffer buffer))
-
-(setq server-window #'dw/show-server-edit-buffer)
-#+end_src
 ** expand region
 #+begin_src emacs-lisp
  (use-package expand-region
@@ -19100,7 +18746,8 @@ let's change that, and do a few other similar tweaks while we're at it.
 #+RESULTS:
 : er/mark-outside-pairs
 
-* EMMS
+* media
+** EMMS
 One of the media players available for Emacs is emms, which stands for Emacs Multimedia System.  By default, Doom Emacs does not use 'SPC a',' so the format I use for these bindings is 'SPC a' plus 'key'.
 
 ╭────
@@ -19277,6 +18924,45 @@ _v_: vol     _a_: seek bw     _#_: shuffle            _s_elect
        :desc "Emms play next track" "n" #'emms-next))
 #+END_SRC
 
+** volume
+#+begin_src emacs-lisp
+(setq my/volume-min 1)
+(setq my/volume-max 100)
+(setq my/volume-step 5)
+
+(defun my/get-volume ()
+  (* my/volume-step (round (string-to-number
+                                (shell-command-to-string "awk -F\"[][]\" '/dB/ { print $2 }' <(amixer sget Master)"))
+                               my/volume-step)))
+
+(defun my/set-volume (level)
+  (interactive "nVolume level: ")
+  (let ((clipped-level
+         (cond ((< level my/volume-min) my/volume-min)
+               ((> level my/volume-max) my/volume-max)
+               (t level))))
+    (save-window-excursion
+      (shell-command
+       (format "amixer set Master %s%% &" clipped-level) nil nil))))
+
+(defun my/volume-step-change (delta)
+  (my/set-volume (+ delta (my/get-volume))))
+
+(defun my/volume-increase ()
+  (interactive)
+  (my/volume-step-change my/volume-step))
+
+(defun my/volume-decrease ()
+  (interactive)
+  (my/volume-step-change (- my/volume-step)))
+
+;; (map! "<XF86AudioRaiseVolume>" 'my/volume-increase)
+;; (map! "<XF86AudioLowerVolume>" 'my/volume-decrease)
+#+end_src
+
+#+RESULTS:
+: my/volume-decrease
+
 * EVALUATE ELISP EXPRESSIONS
 Changing some keybindings from their defaults to better fit with Doom Emacs, and to avoid conflicts with my window managers which sometimes use the control key in their keybindings.  By default, Doom Emacs does not use 'SPC e' for anything, so I choose to use the format 'SPC e' plus 'key' for these (I also use 'SPC e' for 'eww' keybindings).
 
@@ -19298,38 +18984,6 @@ Changing some keybindings from their defaults to better fit with Doom Emacs, and
        :desc "Evaluate elisp in region" "r" #'eval-region))
 #+END_SRC
 
-* INSERT DATE
-Some custom functions to insert the date.  The function 'insert-todays-date' can be used one of three different ways: (1) just the keybinding without the universal argument prefix, (2) with one universal argument prefix, or (3) with two universal argument prefixes.  The universal argument prefix is 'SPC-u' in Doom Emacs (C-u in standard GNU Emacs).  The function 'insert-any-date' only outputs to one format, which is the same format as 'insert-todays-date' without a prefix.
-
-╭────
-│ | COMMAND               | EXAMPLE OUTPUT            | KEYBINDING            |
-│ |-----------------------+---------------------------+-----------------------|
-│ | dt/insert-todays-date | Friday, November 19, 2021 | SPC i d t             |
-│ | dt/insert-todays-date | 11-19-2021                | SPC u SPC i d t       |
-│ | dt/insert-todays-date | 2021-11-19                | SPC u SPC u SPC i d t |
-│ | dt/insert-any-date    | Friday, November 19, 2021 | SPC i d a             |
-╰────
-
-#+begin_src emacs-lisp
-(defun dt/insert-todays-date (prefix)
-  (interactive "P")
-  (let ((format (cond
-                 ((not prefix) "%A, %B %d, %Y")
-                 ((equal prefix '(4)) "%m-%d-%Y")
-                 ((equal prefix '(16)) "%Y-%m-%d"))))
-    (insert (format-time-string format))))
-
-(require 'calendar)
-(defun dt/insert-any-date (date)
-  "Insert DATE using the current locale."
-  (interactive (list (calendar-read-date)))
-  (insert (calendar-date-string date)))
-
-(map! :leader
-      (:prefix ("i d" . "Insert date")
-        :desc "Insert any date" "a" #'dt/insert-any-date
-        :desc "Insert todays date" "t" #'dt/insert-todays-date))
-#+end_src
 * Some helper macros
 ╭────
 │ There are a few handy macros added by doom, namely
@@ -19339,97 +18993,6 @@ Some custom functions to insert the date.  The function 'insert-todays-date' can
 │   you load packages with ~require~ or ~use-package~
 │ - ~map!~ for binding new keys
 ╰────
-
-* Miscellaneous
-
-I'd like some slightly nicer default buffer names
-#+begin_src emacs-lisp
-;; Misc
-(defun my/delete-word (arg)
-  "Delete characters forward until encountering the end of a word.
-With argument ARG, do this that many times."
-  (interactive "p")
-  (delete-region (point) (progn (forward-word arg) (point))))
-
-(defun my/backward-delete-word (arg)
-  "Delete characters backward until encountering the beginning of a word.
-With argument ARG, do this that many times."
-  (interactive "p")
-  (my/delete-word (- arg)))
-
-;; Stolen from: https://stackoverflow.com/questions/2471557/how-to-undo-fill-paragraph-in-emacs
-(defun my/unfill-region ()
-  (interactive)
-  (let ((fill-column (point-max)))
-    (fill-region (region-beginning) (region-end) nil)))
-
-(defun my/getenv-tramp (variable &optional keyvalue)
-  "Similar to `getenv' but acting on `tramp-remote-process-environment'.
-If KEYVALUE is not nil then VARIABLE=VALUE is returned, otherwise
-VALUE. When there's no such a VARIABLE set then nil is returned."
-  (let ((current-variable-value
-        (seq-find (lambda (x)
-                       (s-starts-with-p (concat variable "=") x))
-                  tramp-remote-process-environment)))
-    (when current-variable-value
-      (if keyvalue
-          current-variable-value
-        (car (last (split-string current-variable-value "=")))))))
-
-(defun my/setenv-tramp (variable &optional value)
-  "Like `setenv' but acting on `tramp-remote-process-environment'.
-Removes the first occurrence of VARIABLE in
-`tramp-remote-process-environment' and then adds VARIABLE=VALUE
-if VALUE is not nil."
-  (setq
-   tramp-remote-process-environment
-   (delete (my/getenv-tramp variable t)
-           tramp-remote-process-environment))
-  (when value
-    (let ((key-value-pair (format "%s=%s" variable value)))
-      (add-to-list 'tramp-remote-process-environment key-value-pair))))
-
-(defun my/switch-to-buffer-if-exists-back-and-forth (to-buffer-name)
-  "Switches to to-buffer-name if it exists. If the current buffer is
-to-buffer-name then it switches back to the previous buffer."
-  (when (get-buffer to-buffer-name)
-    (if (string-equal to-buffer-name (buffer-name))
-        (switch-to-prev-buffer)
-      (switch-to-buffer to-buffer-name))))
-
-(setq my/bookmark-buffer-or-switch-to-bookmark--bookmarks-alist nil)
-(defun my/bookmark-buffer-or-switch-to-bookmark (arg)
-  "Switches to the buffer associated to `last-command-event'.
-If there's no mapping configured it sets it. With prefix argument
-remaps `last-command-event' to the current buffer. The mapping is
-stored in
-`my/bookmark-buffer-or-switch-to-bookmark--bookmarks-alist'"
-  (interactive "P")
-  (when arg
-    (setq my/bookmark-buffer-or-switch-to-bookmark--bookmarks-alist
-          (assq-delete-all last-command-event
-                           my/bookmark-buffer-or-switch-to-bookmark--bookmarks-alist)))
-  (let ((buffer (cdr
-                 (assq last-command-event
-                       my/bookmark-buffer-or-switch-to-bookmark--bookmarks-alist))))
-    (if buffer
-        (if (buffer-live-p buffer)
-            (my/switch-to-buffer-if-exists-back-and-forth (buffer-name buffer))
-          (ding)
-          (message "This buffer has been killed"))
-      (add-to-list 'my/bookmark-buffer-or-switch-to-bookmark--bookmarks-alist
-                   (cons last-command-event (current-buffer)))
-      (with-current-buffer (current-buffer)
-        (my/exwm-toggle-or-set-buffer-protection nil t))
-      (message (format "Added %s as shortcut for buffer <%s>"
-                       (key-description (vector last-command-event))
-                       (current-buffer))))))
-
-
-#+end_src
-
-#+RESULTS:
-: my/bookmark-buffer-or-switch-to-bookmark
 
 * Workspaces Pers
 #+begin_src emacs-lisp :tangle no
@@ -19447,71 +19010,6 @@ stored in
   (unless (equal persp-mode t)
     (persp-mode)))
 #+end_src
-* Abberviation
-#+begin_src emacs-lisp
-;; Where I store the abbreviation I need.
-
-;;; my-abbrev --- Abbrev stuff  -*- lexical-binding: t; -*-
-;;; Commentary:
-
-;; This adds various abbrevs for various modes.  Abbrevs are useful to
-;; avoid typos, for instance.  To prevent the expansion, type ``word
-;; C-q SPC'' instead of ``word SPC''.
-
-;;; Code:
-
-(clear-abbrev-table global-abbrev-table)
-
-(define-abbrev-table 'global-abbrev-table
-  '(("prots@" "ports@")
-
-    ("supprots" "supports")
-
-    ("het" "the")
-    ("teh" "the")
-
-    ("wehn" "when")
-
-    ("perchè" "perché")
-    ("perche" "perché")
-    ("nonchè" "nonché")
-    ("nonche" "nonché")
-    ("quetse" "queste")
-    ("sovlgimento" "svolgimento")
-    ("sovlgere" "svolgere")
-    ("sbagilo" "sbaglio")
-    ("caffe" "caffè")))
-
-(when (boundp 'text-mode-abbrev-table)
-  (clear-abbrev-table text-mode-abbrev-table))
-
-(define-abbrev-table 'text-mode-abbrev-table
-  '(("hw" "hardware")
-    ("sw" "software")))
-
-(when (boundp 'clojure-mode-abbrev-table)
-  (clear-abbrev-table clojure-mode-abbrev-table))
-
-(define-abbrev-table 'clojure-mode-abbrev-table
-  '(("erq" "req")))
-
-(when (boundp 'c-mode-abbrev-table)
-  (clear-abbrev-table c-mode-abbrev-table))
-
-(define-abbrev-table 'c-mode-abbrev-table
-  '(("inculde" "include")
-    ("inlcude" "include")))
-
-;; turn on abbrev mode globally
-(setq-default abbrev-mode t)
-
-(provide 'my-abbrev)
-;;; my-abbrev.el ends here
-#+end_src
-
-#+RESULTS:
-: my-abbrev
-
 * OPEN SPECIFIC FILES
 Keybindings to open files that I work with all the time using the find-file command, which is the interactive file search that opens with 'C-x C-f' in GNU Emacs or 'SPC f f' in Doom Emacs.  These keybindings use find-file non-interactively since we specify exactly what file to open.  The format I use for these bindings is 'SPC =' plus 'key' since Doom Emacs does not use 'SPC ='.
 
@@ -19646,85 +19144,16 @@ We need ox-man for "Org eXporting" to manpage format and ox-gemini for exporting
   (setq org-roam-directory "~/nc/Roam"))
 #+end_src
 
-* PERSPECTIVE
-Perspective provides multiple named workspaces (or "perspectives") in Emacs, similar to having multiple desktops in window managers like Awesome and XMonad.  Each perspective has its own buffer list and its own window layout, making it easy to work on many separate projects without getting lost in all the buffers.  Switching to a perspective activates its window configuration, and when in a perspective, only its buffers are available (by default).  Doom Emacs uses 'SPC some_key' for binding some of the perspective commands, so I used this binging format for the perspective bindings that I created..
-
-╭────
-│ | COMMAND                    | DESCRIPTION                         | KEYBINDING |
-│ |----------------------------+-------------------------------------+------------|
-│ | persp-switch               | Switch to perspective NAME          | SPC DEL    |
-│ | persp-switch-to-buffer     | Switch to buffer in perspective     | SPC ,      |
-│ | persp-next                 | Switch to next perspective          | SPC ]      |
-│ | persp-prev                 | Switch to previous perspective      | SPC [      |
-│ | persp-add-buffer           | Add a buffer to current perspective | SPC +      |
-│ | persp-remove-by-name       | Remove perspective by name          | SPC -      |
-│ | +workspace/switch-to-{0-9} | Switch to workspace /n/               | SPC 0-9    |
-╰────
-
-#+begin_src emacs-lisp
-(map! :leader
-      :desc "Switch to perspective NAME" "DEL" #'persp-switch
-      :desc "Switch to buffer in perspective" "," #'persp-switch-to-buffer
-      :desc "Switch to next perspective" "]" #'persp-next
-      :desc "Switch to previous perspective" "[" #'persp-prev
-      :desc "Add a buffer current perspective" "+" #'persp-add-buffer
-      :desc "Remove perspective by name" "-" #'persp-remove-by-name)
-#+end_src
-
-* REGISTERS
-Emacs registers are compartments where you can save text, rectangles and positions for later use. Once you save text or a rectangle in a register, you can copy it into the buffer once or many times; once you save a position in a register, you can jump back to that position once or many times.  The default GNU Emacs keybindings for these commands (with the exception of counsel-register) involves 'C-x r' followed by one or more other keys.  I wanted to make this a little more user friendly, and since I am using Doom Emacs, I choose to replace the 'C-x r' part of the key chords with 'SPC r'.
-
-╭────
-│ | COMMAND                          | DESCRIPTION                      | KEYBINDING |
-│ |----------------------------------+----------------------------------+------------|
-│ | copy-to-register                 | /Copy to register/                 | SPC r c    |
-│ | frameset-to-register             | /Frameset to register/             | SPC r f    |
-│ | insert-register                  | /Insert contents of register/      | SPC r i    |
-│ | jump-to-register                 | /Jump to register/                 | SPC r j    |
-│ | list-registers                   | /List registers/                   | SPC r l    |
-│ | number-to-register               | /Number to register/               | SPC r n    |
-│ | counsel-register                 | /Interactively choose a register/  | SPC r r    |
-│ | view-register                    | /View a register/                  | SPC r v    |
-│ | window-configuration-to-register | /Window configuration to register/ | SPC r w    |
-│ | increment-register               | /Increment register/               | SPC r +    |
-│ | point-to-register                | /Point to register/                | SPC r SPC  |
-╰────
-
-#+BEGIN_SRC emacs-lisp
-(map! :leader
-      (:prefix ("r" . "registers")
-       :desc "Copy to register" "c" #'copy-to-register
-       :desc "Frameset to register" "f" #'frameset-to-register
-       :desc "Insert contents of register" "i" #'insert-register
-       :desc "Jump to register" "j" #'jump-to-register
-       :desc "List registers" "l" #'list-registers
-       :desc "Number to register" "n" #'number-to-register
-       ;; :desc "Interactively choose a register" "r" #'counsel-register
-       :desc "Interactively choose a register" "r" #'consult-register
-       :desc "View a register" "v" #'view-register
-       :desc "Window configuration to register" "w" #'window-configuration-to-register
-       :desc "Increment register" "+" #'increment-register
-       :desc "Point to register" "SPC" #'point-to-register))
-#+END_SRC
-
-#+RESULTS:
-: point-to-register
-
 * SHELLS
 ** Command-line shells
-:PROPERTIES:
-:CUSTOM_ID: h:2c1966a1-bf33-4fe3-ac45-9f31158efd9b
-:END:
+
 It should come to no surprise that Emacs can operate as both a /terminal
 emulator for command line shells/ and /toolkit for terminal emulators/.
 The present section covers only the former category as I never use the
 likes of =ansi-term= or =vterm=.
 
 *** Eshell and prot-eshell.el
-:PROPERTIES:
-:CUSTOM_ID: h:103a8795-c29c-474f-9ddf-ecafaa2f6775
-:END:
-
+**** desc
 Eshell is a strictly line-oriented command prompt written in Emacs Lisp.
 This comes with its pros and cons: it can understand Elisp but does not
 behave exactly like Unix shells, say, Bash.  Eshell cannot display the
@@ -19820,6 +19249,7 @@ particular order):
   mine are either copied or adapted from Sean's implementation,
   following the review that was done on 2022-01-04.
 
+**** code
 #+begin_src emacs-lisp :tangle no
 ;;; Eshell and prot-eshell.el
 (use-package eshell
@@ -19876,9 +19306,6 @@ particular order):
 #+end_src
 
 *** Shell (M-x shell)
-:PROPERTIES:
-:CUSTOM_ID: h:98804f0d-f2dd-41a4-b8df-c1bd04ef7f7a
-:END:
 
 NOTE: I normally use Eshell.  Refer to the [[#h:103a8795-c29c-474f-9ddf-ecafaa2f6775][Eshell and prot-eshell.el]]
 section.
@@ -20148,324 +19575,6 @@ Settings for the various shells and terminal emulators within Emacs.
 #+RESULTS:
 : +vterm/toggle
 
-** eshell recom
-#+begin_src emacs-lisp :tangle no
-
-;;;; The Emacs shell
-
-;; This is like HISTCONTROL=ignorespace:ignoredups and 'shopt -s histappend'
-;; in my ~/.bashrc: append most commands to the shared history file, but don't
-;; load that file except when a fresh Eshell buffer is created.
-(setq eshell-save-history-on-exit nil)
-(defun spw/eshell-append-history ()
-  (when (and eshell-history-file-name
-	     (symbolp (file-locked-p eshell-history-file-name)))
-    (unless (get-buffer " *eshell history*")
-      (lock-file eshell-history-file-name)
-      (with-current-buffer (get-buffer-create " *eshell history*" t)
-	(when (file-exists-p eshell-history-file-name)
-	  (insert-file-contents eshell-history-file-name))))
-    (let ((latest (substring-no-properties (ring-ref eshell-history-ring 0))))
-      (with-current-buffer (get-buffer " *eshell history*")
-	(let* ((nlines (car (buffer-line-statistics)))
-	       (excess (- nlines eshell-history-size))
-	       (previous
-		(and (cl-plusp nlines)
-		     (save-excursion
-		       (goto-char (1- (point-max)))
-		       (buffer-substring
-			(line-beginning-position) (line-end-position))))))
-	  (unless (or (string-match "^\\s-" latest)
-		      (and previous (string= previous latest)))
-	    (unless (cl-minusp excess)
-	      (forward-line (1+ excess))
-	      (delete-region (point-min) (point)))
-	    (save-excursion
-	      (goto-char (point-max))
-	      (let ((start (point)))
-		(insert latest "\n")
-		(subst-char-in-region start (1- (point)) ?\n ?\177)))
-	    (write-region (point-min) (point-max) eshell-history-file-name nil
-			  'silent)))))))
-(with-eval-after-load 'esh-cmd
-  (add-hook 'eshell-pre-command-hook #'spw/eshell-append-history))
-;; also see below removal of `eshell-write-history' from `eshell-exit-hook'
-
-(defun spw/eshell-cd (dir)
-  (delete-region eshell-last-output-end (point-max))
-  (when (> eshell-last-output-end (point))
-    (goto-char eshell-last-output-end))
-  (insert-and-inherit "cd " (eshell-quote-argument dir))
-  (eshell-send-input))
-
-;;; Ideas behind the following three functions due to Protesilaos Stavrou.
-
-(defun spw/eshell-search-history ()
-  (interactive)
-  (when (> eshell-last-output-end (point))
-    (error "Point not located after prompt"))
-  (let* ((icomplete-prospects-height 3)
-	 (input
-	  (completing-read
-	   "Previous input: " (ring-elements eshell-history-ring) nil t)))
-    (delete-region eshell-last-output-end (point))
-    (insert-and-inherit input)))
-(with-eval-after-load 'em-hist
-  (define-key eshell-hist-mode-map "\M-r" #'spw/eshell-search-history))
-(with-eval-after-load 'em-smart
-  (add-to-list 'eshell-smart-display-navigate-list 'spw/eshell-search-history))
-
-(defun spw/eshell-cd-recent-dir (&optional arg)
-  (interactive "P")
-  (let ((directory (completing-read
-		    (if arg
-			"Dired in other window (directory): "
-		      "Switch to directory: ")
-		    (ring-elements eshell-last-dir-ring) nil t)))
-    (if arg (dired-other-window directory) (spw/eshell-cd directory))))
-(with-eval-after-load 'em-hist
-  (define-key eshell-hist-mode-map "\C-z\C-d" #'spw/eshell-cd-recent-dir))
-;; With this set to nil, recent dirs are not saved to disk, such that the
-;; history of recent dirs is effectively bufer-local.
-(setq eshell-last-dir-ring-file-name nil)
-
-(defun spw/eshell-cd-project-root ()
-  (interactive)
-  (if-let ((project (project-current)))
-      (spw/eshell-cd (project-root project))
-    (user-error "No current project")))
-(with-eval-after-load 'esh-mode
-  (define-key eshell-mode-map "\C-z\C-r" #'spw/eshell-cd-project-root))
-
-(with-eval-after-load 'eshell
-  (dolist (module '(eshell-tramp))
-    (add-to-list 'eshell-modules-list module)))
-
-(defun spw/insert-last-argument ()
-  (interactive)
-  (insert "$_"))
-
-;; seems `eshell-mode-map' is globally nil
-(defun spw/define-eshell-keys ()
-  (define-key eshell-mode-map "/" #'spw/eshell-self-insert-/)
-  (define-key eshell-mode-map "\M-." #'spw/insert-last-argument)
-  (remove-hook 'eshell-exit-hook #'eshell-write-history))
-(add-hook 'eshell-mode-hook #'spw/define-eshell-keys)
-
-(spw/reclaim-keys-from em-hist eshell-hist-mode-map [up] [down])
-
-;;; prompt
-
-;; Previously used "~/>" -- no trailing space -- where we appended the
-;; additional forward slash at the end of the pwd as otherwise it is a bit too
-;; short when we're directly inside HOME.  An alternative approach used before
-;; that was to call `abbreviate-file-name' only when not directly inside HOME.
-(setq eshell-prompt-function
-      (lambda ()
-	(if (zerop eshell-last-command-status)
-	    (concat (abbreviate-file-name (eshell/pwd)) " % ")
-	  (format "%s %s %% " eshell-last-command-status
-		  (abbreviate-file-name (eshell/pwd)))))
-      eshell-prompt-regexp "^[^%\n]* % ")
-
-;;; misc. functions
-
-(defun spw/default-directory-tramp-prefix ()
-  "Return the TRAMP part of `default-directory'."
-  (substring
-   default-directory 0
-   (string-match
-    (tramp-file-name-localname (tramp-dissect-file-name default-directory))
-    default-directory)))
-
-;; Maybe this ought to be in `post-self-insert-hook'?
-(defun spw/eshell-self-insert-/ ()
-  "Intelligently insert TRAMP part of `default-directory' in remote Eshells."
-  (interactive)
-  (let ((tilde-before (eq ?~ (char-before)))
-	(command
-	 (save-excursion
-	   (eshell-bol) (skip-syntax-forward " ") (thing-at-point 'sexp))))
-    (if (and (file-remote-p default-directory)
-	     (or (= (point) eshell-last-output-end)
-		 (and tilde-before (= (1- (point)) eshell-last-output-end))
-		 (and (or tilde-before (eq ?  (char-syntax (char-before))))
-		      (or (eshell-find-alias-function command)
-			  (and (fboundp (intern-soft command))
-			       (or eshell-prefer-lisp-functions
-				   (not (eshell-search-path command))))))))
-	(let ((map (make-sparse-keymap))
-	      (start (if tilde-before (1- (point)) (point))))
-	  (when tilde-before (delete-char -1))
-	  (insert (spw/default-directory-tramp-prefix))
-	  (unless tilde-before (insert "/"))
-	  ;; Typing a second slash undoes the insertion, for when you really
-	  ;; do want to type a local absolute path.
-	  (define-key map "/" (lambda ()
-				(interactive)
-				(delete-region start (point))
-				(insert (if tilde-before "~/" "/"))))
-	  (set-transient-map map))
-      (insert "/"))))
-(with-eval-after-load 'em-smart
-  (add-to-list 'eshell-smart-display-navigate-list #'spw/eshell-self-insert-/))
-
-;;; getting to Eshell buffers
-
-(defun spw/eshell-jump (arg &optional chdir)
-  "Pop to *eshell*, and offer cycling among other Eshells, unless
-one of the following special circumstances applies:
-
-- If a command is running in *eshell*, rename that buffer out of
-  the way and start a new one.  Similarly if the buffer is
-  narrowed; that was probably done with C-u C-c C-r, and the
-  buffer is similarly in use.
-
-- If CHDIR, and there is no Eshell in `default-directory', also
-  change the directory of *eshell* to `default-directory'.
-
-- If CHDIR and there is an Eshell in `default-directory',
-  including one generated by `project-eshell', switch to that
-  Eshell instead of *eshell*.
-
-- If both ARG and CHDIR, or if CHDIR and the current buffer is an
-  Eshell buffer which is not running a command, unconditionally
-  start a new Eshell in `default-directory'.
-
-- If not CHDIR and the current buffer is *eshell*, activate
-  transient cycling to make it easy to get back to another
-  Eshell.  (This is the only case in which we do not use
-  `pop-to-buffer' or equivalent, so C-x 4 4 must be used to cycle
-  in another window.)
-
-For the purpose of cycling, Eshells generated by `project-eshell'
-are sorted below Eshells generated by this function.
-
-The ideas behind this behaviour are as follows.
-
-- Just like Lisp REPLs, we do not normally need a lot of
-  different Eshells; it is fine for shell history associated with
-  different tasks to become mixed together.  But we do need to
-  start a new Eshell when other Eshells are already busy running
-  commands.
-
-- Rename *eshell* to *eshell*<N>, but don't ever rename
-  *eshell*<N> back to *eshell*, because that is a conventional
-  workflow -- M-&, C-h i, M-x ielm, M-x compile etc. always take
-  you to the unnumbered buffer, possibly renaming the numbered one
-  out of the way.
-
-  This is why we don't try to reuse Eshells especially
-  aggressively; for example, we could find an *eshell*<N> not
-  running a command a rename it to *eshell*, but we don't.
-
-- Don't pay attention to the current project, as an old version
-  of this code did, because if we're using C-c e e and/or C-c e h
-  rather than C-x p e, we are probably working in a
-  project-agnostic way.
-
-  Thus, among the `project-eshell' Eshells available to cycle
-  through, don't prioritise those of the current project (for
-  example by moving them to the front) -- if we explicitly want
-  those, can use C-x p e.
-
-- Treat C-x p e as the primary way to get to Eshells in project
-  roots, and avoid changing the directories of those Eshells, as
-  it is surprising when C-x p e doesn't take us to an Eshell
-  which is ready to run commands in the project root (another
-  possibility would be to change the dir back to the project root
-  in this case).
-
-- It is assumed we'll sometimes use C-x 4 1 in front of this
-  command, and if we're already in Eshell, we might use C-x 4 4
-  to start the cycling in another window."
-  (interactive "P")
-  (require 'eshell)
-  (cl-flet ((project-eshell-eshell-p ()
-              (string-match "\\`\\*.+-eshell\\*[><0-9]*\\'" (buffer-name)))
-	    (busy-p (buffer)
-	      (or (get-buffer-process buffer)
-		  (with-current-buffer buffer (buffer-narrowed-p))))
-	    (fresh-eshell ()
-              (when-let ((buffer (get-buffer eshell-buffer-name)))
-		(with-current-buffer buffer (rename-uniquely)))
-	      (let ((default-directory
-		      (if chdir default-directory (expand-file-name "~"))))
-		(eshell))))
-    (let ((current-eshell (and (eq major-mode 'eshell-mode)
-			       (not (project-eshell-eshell-p))
-			       (not (busy-p (current-buffer)))
-			       (current-buffer)))
-	  (initial-default-directory default-directory)
-	  default-directory-eshell
-	  project-eshells
-	  other-eshells)
-      ;; Populate our two lists of all Eshells.
-      (dolist (buffer (buffer-list))
-	(with-current-buffer buffer
-	  (when (eq major-mode 'eshell-mode)
-	    (if (and chdir (not default-directory-eshell)
-		     (string= default-directory initial-default-directory)
-		     (not (busy-p buffer)))
-		(setq default-directory-eshell buffer)
-	      (push buffer
-		    (if (project-eshell-eshell-p)
-			project-eshells other-eshells))))))
-      ;; Now `pop-to-buffer' if we're going to do that.
-      (cond ((and chdir (or arg current-eshell))
-	     (fresh-eshell))
-	    ((and chdir default-directory-eshell)
-	     (pop-to-buffer default-directory-eshell))
-	    ((or chdir (not (string= (buffer-name) eshell-buffer-name)))
-	     (if-let ((buffer (get-buffer eshell-buffer-name)))
-		 (if (busy-p buffer)
-		     (fresh-eshell)
-		   (pop-to-buffer buffer)
-		   (goto-char (point-max))
-		   (when chdir (spw/eshell-cd initial-default-directory)))
-	       (fresh-eshell)))
-	    ;; If `display-buffer-overriding-action' has some entries, pop to
-	    ;; ourselves, to allow subsequent cycling to a different Eshell in
-	    ;; another window.  E.g. C-x e e C-x 4 4 C-x e e
-	    ((cl-find-if-not #'null display-buffer-overriding-action)
-	     (pop-to-buffer (current-buffer))))
-      ;; Finally, generate and return a ring for cycling purposes.
-      (let* ((all (delete (current-buffer)
-			  (nconc project-eshells other-eshells)))
-	     (ring (make-ring (1+ (length all)))))
-	(dolist (buffer all)
-	  (ring-insert ring buffer))
-	(ring-insert ring (current-buffer))
-	ring))))
-
-(defun spw/eshell-jump-from-here (arg)
-  (interactive "P")
-  (spw/eshell-jump arg t))
-
-(transient-cycles-define-commands ()
-  (("\C-cee" . spw/eshell-jump)
-   ;; This could be on C-z C-j, like `dired-jump', with corresponding
-   ;; C-z 4 C-j and C-z 5 C-j.
-   ("\C-ceh" . spw/eshell-jump-from-here))
-  (transient-cycles-buffer-ring-cycler :ring ret-val))
-
-;;; my commands -- like defining functions in .bashrc where simple aliases are
-;;; not enough
-
-(defun eshell/package-plan-unpack (package)
-  (let* ((patches (progn
-		    (string-match "\\(.+\\)-\\([^-]+\\)" package)
-		    (expand-file-name (concat "~/src/package-plan/patches/"
-					      (match-string 1 package)
-					      "/"
-					      (match-string 2 package))))))
-    (make-directory patches t)
-    (eshell/cd "/tmp")
-    (eshell-command (concat "cabal unpack --pristine " package))
-    (make-symbolic-link patches (concat "/tmp/" package "/patches"))
-    (eshell/cd (concat "/tmp/" package))
-    (eshell-command "ls ${readlink patches}")))
-#+end_src
 ** setup eshell
 #+begin_src emacs-lisp :tangle ~/.config/doom/lisp/setup-shell.el
 
@@ -21344,6 +20453,97 @@ Other buffer group by `awesome-tab-get-group-name' with project name."
 #+RESULTS:
 : my/embark-bookmark-jump-right
 
+* Miscellaneous
+
+I'd like some slightly nicer default buffer names
+
+#+begin_src emacs-lisp
+;; Misc
+(defun my/delete-word (arg)
+  "Delete characters forward until encountering the end of a word.
+With argument ARG, do this that many times."
+  (interactive "p")
+  (delete-region (point) (progn (forward-word arg) (point))))
+
+(defun my/backward-delete-word (arg)
+  "Delete characters backward until encountering the beginning of a word.
+With argument ARG, do this that many times."
+  (interactive "p")
+  (my/delete-word (- arg)))
+
+;; Stolen from: https://stackoverflow.com/questions/2471557/how-to-undo-fill-paragraph-in-emacs
+(defun my/unfill-region ()
+  (interactive)
+  (let ((fill-column (point-max)))
+    (fill-region (region-beginning) (region-end) nil)))
+
+(defun my/getenv-tramp (variable &optional keyvalue)
+  "Similar to `getenv' but acting on `tramp-remote-process-environment'.
+If KEYVALUE is not nil then VARIABLE=VALUE is returned, otherwise
+VALUE. When there's no such a VARIABLE set then nil is returned."
+  (let ((current-variable-value
+        (seq-find (lambda (x)
+                       (s-starts-with-p (concat variable "=") x))
+                  tramp-remote-process-environment)))
+    (when current-variable-value
+      (if keyvalue
+          current-variable-value
+        (car (last (split-string current-variable-value "=")))))))
+
+(defun my/setenv-tramp (variable &optional value)
+  "Like `setenv' but acting on `tramp-remote-process-environment'.
+Removes the first occurrence of VARIABLE in
+`tramp-remote-process-environment' and then adds VARIABLE=VALUE
+if VALUE is not nil."
+  (setq
+   tramp-remote-process-environment
+   (delete (my/getenv-tramp variable t)
+           tramp-remote-process-environment))
+  (when value
+    (let ((key-value-pair (format "%s=%s" variable value)))
+      (add-to-list 'tramp-remote-process-environment key-value-pair))))
+
+(defun my/switch-to-buffer-if-exists-back-and-forth (to-buffer-name)
+  "Switches to to-buffer-name if it exists. If the current buffer is
+to-buffer-name then it switches back to the previous buffer."
+  (when (get-buffer to-buffer-name)
+    (if (string-equal to-buffer-name (buffer-name))
+        (switch-to-prev-buffer)
+      (switch-to-buffer to-buffer-name))))
+
+(setq my/bookmark-buffer-or-switch-to-bookmark--bookmarks-alist nil)
+(defun my/bookmark-buffer-or-switch-to-bookmark (arg)
+  "Switches to the buffer associated to `last-command-event'.
+If there's no mapping configured it sets it. With prefix argument
+remaps `last-command-event' to the current buffer. The mapping is
+stored in
+`my/bookmark-buffer-or-switch-to-bookmark--bookmarks-alist'"
+  (interactive "P")
+  (when arg
+    (setq my/bookmark-buffer-or-switch-to-bookmark--bookmarks-alist
+          (assq-delete-all last-command-event
+                           my/bookmark-buffer-or-switch-to-bookmark--bookmarks-alist)))
+  (let ((buffer (cdr
+                 (assq last-command-event
+                       my/bookmark-buffer-or-switch-to-bookmark--bookmarks-alist))))
+    (if buffer
+        (if (buffer-live-p buffer)
+            (my/switch-to-buffer-if-exists-back-and-forth (buffer-name buffer))
+          (ding)
+          (message "This buffer has been killed"))
+      (add-to-list 'my/bookmark-buffer-or-switch-to-bookmark--bookmarks-alist
+                   (cons last-command-event (current-buffer)))
+      (with-current-buffer (current-buffer)
+        (my/exwm-toggle-or-set-buffer-protection nil t))
+      (message (format "Added %s as shortcut for buffer <%s>"
+                       (key-description (vector last-command-event))
+                       (current-buffer))))))
+
+
+#+end_src
+
+#+RESULTS:
+: my/bookmark-buffer-or-switch-to-bookmark
 * Other people's Emacs work
 :PROPERTIES:
 :CUSTOM_ID: h:7b39c38c-ae23-4385-b439-afca89baca52
@@ -21556,3 +20756,482 @@ A big thank you to everyone!
 
 Symbol’s function definition is void: delete-window-if-not-single
 exit
+
+* Editing
+** evil stuff
+*** Disable =evil-mode= for some modes
+   Since Emacs is a multi-purpose LISP REPL, there are many modes that
+   are not primarily (or not at all) centered about text-manipulation.
+   For those, it is reasonable to disable =evil-mode=, because it will
+   bring nothing to the table, but might just shadow some keyboard
+   shortcuts.
+#+BEGIN_SRC emacs-lisp :tangle no
+  (mapc (lambda (mode)
+          (evil-set-initial-state mode 'emacs)) '(elfeed-show-mode
+                                                  elfeed-search-mode
+                                                  forge-pullreq-list-mode
+                                                  forge-topic-list-mode
+                                                  dired-mode
+                                                  tide-references-mode
+                                                  image-dired-mode
+                                                  image-dired-thumbnail-mode
+                                                  eww-mode))
+#+END_SRC
+
+Turning off evil when working in =cider--debug= minor mode:
+
+#+BEGIN_SRC emacs-lisp :tangle no
+  (defadvice cider--debug-mode (after toggle-evil activate)
+    "Turn off `evil-local-mode' when enabling
+  `cider--debug-mode', and turn it back on when disabling
+  `cider--debug-mode'."
+    (evil-local-mode (if cider--debug-mode -1 1)))
+#+END_SRC
+
+*** Paste in Visual Mode
+
+#+BEGIN_SRC emacs-lisp
+  (define-key evil-insert-state-map (kbd "C-v") 'evil-visual-paste)
+
+#+END_SRC
+
+#+RESULTS:
+: evil-visual-paste
+
+*** =evil-escape=
+https://github.com/syl20bnr/evil-escape
+
+Escape from insert state and everything else.
+
+#+BEGIN_SRC emacs-lisp :tangle no
+  (setq-default evil-escape-delay 0.2)
+  (setq-default evil-escape-key-sequence "hh")
+  (evil-escape-mode)
+#+END_SRC
+
+*** Unbind certain Emacs keybindings in =evil-mode=
+=M-.= and =M-,= are popular keybindings for "jump to definition" and
+"back". =evil-mode= by default binds those to rather rarely used
+functions =evil-repeat-pop-next= and =xref-pop-marker-stack=, for some reason.
+
+#+BEGIN_SRC emacs-lisp :tangle no
+  (define-key evil-normal-state-map (kbd "M-.") nil)
+  (define-key evil-normal-state-map (kbd "M-,") nil)
+#+END_SRC
+
+=M-l= and =M-l M-l= is =downcase-word=. This happens a lot by accident
+for me. And undoing it often undoes _a lot_ more - like deleting whole
+paragraphs of text. Also, I don't need it, because I'd use evil
+bindings for that.
+
+#+begin_src emacs-lisp :tangle no
+  (define-key global-map (kbd "M-l") nil)
+  (define-key evil-insert-state-map (kbd "M-l M-l") nil)
+#+end_src
+
+=M-k= is =kill-sentence=. That happens by accident, as well. And
+sometimes, when in insert-mode, it even erases the history. I don't
+need it, I'd use evil for that.
+
+#+begin_src emacs-lisp :tangle no
+  (define-key global-map (kbd "M-k") nil)
+  (define-key evil-insert-state-map (kbd "M-k M-k") nil)
+#+end_src
+
+=TAB= is =evil-jump-forward=: Go to newer position in jump list.
+
+#+begin_src emacs-lisp :tangle no
+  (define-key global-map (kbd "<tab>") nil)
+  (define-key evil-insert-state-map (kbd "<tab>") nil)
+  (evil-define-key 'normal org-mode-map (kbd "<tab>") #'org-cycle)
+#+end_src
+
+*** EVIL
+#+begin_quote
+From the =:editor evil= module.
+#+end_quote
+
+When I want to make a substitution, I want it to be global more often than not
+--- so let's make that the default.
+
+Now, EVIL cares a fair bit about keeping compatibility with Vim's default
+behaviour. I don't. There are some particular settings that I'd rather be
+something else, so let's change them.
+
+#+begin_src emacs-lisp
+(after! evil
+  (setq evil-ex-substitute-global t     ; I like my s/../.. to by global by default
+        evil-move-cursor-back nil       ; Don't move the block cursor when toggling insert mode
+        evil-kill-on-visual-paste nil)) ; Don't put overwritten text in the kill ring
+#+end_src
+
+#+RESULTS:
+
+I don't use ~evil-escape-mode~, so I may as well turn it off, I've heard it
+contributes a typing delay. I'm not sure it's much, but it is an extra
+~pre-command-hook~ that I don't benefit from, so...
+It seems that there's a dedicated package for this, so instead of just disabling
+the mode on startup, let's prevent installation of the package.
+#+begin_src emacs-lisp :tangle packages.el
+(package! evil-escape :disable t)
+#+end_src
+
+#+RESULTS:
+| vlf | evil-escape |
+** Sudo Save
+
+If the current buffer is not writable, ask if it should be saved with
+=sudo=.
+
+Happily taken from Pascals configuration: https://github.com/SirPscl/emacs.d#sudo-save
+
+#+BEGIN_SRC emacs-lisp
+  (defun ph/sudo-file-name (filename)
+    "Prepend '/sudo:root@`system-name`:' to FILENAME if appropriate.
+  This is, when it doesn't already have a sudo-prefix."
+    (if (not (or (string-prefix-p "/sudo:root@localhost:"
+                                  filename)
+                 (string-prefix-p (format "/sudo:root@%s:" system-name)
+                                  filename)))
+        (format "/sudo:root@%s:%s" system-name filename)
+      filename))
+
+  (defun ph/sudo-save-buffer ()
+    "Save FILENAME with sudo if the user approves."
+    (interactive)
+    (when buffer-file-name
+      (let ((file (ph/sudo-file-name buffer-file-name)))
+        (if (yes-or-no-p (format "Save file as %s ? " file))
+            (write-file file)))))
+
+  (advice-add 'save-buffer :around
+              '(lambda (fn &rest args)
+                 (when (or (not (buffer-file-name))
+                           (not (buffer-modified-p))
+                           (file-writable-p (buffer-file-name))
+                           (not (ph/sudo-save-buffer)))
+                   (call-interactively fn args))))
+#+END_SRC
+
+#+RESULTS:
+
+** Open file with emacsclient using =filename:line= path
+   This configuration is originally from the great [[https://github.com/bbatsov/prelude/commit/8c55c6f4bb8fab04040e178b97a9e68006525403][bbatsov's prelude]].
+
+```bash
+emacsclient somefile:1234
+
+This will open file 'somefile' and set cursor on line 1234.
+
+#+BEGIN_SRC emacs-lisp
+(defadvice server-visit-files (before parse-numbers-in-lines (files proc &optional nowait) activate)
+  "Open file with emacsclient with cursors positioned on requested line.
+Most of console-based utilities prints filename in format
+'filename:linenumber'.  So you may wish to open filename in that format.
+Just call:
+  emacsclient filename:linenumber
+and file 'filename' will be opened and cursor set on line 'linenumber'"
+  (ad-set-arg 0
+              (mapcar (lambda (fn)
+                        (let ((name (car fn)))
+                          (if (string-match "^\\(.*?\\):\\([0-9]+\\)\\(?::\\([0-9]+\\)\\)?$" name)
+                              (cons
+                               (match-string 1 name)
+                               (cons (string-to-number (match-string 2 name))
+                                     (string-to-number (or (match-string 3 name) ""))))
+                            fn))) files)))
+#+END_SRC
+
+#+RESULTS:
+: server-visit-files
+
+** ZAP TO CHAR
+Emacs provides a 'zap-to-char' command that kills from the current point to a character.  It is bound to 'M-z' in standard GNU Emacs but since Doom Emacs uses 'SPC' as its leader key and does not have 'SPC z' binded to anything, it just makes since to use it for 'zap-to-char'.  Note that 'zap-to-char' can be used with the universal argument 'SPC u' to modify its behavior.  Examples of 'zap-to-char' usage are listed in the table below:
+
+| KEYBINDING                | WHAT IS DOES                                               |
+|---------------------------+------------------------------------------------------------|
+| SPC z e                   | deletes all chars to the next occurrence of 'e'            |
+| SPC u 2 SPC z e           | deletes all chars to the second occurrence of 'e'          |
+| SPC u - SPC z e           | deletes all chars to the previous occurrence of 'e'        |
+| SPC u -2 SPC z e          | deletes all chars to the fourth previous occurrence of 'e' |
+| SPC u 1 0 0 SPC u SPC z e | deletes all chars to the 100th occurrence of 'e'           |
+| M-z                       | zap to char                                                |
+| M-Z                       | zap up to char                                             |
+
+=TIP:= The universal argument (SPC u) can only take a single integer by default.  If you need to use a multi-digit number (like 100 in the last example in the table above), then you must terminate the universal argument with another 'SPC u' after typing the number.
+
+'zap-up-to-char' is an alternative command that does not zap the char specified.  It is binded to 'SPC Z'.  It can also be used in conjunction with the universal argument 'SPC u' in similar fashion to the the 'zap-to-char' examples above.
+
+=NOTE:= Vim (evil mode) has similar functionality builtin.  You can delete to the next occurrence of 'e' by using 'dte' in normal.  To delete to the next occurrence of 'e' including the 'e', then you would use 'dfe'.  And you can modify 'dt' and 'df' by prefixing them with numbers, so '2dte' would delete to the second occurrence of 'e'.
+
+#+BEGIN_SRC emacs-lisp
+(map! :leader
+      :desc "Zap to char" "z" #'zap-to-char
+      :desc "Zap up to char" "Z" #'zap-up-to-char)
+#+END_SRC
+
+There are two kinds of "zap" functionality:
+
++ =zap-up-to-char= will delete everything from point up to the character
+  you provide it with.  Think of how you may want to remove a file name
+  but keep its file type extension, so =M-x zap-up-to-char RET .= will do
+  just that.
+
++ =zap-to-char=, which is bound to =M-z= by default, will delete the target
+  character as well.
+
+I bind the former to =M-z= as I use it more often and leave its
+counterpart on =M-Z= (=M-S-z=).
+
+#+begin_src emacs-lisp
+;;; Zap characters
+(let ((map global-map))
+  (define-key map (kbd "M-z") #'zap-up-to-char) ;;def
+  (define-key map (kbd "M-Z") #'zap-to-char)) ; M-S-z
+#+end_src
+** MOUSE SUPPORT
+Adding mouse support in the terminal version of Emacs.
+
+#+begin_src emacs-lisp
+(xterm-mouse-mode 1)
+#+end_src
+
+** EMOJIS
+Emojify is an Emacs extension to display emojis. It can display github style emojis like :smile: or plain ascii ones like :).
+
+#+begin_src emacs-lisp
+(use-package emojify
+  :hook (after-init . global-emojify-mode))
+#+end_src
+
+** easy kill
+#+begin_src emacs-lisp
+
+(use-package! easy-kill
+  :bind*
+  (([remap kill-ring-save] . easy-kill)))
+(global-set-key [remap kill-ring-save] 'easy-kill)
+#+end_src
+
+#+RESULTS:
+: easy-kill
+
+** atomic-chrome / GhostText: Edit text area in browser
+You need to install the Firefox extension [[https://github.com/GhostText/GhostText][GhostText]]
+#+BEGIN_SRC emacs-lisp :tangle no
+(use-package atomic-chrome
+  :if (daemonp)
+  :defer 10
+  :config
+  ;; Set port to a less common one
+  ;; Must be changed in Firefox too!
+  (setq atomic-chrome-server-ghost-text-port 8326)
+  (setq atomic-chrome-default-major-mode 'gfm-mode)
+  (setq atomic-chrome-url-major-mode-alist
+        '(("reddit\\.com" . markdown-mode)
+          ("github\\.com" . gfm-mode)
+          ("gitlab\\.com" . gfm-mode)
+          ("gitlab\\.paesslergmbh\\.de" . gfm-mode)
+          ("gitlab\\.sovendus\\.com" . gfm-mode)
+          ("lab\\.ebenefuenf\\.com" . gfm-mode)
+          ("jira.sovendus.com" . jira-markup-mode)
+          ("jira.paesslergmbh.de" . jira-markup-mode)))
+  (atomic-chrome-start-server))
+#+END_SRC
+
+#+RESULTS:
+: #s(hash-table size 65 test eql rehash-size 1.5 rehash-threshold 0.8125 data (:use-package (25098 24336 620398 905000) :use-package-secs (0 0 15 123000)))
+
+** Automatically remove trailing whitespace (only if I put them there)
+#+BEGIN_SRC emacs-lisp :tangle no
+(use-package ws-butler
+  :hook ((text-mode prog-mode) . ws-butler-mode)
+  :config (setq ws-butler-keep-whitespace-before-point nil))
+(use-package whitespace
+  :config
+  (global-whitespace-mode)
+  :hook
+  (prog-mode . (lambda () (setq show-trailing-whitespace t)))
+  (text-mode . (lambda () (setq show-trailing-whitespace t)))
+  (conf-mode . (lambda () (setq show-trailing-whitespace t)))
+  :custom
+  (whitespace-style '(face trailing tabs empty big-indent))
+  (whitespace-global-modes '(not erc-mode magit-mode)))
+
+
+#+END_SRC
+** Emacs as external editor
+#+begin_src emacs-lisp :tangle no
+
+(defun dw/show-server-edit-buffer (buffer)
+  ;; TODO: Set a transient keymap to close with 'C-c C-c'
+  (split-window-vertically -15)
+  (other-window 1)
+  (set-buffer buffer))
+
+(setq server-window #'dw/show-server-edit-buffer)
+#+end_src
+
+** monkeytype
+#+begin_src emacs-lisp :tangle no
+(defun my/monkeytype-mode-hook ()
+  "Hooks for monkeytype-mode."
+  ;; (centered-cursor-mode)
+  ;; (evil-escape-mode -1)
+  (evil-insert -1))
+(add-hook 'monkeytype-mode-hook #'my/monkeytype-mode-hook)
+#+end_src
+** Speed type
+#+begin_src emacs-lisp
+;; Speed-type: Type a text and measure your speed
+(use-package speed-type
+  :defer t)
+#+end_src
+** Selectric
+
+Every so often, you want everyone else to /know/ that you're typing, or just to
+amuse oneself. Introducing: typewriter sounds!
+#+begin_src emacs-lisp :tangle packages.el
+(package! selectric-mode :pin "1840de71f7414b7cd6ce425747c8e26a413233aa")
+#+end_src
+
+#+begin_src emacs-lisp
+(use-package! selectic-mode
+  :commands selectic-mode)
+#+end_src
+
+** INSERT DATE
+Some custom functions to insert the date.  The function 'insert-todays-date' can be used one of three different ways: (1) just the keybinding without the universal argument prefix, (2) with one universal argument prefix, or (3) with two universal argument prefixes.  The universal argument prefix is 'SPC-u' in Doom Emacs (C-u in standard GNU Emacs).  The function 'insert-any-date' only outputs to one format, which is the same format as 'insert-todays-date' without a prefix.
+
+╭────
+│ | COMMAND               | EXAMPLE OUTPUT            | KEYBINDING            |
+│ |-----------------------+---------------------------+-----------------------|
+│ | dt/insert-todays-date | Friday, November 19, 2021 | SPC i d t             |
+│ | dt/insert-todays-date | 11-19-2021                | SPC u SPC i d t       |
+│ | dt/insert-todays-date | 2021-11-19                | SPC u SPC u SPC i d t |
+│ | dt/insert-any-date    | Friday, November 19, 2021 | SPC i d a             |
+╰────
+
+#+begin_src emacs-lisp
+(defun dt/insert-todays-date (prefix)
+  (interactive "P")
+  (let ((format (cond
+                 ((not prefix) "%A, %B %d, %Y")
+                 ((equal prefix '(4)) "%m-%d-%Y")
+                 ((equal prefix '(16)) "%Y-%m-%d"))))
+    (insert (format-time-string format))))
+
+(require 'calendar)
+(defun dt/insert-any-date (date)
+  "Insert DATE using the current locale."
+  (interactive (list (calendar-read-date)))
+  (insert (calendar-date-string date)))
+
+(map! :leader
+      (:prefix ("i d" . "Insert date")
+        :desc "Insert any date" "a" #'dt/insert-any-date
+        :desc "Insert todays date" "t" #'dt/insert-todays-date))
+#+end_src
+** Abberviation
+#+begin_src emacs-lisp
+;; Where I store the abbreviation I need.
+
+;;; my-abbrev --- Abbrev stuff  -*- lexical-binding: t; -*-
+;;; Commentary:
+
+;; This adds various abbrevs for various modes.  Abbrevs are useful to
+;; avoid typos, for instance.  To prevent the expansion, type ``word
+;; C-q SPC'' instead of ``word SPC''.
+
+;;; Code:
+
+(clear-abbrev-table global-abbrev-table)
+
+(define-abbrev-table 'global-abbrev-table
+  '(("prots@" "ports@")
+
+    ("supprots" "supports")
+
+    ("het" "the")
+    ("teh" "the")
+
+    ("wehn" "when")
+
+    ("perchè" "perché")
+    ("perche" "perché")
+    ("nonchè" "nonché")
+    ("nonche" "nonché")
+    ("quetse" "queste")
+    ("sovlgimento" "svolgimento")
+    ("sovlgere" "svolgere")
+    ("sbagilo" "sbaglio")
+    ("caffe" "caffè")))
+
+(when (boundp 'text-mode-abbrev-table)
+  (clear-abbrev-table text-mode-abbrev-table))
+
+(define-abbrev-table 'text-mode-abbrev-table
+  '(("hw" "hardware")
+    ("sw" "software")))
+
+(when (boundp 'clojure-mode-abbrev-table)
+  (clear-abbrev-table clojure-mode-abbrev-table))
+
+(define-abbrev-table 'clojure-mode-abbrev-table
+  '(("erq" "req")))
+
+(when (boundp 'c-mode-abbrev-table)
+  (clear-abbrev-table c-mode-abbrev-table))
+
+(define-abbrev-table 'c-mode-abbrev-table
+  '(("inculde" "include")
+    ("inlcude" "include")))
+
+;; turn on abbrev mode globally
+(setq-default abbrev-mode t)
+
+(provide 'my-abbrev)
+;;; my-abbrev.el ends here
+#+end_src
+
+#+RESULTS:
+: my-abbrev
+
+** REGISTERS
+Emacs registers are compartments where you can save text, rectangles and positions for later use. Once you save text or a rectangle in a register, you can copy it into the buffer once or many times; once you save a position in a register, you can jump back to that position once or many times.  The default GNU Emacs keybindings for these commands (with the exception of counsel-register) involves 'C-x r' followed by one or more other keys.  I wanted to make this a little more user friendly, and since I am using Doom Emacs, I choose to replace the 'C-x r' part of the key chords with 'SPC r'.
+
+╭────
+│ | COMMAND                          | DESCRIPTION                      | KEYBINDING |
+│ |----------------------------------+----------------------------------+------------|
+│ | copy-to-register                 | /Copy to register/                 | SPC r c    |
+│ | frameset-to-register             | /Frameset to register/             | SPC r f    |
+│ | insert-register                  | /Insert contents of register/      | SPC r i    |
+│ | jump-to-register                 | /Jump to register/                 | SPC r j    |
+│ | list-registers                   | /List registers/                   | SPC r l    |
+│ | number-to-register               | /Number to register/               | SPC r n    |
+│ | counsel-register                 | /Interactively choose a register/  | SPC r r    |
+│ | view-register                    | /View a register/                  | SPC r v    |
+│ | window-configuration-to-register | /Window configuration to register/ | SPC r w    |
+│ | increment-register               | /Increment register/               | SPC r +    |
+│ | point-to-register                | /Point to register/                | SPC r SPC  |
+╰────
+
+#+BEGIN_SRC emacs-lisp
+(map! :leader
+      (:prefix ("r" . "registers")
+       :desc "Copy to register" "c" #'copy-to-register
+       :desc "Frameset to register" "f" #'frameset-to-register
+       :desc "Insert contents of register" "i" #'insert-register
+       :desc "Jump to register" "j" #'jump-to-register
+       :desc "List registers" "l" #'list-registers
+       :desc "Number to register" "n" #'number-to-register
+       ;; :desc "Interactively choose a register" "r" #'counsel-register
+       :desc "Interactively choose a register" "r" #'consult-register
+       :desc "View a register" "v" #'view-register
+       :desc "Window configuration to register" "w" #'window-configuration-to-register
+       :desc "Increment register" "+" #'increment-register
+       :desc "Point to register" "SPC" #'point-to-register))
+#+END_SRC
+
+#+RESULTS:
+: point-to-register
