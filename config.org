@@ -92,6 +92,11 @@ To install ~some-package~ from MELPA, ELPA or emacsmirror:
   (package! pcmpl-args)
   ;; (package! em-pager)
 
+  (package! dired-sidebar)
+  (package! diredfl)
+  (package! dired-rsync)
+  (package! dired-filter)
+  (package! ibuffer-sidebar)
   (package! golden-ratio)
   (package! easy-kill)
   (package! exotica-theme)
@@ -413,6 +418,7 @@ my home machine is pretty safe, and my laptop is shutdown a lot.
 (load "sweet-kill.el")
 (load "setup-ytel.el")
 (load "setup-minibuffer.el")
+;; (load "setup-dired.el")
 ;; (load "setup-email.el")
 ;; (load "setup-elfeed.el")
 
@@ -432,10 +438,6 @@ my home machine is pretty safe, and my laptop is shutdown a lot.
 ;; Youtube.
 
 #+end_src
-
-
-#+RESULTS:
-: t
 ** Simple settings
 Browsing the web and seeing [[https://github.com/angrybacon/dotemacs/blob/master/dotemacs.org#use-better-defaults][angrybacon/dotemacs]] and comparing with the values
 shown by =SPC h v= and selecting what I thought looks good, I've ended up adding
@@ -3058,6 +3060,37 @@ Prepends the value of `exwm-autostart-environmwnt' to
     ))
 #+end_src
 * services
+** Proced (process monitor, similar to `top')
+:PROPERTIES:
+:CUSTOM_ID: h:6b56ce11-c84c-4b6d-98c7-bc3eefbe9325
+:END:
+
+This is a built-in tool that allows you to monitor running processes
+and act on them accordingly.  These are the basic settings I have
+right now: it works fine.
+
+My =prot-proced.el= (reproduced after the package configurations) simply
+adds some extra colours to the otherwise plain buffer.  Makes it easier
+to keep track of the information on display.
+
+#+begin_src emacs-lisp
+;;; Proced (process monitor, similar to `top')
+(use-package proced
+  :config
+  (setq proced-auto-update-flag t)
+  (setq proced-auto-update-interval 5)
+  (setq proced-descend t)
+  (setq proced-filter 'user))
+
+(load "prot-proced")
+(use-package prot-proced
+  :config
+  (prot-proced-extra-keywords 1))
+#+end_src
+
+#+RESULTS:
+: t
+
 ** TRAMP
 Another lovely Emacs feature, TRAMP stands for /Transparent Remote Access,
 Multiple Protocol/. In brief, it's a lovely way to wander around outside your
@@ -13522,9 +13555,6 @@ ecosystem:
     (kbd "<return>") #'image-dired-thumbnail-display-external))
 #+end_src
 
-#+RESULTS:
-: t
-
 *** dired-like mode for the trash (trashed.el)
 :PROPERTIES:
 :CUSTOM_ID: h:954adfb4-8f2c-4665-bb5b-e098926341b0
@@ -13552,69 +13582,7 @@ Basically, its interaction model is as follows:
   (setq trashed-sort-key '("Date deleted" . t))
   (setq trashed-date-format "%Y-%m-%d %H:%M:%S"))
 #+end_src
-** dired commands and keybindings
-╭────
-│  Keybindings To Open Dired
-│ ╭────
-│ │ | COMMAND    | DESCRIPTION                        | KEYBINDING |
-│ │ |------------+------------------------------------+------------|
-│ │ | dired      | /Open dired file manager/            | SPC d d    |
-│ │ | dired-jump | /Jump to current directory in dired/ | SPC d j    |
-│ ╰────
-│
-│ ╭────
-*│ │ Basic dired commands*
-│ │ | COMMAND                | DESCRIPTION                                 | KEYBINDING |
-│ │ |------------------------+---------------------------------------------+------------|
-│ │ | dired-view-file        | /View file in dired/                          | SPC d v    |
-│ │ | dired-up-directory     | /Go up in directory tree/                     | h          |
-│ │ | dired-find-file        | /Go down in directory tree (or open if file)/ | l          |
-│ │ | dired-next-line        | Move down to next line                      | j          |
-│ │ | dired-previous-line    | Move up to previous line                    | k          |
-│ │ | dired-mark             | Mark file at point                          | m          |
-│ │ | dired-unmark           | Unmark file at point                        | u          |
-│ │ | dired-do-copy          | Copy current file or marked files           | C          |
-│ │ | dired-do-rename        | Rename current file or marked files         | R          |
-│ │ | dired-hide-details     | Toggle detailed listings on/off             | (          |
-│ │ | dired-git-info-mode    | Toggle git information on/off               | )          |
-│ │ | dired-create-directory | Create new empty directory                  | +          |
-│ │ | dired-diff             | Compare file at point with another          | =          |
-│ │ | dired-subtree-toggle   | Toggle viewing subtree at point             | TAB        |
-│ │ |                        |                                             |            |
-│ ╰────
-│ ╭────
-│ │  *Dired commands using regex*
-│ │ | COMMAND                 | DESCRIPTION                | KEYBINDING |
-│ │ |-------------------------+----------------------------+------------|
-│ │ | dired-mark-files-regexp | Mark files using regex     | % m        |
-│ │ | dired-do-copy-regexp    | Copy files using regex     | % C        |
-│ │ | dired-do-rename-regexp  | Rename files using regex   | % R        |
-│ │ | dired-mark-files-regexp | Mark all files using regex | * %        |
-│ ╰────
-│
-│ ╭────
-│ │  *File permissions and ownership*
-│ │ | COMMAND         | DESCRIPTION                      | KEYBINDING |
-│ │ |-----------------+----------------------------------+------------|
-│ │ | dired-do-chgrp  | Change the group of marked files | g G        |
-│ │ | dired-do-chmod  | Change the mode of marked files  | M          |
-│ │ | dired-do-chown  | Change the owner of marked files | O          |
-│ │ | dired-do-rename | Rename file or all marked files  | R          |
-│ ╰────
-│
-│ ╭────
-*│ │ Keybindings Within Dired With Peep-Dired-Mode Enabled*
-*│ │ If peep-dired is enabled, you will get image previews as you go up/down with 'j' and 'k'*
-│ │
-│ │ | COMMAND              | DESCRIPTION                              | KEYBINDING |
-│ │ |----------------------+------------------------------------------+------------|
-│ │ | peep-dired           | /Toggle previews within dired/             | SPC d p    |
-│ │ | peep-dired-next-file | /Move to next file in peep-dired-mode/     | j          |
-│ │ | peep-dired-prev-file | /Move to previous file in peep-dired-mode/ | k          |
-│ ╰────
-│
-╰────
-** Davi dir
+** Dired Conf
 #+begin_src emacs-lisp
 ;; C-u s for flags
 ;; (use-package all-the-icons-dired)
@@ -13633,14 +13601,30 @@ Basically, its interaction model is as follows:
   (setq dired-dwim-target t)
   (setq dired-auto-revert-buffer #'dired-directory-changed-p)
                                         ; also see `dired-do-revert-buffer'
+  (advice-add 'dired-view-file :around
+              (defun dired-view-other-buffer-a (orig-fn &rest args)
+                (cl-letf (((symbol-function 'view-file) #'view-file-other-window))
+                  (funcall orig-fn))))
   ;; (setq dired-listing-switches "-agho --group-directories-first"
   ;;       ;; dired-omit-files "^\\.[^.].*"
   ;;       dired-omit-verbose nil
   ;;       dired-hide-details-hide-symlink-targets nil
   ;;       delete-by-moving-to-trash t)
 
+  (defun dired-find-file-other-window ()
+  "In Dired, visit this file or directory in another window. If `ace-window' is available, use it to select window for visiting this file.`"
+  (interactive)
+  (let ((file (dired-get-file-for-visit))
+        (window
+         (if (fboundp 'aw-select)
+             (aw-select "Select Window")
+           (next-window))))
+    (select-window window)
+    (find-file file)))
+
   (add-hook 'dired-mode-hook #'dired-hide-details-mode)
   (add-hook 'dired-mode-hook #'hl-line-mode)
+  (add-hook 'dired-mode-hook #'toggle-truncate-lines)
   ;; (autoload 'dired-omit-mode "dired-x")
 
   (add-hook 'dired-load-hook
@@ -13669,7 +13653,6 @@ Basically, its interaction model is as follows:
 
   (let ((map dired-mode-map))
     (define-key map (kbd "C-+") #'dired-create-empty-file)
-    (define-key map (kbd "M-s f") #'nil)
     (define-key map (kbd "C-x v v") #'dired-vc-next-action))) ; Emacs 28
 
 ;; ;; NOTE 2021-05-10: I do not use `find-dired' and related commands
@@ -13709,24 +13692,41 @@ Basically, its interaction model is as follows:
     (define-key map (kbd "i") #'prot-dired-insert-subdir) ; override `dired-maybe-insert-subdir'
     (define-key map (kbd "/") #'prot-dired-limit-regexp)
     (define-key map (kbd "C-c C-l") #'prot-dired-limit-regexp)
-    (define-key map (kbd "M-n") #'prot-dired-subdirectory-next)
-    (define-key map (kbd "C-c C-n") #'prot-dired-subdirectory-next)
-    (define-key map (kbd "M-p") #'prot-dired-subdirectory-previous)
-    (define-key map (kbd "C-c C-p") #'prot-dired-subdirectory-previous)
+    ;; (define-key map (kbd "M-n") #'prot-dired-subdirectory-next)
+    ;; (define-key map (kbd "C-c C-n") #'prot-dired-subdirectory-next)
+    ;; (define-key map (kbd "M-p") #'prot-dired-subdirectory-previous)
+    ;; (define-key map (kbd "C-c C-p") #'prot-dired-subdirectory-previous)
     (define-key map (kbd "M-s G") #'prot-dired-grep-marked-files))) ; M-s g is `prot-search-grep'
 
+;; (use-package dired-subtree
+;;   :config
+;;   (setq dired-subtree-use-backgrounds nil)
+;;   (let ((map dired-mode-map))
+;;     (define-key map (kbd "<tab>") #'dired-subtree-toggle)
+;;     (define-key map (kbd "<backtab>") #'dired-subtree-remove))) ; S-TAB
+
 (use-package dired-subtree
+  :ensure t
+  :after dired
   :config
   (setq dired-subtree-use-backgrounds nil)
-  (let ((map dired-mode-map))
-    (define-key map (kbd "<tab>") #'dired-subtree-toggle)
-    (define-key map (kbd "<backtab>") #'dired-subtree-remove))) ; S-TAB
-
+  :bind (:map dired-mode-map
+              ("<tab>" . dired-subtree-toggle)
+              ("<s-tab>" . dired-subtree-cycle)
+              ("<backtab>" . dired-subtree-remove)
+              ))
 (use-package wdired
   :config
   (setq wdired-allow-to-change-permissions t)
   (setq wdired-create-parent-directories t))
 
+(use-package async
+  :ensure)
+
+(use-package dired-async
+  :after (dired async)
+
+  :hook (dired-mode . dired-async-mode))
 (use-package image-dired
   :config
   (setq image-dired-external-viewer "xdg-open")
@@ -13769,6 +13769,10 @@ Basically, its interaction model is as follows:
   (use-package dired-collapse
     :defer t)
 
+(use-package gnus-dired
+  :defer 5
+  :after dired)
+
 (evil-define-key 'normal dired-mode-map
   (kbd "M-RET") 'dired-display-file
   (kbd "h") 'dired-single-up-directory
@@ -13789,7 +13793,7 @@ Basically, its interaction model is as follows:
   (kbd "y") 'dired-ranger-copy
   (kbd "X") 'dired-ranger-move
   (kbd "p") 'dired-ranger-paste
-  (kbd "Y") 'dired-copy-filenamecopy-filename-as-kill ; copies filename to kill ring.
+  (kbd "Y") 'dired-copy-filename-as-kill ; copies filename to kill ring.
   (kbd "+") 'dired-create-directory
   (kbd "-") 'dired-up-directory
   (kbd "% l") 'dired-downcase
@@ -13813,6 +13817,47 @@ Basically, its interaction model is as follows:
         :desc "Dired view file" "d v" #'dired-view-file
         :desc "Find name dired " "d N" #'find-name-dired)))
 
+(use-package peep-dired
+  :general
+  (:states '(normal visual)
+           :keymaps 'dired-mode-map
+           "z p" 'peep-dired)
+  (:keymaps 'dired-mode-map
+            "P" 'peep-dired)
+  :hook (peep-dired-display-file . auto-revert-mode)
+  :config
+  ;; (add-hook 'peep-dired-hook 'evil-normalize-keymaps)
+  (ignore-errors
+    (setq peep-dired-display-action-alist
+          '(display-buffer-in-direction
+            (direction . below)
+            (window-height . (lambda (win) (fit-window-to-buffer
+                                       win
+                                       (floor (* 0.6 (frame-height))))))
+            (window-parameters . ((dedicated . t))))))
+  (general-def
+    :states '(normal visual)
+    :keymaps 'peep-dired-mode-map
+    :prefix "SPC"
+    "SPC" 'peep-dired-scroll-page-down
+    "S-SPC" 'peep-dired-scroll-page-up)
+  (general-def
+    :states '(normal visual)
+    :keymaps 'peep-dired-mode-map
+    "<backspace>" 'peep-dired-scroll-page-up
+    "j" 'peep-dired-next-file
+    "k" 'peep-dired-prev-file)
+  ;; (evil-define-key 'normal peep-dired-mode-map (kbd "<SPC>") 'peep-dired-scroll-page-down
+  ;;   (kbd "C-<SPC>") 'peep-dired-scroll-page-up
+  ;;   (kbd "<backspace>") 'peep-dired-scroll-page-up
+  ;;   (kbd "j") 'peep-dired-next-file
+  ;;   (kbd "k") 'peep-dired-prev-file)
+(setq peep-dired-cleanup-on-disable t)
+(setq peep-dired-cleanup-eagerly nil)
+(setq peep-dired-enable-on-directories nil)
+(setq peep-dired-ignored-extensions
+      '("mkv" "iso" "mp4" "pdf" "djvu" "one" "mat"
+        "fig" "nb" "slx" "slxc" "r2016b" "onetoc2")))
 (setq dired-open-extensions '(("gif" . "sxiv")
                               ("jpg" . "sxiv")
                               ("png" . "sxiv")
@@ -13841,10 +13886,80 @@ Basically, its interaction model is as follows:
 
 (setq delete-by-moving-to-trash t
       trash-directory "~/.local/share/Trash/files/")
+
+(use-package dired-sidebar
+  :after dired
+  :disabled
+  :commands (dired-sidebar-toggle-sidebar)
+  :general
+  ("C-x D"  'list-directory
+   "C-x C-d" 'dired-sidebar-toggle-sidebar
+   :states '(normal visual)
+   "C-w C-d" 'dired-sidebar-toggle-sidebar)
+
+  ;; (:keymaps 'space-menu-map
+  ;;  :wk-full-keys nil
+  ;;  :prefix "f"
+  ;;   "t" '(dired-sidebar-toggle-sidebar :wk "Dired tree"))
+
+  (:keymaps 'dired-sidebar-mode-map
+   :states  '(normal)
+   "gO"     'dired-sidebar-find-file-alt
+   "RET"    'dired-sidebar-find-file)
+
+  (:keymaps 'dired-sidebar-mode-map
+   "-" nil)
+  :init
+  (add-hook 'dired-sidebar-mode-hook
+            (lambda ()
+              (unless (file-remote-p default-directory)
+                (auto-revert-mode))))
+  :config
+  (push 'toggle-window-split dired-sidebar-toggle-hidden-commands)
+  (push 'rotate-windows dired-sidebar-toggle-hidden-commands)
+
+  (setq dired-sidebar-subtree-line-prefix "__")
+  (setq dired-sidebar-theme 'ascii)
+  (setq dired-sidebar-use-term-integration t)
+  (setq dired-sidebar-use-custom-font t))
+
+(use-package ibuffer-sidebar
+  :disabled
+  :commands +ibuffer-sidebar-toggle
+  :general
+  ("C-x C-d" '+ibuffer-sidebar-toggle)
+  (:states '(normal visual)
+   "C-x C-d" '+ibuffer-sidebar-toggle)
+  (:keymaps 'space-menu-buffer-map
+            :wk-full-keys nil
+            "t" '(ibuffer-sidebar-toggle-sidebar :wk "Buffer sidebar"))
+  :config
+  ;; (setq ibuffer-sidebar-use-custom-font t)
+  ;; (setq ibuffer-sidebar-face `(:family "Helvetica" :height 140))
+  (defun +ibuffer-sidebar-toggle ()
+    "Toggle both `dired-sidebar' and `ibuffer-sidebar'."
+    (interactive)
+    (when (featurep 'ibuffer)
+      (ibuffer-sidebar-toggle-sidebar))
+    (dired-sidebar-toggle-sidebar)))
+
+(use-package dired-rsync
+  :ensure t
+  :bind (:map dired-mode-map
+         ("r" . dired-rsync))
+  :hook (dired-rsync-failed . dired-rsync--pop-to-rsync-failed-buf)
+  :config
+  (setq dired-rsync-unmark-on-completion nil))
+
+(use-package dired-filter
+  :ensure t
+  :after dired)
+
+(use-package diredfl
+  :ensure t
+  :hook (dired-mode . diredfl-mode))
 #+end_src
 
-#+RESULTS:
-: ~/.local/share/Trash/files/
 ** open with
 #+begin_src emacs-lisp
 (use-package openwith
@@ -13969,6 +14084,68 @@ Keybindings to open files that I work with all the time using the find-file comm
        :desc "Edit eshell aliases" "a" #'(lambda () (interactive) (find-file "~/.config/doom/eshell/aliases"))
        :desc "Edit eshell profile" "p" #'(lambda () (interactive) (find-file "~/.config/doom/eshell/profile"))))
 #+END_SRC
+** dired commands and keybindings
+╭────
+│  Keybindings To Open Dired
+│ ╭────
+│ │ | COMMAND    | DESCRIPTION                        | KEYBINDING |
+│ │ |------------+------------------------------------+------------|
+│ │ | dired      | /Open dired file manager/            | SPC d d    |
+│ │ | dired-jump | /Jump to current directory in dired/ | SPC d j    |
+│ ╰────
+│
+│ ╭────
+*│ │ Basic dired commands*
+│ │ | COMMAND                | DESCRIPTION                                 | KEYBINDING |
+│ │ |------------------------+---------------------------------------------+------------|
+│ │ | dired-view-file        | /View file in dired/                          | SPC d v    |
+│ │ | dired-up-directory     | /Go up in directory tree/                     | h          |
+│ │ | dired-find-file        | /Go down in directory tree (or open if file)/ | l          |
+│ │ | dired-next-line        | Move down to next line                      | j          |
+│ │ | dired-previous-line    | Move up to previous line                    | k          |
+│ │ | dired-mark             | Mark file at point                          | m          |
+│ │ | dired-unmark           | Unmark file at point                        | u          |
+│ │ | dired-do-copy          | Copy current file or marked files           | C          |
+│ │ | dired-do-rename        | Rename current file or marked files         | R          |
+│ │ | dired-hide-details     | Toggle detailed listings on/off             | (          |
+│ │ | dired-git-info-mode    | Toggle git information on/off               | )          |
+│ │ | dired-create-directory | Create new empty directory                  | +          |
+│ │ | dired-diff             | Compare file at point with another          | =          |
+│ │ | dired-subtree-toggle   | Toggle viewing subtree at point             | TAB        |
+│ │ |                        |                                             |            |
+│ ╰────
+│ ╭────
+│ │  *Dired commands using regex*
+│ │ | COMMAND                 | DESCRIPTION                | KEYBINDING |
+│ │ |-------------------------+----------------------------+------------|
+│ │ | dired-mark-files-regexp | Mark files using regex     | % m        |
+│ │ | dired-do-copy-regexp    | Copy files using regex     | % C        |
+│ │ | dired-do-rename-regexp  | Rename files using regex   | % R        |
+│ │ | dired-mark-files-regexp | Mark all files using regex | * %        |
+│ ╰────
+│
+│ ╭────
+│ │  *File permissions and ownership*
+│ │ | COMMAND         | DESCRIPTION                      | KEYBINDING |
+│ │ |-----------------+----------------------------------+------------|
+│ │ | dired-do-chgrp  | Change the group of marked files | g G        |
+│ │ | dired-do-chmod  | Change the mode of marked files  | M          |
+│ │ | dired-do-chown  | Change the owner of marked files | O          |
+│ │ | dired-do-rename | Rename file or all marked files  | R          |
+│ ╰────
+│
+│ ╭────
+*│ │ Keybindings Within Dired With Peep-Dired-Mode Enabled*
+*│ │ If peep-dired is enabled, you will get image previews as you go up/down with 'j' and 'k'*
+│ │
+│ │ | COMMAND              | DESCRIPTION                              | KEYBINDING |
+│ │ |----------------------+------------------------------------------+------------|
+│ │ | peep-dired           | /Toggle previews within dired/             | SPC d p    |
+│ │ | peep-dired-next-file | /Move to next file in peep-dired-mode/     | j          |
+│ │ | peep-dired-prev-file | /Move to previous file in peep-dired-mode/ | k          |
+│ ╰────
+│
+╰────
 * hydra
 ** COMMENT Extensions for PDFs (pdf-tools)
 :PROPERTIES:
@@ -18171,37 +18348,6 @@ Other potentially relevant parts of my dotemacs:
   ;;     (recenter 1))) ; Use 0 for the absolute top
 
   ;; (add-hook 'logos-page-motion-hook #'prot/logos--recenter-top))
-#+end_src
-
-#+RESULTS:
-: t
-
-** Proced (process monitor, similar to `top')
-:PROPERTIES:
-:CUSTOM_ID: h:6b56ce11-c84c-4b6d-98c7-bc3eefbe9325
-:END:
-
-This is a built-in tool that allows you to monitor running processes
-and act on them accordingly.  These are the basic settings I have
-right now: it works fine.
-
-My =prot-proced.el= (reproduced after the package configurations) simply
-adds some extra colours to the otherwise plain buffer.  Makes it easier
-to keep track of the information on display.
-
-#+begin_src emacs-lisp
-;;; Proced (process monitor, similar to `top')
-(use-package proced
-  :config
-  (setq proced-auto-update-flag t)
-  (setq proced-auto-update-interval 5)
-  (setq proced-descend t)
-  (setq proced-filter 'user))
-
-(load "prot-proced")
-(use-package prot-proced
-  :config
-  (prot-proced-extra-keywords 1))
 #+end_src
 
 #+RESULTS:
