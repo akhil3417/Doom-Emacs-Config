@@ -3469,6 +3469,7 @@ CLOSED: [2022-03-30 Wed 00:00]
   : t
 ** DONE Windows
 CLOSED: [2022-03-30 Wed 00:00]
+
 I find it rather handy to be asked which buffer I want to see after splitting
 the window. Let's make that happen.
 
