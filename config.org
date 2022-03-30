@@ -4173,101 +4173,8 @@ the official manual: https://protesilaos.com/emacs/pulsar.
 #+RESULTS:
 : t
 
-** Frame sizing
-It's nice to control the size of new frames, when launching Emacs that can be
-done with src_shell{emacs -geometry 160x48}. After the font size adjustment
-during initialisation this works out to be ~102x31~.
-
-Thanks to hotkeys, it's easy for me to expand a frame to half/full-screen, so it
-makes sense to be conservative with the sizing of new frames.
-
-Then, for creating new frames within the same Emacs instance, we'll just set the
-default to be something roughly 80% of that size.
-
-#+begin_src emacs-lisp :tangle no
-(add-to-list 'default-frame-alist '(height . 24))
-(add-to-list 'default-frame-alist '(width . 80))
-#+end_src
-
-#+RESULTS:
-: ((width . 80) (height . 24) (right-divider-width . 2) (bottom-divider-width . 2) (font . -*-Hack-*-*-*-*-15-*-*-*-*-*-*-*) (tool-bar-lines . 0) (menu-bar-lines . 0) (vertical-scroll-bars) (internal-border-width . 1) (buffer-predicate . exwm-layout--other-buffer-predicate) (left-fringe . 4) (right-fringe . 4))
-
-** Enhancements to hl-line-mode (lin.el)
-*** desc
-This is another package of mine: <https://protesilaos.com/emacs/lin>.
-Li is a stylistic enhancement for Emacs' built-in =hl-line-mode=.  It
-remaps the =hl-line= face (or equivalent) buffer-locally to a style that
-is optimal for major modes where line selection is the primary mode of
-interaction.
-
-The idea is that =hl-line-mode= cannot work equally well for contexts
-with competing priorities: (i) line selection, or (ii) simple line
-highlight.  In the former case, the current line needs to be made
-prominent because it carries a specific meaning of some significance in
-the given context: the user has to select a line.  Whereas in the latter
-case, the primary mode of interaction does not revolve around the line
-highlight itself: it may be because the focus is on editing text or
-reading through the buffer's contents, so the current line highlight is
-more of a reminder of the point's location on the vertical axis.
-
-=lin-mode= enables =hl-line-mode= by adding it to every hook specified
-in the user option =lin-mode-hooks=.  Users are advised to configure
-that variable with =customize-set-variable=, or the Custom UI, or
-equivalent as it has a function which automatically sets up Lin.  Those
-who prefer to set values with =setq= must handle the process manually,
-by using the =lin-setup= function.
-
-Users can selected their preferred style by customizing the user option
-=lin-face=.  Options include the faces =lin-red=, =lin-green=,
-=lin-yellow=, =lin-blue= (default), =lin-magenta=, =lin-cyan=,
-=lin-mac=, =lin-red-override-fg=, =lin-green-override-fg=,
-=lin-yellow-override-fg=, =lin-blue-override-fg=,
-=lin-magenta-override-fg=, =lin-cyan-override-fg=,
-=lin-mac-override-fg=, or any other face that preferably has a
-background attribute.  The Lin faces with the =-override-fg= suffix set
-a foreground value which replaces that of the underlying text.  Whereas
-the others only specify a background attribute.
-
-*** code
-#+begin_src emacs-lisp
-;;; Enhancements to hl-line-mode (lin.el)
-(use-package lin
-  ;; Either run `lin-setup' or change `lin-mode-hooks'.  I prefer the
-  ;; latter.
-
-  ;; (lin-setup)
-
-  ;; Do not use `setq' for `lin-mode-hooks' and `lin-face'.  Both have a
-  ;; custom setter function associated with them, which automatically
-  ;; sets things up when they are configured via Custom (with
-  ;; `custom-set-variables', `customize-set-variable', the Custom UI,
-  ;; the `:custom' keyword of `use-package', or related).  Read their
-  ;; doc strings if you still want to use `setq'.
-  :config
-  (custom-set-variables
-   '(lin-mode-hooks
-     '(bongo-mode-hook
-       dired-mode-hook
-       elfeed-search-mode-hook
-       git-rebase-mode-hook
-       ibuffer-mode-hook
-       ilist-mode-hook
-       ledger-report-mode-hook
-       log-view-mode-hook
-       magit-log-mode-hook
-       mu4e-headers-mode
-       notmuch-search-mode-hook
-       notmuch-tree-mode-hook
-       occur-mode-hook
-       org-agenda-mode-hook
-       tabulated-list-mode-hook))
-   '(lin-face 'lin-blue))) ; check `lin-face' doc string for alternative styles
-#+end_src
-
-#+RESULTS:
-: t
-
-** MODELINE
+** DONE MODELINE
+CLOSED: [2022-03-30 Wed 20:08]
 *** DONE Theme and modeline
 CLOSED: [2022-03-30 Wed 12:25]
 
@@ -4329,8 +4236,7 @@ thus not worth noting in the modeline. So, let's conditionally hide it.
 #+RESULTS:
 : doom-modeline-conditional-buffer-encoding
 
-*** DONE doom modeline
-CLOSED: [2022-03-30 Wed 12:30]
+*** doom modeline
 
 **** basic stuff modeline
 The modeline is the bottom status bar that appears in Emacs windows.  For more information on what is available to configure in the Doom modeline, check out:
@@ -4373,7 +4279,8 @@ https://github.com/seagle0128/doom-modeline
 
 #+RESULTS:
 
-**** Doom's pdf modeline
+**** DONE Doom's pdf modeline
+CLOSED: [2022-03-30 Wed 19:58]
 #+begin_quote
 From the =:ui modeline= module.
 #+end_quote
@@ -4755,8 +4662,104 @@ tweaks of my own.
 #+RESULTS:
 : t
 
+** DONE Enhancements to hl-line-mode (lin.el)
+CLOSED: [2022-03-30 Wed 19:57]
+*** desc
+This is another package of mine: <https://protesilaos.com/emacs/lin>.
+Li is a stylistic enhancement for Emacs' built-in =hl-line-mode=.  It
+remaps the =hl-line= face (or equivalent) buffer-locally to a style that
+is optimal for major modes where line selection is the primary mode of
+interaction.
+
+The idea is that =hl-line-mode= cannot work equally well for contexts
+with competing priorities: (i) line selection, or (ii) simple line
+highlight.  In the former case, the current line needs to be made
+prominent because it carries a specific meaning of some significance in
+the given context: the user has to select a line.  Whereas in the latter
+case, the primary mode of interaction does not revolve around the line
+highlight itself: it may be because the focus is on editing text or
+reading through the buffer's contents, so the current line highlight is
+more of a reminder of the point's location on the vertical axis.
+
+=lin-mode= enables =hl-line-mode= by adding it to every hook specified
+in the user option =lin-mode-hooks=.  Users are advised to configure
+that variable with =customize-set-variable=, or the Custom UI, or
+equivalent as it has a function which automatically sets up Lin.  Those
+who prefer to set values with =setq= must handle the process manually,
+by using the =lin-setup= function.
+
+Users can selected their preferred style by customizing the user option
+=lin-face=.  Options include the faces =lin-red=, =lin-green=,
+=lin-yellow=, =lin-blue= (default), =lin-magenta=, =lin-cyan=,
+=lin-mac=, =lin-red-override-fg=, =lin-green-override-fg=,
+=lin-yellow-override-fg=, =lin-blue-override-fg=,
+=lin-magenta-override-fg=, =lin-cyan-override-fg=,
+=lin-mac-override-fg=, or any other face that preferably has a
+background attribute.  The Lin faces with the =-override-fg= suffix set
+a foreground value which replaces that of the underlying text.  Whereas
+the others only specify a background attribute.
+
+*** code
+#+begin_src emacs-lisp
+;;; Enhancements to hl-line-mode (lin.el)
+(use-package lin
+  ;; Either run `lin-setup' or change `lin-mode-hooks'.  I prefer the
+  ;; latter.
+
+  ;; (lin-setup)
+
+  ;; Do not use `setq' for `lin-mode-hooks' and `lin-face'.  Both have a
+  ;; custom setter function associated with them, which automatically
+  ;; sets things up when they are configured via Custom (with
+  ;; `custom-set-variables', `customize-set-variable', the Custom UI,
+  ;; the `:custom' keyword of `use-package', or related).  Read their
+  ;; doc strings if you still want to use `setq'.
+  :config
+  (custom-set-variables
+   '(lin-mode-hooks
+     '(bongo-mode-hook
+       dired-mode-hook
+       elfeed-search-mode-hook
+       git-rebase-mode-hook
+       ibuffer-mode-hook
+       ilist-mode-hook
+       ledger-report-mode-hook
+       log-view-mode-hook
+       magit-log-mode-hook
+       mu4e-headers-mode
+       notmuch-search-mode-hook
+       notmuch-tree-mode-hook
+       occur-mode-hook
+       org-agenda-mode-hook
+       tabulated-list-mode-hook))
+   '(lin-face 'lin-blue))) ; check `lin-face' doc string for alternative styles
+#+end_src
+
+#+RESULTS:
+: t
+
+** Frame sizing
+It's nice to control the size of new frames, when launching Emacs that can be
+done with src_shell{emacs -geometry 160x48}. After the font size adjustment
+during initialisation this works out to be ~102x31~.
+
+Thanks to hotkeys, it's easy for me to expand a frame to half/full-screen, so it
+makes sense to be conservative with the sizing of new frames.
+
+Then, for creating new frames within the same Emacs instance, we'll just set the
+default to be something roughly 80% of that size.
+
+#+begin_src emacs-lisp :tangle no
+(add-to-list 'default-frame-alist '(height . 24))
+(add-to-list 'default-frame-alist '(width . 80))
+#+end_src
+
+#+RESULTS:
+: ((width . 80) (height . 24) (right-divider-width . 2) (bottom-divider-width . 2) (font . -*-Hack-*-*-*-*-15-*-*-*-*-*-*-*) (tool-bar-lines . 0) (menu-bar-lines . 0) (vertical-scroll-bars) (internal-border-width . 1) (buffer-predicate . exwm-layout--other-buffer-predicate) (left-fringe . 4) (right-fringe . 4))
+
 ** DASHBOARD
 Emacs Dashboard is an extensible startup screen showing you recent files, bookmarks, agenda items and an Emacs banner.
+
 *** Configuring Dashboard
 #+begin_src emacs-lisp
 (use-package dashboard
@@ -4873,7 +4876,7 @@ Relative line numbers are fantastic for knowing how far away line numbers are,
 then =ESC 12 <UP>= gets you exactly where you think.
 #+BEGIN_SRC emacs-lisp
 ;; (setq display-line-numbers-type 'relative)
-(setq display-line-numbers-type nil)
+;; (setq display-line-numbers-type nil)
 (map! :leader
       :desc "Comment or uncomment lines" "TAB TAB" #'comment-line
       (:prefix ("t" . "toggle")
@@ -13555,33 +13558,6 @@ ecosystem:
     (kbd "<return>") #'image-dired-thumbnail-display-external))
 #+end_src
 
-*** dired-like mode for the trash (trashed.el)
-:PROPERTIES:
-:CUSTOM_ID: h:954adfb4-8f2c-4665-bb5b-e098926341b0
-:END:
-
-=trashed= applies the principles of =dired= to the management of the user's
-filesystem trash.  Use =C-h m= to see the docs and keybindings for its
-major mode.
-
-Basically, its interaction model is as follows:
-
-- =m= to mark for some deferred action, such as =D= to delete, =R= to restore.
-- =t= to toggle the status of all items as marked.  Use this without marks
-  to =m= (mark) all items, then call a deferred action to operate on them.
-- =d= to mark for permanent deletion.
-- =r= to mark for restoration.
-- =x= to execute these special marks.
-
-#+begin_src emacs-lisp
-;;; dired-like mode for the trash (trashed.el)
-(use-package trashed
-  :config
-  (setq trashed-action-confirmer 'y-or-n-p)
-  (setq trashed-use-header-line t)
-  (setq trashed-sort-key '("Date deleted" . t))
-  (setq trashed-date-format "%Y-%m-%d %H:%M:%S"))
-#+end_src
 ** Dired Conf
 #+begin_src emacs-lisp
 ;; C-u s for flags
@@ -13960,6 +13936,119 @@ Basically, its interaction model is as follows:
   :hook (dired-mode . diredfl-mode))
 #+end_src
 
+** dired-like mode for the trash (trashed.el)
+:PROPERTIES:
+:CUSTOM_ID: h:954adfb4-8f2c-4665-bb5b-e098926341b0
+:END:
+
+=trashed= applies the principles of =dired= to the management of the user's
+filesystem trash.  Use =C-h m= to see the docs and keybindings for its
+major mode.
+
+Basically, its interaction model is as follows:
+
+- =m= to mark for some deferred action, such as =D= to delete, =R= to restore.
+- =t= to toggle the status of all items as marked.  Use this without marks
+  to =m= (mark) all items, then call a deferred action to operate on them.
+- =d= to mark for permanent deletion.
+- =r= to mark for restoration.
+- =x= to execute these special marks.
+
+#+begin_src emacs-lisp
+;;; dired-like mode for the trash (trashed.el)
+(use-package trashed
+  :config
+  (setq trashed-action-confirmer 'y-or-n-p)
+  (setq trashed-use-header-line t)
+  (setq trashed-sort-key '("Date deleted" . t))
+  (setq trashed-date-format "%Y-%m-%d %H:%M:%S"))
+#+end_src
+** OPEN SPECIFIC FILES
+Keybindings to open files that I work with all the time using the find-file command, which is the interactive file search that opens with 'C-x C-f' in GNU Emacs or 'SPC f f' in Doom Emacs.  These keybindings use find-file non-interactively since we specify exactly what file to open.  The format I use for these bindings is 'SPC =' plus 'key' since Doom Emacs does not use 'SPC ='.
+
+| PATH TO FILE                   | DESCRIPTION           | KEYBINDING |
+|--------------------------------+-----------------------+------------|
+| ~/Org/agenda.org               | /Edit agenda file/      | SPC = a    |
+| ~/.config/doom/config.org"     | /Edit doom config.org/  | SPC = c    |
+| ~/.config/doom/init.el"        | /Edit doom init.el/     | SPC = i    |
+| ~/.config/doom/packages.el"    | /Edit doom packages.el/ | SPC = p    |
+| ~/.config/doom/eshell/aliases" | /Edit eshell aliases/   | SPC = e a  |
+| ~/.config/doom/eshell/profile" | /Edit eshell profile/   | SPC = e p  |
+
+#+BEGIN_SRC emacs-lisp
+(map! :leader
+      (:prefix ("=" . "open file")
+       :desc "Edit agenda file" "a" #'(lambda () (interactive) (find-file "~/Org/agenda.org"))
+       :desc "Edit doom config.org" "c" #'(lambda () (interactive) (find-file "~/.config/doom/config.org"))
+       :desc "Edit doom init.el" "i" #'(lambda () (interactive) (find-file "~/.config/doom/init.el"))
+       :desc "Edit doom packages.el" "p" #'(lambda () (interactive) (find-file "~/.config/doom/packages.el"))))
+(map! :leader
+      (:prefix ("= e" . "open eshell files")
+       :desc "Edit eshell aliases" "a" #'(lambda () (interactive) (find-file "~/.config/doom/eshell/aliases"))
+       :desc "Edit eshell profile" "p" #'(lambda () (interactive) (find-file "~/.config/doom/eshell/profile"))))
+#+END_SRC
+** dired General commands and keybindings(read c)
+╭────
+│  Keybindings To Open Dired
+│ ╭────
+│ │ | COMMAND    | DESCRIPTION                        | KEYBINDING |
+│ │ |------------+------------------------------------+------------|
+│ │ | dired      | /Open dired file manager/            | SPC d d    |
+│ │ | dired-jump | /Jump to current directory in dired/ | SPC d j    |
+│ ╰────
+│
+│ ╭────
+*│ │ Basic dired commands*
+│ │ | COMMAND                | DESCRIPTION                                 | KEYBINDING |
+│ │ |------------------------+---------------------------------------------+------------|
+│ │ | dired-view-file        | /View file in dired/                          | SPC d v    |
+│ │ | dired-up-directory     | /Go up in directory tree/                     | h          |
+│ │ | dired-find-file        | /Go down in directory tree (or open if file)/ | l          |
+│ │ | dired-next-line        | Move down to next line                      | j          |
+│ │ | dired-previous-line    | Move up to previous line                    | k          |
+│ │ | dired-mark             | Mark file at point                          | m          |
+│ │ | dired-unmark           | Unmark file at point                        | u          |
+│ │ | dired-do-copy          | Copy current file or marked files           | C          |
+│ │ | dired-do-rename        | Rename current file or marked files         | R          |
+│ │ | dired-hide-details     | Toggle detailed listings on/off             | (          |
+│ │ | dired-git-info-mode    | Toggle git information on/off               | )          |
+│ │ | dired-create-directory | Create new empty directory                  | +          |
+│ │ | dired-diff             | Compare file at point with another          | =          |
+│ │ | dired-subtree-toggle   | Toggle viewing subtree at point             | TAB        |
+│ │ |                        |                                             |            |
+│ ╰────
+│ ╭────
+│ │  *Dired commands using regex*
+│ │ | COMMAND                 | DESCRIPTION                | KEYBINDING |
+│ │ |-------------------------+----------------------------+------------|
+│ │ | dired-mark-files-regexp | Mark files using regex     | % m        |
+│ │ | dired-do-copy-regexp    | Copy files using regex     | % C        |
+│ │ | dired-do-rename-regexp  | Rename files using regex   | % R        |
+│ │ | dired-mark-files-regexp | Mark all files using regex | * %        |
+│ ╰────
+│
+│ ╭────
+│ │  *File permissions and ownership*
+│ │ | COMMAND         | DESCRIPTION                      | KEYBINDING |
+│ │ |-----------------+----------------------------------+------------|
+│ │ | dired-do-chgrp  | Change the group of marked files | g G        |
+│ │ | dired-do-chmod  | Change the mode of marked files  | M          |
+│ │ | dired-do-chown  | Change the owner of marked files | O          |
+│ │ | dired-do-rename | Rename file or all marked files  | R          |
+│ ╰────
+│
+│ ╭────
+*│ │ Keybindings Within Dired With Peep-Dired-Mode Enabled*
+*│ │ If peep-dired is enabled, you will get image previews as you go up/down with 'j' and 'k'*
+│ │
+│ │ | COMMAND              | DESCRIPTION                              | KEYBINDING |
+│ │ |----------------------+------------------------------------------+------------|
+│ │ | peep-dired           | /Toggle previews within dired/             | SPC d p    |
+│ │ | peep-dired-next-file | /Move to next file in peep-dired-mode/     | j          |
+│ │ | peep-dired-prev-file | /Move to previous file in peep-dired-mode/ | k          |
+│ ╰────
+│
+╰────
 ** open with
 #+begin_src emacs-lisp
 (use-package openwith
@@ -13987,7 +14076,8 @@ Basically, its interaction model is as follows:
 
 #+RESULTS:
 : t
-** general dired
+** DONE Very Basic dired
+CLOSED: [2022-03-30 Wed 19:09]
 #+begin_src emacs-lisp :tangle no
 (use-package dired
   :ensure nil
@@ -14058,96 +14148,8 @@ Basically, its interaction model is as follows:
 
 #+RESULTS:
 : ((gif . sxiv) (jpg . sxiv) (png . sxiv) (mkv . mpv) (webm . mpv) (mp4 . mpv))
-** OPEN SPECIFIC FILES
-Keybindings to open files that I work with all the time using the find-file command, which is the interactive file search that opens with 'C-x C-f' in GNU Emacs or 'SPC f f' in Doom Emacs.  These keybindings use find-file non-interactively since we specify exactly what file to open.  The format I use for these bindings is 'SPC =' plus 'key' since Doom Emacs does not use 'SPC ='.
-
-╭────
-│ | PATH TO FILE                   | DESCRIPTION           | KEYBINDING |
-│ |--------------------------------+-----------------------+------------|
-│ | ~/Org/agenda.org               | /Edit agenda file/      | SPC = a    |
-│ | ~/.config/doom/config.org"     | /Edit doom config.org/  | SPC = c    |
-│ | ~/.config/doom/init.el"        | /Edit doom init.el/     | SPC = i    |
-│ | ~/.config/doom/packages.el"    | /Edit doom packages.el/ | SPC = p    |
-│ | ~/.config/doom/eshell/aliases" | /Edit eshell aliases/   | SPC = e a  |
-│ | ~/.config/doom/eshell/profile" | /Edit eshell profile/   | SPC = e p  |
-╰────
-
-#+BEGIN_SRC emacs-lisp
-(map! :leader
-      (:prefix ("=" . "open file")
-       :desc "Edit agenda file" "a" #'(lambda () (interactive) (find-file "~/Org/agenda.org"))
-       :desc "Edit doom config.org" "c" #'(lambda () (interactive) (find-file "~/.config/doom/config.org"))
-       :desc "Edit doom init.el" "i" #'(lambda () (interactive) (find-file "~/.config/doom/init.el"))
-       :desc "Edit doom packages.el" "p" #'(lambda () (interactive) (find-file "~/.config/doom/packages.el"))))
-(map! :leader
-      (:prefix ("= e" . "open eshell files")
-       :desc "Edit eshell aliases" "a" #'(lambda () (interactive) (find-file "~/.config/doom/eshell/aliases"))
-       :desc "Edit eshell profile" "p" #'(lambda () (interactive) (find-file "~/.config/doom/eshell/profile"))))
-#+END_SRC
-** dired commands and keybindings
-╭────
-│  Keybindings To Open Dired
-│ ╭────
-│ │ | COMMAND    | DESCRIPTION                        | KEYBINDING |
-│ │ |------------+------------------------------------+------------|
-│ │ | dired      | /Open dired file manager/            | SPC d d    |
-│ │ | dired-jump | /Jump to current directory in dired/ | SPC d j    |
-│ ╰────
-│
-│ ╭────
-*│ │ Basic dired commands*
-│ │ | COMMAND                | DESCRIPTION                                 | KEYBINDING |
-│ │ |------------------------+---------------------------------------------+------------|
-│ │ | dired-view-file        | /View file in dired/                          | SPC d v    |
-│ │ | dired-up-directory     | /Go up in directory tree/                     | h          |
-│ │ | dired-find-file        | /Go down in directory tree (or open if file)/ | l          |
-│ │ | dired-next-line        | Move down to next line                      | j          |
-│ │ | dired-previous-line    | Move up to previous line                    | k          |
-│ │ | dired-mark             | Mark file at point                          | m          |
-│ │ | dired-unmark           | Unmark file at point                        | u          |
-│ │ | dired-do-copy          | Copy current file or marked files           | C          |
-│ │ | dired-do-rename        | Rename current file or marked files         | R          |
-│ │ | dired-hide-details     | Toggle detailed listings on/off             | (          |
-│ │ | dired-git-info-mode    | Toggle git information on/off               | )          |
-│ │ | dired-create-directory | Create new empty directory                  | +          |
-│ │ | dired-diff             | Compare file at point with another          | =          |
-│ │ | dired-subtree-toggle   | Toggle viewing subtree at point             | TAB        |
-│ │ |                        |                                             |            |
-│ ╰────
-│ ╭────
-│ │  *Dired commands using regex*
-│ │ | COMMAND                 | DESCRIPTION                | KEYBINDING |
-│ │ |-------------------------+----------------------------+------------|
-│ │ | dired-mark-files-regexp | Mark files using regex     | % m        |
-│ │ | dired-do-copy-regexp    | Copy files using regex     | % C        |
-│ │ | dired-do-rename-regexp  | Rename files using regex   | % R        |
-│ │ | dired-mark-files-regexp | Mark all files using regex | * %        |
-│ ╰────
-│
-│ ╭────
-│ │  *File permissions and ownership*
-│ │ | COMMAND         | DESCRIPTION                      | KEYBINDING |
-│ │ |-----------------+----------------------------------+------------|
-│ │ | dired-do-chgrp  | Change the group of marked files | g G        |
-│ │ | dired-do-chmod  | Change the mode of marked files  | M          |
-│ │ | dired-do-chown  | Change the owner of marked files | O          |
-│ │ | dired-do-rename | Rename file or all marked files  | R          |
-│ ╰────
-│
-│ ╭────
-*│ │ Keybindings Within Dired With Peep-Dired-Mode Enabled*
-*│ │ If peep-dired is enabled, you will get image previews as you go up/down with 'j' and 'k'*
-│ │
-│ │ | COMMAND              | DESCRIPTION                              | KEYBINDING |
-│ │ |----------------------+------------------------------------------+------------|
-│ │ | peep-dired           | /Toggle previews within dired/             | SPC d p    |
-│ │ | peep-dired-next-file | /Move to next file in peep-dired-mode/     | j          |
-│ │ | peep-dired-prev-file | /Move to previous file in peep-dired-mode/ | k          |
-│ ╰────
-│
-╰────
 * hydra
-** COMMENT Extensions for PDFs (pdf-tools)
+** Extensions for PDFs (pdf-tools)
 :PROPERTIES:
 :CUSTOM_ID: h:02894c1d-a739-48e7-9116-3c27a6505485
 :END:
@@ -14244,9 +14246,6 @@ in the manual of the themes.  If you are using them, evaluate this form:
   (add-hook 'pdf-tools-enabled-hook #'prot/pdf-tools-midnight-mode-toggle)
   (add-hook 'modus-themes-after-load-theme-hook #'prot/pdf-tools-midnight-mode-toggle))
 #+end_src
-
-#+RESULTS:
-: t
 
 ** Hydra
 #+begin_src emacs-lisp
@@ -14925,6 +14924,9 @@ in the manual of the themes.  If you are using them, evaluate this form:
    (use-package org-pdfview
      :ensure t))
 #+end_src
+
+#+RESULTS:
+: t
 
 ** karthydra
 #+begin_src emacs-lisp :tangle no
@@ -20599,7 +20601,7 @@ let's change that, and do a few other similar tweaks while we're at it.
    ))
 #+end_src
 
-* DONE media
+* DONE Media
 CLOSED: [2022-03-30 Wed 09:28]
 ** EMMS
 One of the media players available for Emacs is emms, which stands for Emacs Multimedia System.  By default, Doom Emacs does not use 'SPC a',' so the format I use for these bindings is 'SPC a' plus 'key'.
