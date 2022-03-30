@@ -3457,7 +3457,7 @@ CLOSED: [2022-03-29 Tue 23:59]
 #+RESULTS:
 : setup-ui
 
-** DONE volatile hilights
+** DONE volatile highlights
 CLOSED: [2022-03-30 Wed 00:00]
   #+begin_src emacs-lisp
     (use-package volatile-highlights
