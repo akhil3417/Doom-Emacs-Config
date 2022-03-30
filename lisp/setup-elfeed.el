@@ -17,10 +17,10 @@
 
 (use-package elfeed
   :commands (elfeed elfeed-update elfeed-search-bookmark-handler)
-  :load-path ("~/.local/share/git/elfeed/"
-              "~/.local/share/git/elfeed/web")
+  ;; :load-path ("~/.local/share/git/elfeed/"
+  ;;             "~/.local/share/git/elfeed/web")
   :config
-  (setq-default elfeed-db-directory (dir-concat user-cache-directory "elfeed")
+  (setq-default elfeed-db-directory (dir-concat user-cache-directory "~/.elfeed")
                 elfeed-save-multiple-enclosures-without-asking t
                 elfeed-search-clipboard-type 'CLIPBOARD
                 elfeed-search-filter "#50 +unread "
@@ -30,10 +30,10 @@
   ;;----------------------------------------------------------------------
 
 
-  (defun elfeed-search-show-entry-pre (&optional lines) 
+  (defun elfeed-search-show-entry-pre (&optional lines)
   "Returns a function to scroll forward or back in the Elfeed
   search results, displaying entries without switching to them."
-    (lambda (times) 
+    (lambda (times)
       (interactive "p")
       (forward-line (* times (or lines 0)))
       (recenter)
@@ -52,14 +52,14 @@
                "w" 'elfeed-search-yank
                "M-n" (elfeed-search-show-entry-pre 1)
                "M-p" (elfeed-search-show-entry-pre -1))
-  
+
   (defun elfeed-display-buffer (buf &optional act)
     (pop-to-buffer buf '((display-buffer-reuse-window display-buffer-in-direction)
                          (direction . above)
                          (window-height . 0.7)))
     ;; (set-window-text-height (get-buffer-window) (round (* 0.7 (frame-height))))
-    ) 
-  
+    )
+
   (advice-add 'elfeed-kill-buffer :after 'delete-window-if-not-single)
   (advice-add 'elfeed-show-entry :after (defun elfeed-visual-lines-a (_entry)
                                           (visual-line-mode 1)))
@@ -115,7 +115,7 @@ MYTAG"
   (bind-key "l" (elfeed-show-tag-as 'later)  elfeed-show-mode-map)
   (bind-key "u" (elfeed-show-tag-as 'unread) elfeed-show-mode-map)
   (bind-key "a" (elfeed-show-tag-as 'listen) elfeed-show-mode-map)
-  
+
   (setq elfeed-feeds my-elfeed-feeds)
 
   (defun elfeed-show-eww-open (&optional use-generic-p)
@@ -150,7 +150,7 @@ USE-SINGLE-P) with mpv."
             (elfeed-make-tagger :feed-title "The Linux Experiment"
                                 :entry-title "Linux News"
                                 :add '(news listen)))
-  
+
   (add-hook 'elfeed-new-entry-hook
             (elfeed-make-tagger :feed-title "Skill Up"
                                 :entry-title "This Week"
@@ -164,7 +164,7 @@ USE-SINGLE-P) with mpv."
             (elfeed-make-tagger :feed-title "ACG"
                                 :entry-title "\\(?:Roundup\\|Gaming News\\)"
                                 :add '(news listen)))
-  
+
   (add-hook 'elfeed-new-entry-hook #'elfeed-declickbait-entry)
 
   (defun elfeed-declickbait-entry (entry)
@@ -206,7 +206,7 @@ USE-SINGLE-P) with mpv."
       (let* ((entry (elfeed-search-selected :ignore-region))
              (this-day (or (and (string-match-p ".*@\\(.+\\)--.*" elfeed-search-filter)
                                 (time-to-seconds
-                                 (encode-time 
+                                 (encode-time
                                   (parse-time-string
                                    (concat (replace-regexp-in-string
                                             ".*@.*?--\\([^[:space:]]+?\\)" "\\1"
@@ -233,11 +233,11 @@ USE-SINGLE-P) with mpv."
                                            "@"  (elfeed-search-format-date from)
                                            "--" (elfeed-search-format-date to)))
         (elfeed-search-update :force))))
-  
+
   (define-key elfeed-search-mode-map (kbd ".") (my/elfeed-search-by-day 'this))
   (define-key elfeed-search-mode-map (kbd "b") (my/elfeed-search-by-day 'next))
   (define-key elfeed-search-mode-map (kbd "f") (my/elfeed-search-by-day 'prev))
-        
+
   (defvar elfeed-search-filter-map
     (let ((map (make-sparse-keymap)))
       (define-key map (kbd "+") (lambda () (interactive) (my/elfeed-search-tag-filter "+")))
@@ -266,13 +266,13 @@ USE-SINGLE-P) with mpv."
                           (replace-regexp-in-string
                            " +" "-"
                            (replace-regexp-in-string
-                            " to " "--" 
+                            " to " "--"
                             (read-from-minibuffer "Date range: ")))))
         (let* ((db-tags (elfeed-db-get-all-tags))
                (tag (completing-read (format "%s %s" elfeed-search-filter plus-minus) db-tags nil t)))
           (insert (concat plus-minus tag " ")))))
     (elfeed-search-update :force))
-  
+
   (defun my/elfeed-quick-switch-filter ()
     (interactive)
     (bookmark-jump
@@ -337,7 +337,7 @@ USE-SINGLE-P) with mpv."
   :defer
   :config
   (use-package wallabag
-    :config 
+    :config
     (defun elfeed-post-to-wallabag ()
       "Post current entry (or entry at point) to Wallabag"
       (interactive)
@@ -369,10 +369,10 @@ USE-SINGLE-P) with mpv."
   (org-link-set-parameters "elfeed"
                            :follow #'org-elfeed-open
                            :store  #'org-elfeed-store-link)
-  
+
   (defun org-elfeed-store-link ()
     "Store a link to an Elfeed entry."
-    (when-let* ((entry (pcase major-mode 
+    (when-let* ((entry (pcase major-mode
                          ('elfeed-show-mode elfeed-show-entry)
                          ('elfeed-search-mode (elfeed-search-selected :ignore-region))))
            (entry-id (elfeed-entry-id entry))
@@ -399,7 +399,7 @@ USE-SINGLE-P) with mpv."
 (use-package elfeed-custom
   :disabled
   :config
-  (progn 
+  (progn
     ;; Mark all YouTube entries
     (add-hook 'elfeed-new-entry-hook
               (elfeed-make-tagger :feed-url "youtube\\.com"
