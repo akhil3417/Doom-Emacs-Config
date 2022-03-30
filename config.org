@@ -92,6 +92,7 @@ To install ~some-package~ from MELPA, ELPA or emacsmirror:
   (package! pcmpl-args)
   ;; (package! em-pager)
 
+  (package! golden-ratio)
   (package! easy-kill)
   (package! exotica-theme)
   (package! underwater-theme)
@@ -3124,7 +3125,6 @@ prompt recognition.
 
 **** Troubleshooting
 In case the remote shell is misbehaving, here are some things to try
-
 ***** Zsh
 There are some escape code you don't want, let's make it behave more considerately.
 #+begin_src shell :eval no :tangle no
@@ -3606,6 +3606,15 @@ Email and IRC.
 #+begin_src emacs-lisp
 (add-hook! '(mu4e-compose-mode org-msg-edit-mode circe-channel-mode) (emoticon-to-emoji 1))
 #+end_src
+** Modus themes
+Proteolas did a lovely job with the Modus themes, so much so that they were
+welcomed into Emacs 28. However, he is also rather attentive with updates, and
+so I'd like to make sure we have a recent version.
+
+#+begin_src emacs-lisp :tangle packages.el
+(package! modus-themes :pin "59422c05e00d65582a005ccb06c3767622d14e03")
+#+end_src
+
 ** Modus themes (my highly accessible themes)
 :PROPERTIES:
 :CUSTOM_ID: h:b7444e76-75d4-4ae6-a9d6-96ff9408efe6
@@ -5604,6 +5613,9 @@ To use tabs in Doom Emacs, be sure to uncomment "tabs" in Doom's init.el.  Displ
                                                (kbd "g <down>")  'centaur-tabs-forward-group
                                                (kbd "g <up>")    'centaur-tabs-backward-group)
 #+END_SRC
+
+#+RESULTS:
+| elisp--font-lock-flush-elisp-buffers | evil-update-pending-maps | general-define-key-in-bug-reference-map52 | general-define-key-in-ranger-mode-map204 | general-define-key-in-ranger-mode-map206 | evil-collection-define-key-in-diff-hl-inline-popup-transient-mode-map | evil-collection-define-key-in-diff-hl-show-hunk--inline-popup-map | evil-define-key-in-centaur-tabs-mode-map | general-define-key-in-space-menu-window-map234 | evil-define-key-in-peep-dired-mode-map | evil-collection-define-key-in-pdf-outline-buffer-mode-map | evil-collection-define-key-in-pdf-outline-buffer-mode-map | evil-collection-define-key-in-gnus-bookmark-bmenu-mode-map | evil-collection-define-key-in-gnus-bookmark-bmenu-mode-map | evil-collection-define-key-in-gnus-browse-mode-map | evil-collection-define-key-in-gnus-browse-mode-map | evil-collection-define-key-in-gnus-server-mode-map | evil-collection-define-key-in-gnus-server-mode-map | evil-collection-define-key-in-gnus-server-mode-map | evil-collection-define-key-in-gnus-browse-mode-map | evil-collection-define-key-in-gnus-bookmark-bmenu-mode-map | evil-define-key-in-centaur-tabs-mode-map |
 
 * Completions framework
 ** MiniBuffer
@@ -8429,8 +8441,7 @@ Perspective provides multiple named workspaces (or "perspectives") in Emacs, sim
 #+END_SRC
 
 #+RESULTS:
-: /
-
+: t
 
 * window managment
 ** SPLITS
@@ -8455,6 +8466,10 @@ I set splits to default to opening on the right using 'prefer-horizontal-split'.
     (golden-ratio-mode 1)
 
   #+end_src
+
+  #+RESULTS:
+  : t
+
 ** Window configuration
 :PROPERTIES:
 :CUSTOM_ID: h:12591f89-eeea-4b12-93e8-9293504e5a12
@@ -20955,7 +20970,7 @@ This is how a boxquote looks:
 
 #+RESULTS:
 : ((\.pdf\' . eaf-org-open-file) (remote . emacs) (auto-mode . emacs) (directory . emacs) (\.mm\' . default) (\.x?html?\' . default) (\.pdf\' . default))
-#+begin_src emacs-lisp
+#+begin_src emacs-lisp :tangle no
 (require 'eaf-evil)
 
 (define-key key-translation-map (kbd "SPC")
@@ -21062,5 +21077,3 @@ stored in
 
 #+RESULTS:
 : my/bookmark-buffer-or-switch-to-bookmark
-Symbol’s function definition is void: delete-window-if-not-single
-exit
