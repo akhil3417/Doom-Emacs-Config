@@ -68,10 +68,10 @@
 ;; Add extensions
 (use-package cape
   :ensure
-  :bind (("C-; i" . cape-ispell)
-         ("C-; e" . cape-line)
-         ("C-; f" . cape-file)
-         ("C-; /" . cape-dabbrev))
+  :bind (("C-c i" . cape-ispell)
+         ("C-c E" . cape-line)
+         ("C-c f" . cape-file)
+         ("C-c D" . cape-dabbrev))
   ;; Bind dedicated completion commands
   ;; :bind (("C-c p p" . completion-at-point) ;; capf
   ;;        ("C-c p t" . complete-tag)        ;; etags
