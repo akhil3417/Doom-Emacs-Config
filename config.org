@@ -4232,6 +4232,34 @@ default to be something roughly 80% of that size.
 
 ** DONE LINE and Visuals
 CLOSED: [2022-03-31 Thu 20:30]
+*** general line
+I set comment-line to 'SPC TAB TAB' which is a rather comfortable keybinding for me on my ZSA Moonlander keyboard.  The standard Emacs keybinding for comment-line is 'C-x C-;'.  The other keybindings are for commands that toggle on/off various line-related settings.  Doom Emacs uses 'SPC t' for "toggle" commands, so I choose 'SPC t' plus 'key' for those bindings.
+
+| COMMAND                  | DESCRIPTION                               | KEYBINDING  |
+|--------------------------+-------------------------------------------+-------------|
+| comment-line             | /Comment or uncomment lines/                | SPC TAB TAB |
+| hl-line-mode             | /Toggle line highlighting in current frame/ | SPC t h     |
+| global-hl-line-mode      | /Toggle line highlighting globally/         | SPC t H     |
+| doom/toggle-line-numbers | /Toggle line numbers/                       | SPC t l     |
+| toggle-truncate-lines    | /Toggle truncate lines/                     | SPC t t     |
+
+Relative line numbers are fantastic for knowing how far away line numbers are,
+then =ESC 12 <UP>= gets you exactly where you think.
+#+BEGIN_SRC emacs-lisp
+;; (setq display-line-numbers-type 'relative)
+;; (setq display-line-numbers-type nil)
+(map! :leader
+      :desc "Comment or uncomment lines" "TAB TAB" #'comment-line
+      (:prefix ("t" . "toggle")
+       :desc "Toggle line numbers" "l" #'doom/toggle-line-numbers
+       :desc "Toggle line highlight in frame" "h" #'hl-line-mode
+       :desc "Toggle line highlight globally" "H" #'global-hl-line-mode
+       :desc "Toggle truncate lines" "t" #'toggle-truncate-lines))
+#+END_SRC
+
+#+RESULTS:
+: toggle-truncate-lines
+
 *** Line numbers and relevant indicators (prot-sideline.el)
 :PROPERTIES:
 :CUSTOM_ID: h:cb76fcee-e304-4b86-a764-6c3c6775da51
@@ -4288,34 +4316,6 @@ extensions in [[#h:31deeff4-dfae-48d9-a906-1f3272f29bc9][Version control framewo
 
 #+RESULTS:
 : t
-
-*** general line
-I set comment-line to 'SPC TAB TAB' which is a rather comfortable keybinding for me on my ZSA Moonlander keyboard.  The standard Emacs keybinding for comment-line is 'C-x C-;'.  The other keybindings are for commands that toggle on/off various line-related settings.  Doom Emacs uses 'SPC t' for "toggle" commands, so I choose 'SPC t' plus 'key' for those bindings.
-
-| COMMAND                  | DESCRIPTION                               | KEYBINDING  |
-|--------------------------+-------------------------------------------+-------------|
-| comment-line             | /Comment or uncomment lines/                | SPC TAB TAB |
-| hl-line-mode             | /Toggle line highlighting in current frame/ | SPC t h     |
-| global-hl-line-mode      | /Toggle line highlighting globally/         | SPC t H     |
-| doom/toggle-line-numbers | /Toggle line numbers/                       | SPC t l     |
-| toggle-truncate-lines    | /Toggle truncate lines/                     | SPC t t     |
-
-Relative line numbers are fantastic for knowing how far away line numbers are,
-then =ESC 12 <UP>= gets you exactly where you think.
-#+BEGIN_SRC emacs-lisp
-;; (setq display-line-numbers-type 'relative)
-;; (setq display-line-numbers-type nil)
-(map! :leader
-      :desc "Comment or uncomment lines" "TAB TAB" #'comment-line
-      (:prefix ("t" . "toggle")
-       :desc "Toggle line numbers" "l" #'doom/toggle-line-numbers
-       :desc "Toggle line highlight in frame" "h" #'hl-line-mode
-       :desc "Toggle line highlight globally" "H" #'global-hl-line-mode
-       :desc "Toggle truncate lines" "t" #'toggle-truncate-lines))
-#+END_SRC
-
-#+RESULTS:
-: toggle-truncate-lines
 
 *** DONE Enhancements to hl-line-mode (lin.el)
 CLOSED: [2022-03-30 Wed 19:57]
@@ -5636,242 +5636,6 @@ Neotree is a file tree viewer.  When you open neotree, it jumps to the current f
       :desc "Toggle neotree file viewer" "t n" #'neotree-toggle
       :desc "Open directory in neotree" "d n" #'neotree-dir)
 #+END_SRC
-
-** Tabs
-*** Awesome Tab eaf
-AceJump
-Call command awesome-tab-ace-jump, and a sequence of 1 or 2 characters will show on tabs in the current tab group. Type them to jump to that tab.
-
-Customize awesome-tab-ace-keys to specify the used characters. The default value is j, k, l, s, d, f. Notice that this variable has the custom-set attribute, so setq won't work. Use customize-set-variable instead.
-
-Customize awesome-tab-ace-str-style to specify the position of ace sequences on the tab. You can choose 'replace-icon, 'left or 'right.
-
-Customize awesome-tab-ace-quit-keys to specify keys used to quit from ace jumping. The default value is '(?\C-g ?q ?\s), you can press C-g q or SPC to quit from ace jumping. Anyway, you can customize any other keys you like.
-
-
-#+begin_src emacs-lisp :tangle no
-
-(use-package awesome-tab
-  :load-path "~/.emacs.d/site-lisp/awesome-tab"
-  :config
-  :defer t)
-  ;; (awesome-tab-mode nil))
-;; (setq awesome-tab-ace-quit-keys '(?\C-g))
-
-(defhydra awesome-fast-switch (:hint nil)
-  "
- ^^^^Fast Move             ^^^^Tab                    ^^Search            ^^Misc
--^^^^--------------------+-^^^^---------------------+-^^----------------+-^^---------------------------
-   ^_k_^   prev group    | _C-a_^^     select first | _b_ search buffer | _C-k_   kill buffer
- _h_   _l_  switch tab   | _C-e_^^     select last  | _g_ search group  | _C-S-k_ kill others in group
-   ^_j_^   next group    | _C-j_^^     ace jump     | ^^                | ^^
- ^^0 ~ 9^^ select window | _C-h_/_C-l_ move current | ^^                | ^^
--^^^^--------------------+-^^^^---------------------+-^^----------------+-^^---------------------------
-"
-  ("h" awesome-tab-backward-tab)
-  ("j" awesome-tab-forward-group)
-  ("k" awesome-tab-backward-group)
-  ("l" awesome-tab-forward-tab)
-  ("0" my-select-window)
-  ("1" my-select-window)
-  ("2" my-select-window)
-  ("3" my-select-window)
-  ("4" my-select-window)
-  ("5" my-select-window)
-  ("6" my-select-window)
-  ("7" my-select-window)
-  ("8" my-select-window)
-  ("9" my-select-window)
-  ("C-a" awesome-tab-select-beg-tab)
-  ("C-e" awesome-tab-select-end-tab)
-  ("C-j" awesome-tab-ace-jump)
-  ("C-h" awesome-tab-move-current-tab-to-left)
-  ("C-l" awesome-tab-move-current-tab-to-right)
-  ("b" ivy-switch-buffer)
-  ("g" awesome-tab-counsel-switch-group)
-  ("C-k" kill-current-buffer)
-  ("C-S-k" awesome-tab-kill-other-buffers-in-current-group)
-  ("q" nil "quit"))
-;; Awesome tab hide some tabs with regular expression that controller by function awesome-tab-hide-tab-function
-;; Default hide function is awesome-hide-tab
-
-
-(defun awesome-tab-hide-tab (x)
-  (let ((name (format "%s" x)))
-    (or
-     (string-prefix-p "*epc" name)
-     (string-prefix-p "*helm" name)
-     (string-prefix-p "*Compile-Log*" name)
-     (string-prefix-p "*lsp" name)
-     (and (string-prefix-p "magit" name)
-               (not (file-name-extension name)))
-     )))
-
-;; Icon
-;; If you have install AllTheIcons successfully. AwesomeTab will render file icon in tab automatically.
-
-;; If you dislike icon render in tab and still need use all-the-icons plugin, you can set variable awesome-tab-display-icon with nil.
-
-;; Theme
-;; Tab color will change with current theme, you don't need customize the color tab.
-
-;; Emacs may not detect your theme style (light/dark) in the terminal correctly. You may need to set frame-background-mode manually to have correct tab (and text) colors:
-
-(when (not (display-graphic-p))
-  (setq frame-background-mode 'dark))
-;; or you like light theme more:
-
-;; (when (not (display-graphic-p))
-;;   (setq frame-background-mode light))
-
-;; You can customize terminal tab face by below options:
-;; awesome-tab-terminal-dark-select-background-color
-;; awesome-tab-terminal-dark-select-foreground-color
-;; awesome-tab-terminal-dark-unselect-background-color
-;; awesome-tab-terminal-dark-unselect-foreground-color
-;; awesome-tab-terminal-light-select-background-color
-;; awesome-tab-terminal-light-select-foreground-color
-;; awesome-tab-terminal-light-unselect-background-color
-;; awesome-tab-terminal-light-unselect-foreground-color
-
-;; Tab will hide if awesome-tab-hide-tab-function return t, you can write your own code to customize hide rules.
-
-;; GroupRules
-;; Awesome tab use awesome-tab-buffer-groups-function to control tab group. Default group function is awesome-tab-buffer-groups
-
-(defun awesome-tab-buffer-groups ()
-  "`awesome-tab-buffer-groups' control buffers' group rules.
-
-Group awesome-tab with mode if buffer is derived from `eshell-mode' `emacs-lisp-mode' `dired-mode' `org-mode' `magit-mode'.
-All buffer name start with * will group to \"Emacs\".
-Other buffer group by `awesome-tab-get-group-name' with project name."
-  (list
-   (cond
-    ((or (string-equal "*" (substring (buffer-name) 0 1))
-         (memq major-mode '(magit-process-mode
-                            magit-status-mode
-                            magit-diff-mode
-                            magit-log-mode
-                            magit-file-mode
-                            magit-blob-mode
-                            magit-blame-mode
-                            )))
-     "Emacs")
-    ((derived-mode-p 'eshell-mode)
-     "EShell")
-    ((derived-mode-p 'emacs-lisp-mode)
-     "Elisp")
-    ((derived-mode-p 'dired-mode)
-     "Dired")
-    ((memq major-mode '(org-mode org-agenda-mode diary-mode))
-     "OrgMode")
-    (t
-     (awesome-tab-get-group-name (current-buffer))))))
-
-
-;; GroupRules
-;; Awesome tab use awesome-tab-buffer-groups-function to control tab group. Default group function is awesome-tab-buffer-groups
-
-(defun awesome-tab-buffer-groups ()
-  "`awesome-tab-buffer-groups' control buffers' group rules.
-
-Group awesome-tab with mode if buffer is derived from `eshell-mode' `emacs-lisp-mode' `dired-mode' `org-mode' `magit-mode'.
-All buffer name start with * will group to \"Emacs\".
-Other buffer group by `awesome-tab-get-group-name' with project name."
-  (list
-   (cond
-    ((or (string-equal "*" (substring (buffer-name) 0 1))
-         (memq major-mode '(magit-process-mode
-                            magit-status-mode
-                            magit-diff-mode
-                            magit-log-mode
-                            magit-file-mode
-                            magit-blob-mode
-                            magit-blame-mode
-                            )))
-     "Emacs")
-    ((derived-mode-p 'eshell-mode)
-     "EShell")
-    ((derived-mode-p 'emacs-lisp-mode)
-     "Elisp")
-    ((derived-mode-p 'dired-mode)
-     "Dired")
-    ((memq major-mode '(org-mode org-agenda-mode diary-mode))
-     "OrgMode")
-    (t
-     (awesome-tab-get-group-name (current-buffer))))))
-
-
-;; FixedWidth
-;; If you'd like all the tab labels using the same length, such as 14, use:
-
-(setq awesome-tab-label-fixed-length 18)
-
-;; DisplayFunctionName
-;; If the implementation of the function where the cursor is located is longer than the screen, it is difficult to know what the current function.
-
-;; You can set variable awesome-tab-display-sticky-function-name with t, then function name will display in current tab.
-
-;; Default this feature is disable.
-
-;; ShowTabIndex
-;; If you want show index in tab, you can use below setting:
-
-(setq awesome-tab-show-tab-index t)
-;; You can also display a personalized index by change option awesome-tab-index-format-str
-;; AdjustTabHeight
-;; You can use below code adjust tab height:
-
-(setq awesome-tab-height 90)
-;; AdjustTabContrast
-;; If you think the contrast between the label is too low, can lower both values, increase the contrast:
-
-;; awesome-tab-dark-unselected-blend and awesome-tab-light-unselected-blend
-
-;; AdjustActiveBar
-;; You can customize active bar with change awesome-tab-active-bar-width and awesome-tab-active-bar-heigh
-(require 'eaf-all-the-icons)
-#+end_src
-
-#+RESULTS:
-: eaf-all-the-icons
-
-#+RESULTS:
-: my/embark-bookmark-jump-right
-
-*** CENTAUR-TABS
-To use tabs in Doom Emacs, be sure to uncomment "tabs" in Doom's init.el.  Displays tabs at the top of the window similar to tabbed web browsers such as Firefox.  I don't actually use tabs in Emacs.  I placed this in my config to help others who may want tabs.  In the default configuration of Doom Emacs, 'SPC t' is used for "toggle" keybindings, so I choose 'SPC t c' to toggle centaur-tabs.  The "g" prefix for keybindings is used for a bunch of evil keybindings in Doom, but "g" plus the arrow keys were not used, so I thought I would bind those for tab navigation.  But I did leave the default "g t" and "g T" intact if you prefer to use those for centaur-tabs-forward/backward.
-
-╭────
-│ | COMMAND                     | DESCRIPTION               | KEYBINDING       |
-│ |-----------------------------+---------------------------+------------------|
-│ | centaur-tabs-mode           | /Toggle tabs globally/      | SPC t c          |
-│ | centaur-tabs-local-mode     | /Toggle tabs local display/ | SPC t C          |
-│ | centaur-tabs-forward        | /Next tab/                  | g <right> or g t |
-│ | centaur-tabs-backward       | /Previous tab/              | g <left> or g T  |
-│ | centaur-tabs-forward-group  | /Next tab group/            | g <down>         |
-│ | centaur-tabs-backward-group | /Previous tab group/        | g <up>           |
-╰────
-
-#+BEGIN_SRC emacs-lisp
-(setq centaur-tabs-set-bar 'over
-      centaur-tabs-set-icons t
-      centaur-tabs-gray-out-icons 'buffer
-      centaur-tabs-height 24
-      centaur-tabs-set-modified-marker t
-      centaur-tabs-style "bar"
-      centaur-tabs-modified-marker "•")
-(map! :leader
-      :desc "Toggle tabs globally" "t c" #'centaur-tabs-mode
-      :desc "Toggle tabs local display" "t C" #'centaur-tabs-local-mode)
-(evil-define-key 'normal centaur-tabs-mode-map (kbd "g <right>") 'centaur-tabs-forward        ; default Doom binding is 'g t'
-                                               (kbd "g <left>")  'centaur-tabs-backward       ; default Doom binding is 'g T'
-                                               (kbd "g <down>")  'centaur-tabs-forward-group
-                                               (kbd "g <up>")    'centaur-tabs-backward-group)
-#+END_SRC
-
-#+RESULTS:
-| elisp--font-lock-flush-elisp-buffers | evil-update-pending-maps | general-define-key-in-bug-reference-map52 | general-define-key-in-ranger-mode-map204 | general-define-key-in-ranger-mode-map206 | evil-collection-define-key-in-diff-hl-inline-popup-transient-mode-map | evil-collection-define-key-in-diff-hl-show-hunk--inline-popup-map | evil-define-key-in-centaur-tabs-mode-map | general-define-key-in-space-menu-window-map234 | evil-define-key-in-peep-dired-mode-map | evil-collection-define-key-in-pdf-outline-buffer-mode-map | evil-collection-define-key-in-pdf-outline-buffer-mode-map | evil-collection-define-key-in-gnus-bookmark-bmenu-mode-map | evil-collection-define-key-in-gnus-bookmark-bmenu-mode-map | evil-collection-define-key-in-gnus-browse-mode-map | evil-collection-define-key-in-gnus-browse-mode-map | evil-collection-define-key-in-gnus-server-mode-map | evil-collection-define-key-in-gnus-server-mode-map | evil-collection-define-key-in-gnus-server-mode-map | evil-collection-define-key-in-gnus-browse-mode-map | evil-collection-define-key-in-gnus-bookmark-bmenu-mode-map | evil-define-key-in-centaur-tabs-mode-map |
 
 * Completions framework
 ** MiniBuffer
@@ -9067,7 +8831,241 @@ have the right settings, you can repeat again just by pressing another =z=
   (let ((map global-map))
     (define-key map (kbd "C-x M-r") #'rotate-frame-clockwise)))
 #+end_src
-** tab bar mode
+** Tabs
+*** Awesome Tab eaf
+AceJump
+Call command awesome-tab-ace-jump, and a sequence of 1 or 2 characters will show on tabs in the current tab group. Type them to jump to that tab.
+
+Customize awesome-tab-ace-keys to specify the used characters. The default value is j, k, l, s, d, f. Notice that this variable has the custom-set attribute, so setq won't work. Use customize-set-variable instead.
+
+Customize awesome-tab-ace-str-style to specify the position of ace sequences on the tab. You can choose 'replace-icon, 'left or 'right.
+
+Customize awesome-tab-ace-quit-keys to specify keys used to quit from ace jumping. The default value is '(?\C-g ?q ?\s), you can press C-g q or SPC to quit from ace jumping. Anyway, you can customize any other keys you like.
+
+
+#+begin_src emacs-lisp :tangle no
+
+(use-package awesome-tab
+  :load-path "~/.emacs.d/site-lisp/awesome-tab"
+  :config
+  :defer t)
+  ;; (awesome-tab-mode nil))
+;; (setq awesome-tab-ace-quit-keys '(?\C-g))
+
+(defhydra awesome-fast-switch (:hint nil)
+  "
+ ^^^^Fast Move             ^^^^Tab                    ^^Search            ^^Misc
+-^^^^--------------------+-^^^^---------------------+-^^----------------+-^^---------------------------
+   ^_k_^   prev group    | _C-a_^^     select first | _b_ search buffer | _C-k_   kill buffer
+ _h_   _l_  switch tab   | _C-e_^^     select last  | _g_ search group  | _C-S-k_ kill others in group
+   ^_j_^   next group    | _C-j_^^     ace jump     | ^^                | ^^
+ ^^0 ~ 9^^ select window | _C-h_/_C-l_ move current | ^^                | ^^
+-^^^^--------------------+-^^^^---------------------+-^^----------------+-^^---------------------------
+"
+  ("h" awesome-tab-backward-tab)
+  ("j" awesome-tab-forward-group)
+  ("k" awesome-tab-backward-group)
+  ("l" awesome-tab-forward-tab)
+  ("0" my-select-window)
+  ("1" my-select-window)
+  ("2" my-select-window)
+  ("3" my-select-window)
+  ("4" my-select-window)
+  ("5" my-select-window)
+  ("6" my-select-window)
+  ("7" my-select-window)
+  ("8" my-select-window)
+  ("9" my-select-window)
+  ("C-a" awesome-tab-select-beg-tab)
+  ("C-e" awesome-tab-select-end-tab)
+  ("C-j" awesome-tab-ace-jump)
+  ("C-h" awesome-tab-move-current-tab-to-left)
+  ("C-l" awesome-tab-move-current-tab-to-right)
+  ("b" ivy-switch-buffer)
+  ("g" awesome-tab-counsel-switch-group)
+  ("C-k" kill-current-buffer)
+  ("C-S-k" awesome-tab-kill-other-buffers-in-current-group)
+  ("q" nil "quit"))
+;; Awesome tab hide some tabs with regular expression that controller by function awesome-tab-hide-tab-function
+;; Default hide function is awesome-hide-tab
+
+
+(defun awesome-tab-hide-tab (x)
+  (let ((name (format "%s" x)))
+    (or
+     (string-prefix-p "*epc" name)
+     (string-prefix-p "*helm" name)
+     (string-prefix-p "*Compile-Log*" name)
+     (string-prefix-p "*lsp" name)
+     (and (string-prefix-p "magit" name)
+               (not (file-name-extension name)))
+     )))
+
+;; Icon
+;; If you have install AllTheIcons successfully. AwesomeTab will render file icon in tab automatically.
+
+;; If you dislike icon render in tab and still need use all-the-icons plugin, you can set variable awesome-tab-display-icon with nil.
+
+;; Theme
+;; Tab color will change with current theme, you don't need customize the color tab.
+
+;; Emacs may not detect your theme style (light/dark) in the terminal correctly. You may need to set frame-background-mode manually to have correct tab (and text) colors:
+
+(when (not (display-graphic-p))
+  (setq frame-background-mode 'dark))
+;; or you like light theme more:
+
+;; (when (not (display-graphic-p))
+;;   (setq frame-background-mode light))
+
+;; You can customize terminal tab face by below options:
+;; awesome-tab-terminal-dark-select-background-color
+;; awesome-tab-terminal-dark-select-foreground-color
+;; awesome-tab-terminal-dark-unselect-background-color
+;; awesome-tab-terminal-dark-unselect-foreground-color
+;; awesome-tab-terminal-light-select-background-color
+;; awesome-tab-terminal-light-select-foreground-color
+;; awesome-tab-terminal-light-unselect-background-color
+;; awesome-tab-terminal-light-unselect-foreground-color
+
+;; Tab will hide if awesome-tab-hide-tab-function return t, you can write your own code to customize hide rules.
+
+;; GroupRules
+;; Awesome tab use awesome-tab-buffer-groups-function to control tab group. Default group function is awesome-tab-buffer-groups
+
+(defun awesome-tab-buffer-groups ()
+  "`awesome-tab-buffer-groups' control buffers' group rules.
+
+Group awesome-tab with mode if buffer is derived from `eshell-mode' `emacs-lisp-mode' `dired-mode' `org-mode' `magit-mode'.
+All buffer name start with * will group to \"Emacs\".
+Other buffer group by `awesome-tab-get-group-name' with project name."
+  (list
+   (cond
+    ((or (string-equal "*" (substring (buffer-name) 0 1))
+         (memq major-mode '(magit-process-mode
+                            magit-status-mode
+                            magit-diff-mode
+                            magit-log-mode
+                            magit-file-mode
+                            magit-blob-mode
+                            magit-blame-mode
+                            )))
+     "Emacs")
+    ((derived-mode-p 'eshell-mode)
+     "EShell")
+    ((derived-mode-p 'emacs-lisp-mode)
+     "Elisp")
+    ((derived-mode-p 'dired-mode)
+     "Dired")
+    ((memq major-mode '(org-mode org-agenda-mode diary-mode))
+     "OrgMode")
+    (t
+     (awesome-tab-get-group-name (current-buffer))))))
+
+
+;; GroupRules
+;; Awesome tab use awesome-tab-buffer-groups-function to control tab group. Default group function is awesome-tab-buffer-groups
+
+(defun awesome-tab-buffer-groups ()
+  "`awesome-tab-buffer-groups' control buffers' group rules.
+
+Group awesome-tab with mode if buffer is derived from `eshell-mode' `emacs-lisp-mode' `dired-mode' `org-mode' `magit-mode'.
+All buffer name start with * will group to \"Emacs\".
+Other buffer group by `awesome-tab-get-group-name' with project name."
+  (list
+   (cond
+    ((or (string-equal "*" (substring (buffer-name) 0 1))
+         (memq major-mode '(magit-process-mode
+                            magit-status-mode
+                            magit-diff-mode
+                            magit-log-mode
+                            magit-file-mode
+                            magit-blob-mode
+                            magit-blame-mode
+                            )))
+     "Emacs")
+    ((derived-mode-p 'eshell-mode)
+     "EShell")
+    ((derived-mode-p 'emacs-lisp-mode)
+     "Elisp")
+    ((derived-mode-p 'dired-mode)
+     "Dired")
+    ((memq major-mode '(org-mode org-agenda-mode diary-mode))
+     "OrgMode")
+    (t
+     (awesome-tab-get-group-name (current-buffer))))))
+
+
+;; FixedWidth
+;; If you'd like all the tab labels using the same length, such as 14, use:
+
+(setq awesome-tab-label-fixed-length 18)
+
+;; DisplayFunctionName
+;; If the implementation of the function where the cursor is located is longer than the screen, it is difficult to know what the current function.
+
+;; You can set variable awesome-tab-display-sticky-function-name with t, then function name will display in current tab.
+
+;; Default this feature is disable.
+
+;; ShowTabIndex
+;; If you want show index in tab, you can use below setting:
+
+(setq awesome-tab-show-tab-index t)
+;; You can also display a personalized index by change option awesome-tab-index-format-str
+;; AdjustTabHeight
+;; You can use below code adjust tab height:
+
+(setq awesome-tab-height 90)
+;; AdjustTabContrast
+;; If you think the contrast between the label is too low, can lower both values, increase the contrast:
+
+;; awesome-tab-dark-unselected-blend and awesome-tab-light-unselected-blend
+
+;; AdjustActiveBar
+;; You can customize active bar with change awesome-tab-active-bar-width and awesome-tab-active-bar-heigh
+(require 'eaf-all-the-icons)
+#+end_src
+
+#+RESULTS:
+: eaf-all-the-icons
+
+#+RESULTS:
+: my/embark-bookmark-jump-right
+
+*** CENTAUR-TABS
+To use tabs in Doom Emacs, be sure to uncomment "tabs" in Doom's init.el.  Displays tabs at the top of the window similar to tabbed web browsers such as Firefox.  I don't actually use tabs in Emacs.  I placed this in my config to help others who may want tabs.  In the default configuration of Doom Emacs, 'SPC t' is used for "toggle" keybindings, so I choose 'SPC t c' to toggle centaur-tabs.  The "g" prefix for keybindings is used for a bunch of evil keybindings in Doom, but "g" plus the arrow keys were not used, so I thought I would bind those for tab navigation.  But I did leave the default "g t" and "g T" intact if you prefer to use those for centaur-tabs-forward/backward.
+
+| COMMAND                     | DESCRIPTION               | KEYBINDING       |
+|-----------------------------+---------------------------+------------------|
+| centaur-tabs-mode           | /Toggle tabs globally/      | SPC t c          |
+| centaur-tabs-local-mode     | /Toggle tabs local display/ | SPC t C          |
+| centaur-tabs-forward        | /Next tab/                  | g <right> or g t |
+| centaur-tabs-backward       | /Previous tab/              | g <left> or g T  |
+| centaur-tabs-forward-group  | /Next tab group/            | g <down>         |
+| centaur-tabs-backward-group | /Previous tab group/        | g <up>           |
+
+#+BEGIN_SRC emacs-lisp
+(setq centaur-tabs-set-bar 'over
+      centaur-tabs-set-icons t
+      centaur-tabs-gray-out-icons 'buffer
+      centaur-tabs-height 24
+      centaur-tabs-set-modified-marker t
+      centaur-tabs-style "bar"
+      centaur-tabs-modified-marker "•")
+(map! :leader
+      :desc "Toggle tabs globally" "t c" #'centaur-tabs-mode
+      :desc "Toggle tabs local display" "t C" #'centaur-tabs-local-mode)
+(evil-define-key 'normal centaur-tabs-mode-map (kbd "g <right>") 'centaur-tabs-forward        ; default Doom binding is 'g t'
+                                               (kbd "g <left>")  'centaur-tabs-backward       ; default Doom binding is 'g T'
+                                               (kbd "g <down>")  'centaur-tabs-forward-group
+                                               (kbd "g <up>")    'centaur-tabs-backward-group)
+#+END_SRC
+
+#+RESULTS:
+| elisp--font-lock-flush-elisp-buffers | evil-update-pending-maps | general-define-key-in-bug-reference-map52 | general-define-key-in-ranger-mode-map204 | general-define-key-in-ranger-mode-map206 | evil-collection-define-key-in-diff-hl-inline-popup-transient-mode-map | evil-collection-define-key-in-diff-hl-show-hunk--inline-popup-map | evil-define-key-in-centaur-tabs-mode-map | general-define-key-in-space-menu-window-map234 | evil-define-key-in-peep-dired-mode-map | evil-collection-define-key-in-pdf-outline-buffer-mode-map | evil-collection-define-key-in-pdf-outline-buffer-mode-map | evil-collection-define-key-in-gnus-bookmark-bmenu-mode-map | evil-collection-define-key-in-gnus-bookmark-bmenu-mode-map | evil-collection-define-key-in-gnus-browse-mode-map | evil-collection-define-key-in-gnus-browse-mode-map | evil-collection-define-key-in-gnus-server-mode-map | evil-collection-define-key-in-gnus-server-mode-map | evil-collection-define-key-in-gnus-server-mode-map | evil-collection-define-key-in-gnus-browse-mode-map | evil-collection-define-key-in-gnus-bookmark-bmenu-mode-map | evil-define-key-in-centaur-tabs-mode-map |
+
+*** tab bar mode davi
 #+begin_src emacs-lisp :tangle no
 ;; Inherit the face of `doom-modeline-panel` for better appearance
 (set-face-attribute 'tab-bar-tab nil :inherit 'doom-modeline-panel :foreground nil :background nil)
@@ -9134,7 +9132,7 @@ have the right settings, you can repeat again just by pressing another =z=
 
 #+end_src
 
-** tab bar
+*** tab bar
 #+begin_src emacs-lisp
 
 ;;;----------------------------------------------------------------
