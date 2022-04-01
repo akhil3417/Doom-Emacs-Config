@@ -13781,79 +13781,7 @@ Refer to [[#h:77d14350-978d-4820-ab7f-4641706c445a][Custom extensions for "focus
 : t
 
 ** Org
-:PROPERTIES:
-:CUSTOM_ID: org
-:header-args:emacs-lisp: :tangle no :noweb-ref org-conf
-:END:
-:intro:
-I really like org mode, I've given some thought to why, and below is the result.
 
-#+attr_latex: :align *{8}{p{0.105\linewidth}} :font \small
-#+plot: transpose:yes type:radar min:0 max:4 file:"misc/document-format-comparison.svg"
-| Format            | Fine-grained control | Initial ease of use | Syntax simplicity | Editor Support | Integrations | Ease-of-referencing | Versatility |
-|-------------------+----------------------+---------------------+-------------------+----------------+--------------+---------------------+-------------|
-| Word              |                    2 |                   4 |                 4 |              2 |            3 |                   2 |           2 |
-| LaTeX             |                    4 |                   1 |                 1 |              3 |            2 |                   4 |           3 |
-| Org Mode          |                    4 |                   2 |               3.5 |              1 |            4 |                   4 |           4 |
-| Markdown          |                    1 |                   3 |                 3 |              4 |            3 |                   3 |           1 |
-| Markdown + Pandoc |                  2.5 |                 2.5 |               2.5 |              3 |            3 |                   3 |           2 |
-
-#+attr_html: :class invertible :alt Radar chart comparing my opinions of document formats.
-#+attr_latex: :options inkscapelatex=false
-[[file:misc/document-format-comparison.svg]]
-
-Beyond the elegance in the markup language, tremendously rich integrations with
-Emacs allow for some fantastic [[https://orgmode.org/features.html][features]], such as what seems to be the best
-support for [[https://en.wikipedia.org/wiki/Literate_programming][literate programming]] of any currently available technology.
-
-#+name: Literate programming workflow
-#+attr_html: :style line-height:1.13;
-#+begin_example
-      ╭─╴Code╶─╮            ╭─╴Raw Code╶─▶ Computer
-Ideas╺┥        ┝━▶ Org Mode╺┥
-      ╰─╴Text╶─╯            ╰─╴Document╶─▶ People
-#+end_example
-
-An =.org= file can contain blocks of code (with [[https://en.wikipedia.org/wiki/Noweb][noweb]] templating support), which
-can be [[https://orgmode.org/manual/Extracting-Source-Code.html][tangled]] to dedicated source code files, and [[https://orgmode.org/manual/Extracting-Source-Code.html][woven]] into a document
-(report, documentation, presentation, etc.) through various (/extensible/) methods.
-These source blocks may even create images or other content to be included in
-the document, or generate source code.
-
-#+name: Example Org Flowchart
-#+attr_html: :style line-height:1.13;
-#+begin_example
-                   ╭───────────────────────────────────▶ .pdf ⎫
-                  pdfLaTeX ▶╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╮                 ⎪
-                   ╿     ╿                  ┊                 ⎪
-                   │     ┊                  ┊                 ⎪
-                 .tex    ┊                  ┊                 ⎪
-                   ╿     ┊                  ┊                 ⎪
-                ╭──┴╌╌╮  ┊                  ┊ style.scss      ⎬ Weaving
-graphc.png ─╮   │  embedded TeX             ┊      ╽          ⎪ (Documents)
-image.jpeg ─┤ filters   ╿                   ┊    .css         ⎪
-            ╎     ╿     ┊                   ┊     ▾╎          ⎪
-figure.png╶─╧─▶ PROJECT.ORG ▶───╴filters╶───╧──────╪──▶ .html ⎪
-     ╿           ╿┊ ║ │ ╰╌╌╌▷╌╌ embedded html ▶╌╌╌╌╯          ⎪
-     ├╌╌╌╌╌╌╌▷╌╌╌╯┊ ║ │                                       ⎪
-    result╶╌╌╌╌╌╮ ┊ ║ ├──────╴filters╶────────────────▶ .txt  ⎪
-     ┊▴         ┊ ┊ ║ │                                       ⎪
-    execution   ┊ ┊ ║ ╰──────╴filters╶────────────────▶ .md   ⎭
-     ┊▴         ┊ ┊ ║
-    code blocks◀╯ ┊ ╟─────────────────────────────────▶ .c    ⎫
-     ╰╌╌╌╌◁╌╌╌╌╌╌╌╯ ╟─────────────────────────────────▶ .sh   ⎬ Tangling
-                    ╟─────────────────────────────────▶ .hs   ⎪ (Code)
-                    ╙─────────────────────────────────▶ .el   ⎭
-#+end_example
-:end:
-
-Finally, because this section is fairly expensive to initialise, we'll wrap it
-in an src_elisp{(after! ...)} block.
-#+begin_src emacs-lisp :noweb no-export :tangle yes :noweb-ref nil
-(after! org
-  <<org-conf>>
-)
-#+end_src
 *** DONE System config
 CLOSED: [2022-04-01 Fri 19:27]
 **** Mime types
@@ -15063,9 +14991,6 @@ or no selection is made: nil is returned."
                   (string= "" selection))
         selection))))
 #+end_src
-
-#+RESULTS:
-: +yas/org-prompt-header-arg
 
 Finally, we fetch the language information for new source blocks.
 

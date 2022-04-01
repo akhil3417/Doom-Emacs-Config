@@ -1,10 +1,8 @@
-# [[file:../config.org::*Desktop File][Desktop File:2]]
-  [Desktop Entry]
-  Name=EXWM
-  Comment=Emacs Window Manager
-  Exec=sh /home/shiva/.config/doom/exwm/start-exwm.sh
-  TryExec=sh
-  Type=Application
-  X-LightDM-DesktopName=exwm
-  DesktopNames=exwm
-# Desktop File:2 ends here
+[Desktop Entry]
+Name=EXWM
+Comment=Emacs Window Manager
+Exec=sh /home/shiva/.config/doom/exwm/start-exwm.sh
+TryExec=sh
+Type=Application
+X-LightDM-DesktopName=exwm
+DesktopNames=exwm

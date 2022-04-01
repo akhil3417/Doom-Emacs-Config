@@ -1,4 +1,3 @@
-;; [[file:../config.org::*better buffers.ui][better buffers.ui:1]]
 ;; -*- lexical-binding: t -*-
 ;;######################################################################
 ;; * BETTER BUFFERS
@@ -263,4 +262,3 @@ window manager to present the frame in a floating state."
       (switch-to-buffer buf))))
 
 (provide 'better-buffers)
-;; better buffers.ui:1 ends here

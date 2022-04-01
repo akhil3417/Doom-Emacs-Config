@@ -1,4 +1,3 @@
-;; [[file:../config.org::*ibuffer-setup][ibuffer-setup:1]]
 ;; -*- lexical-binding: t -*-
 (use-package ibuffer
   :defer t
@@ -121,4 +120,3 @@ When no VC root is available, use standard `switch-to-buffer'."
 
 (provide 'setup-ibuffer)
 ;;; setup-ibuffer.el ends here
-;; ibuffer-setup:1 ends here
