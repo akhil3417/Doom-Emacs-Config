@@ -15317,7 +15317,6 @@ CLOSED: [2022-04-01 Fri 18:12]
 Here I try to do two things: improve the styling of the various documents, via
 font changes etc, and also propagate colours from the current theme.
 
-
 **** Font Display
 Mixed pitch is great. As is ~+org-pretty-mode~, let's use them.
 #+begin_src emacs-lisp
@@ -15395,12 +15394,17 @@ responsive.
 #+begin_src emacs-lisp
 (defun locally-defer-font-lock ()
   "Set jit-lock defer and stealth, when buffer is over a certain size."
-  (when (> (buffer-size) 50000)
+  ;; (when (> (buffer-size) 50000)
+  (when (> (buffer-size) 3000);;as my laptop barely runs without graphics card
     (setq-local jit-lock-defer-time 0.05
                 jit-lock-stealth-time 1)))
 
 (add-hook 'org-mode-hook #'locally-defer-font-lock)
 #+end_src
+
+#+RESULTS:
+| (closure ((hook . org-mode-hook) (--dolist-tail--) t) (&rest _) (add-hook 'before-save-hook 'org-encrypt-entries nil t)) | mixed-pitch-mode | elpher-org-mode-integration | locally-defer-font-lock | +org-pretty-mode | turn-on-flyspell | org-appear-mode | flymake-proselint-setup | auto-revert-mode | beginend-org-mode | er/add-org-mode-expansions | +lookup--init-org-mode-handlers-h | (closure ((hook . org-mode-hook) (--dolist-tail--) t) (&rest _) (add-hook 'before-save-hook 'org-encrypt-entries nil t)) | #[0 \301\211\207 [imenu-create-index-function org-imenu-get-tree] 2] | #[0 \300\301\302\303\304$\207 [add-hook change-major-mode-hook org-show-all append local] 5] | #[0 \300\301\302\303\304$\207 [add-hook change-major-mode-hook org-babel-show-result-all append local] 5] | org-babel-result-hide-spec | org-babel-hide-all-hashes | doom-disable-show-paren-mode-h | doom-disable-show-trailing-whitespace-h | +org-enable-auto-reformat-tables-h | +org-enable-auto-update-cookies-h | +org-make-last-point-visible-h | org-fancy-priorities-mode | org-superstar-mode | evil-org-mode | toc-org-enable | embrace-org-mode-hook | org-eldoc-load | +literate-enable-recompile-h |
+
 Apparently this causes issues with some people, but I haven't noticed anything
 problematic beyond the expected slight delay in some fontification, so until I
 do I'll use the above.
