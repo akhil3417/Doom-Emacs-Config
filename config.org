@@ -13982,7 +13982,7 @@ There's a really cool package in development to /transclude/ Org document conten
 
 ***** Heading graph
 Came across this and ... it's cool
-#+begin_src emacs-lisp
+#+begin_src emacs-lisp :tangle packages.el
 (package! org-graph-view :recipe (:host github :repo "alphapapa/org-graph-view") :pin "233c6708c1f37fc60604de49ca192497aef39757")
 #+end_src
 
@@ -14650,12 +14650,12 @@ the [[*Window title][Window title]].
 
 Org-roam is nice by itself, but there are so /extra/ nice packages which integrate
 with it.
-#+begin_src emacs-lisp :noweb-ref none :tangle packages.el
+#+begin_src emacs-lisp :tangle packages.el
 (package! org-roam-ui :recipe (:host github :repo "org-roam/org-roam-ui" :files ("*.el" "out")) :pin "309fe3c58c7081de4e2c9c64f7b40ea291926048")
 (package! websocket :pin "fda4455333309545c0787a79d73c19ddbeb57980") ; dependency of `org-roam-ui'
 #+end_src
 
-#+begin_src emacs-lisp :noweb-ref none :tangle yes
+#+begin_src emacs-lisp :tangle yes
 (use-package! websocket
   :after org-roam)
 
@@ -15025,6 +15025,9 @@ For header args, the keys I'll use are
     ('keyword (string-match-p "^header-args" (org-element-property :value (org-element-context))))))
 #+end_src
 
+#+RESULTS:
+: +yas/org-src-header-p
+
 Now let's write a function we can reference in yasnippets to produce a nice
 interactive way to specify header args.
 
@@ -15060,6 +15063,9 @@ or no selection is made: nil is returned."
                   (string= "" selection))
         selection))))
 #+end_src
+
+#+RESULTS:
+: +yas/org-prompt-header-arg
 
 Finally, we fetch the language information for new source blocks.
 
@@ -15108,6 +15114,9 @@ Return nil otherwise."
     (car (cl-set-difference src-langs header-langs :test #'string=))))
 #+end_src
 
+#+RESULTS:
+: +yas/org-most-common-no-property-lang
+
 **** Translate capital keywords (old) to lower case (new)
 Everyone used to use ~#+CAPITAL~ keywords. Then people realised that ~#+lowercase~
 is actually both marginally easier and visually nicer, so now the capital
@@ -15135,6 +15144,10 @@ It likely misses some edge cases, but should mostly work.
           (setq count (1+ count))))
       (message "Replaced %d occurances" count))))
 #+end_src
+
+#+RESULTS:
+: org-syntax-convert-keyword-case-to-lower
+
 **** Extra links
 ***** xkcd
 Because xkcd is cool, let's make it as easy and fun as possible to insert them.
@@ -15185,6 +15198,9 @@ Saving seconds adds up after all! (but only so much)
   (format "xkcd:%d" (+xkcd-select)))
 #+end_src
 
+#+RESULTS:
+: +org-xkcd-complete
+
 ***** YouTube
 The ~[[yt:...]]~ links preview nicely, but don't export nicely. Thankfully, we can
 fix that.
@@ -15201,6 +15217,10 @@ allowfullscreen>%s</iframe>" path (or "" desc)))
          (format "\\href{https://youtu.be/%s}{%s}" path (or desc "youtube")))
         (t (format "https://youtu.be/%s" path))))
 #+end_src
+
+#+RESULTS:
+: +org-export-yt
+
 **** Fix problematic hooks
 When one of the src_elisp{org-mode-hook} functions errors, it halts the hook
 execution. This is problematic, and there are two hooks in particular which
@@ -15212,6 +15232,9 @@ cause issues. Let's make their failure less eventful.
   :around #'org-superstar-mode
   (ignore-errors (apply orig-fn args)))
 #+end_src
+
+#+RESULTS:
+
 **** Flycheck with org-lint
 
 Org may be simple, but that doesn't mean there's no such thing as malformed Org.
@@ -15278,6 +15301,8 @@ regurgitate the code, cross our fingers, and hope it works.
   ((error line-start line ": " (message) line-end))
   :modes org-mode)
 #+end_src
+
+#+RESULTS:
 
 Turns out it almost works. Running =M-x flycheck-verify-setup= after running that
 snippet produces the following:
@@ -23465,5 +23490,3 @@ stored in
  - ~use-package!~ for configuring packages
  - ~add-load-path!~ for adding directories to the ~load-path~ where ~Emacs~ looks when
    you load packa
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                              
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                      
