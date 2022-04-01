@@ -4284,7 +4284,7 @@ move between diff hunks (with =C-x v [= and =C-x v ]=) or to revert the
 current hunk (=C-x v n=).  Those can come in handy (check my comprehensive
 extensions in [[#h:31deeff4-dfae-48d9-a906-1f3272f29bc9][Version control framework (vc.el and prot-vc.el)]]).
 
-#+begin_src emacs-lisp
+#+begin_src emacs-lisp :tangle no
 ;;; Line numbers and relevant indicators (prot-sideline.el)
 (load "prot-sideline")
 (use-package prot-sideline
@@ -4355,7 +4355,7 @@ a foreground value which replaces that of the underlying text.  Whereas
 the others only specify a background attribute.
 
 **** code
-#+begin_src emacs-lisp
+#+begin_src emacs-lisp :tangle no
 ;;; Enhancements to hl-line-mode (lin.el)
 
 (use-package lin
@@ -5619,12 +5619,10 @@ Now, we just identify the files in question.
 ** NEOTREE
 Neotree is a file tree viewer.  When you open neotree, it jumps to the current file thanks to neo-smart-open.  The neo-window-fixed-size setting makes the neotree width be adjustable.  Doom Emacs had no keybindings set for neotree.  Since Doom Emacs uses 'SPC t' for 'toggle' keybindings, I used 'SPC t n' for toggle-neotree.
 
-╭────
-│ | COMMAND        | DESCRIPTION               | KEYBINDING |
-│ |----------------+---------------------------+------------|
-│ | neotree-toggle | /Toggle neotree/            | SPC t n    |
-│ | neotree- dir   | /Open directory in neotree/ | SPC d n    |
-╰────
+| COMMAND        | DESCRIPTION               | KEYBINDING |
+|----------------+---------------------------+------------|
+| neotree-toggle | /Toggle neotree/            | SPC t n    |
+| neotree- dir   | /Open directory in neotree/ | SPC d n    |
 
 #+BEGIN_SRC emacs-lisp
 (after! neotree
