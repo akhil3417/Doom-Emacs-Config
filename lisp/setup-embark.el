@@ -1,3 +1,4 @@
+;; [[file:../config.org::*embark][embark:1]]
 ;; -*- lexical-binding: t -*-
 ;; Embark for actions
 (use-package embark
@@ -344,3 +345,4 @@ highlighting."
 
 (provide 'setup-embark)
 ;; setup-embark.el ends here
+;; embark:1 ends here

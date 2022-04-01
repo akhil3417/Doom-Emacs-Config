@@ -4,7 +4,7 @@
   :commands ytel
   :bind (:map ytel-mode-map
               ("x" . ytel-watch-browse-url)
-              ("m" . ytel-watch-umpv)
+              ("m" . ytel-watch)
               ("w" . ytel-url-kill-new)
               ("f" . ytel-search-next-page)
               ("b" . ytel-search-previous-page))
@@ -44,12 +44,18 @@
     (let* ((video (ytel-get-current-video))
            (id (ytel-video-id video)))
       (concat "https://youtube.com/watch?v=" id)))
-    
-  (defun ytel-watch-umpv (&optional arg)
-    (interactive "P")
-    (browse-url-umpv (ytel-video-url) arg)
-    (message "Playing video with mpv.")
-    (forward-line))
+
+(defun ytel-watch ()
+    "Stream video at point in mpv."
+    (interactive)
+    (let* ((video (ytel-get-current-video))
+     	   (id    (ytel-video-id video)))
+      (start-process "ytel mpv" nil
+		     "mpv"
+		     (concat "https://www.youtube.com/watch?v=" id))
+		     "--ytdl-format=bestvideo[height<=?360]+bestaudio/best")
+      (message "Starting streaming..."))
+
 
   (defun ytel-watch-browse-url (&optional arg)
     (interactive "P")

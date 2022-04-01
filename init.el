@@ -35,7 +35,7 @@
        hl-todo           ; highlight TODO/FIXME/NOTE/DEPRECATED/HACK/REVIEW
        hydra
        ;;indent-guides     ; highlighted indent columns
-       ;;ligatures         ; ligatures and symbols to make your code pretty again
+       (ligatures +extra)           ; ligatures and symbols to make your code pretty again
        ;;minimap           ; show a map of the code on the side
        modeline          ; snazzy, Atom-inspired modeline, plus API
        ;; nav-flash         ; blink cursor line after big motions
@@ -43,10 +43,10 @@
        ophints           ; highlight the region an operation acts on
        (popup +all +defaults)   ; tame sudden yet inevitable temporary windows
        ;;tabs              ; a tab bar for Emacs
-       ;;treemacs          ; a project drawer, like neotree but cooler
+       treemacs          ; a project drawer, like neotree but cooler
        unicode           ; extended unicode support for various languages
-       vc-gutter         ; vcs diff in the fringe
-       vi-tilde-fringe   ; fringe tildes to mark beyond EOB
+       ;; vc-gutter         ; vcs diff in the fringe
+       ;; vi-tilde-fringe   ; fringe tildes to mark beyond EOB
        window-select     ; visually switch windows
        workspaces        ; tab emulation, persistence & separate workspaces
        zen               ; distraction-free coding or writing
@@ -145,6 +145,10 @@
        ;;javascript        ; all(hope(abandon(ye(who(enter(here))))))
        ;;julia             ; a better, faster MATLAB
        ;;kotlin            ; a better, slicker Java(Script)
+       ;; (latex                       ; writing papers in Emacs has never been so fun
+       ;;  +latexmk                    ; what else would you use?
+       ;;  +cdlatex                    ; quick maths symbols
+       ;;  +fold)                      ; fold the clutter away nicities
        ;;latex             ; writing papers in Emacs has never been so fun
        ;;lean              ; for folks with too much to prove
        ;;ledger            ; be audit you can be
@@ -153,7 +157,19 @@
        ;;nim               ; python + lisp at the speed of c
        ;;nix               ; I hereby declare "nix geht mehr!"
        ;;ocaml             ; an objective camel
-       org               ; organize your plain life in plain text
+       (org +pretty)              ; organize your plain life in plain text
+
+       ;; (org                         ; organize your plain life in plain text
+       ;;  +pretty                     ; yessss my pretties! (nice unicode symbols)
+       ;;  +dragndrop                  ; drag & drop files/images into org buffers
+       ;;  ;;+hugo                     ; use Emacs for hugo blogging
+       ;;  +noter                      ; enhanced PDF notetaking
+       ;;  +jupyter                    ; ipython/jupyter support for babel
+       ;;  +pandoc                     ; export-with-pandoc support
+       ;;  +gnuplot                    ; who doesn't like pretty pictures
+       ;;  ;;+pomodoro                 ; be fruitful with the tomato technique
+       ;;  +present                    ; using org-mode for presentations
+       ;;  +roam2)                     ; wander around notes
        ;;php               ; perl's insecure younger brother
        ;;plantuml          ; diagrams for confusing people more
        ;;purescript        ; javascript, but functional

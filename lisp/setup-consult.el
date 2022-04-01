@@ -1,3 +1,4 @@
+;; [[file:../config.org::*consult conf][consult conf:1]]
 ;; -*- lexical-binding: t -*-
 ;; Consult
 (use-package consult
@@ -325,3 +326,4 @@ When the number of characters in a buffer exceeds this threshold,
 
 (provide 'setup-consult)
 ;; setup-consult.el ends here
+;; consult conf:1 ends here

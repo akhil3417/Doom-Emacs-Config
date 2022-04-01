@@ -1,3 +1,4 @@
+;; [[file:../config.org::*marganalia][marganalia:1]]
 ;; -*- lexical-binding: t -*-
 ;; Prefer richer, more heavy, annotations over the lighter default variant.
 ;; E.g. M-x will show the documentation string additional to the keybinding. By
@@ -18,3 +19,4 @@
 
 (provide 'setup-marginalia)
 ;; setup-marginalia.el ends here
+;; marganalia:1 ends here

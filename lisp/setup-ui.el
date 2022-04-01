@@ -1,3 +1,4 @@
+;; [[file:../config.org::*setup.ui][setup.ui:1]]
 ;; -*- lexical-binding: t -*-
 (setq inhibit-startup-message t
       inhibit-splash-screen t
@@ -93,3 +94,4 @@
 
 (provide 'setup-ui)
 ;; setup-ui ends here
+;; setup.ui:1 ends here

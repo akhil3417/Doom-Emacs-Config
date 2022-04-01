@@ -1,3 +1,4 @@
+;; [[file:../config.org::*vertico][vertico:1]]
 ;; -*- lexical-binding: t -*-
 ;; Vertico
 (use-package vertico
@@ -150,3 +151,4 @@
 
 (provide 'setup-vertico)
 ;; setup-vertico.el ends here
+;; vertico:1 ends here
