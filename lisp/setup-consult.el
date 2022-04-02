@@ -1,3 +1,4 @@
+;; [[file:../backup.org::*consult conf][consult conf:1]]
 ;; -*- lexical-binding: t -*-
 ;; Consult
 (use-package consult
@@ -147,30 +148,43 @@ When the number of characters in a buffer exceeds this threshold,
 
   :bind (("C-x b"   . consult-buffer)
          ("C-x C-r" . consult-recent-file)
+         ("C-x M-k" . consult-kmacro)
          ("C-x M-:" . consult-complex-command)
          ("M-s M-o" . consult-multi-occur)
-         ("M-X" . consult-mode-command)
-         ("C-h C-m" . consult-minor-mode-menu)
-         ("C-c C-j" . consult-outline)
-         ("M-s M-j" . consult-outline)
+         ("M-X" . consult-mode-command);;C-c m
+         ;; ("C-h C-m" . consult-minor-mode-menu)
+         ("C-h h" . consult-minor-mode-menu)
+         ;; ("C-c C-j" . consult-outline) ;;M-g o
+         ("M-s M-j" . consult-outline) ;;M-s M-s
+         ("M-s M-l" . consult-line)
          ("M-s l"   . consult-line-symbol-at-point)
          ("M-s f"   . consult-fd)
+         ("M-R"   . consult-keep-lines)
+         ("M-F"   . consult-focus-lines)
+         ("M-s M-f"   . consult-find)
          ("M-s M-l" . consult-locate)
          ("M-s g"   . consult-ripgrep)
+         ("M-s M-g"   . consult-grep)
          ("M-s G"   . consult-git-grep)
+         ("M-s M-h"   . consult-history)
+         ("M-g i"   . consult-imenu)
+         ("M-g m"   . consult-mark)
+         ("M-y"   . consult-yank-pop) ;; M-s M-y
+         ("M-g M"   . consult-global-mark)
          ("<help> a" . consult-apropos)
          ("M-s i" . consult-imenu-all)
          ;; ("s-b" . consult-buffer)
-         ("M-g j" . consult-compile-error)
+         ("M-g e" . consult-compile-error)
          ("M-g g" . consult-goto-line)
          ;; ("H-b" . consult-buffer)
          ("M-m" . consult-register-store)
+         ("C-x r r" . consult-register)
          ("M-s k l" . consult-focus-lines)
          ("M-'" . consult-register-load)
          ("M-y" . consult-yank-pop)
          :map ctl-x-r-map
-         ("b" . consult-bookmark)
-         ("x" . consult-register)
+         ("b" . consult-bookmark) ; C-c b
+         ("x" . consult-register);;C-M-#
          :map ctl-x-4-map
          ("b" . consult-buffer-other-window)
          :map ctl-x-5-map
@@ -181,6 +195,13 @@ When the number of characters in a buffer exceeds this threshold,
          ;; ("l" . consult-locate)
          ;; :map minibuffer-local-map
          ;; ("M-r" . consult-history)))
+
+
+  ;; :bind (("C-c h" . consult-history)
+  ;;        ("C-c k" . consult-kmacro)
+  ;;        ("M-#" . consult-register-load);; M '
+  ;;        ("M-'" . consult-register-store)
+  ;;        ("M-s e" . consult-isearch))
 
 ;; Library support for consult-buffer
 (use-package consult
@@ -260,9 +281,9 @@ When the number of characters in a buffer exceeds this threshold,
          ("H-M-d" . consult-dir-maybe)
          ("C-M-j" . consult-dir-jump-file)
          ("H-M-j" . consult-dir-jump-file)
-         ("M-s f" . consult-dir-jump-file)
-         :map embark-become-file+buffer-map
-         ("d" . consult-dir))
+         ("M-s f" . consult-dir-jump-file))
+         ;; :map embark-become-file+buffer-map
+         ;; ("d" . consult-dir))
   :config
   (setq consult-dir-shadow-filenames nil)
   (defun consult-dir-maybe ()
@@ -325,3 +346,4 @@ When the number of characters in a buffer exceeds this threshold,
 
 (provide 'setup-consult)
 ;; setup-consult.el ends here
+;; consult conf:1 ends here

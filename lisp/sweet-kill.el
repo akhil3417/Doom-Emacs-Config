@@ -20,7 +20,7 @@
 ;(setq l (length haiku-emacs))
 ;(nth (random l) haiku-emacs)
 
-(defvar haiku-emacs 
+(defvar +doom-quit-messages
   
   '(("my dot emacs grows"
     "one day i look inside it"

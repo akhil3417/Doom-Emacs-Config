@@ -1,3 +1,4 @@
+;; [[file:../backup.org::*vertico][vertico:1]]
 ;; -*- lexical-binding: t -*-
 ;; Vertico
 (use-package vertico
@@ -30,7 +31,7 @@
   (advice-add #'tmm-add-prompt :after #'minibuffer-hide-completions))
 
 (use-package vertico-multiform
-  :load-path "~/.config/doom/lisp/"
+ :load-path "~/.config/doom/lisp/"
   :commands vertico-multiform-mode
   :after vertico-flat
   :bind (:map vertico-map
@@ -52,7 +53,7 @@
            (xref-location reverse)
            (t unobtrusive)))
    (setq vertico-multiform-commands
-         '((load-theme my/vertico-grid-mode reverse)
+        '((load-theme my/vertico-grid-mode reverse)
            (my/toggle-theme my/vertico-grid-mode reverse)
            (consult-dir-maybe reverse)
            (consult-dir reverse)
@@ -72,17 +73,17 @@
    (defun vertico-multiform-unobtrusive ()
      "Toggle the quiet display."
      (interactive)
-     (vertico-multiform--display-toggle 'vertico-unobtrusive-mode)
+     (vertico-multiform--define-display-toggle 'vertico-unobtrusive-mode)
      (if vertico-unobtrusive-mode
          (vertico-multiform--temporary-mode 'vertico-reverse-mode -1)
        (vertico-multiform--temporary-mode 'vertico-reverse-mode 1))))
 
 (use-package vertico-unobtrusive
-  :load-path "~/.config/doom/lisp/"
+ :load-path "~/.config/doom/lisp/"
   :after vertico-flat)
 
 (use-package vertico-grid
-  :load-path "~/.config/doom/lisp/"
+ :load-path "~/.config/doom/lisp/"
   :after vertico
   ;; :bind (:map vertico-map ("M-q" . vertico-grid-mode))
   :config
@@ -101,7 +102,7 @@
   (setq vertico-grid-lookahead 50))
 
 (use-package vertico-quick
-  :load-path "~/.config/doom/lisp/"
+ :load-path "~/.config/doom/lisp/"
   :after vertico
   :bind (:map vertico-map
          ("M-i" . vertico-quick-insert)
@@ -115,7 +116,7 @@
       (embark-act arg))))
 
 (use-package vertico-directory
-  :load-path "~/.config/doom/lisp/"
+ :load-path "~/.config/doom/lisp/"
   ;; :hook (rfn-eshadow-update-overlay vertico-directory-tidy)
   :after vertico
   :bind (:map vertico-map
@@ -125,24 +126,24 @@
          ("RET"   . vertico-directory-enter)))
 
 (use-package vertico-repeat
-  :load-path "~/.config/doom/lisp/"
+ :load-path "~/.config/doom/lisp/"
   :after vertico
   :bind (("C-x ." . vertico-repeat)
          ("H-."   . vertico-repeat)))
 
 (use-package vertico-reverse
   ;; :disabled
-  :load-path "~/.config/doom/lisp/"
+ :load-path "~/.config/doom/lisp/"
   :after vertico)
 
 (use-package vertico-flat
-  :load-path "~/.config/doom/lisp/"
+ :load-path "~/.config/doom/lisp/"
   ;; :bind (:map vertico-map
   ;;             ("M-q" . vertico-flat-mode))
   :after vertico)
 
 (use-package vertico-buffer
-  :load-path "~/.config/doom/lisp/"
+ :load-path "~/.config/doom/lisp/"
   :after vertico
   ;; :hook (vertico-buffer-mode . vertico-buffer-setup)
   :config
@@ -150,3 +151,4 @@
 
 (provide 'setup-vertico)
 ;; setup-vertico.el ends here
+;; vertico:1 ends here

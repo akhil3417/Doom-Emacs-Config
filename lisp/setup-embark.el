@@ -1,3 +1,4 @@
+;; [[file:../backup.org::*embark][embark:1]]
 ;; -*- lexical-binding: t -*-
 ;; Embark for actions
 (use-package embark
@@ -289,9 +290,9 @@ targets."
   (defun embark-export-flymake (_errors)
     (flymake-show-buffer-diagnostics))
 
-  (dolist (pair '((consult-fd . list)))
-    (add-to-list 'embark-collect-initial-view-alist
-                 pair))
+  (dolist (pair '((consult-fd . list))))
+    ;; (add-to-list 'embark-collect-initial-view-alist
+    ;;              pair))
   :bind (:map embark-file-map
               ("x" . consult-file-externally)))
 
@@ -344,3 +345,4 @@ highlighting."
 
 (provide 'setup-embark)
 ;; setup-embark.el ends here
+;; embark:1 ends here
