@@ -1,4 +1,3 @@
-;; [[file:../backup.org::*consult conf][consult conf:1]]
 ;; -*- lexical-binding: t -*-
 ;; Consult
 (use-package consult

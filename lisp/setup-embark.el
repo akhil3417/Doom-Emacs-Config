@@ -1,4 +1,3 @@
-;; [[file:../backup.org::*embark][embark:1]]
 ;; -*- lexical-binding: t -*-
 ;; Embark for actions
 (use-package embark
@@ -7,7 +6,7 @@
   :after minibuffer
   :bind (("M-s RET"  . embark-act)
          ("s-o"      . embark-act)
-         ("s-C-o"    . embark-act-noexit)
+         ("s-C-a"    . embark-act-noexit)
          ("H-SPC" . embark-act)
          ("C-h b" . embark-bindings)
          ("C-h C-b" . describe-bindings)

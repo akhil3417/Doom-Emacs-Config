@@ -1,4 +1,3 @@
-;; [[file:../backup.org::*orderless][orderless:1]]
 ;; -*- lexical-binding: t -*-
 (use-package orderless
   :after setup-minibuffer

@@ -5,8 +5,11 @@
 #+PROPERTY: header-args:emacs-lisp :tangle config.el
 
 
-ABOUT THIS CONFIG
+ABOUT THIS CONFIG →
 This is my personal Doom Emacs config.  Doom Emacs is a distribution of Emacs that uses the "evil" keybindings (Vim keybindings) and includes a number of nice extensions and a bit of configuration out of the box.  I am maintaining this |config not just for myself, but also for those that want to explore some of what is possible with Emacs.  I will add a lot of examples of plugins and settings, some of them I may not even use personally.  I am doing this so that others can save their time and so that people can use ready snippets without errors.
+
+*Note*: The sections that are tagged as DONE in this org document mean that I have
+learned everything about them and are included in the workflow
 
 * Loading instructions
 ** Info
@@ -472,13 +475,16 @@ the following:
 (display-time-mode 1)                             ; Enable time in the mode-line
 
 ;; (unless (string-match-p "^Power N/A" (battery))   ; On laptops...
-;;   (display-battery-mode 1))                       ; it's nice to know how much power you have
+  (display-battery-mode 1)                       ; it's nice to know how much power you have
 
 (global-subword-mode 1)                           ; Iterate through CamelCase words
 
 ;; Underline looks a bit better when drawn lower
 (setq x-underline-at-descent-line t)
 #+end_src
+
+#+RESULTS:
+: t
 
 ** Auto-customisations
 
@@ -3390,7 +3396,8 @@ bindings and their functions.
 (use-package pass)
 #+end_src
 
-* UI
+* DONE UI
+CLOSED: [2022-04-02 Sat 23:43]
 ** DONE setup.ui
 CLOSED: [2022-03-29 Tue 23:59]
 #+begin_src emacs-lisp :tangle ~/.config/doom/lisp/setup-ui.el

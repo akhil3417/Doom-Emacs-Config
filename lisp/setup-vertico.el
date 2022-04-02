@@ -1,4 +1,3 @@
-;; [[file:../backup.org::*vertico][vertico:1]]
 ;; -*- lexical-binding: t -*-
 ;; Vertico
 (use-package vertico
@@ -17,8 +16,10 @@
 	        	         (minibuffer-complete-and-exit)
 	        	       (exit-minibuffer))))
               ("C->"     . embark-become)
+              ("C-b"     . embark-become)
               (">"       . embark-become)
-              ("C-<tab>"   . embark-act-with-completing-read)
+              ("<backtab>"   . embark-act-with-completing-read)
+              ("C-a"   . embark-act-with-completing-read)
               ("C-o"     . embark-minimal-act)
               ("C-M-o"   . embark-minimal-act-noexit)
               ("M-s o"   . embark-export)
@@ -30,13 +31,18 @@
         vertico-resize t)
   (advice-add #'tmm-add-prompt :after #'minibuffer-hide-completions))
 
+  (define-key vertico-map "\M-V" #'vertico-multiform-vertical)
+  (define-key vertico-map "\M-G" #'vertico-multiform-grid)
+  (define-key vertico-map "\M-F" #'vertico-multiform-flat)
+  (define-key vertico-map "\M-R" #'vertico-multiform-reverse)
+  (define-key vertico-map "\M-U" #'vertico-multiform-unobtrusive)
 (use-package vertico-multiform
  :load-path "~/.config/doom/lisp/"
   :commands vertico-multiform-mode
   :after vertico-flat
   :bind (:map vertico-map
               ("M-q" . vertico-multiform-grid)
-              ("C-l" . vertico-multiform-unobtrusive)
+              ("C-l" . vertico-multiform-reverse)
               ("C-M-l" . embark-export))
   :init (vertico-multiform-mode 1)
   :config
