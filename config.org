@@ -366,12 +366,13 @@ It's useful to have some basic personal information
 #+RESULTS:
 
 #+begin_src emacs-lisp
+(setq org-directory "~/org/")
 (setq user-full-name "Akhil Pratap Singh"
       user-mail-address "akhilpratapsingh3417@gmail.com")
 #+end_src
 
 #+RESULTS:
-: akhilpratapsingh3417@gmail.com
+: ~/org/
 
 Apparently this is used by ~GPG~, and all sorts of other things.
 
@@ -390,7 +391,7 @@ my home machine is pretty safe, and my laptop is shutdown a lot.
 #+RESULTS:
 : auth-source-pass
 ** directories
-#+begin_src emacs-lisp
+#+begin_src emacs-lisp :tangle no
 (setq my/home-dir "/home/shiva/")
 (setq my/sync-base-dir (concat my/home-dir "Sync/"))
 (setq my/work-base-dir (concat my/home-dir "Work/"))
@@ -399,18 +400,6 @@ my home machine is pretty safe, and my laptop is shutdown a lot.
 
 #+RESULTS:
 : /home/shiva/Media/
-
-** org
-#+begin_src emacs-lisp
-(setq org-directory my/sync-base-dir
-      org-roam-directory "/home/shiva/Sync/org-roam2/"
-      org-roam-db-location (concat org-roam-directory "org-roam.db")
-      my/org-roam-todo-file (concat org-roam-directory "orgzly/todo.org"))
-
-(save-window-excursion
-  (find-file my/org-roam-todo-file)
-  (save-buffer))
-#+end_src
 
 ** Basic load.el
 #+begin_src emacs-lisp
@@ -11585,7 +11574,7 @@ Keybindings to open files that I work with all the time using the find-file comm
 #+BEGIN_SRC emacs-lisp
 (map! :leader
       (:prefix ("=" . "open file")
-       :desc "Edit agenda file" "a" #'(lambda () (interactive) (find-file "~/Org/agenda.org"))
+       :desc "Edit agenda file" "a" #'(lambda () (interactive) (find-file "~/org/agenda.org"))
        :desc "Edit doom config.org" "c" #'(lambda () (interactive) (find-file "~/.config/doom/config.org"))
        :desc "Edit doom init.el" "i" #'(lambda () (interactive) (find-file "~/.config/doom/init.el"))
        :desc "Edit doom packages.el" "p" #'(lambda () (interactive) (find-file "~/.config/doom/packages.el"))))
@@ -18519,7 +18508,6 @@ stored in
 #+end_src
 * ORG MODE
 ** Org
-
 *** DONE System config
 CLOSED: [2022-04-01 Fri 19:27]
 **** Mime types
@@ -18906,9 +18894,15 @@ The agenda is nice, but a souped up version is nicer.
 #+begin_src emacs-lisp
 (use-package! org-super-agenda
   :commands org-super-agenda-mode)
+
+(after! org
+  (setq org-agenda-files '("~/org/agenda/agenda.org"))
+ (setq org-default-notes-file "~/org/notes/notes.org"))
+(setq org-noter-notes-search-path '("~/org/notes/"))
 #+end_src
 
 #+RESULTS:
+| ~/org/notes/ |
 
 #+begin_src emacs-lisp
 (after! org-agenda
@@ -19287,14 +19281,23 @@ no modeline.
 ***** Basic settings
 I'll just set this to be within =Organisation= folder for now, in the future it
 could be worth seeing if I could hook this up to a [[https://nextcloud.com/][Nextcloud]] instance.
-#+begin_src emacs-lisp :noweb-ref none :tangle yes
-(setq org-roam-directory "~/home/shiva/Sync/org-roam2/")
+#+begin_src emacs-lisp :tangle yes
+(setq
+      org-roam-directory "~/org/org-roam2/"
+      org-roam-db-location (concat org-roam-directory "org-roam.db")
+      org-roam-todo-file (concat org-roam-directory "todo.org"))
+
+(save-window-excursion
+  (find-file org-roam-todo-file)
+  (save-buffer))
 #+end_src
+
+#+RESULTS:
 
 That said, if the directory doesn't exist we likely don't want to be using roam.
 Since we don't want to trigger errors (which will happen as soon as roam tries
 to initialise), let's not load roam.
-#+begin_src emacs-lisp :noweb-ref none :tangle (if (file-exists-p "/home/shiva/Sync/org-roam2/") "no" "packages.el")
+#+begin_src emacs-lisp :tangle (if (file-exists-p "~/org/org-roam2/") "no" "packages.el")
 (package! org-roam :disable t)
 #+end_src
 ***** Modeline file name
@@ -20605,37 +20608,42 @@ I wrapped most of this block in (after! org).  Without this, my settings might b
 
 =NOTE:= I have the location of my Org directory and Roam directory in $HOME/nc/ which is a Nextcloud folder that allows me to instantly sync all of my Org work between my home computer and my office computer.
 
-#+BEGIN_SRC emacs-lisp
+#+BEGIN_SRC emacs-lisp :tangle no
 (map! :leader
       :desc "Org babel tangle" "m B" #'org-babel-tangle)
 (after! org
-  (setq org-directory "~/nc/Org/"
-        org-agenda-files '("~/nc/Org/agenda.org")
-        org-default-notes-file (expand-file-name "notes.org" org-directory)
+  (setq org-directory "~/org/"
+        org-agenda-files '("~/org/agenda.org")
+        org-default-notes-file (expand-file-name "notes.org" org-directory)))
+(setq org-noter-notes-search-path '("~/org/notes/"))
+
         ;; org-ellipsis " ▼ "
         ;; org-superstar-headline-bullets-list '("◉" "●" "○" "◆" "●" "○" "◆")
         ;; org-superstar-item-bullet-alist '((?+ . ?➤) (?- . ?✦)) ; changes +/- symbols in item lists
-        org-log-done 'time
-        org-hide-emphasis-markers t
-        ;; ex. of org-link-abbrev-alist in action
-        ;; [[arch-wiki:Name_of_Page][Description]]
-        org-link-abbrev-alist    ; This overwrites the default Doom org-link-abbrev-list
-          '(("google" . "http://www.google.com/search?q=")
-            ("arch-wiki" . "https://wiki.archlinux.org/index.php/")
-            ("ddg" . "https://duckduckgo.com/?q=")
-            ("wiki" . "https://en.wikipedia.org/wiki/"))
-        org-todo-keywords        ; This overwrites the default Doom org-todo-keywords
-          '((sequence
-             "TODO(t)"           ; A task that is ready to be tackled
-             "BLOG(b)"           ; Blog writing assignments
-             "GYM(g)"            ; Things to accomplish at the gym
-             "PROJ(p)"           ; A project that contains other tasks
-             "VIDEO(v)"          ; Video assignments
-             "WAIT(w)"           ; Something is holding up this task
-             "|"                 ; The pipe necessary to separate "active" states and "inactive" states
-             "DONE(d)"           ; Task has been completed
-             "CANCELLED(c)" )))) ; Task has been cancelled
+        ;; org-log-done 'time
+        ;; org-hide-emphasis-markers t
+        ;; ;; ex. of org-link-abbrev-alist in action
+        ;; ;; [[arch-wiki:Name_of_Page][Description]]
+        ;; org-link-abbrev-alist    ; This overwrites the default Doom org-link-abbrev-list
+        ;;   '(("google" . "http://www.google.com/search?q=")
+        ;;     ("arch-wiki" . "https://wiki.archlinux.org/index.php/")
+        ;;     ("ddg" . "https://duckduckgo.com/?q=")
+        ;;     ("wiki" . "https://en.wikipedia.org/wiki/"))
+        ;; org-todo-keywords        ; This overwrites the default Doom org-todo-keywords
+        ;;   '((sequence
+        ;;      "TODO(t)"           ; A task that is ready to be tackled
+        ;;      "BLOG(b)"           ; Blog writing assignments
+        ;;      "GYM(g)"            ; Things to accomplish at the gym
+        ;;      "PROJ(p)"           ; A project that contains other tasks
+        ;;      "VIDEO(v)"          ; Video assignments
+        ;;      "WAIT(w)"           ; Something is holding up this task
+        ;;      "|"                 ; The pipe necessary to separate "active" states and "inactive" states
+        ;;      "DONE(d)"           ; Task has been completed
+        ;;      "CANCELLED(c)" )))) ; Task has been cancelled
 #+END_SRC
+
+#+RESULTS:
+| ~/org/notes/ |
 
 *** Org-export
 We need ox-man for "Org eXporting" to manpage format and ox-gemini for exporting to gemtext (for the gemini protocol).
@@ -20662,16 +20670,16 @@ We need ox-man for "Org eXporting" to manpage format and ox-gemini for exporting
 (setq org-export-with-broken-links t)
 (setq org-publish-project-alist
       '(("distro.tube"
-         :base-directory "~/nc/gitlab-repos/distro.tube/"
+         :base-directory "~/org/gitlab-repos/mysite/"
          :base-extension "org"
-         :publishing-directory "~/nc/gitlab-repos/distro.tube/html/"
+         :publishing-directory "~/org/gitlab-repos/mysite/html/"
          :recursive t
          :exclude "org-html-themes/.*"
          :publishing-function org-html-publish-to-html
          :headline-levels 4             ; Just the default for this project.
          :auto-preamble t)
          ("org-static"
-         :base-directory "~/Org/website"
+         :base-directory "~/org/website"
          :base-extension "css\\|js\\|png\\|jpg\\|gif\\|pdf\\|mp3\\|ogg\\|swf"
          :publishing-directory "~/public_html/"
          :recursive t
@@ -20690,9 +20698,12 @@ We need ox-man for "Org eXporting" to manpage format and ox-gemini for exporting
 | org-roam-dailies-find-tomorrow  | org roam dailies find tomorrow  | SPC n r d m |
 | org-roam-dailies-find-yesterday | org roam dailies find yesterday | SPC n r d y |
 
-#+begin_src emacs-lisp
+#+begin_src emacs-lisp :tangle no
+
 (after! org-roam
-  (setq org-roam-directory "~/org/Roam"))
+  (setq org-roam-directory "~/org/org-roam2/"))
+
+
 #+end_src
 
 ** Org-mode (personal information manager)

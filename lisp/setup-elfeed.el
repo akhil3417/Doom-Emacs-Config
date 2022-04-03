@@ -1,4 +1,3 @@
-;; [[file:../config.org::*elfeed][elfeed:1]]
 ;;; Elfeed  -*- lexical-binding: t; -*-
 
 ;; Elfeed, the feed reader for emacs, is the best feed reading experience I've
@@ -447,4 +446,3 @@ USE-SINGLE-P) with mpv."
 
 (provide 'setup-elfeed)
 ;; setup-elfeed.el ends here
-;; elfeed:1 ends here

@@ -142,7 +142,7 @@ Filenames are always matched by eshell."
   (defun my/eshell-keys-and-modes ()
     (setq outline-regexp eshell-prompt-regexp)
     (abbrev-mode 1)
-    (define-key eshell-mode-map (kbd "H-<return>") 'my/delete-window-or-delete-frame)
+    (define-key eshell-mode-map (kbd "s-<return>") 'my/delete-window-or-delete-frame)
     (define-key eshell-mode-map (kbd "M-s") nil)
     (define-key eshell-mode-map (kbd "C-c C-SPC") 'eshell-mark-output)
     (define-key eshell-mode-map (kbd "C-<return>") 'my/eshell-send-detached-input)
