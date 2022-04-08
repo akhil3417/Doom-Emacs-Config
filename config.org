@@ -86,6 +86,7 @@ To install ~some-package~ from MELPA, ELPA or emacsmirror:
 ;; (add-to-list 'load-path "~/.emacs.d/")
 ;; (load "myplugin.el")
 ;; Also, in many cases you would need the following instead of the second line:
+;; eaf
 
 ;; (require 'myplugin)
 ;;shell setup
@@ -95,8 +96,11 @@ To install ~some-package~ from MELPA, ELPA or emacsmirror:
   (package! pcmpl-args)
   (package! 0x0)
   (package! symon)
+  (package! slime)
+  (package! sly)
 
   (package! smart-mode-line)
+  (package! system-packages)
   (package! presentation)
   (package! kind-icon)
   (package! define-word)
@@ -255,12 +259,28 @@ a ~:recipe~. You'll find documentation on what ~:recipe~ accepts [[https://githu
 ;;            :files (:defaults (:exclude "helm-bufler.el"))))
 ;; Make Elisp files in that directory available to the user.
 (add-to-list 'load-path "~/.config/doom/lisp/")
+
+;; (package! emacs-application-framework
+;; :recipe (:host github :repo "manateelazycat/emacs-application-framework"
+;; :files ("eaf.el" "src/lisp/*.el")))
+
+;; (when (package! eaf :recipe (:host github
+;;                              :repo "manateelazycat/emacs-application-framework"
+;;                              :files ("*.el" "*.py" "app" "core")
+;;                              :build (:not compile)))
+
+;;   (package! ctable :recipe (:host github :repo "kiwanami/emacs-ctable"))
+;;   (package! deferred :recipe (:host github :repo "kiwanami/emacs-deferred"))
+;;   (package! epc :recipe (:host github :repo "kiwanami/emacs-epc")))
+
 (package! ytel-show
     :recipe (:host github :repo "xFA25E/ytel-show"
        :files ("ytel-show.el")))
+
 (package! kbd-mode
   :recipe (:host github
            :repo "kmonad/kbd-mode"))
+
 (package! exwm-mff :recipe (:host github :repo "ieure/exwm-mff" :branch "main"))
 ;; (package! exwm-firefox-core :recipe (:host github :repo "walseb/exwm-firefox-core" :branch "master"))
 ;; (package! vulpea :recipe (:host github :repo "d12frosted/vulpea" :branch "master"))
@@ -268,13 +288,17 @@ a ~:recipe~. You'll find documentation on what ~:recipe~ accepts [[https://githu
 ;;   :recipe (:host github :repo "rougier/nano-emacs"))
 ;; (package! telega
 ;;   :recipe (:host github :repo "zevlg/telega.el"))
+
 (package! mathpix.el
   :recipe (:host github :repo "jethrokuan/mathpix.el"))
+
 (package! mct
   :recipe (:host github :repo "protesilaos/mct"))
+
 (package! gitignore-mode
     :recipe (:host github :repo "magit/git-modes"
        :files ("gitignore-mode.el")))
+
 (package! cape
     :recipe (:host github :repo "minad/cape"
        :files ("cape.el")))
@@ -282,15 +306,19 @@ a ~:recipe~. You'll find documentation on what ~:recipe~ accepts [[https://githu
 (package! pulsar
     :recipe (:host github :repo "protesilaos/pulsar"
        :files ("pulsar.el")))
+
 (package! tmr
     :recipe (:host github :repo "protesilaos/tmr.el"
        :files ("tmr.el")))
+
 (package! usls
     :recipe (:host github :repo "protesilaos/usls"
        :files ("usls.el")))
+
 (package! lin
     :recipe (:host github :repo "protesilaos/lin"
        :files ("lin.el")))
+
 (package! logos
     :recipe (:host github :repo "protesilaos/logos"
        :files ("logos.el")))
@@ -471,6 +499,7 @@ the following:
 
 ;; Underline looks a bit better when drawn lower
 (setq x-underline-at-descent-line t)
+
 #+end_src
 
 #+RESULTS:
@@ -891,10 +920,10 @@ configured to use @ (at symbol) as separator."
   ;;       to be available on all workspaces!
 
   ;; Automatically move EXWM buffer to current workspace when selected
-  ;; (setq exwm-layout-show-all-buffers t)
+  (setq exwm-layout-show-all-buffers t)
 
   ;; Display all EXWM buffers in every workspace buffer list
-  ;; (setq exwm-workspace-show-all-buffers t)
+  (setq exwm-workspace-show-all-buffers t)
 
   (setq exwm-workspace-switch-create-limit 9)
 
@@ -946,45 +975,37 @@ configured to use @ (at symbol) as separator."
   ;; Undo window configurations
   (exwm-input-set-key (kbd "s-u") #'winner-undo)
   (exwm-input-set-key (kbd "s-U") #'winner-redo)
-  ;; ;; Focusing windows
-  ;; (exwm-input-set-key (kbd "s-h") #'evil-window-left)
-  ;; (exwm-input-set-key (kbd "s-j") #'evil-window-down)
-  ;; (exwm-input-set-key (kbd "s-k") #'evil-window-up)
-  ;; (exwm-input-set-key (kbd "s-l") #'evil-window-right)
+
   ;; ;; Moving Windows
   (exwm-input-set-key (kbd "s-t") #'toggle-window-split)
   (exwm-input-set-key (kbd "s-s") #'swap-windows)
+
   (exwm-input-set-key (kbd "s-h") #'next-user-buffer)
   (exwm-input-set-key (kbd "s-a") #'previous-user-buffer)
-  (exwm-input-set-key (kbd "s-H") #'+evil/window-move-left)
-  (exwm-input-set-key (kbd "s-J") #'+evil/window-move-down)
-  (exwm-input-set-key (kbd "s-K") #'+evil/window-move-up)
-  (exwm-input-set-key (kbd "s-L") #'+evil/window-move-right)
-  ;; Resize
-  ;; (exwm-input-set-key (kbd "M-s-h") #'exwm-layout-shrink-window-horizontally)
-  (exwm-input-set-key (kbd "M-s-l") #'exwm-layout-enlarge-window-vertically)
-  (exwm-input-set-key (kbd "M-s-j") #'exwm-layout-enlarge-window)
-  (exwm-input-set-key (kbd "M-s-k") #'exwm-layout-shrink-window)
-  ;; (exwm-input-set-key (kbd "s-o") #'doom/window-maximize-buffer)
-  (exwm-input-set-key (kbd "s-C-l") #'doom/window-maximize-horizontally)
+
+
+  (exwm-input-set-key (kbd "s-C-L") #'doom/window-maximize-horizontally)
   (exwm-input-set-key (kbd "s-C-U") #'doom/window-maximize-vertically)
+
   ;; Workspaces
   (exwm-input-set-key (kbd "s-]") #'exwm/workspace-next)
   (exwm-input-set-key (kbd "s-[") #'exwm/workspace-prev)
   (exwm-input-set-key (kbd "s-}") #'exwm/workspace-move-buffer-next)
   (exwm-input-set-key (kbd "s-{") #'exwm/workspace-move-buffer-prev)
-  ;; (exwm-input-set-key (kbd "s-v") #'evil-window-vsplit)
-  ;; (exwm-input-set-key (kbd "s-z") #'evil-window-split)
+
   (exwm-input-set-key (kbd "s-W") #'exwm-workspace-swap)
   (exwm-input-set-key (kbd "s-C-w") #'exwm-workspace-move)
   (exwm-input-set-key (kbd "<s-return>") #'eshell)
   (exwm-input-set-key (kbd "<s-S-return>") #'dmenu)
+
   ;; (exwm-input-set-key (kbd "s-C") #'kill-current-buffer)
+
  (global-set-key (kbd "s-q") 'kill-buffer-and-window)
   (exwm-input-set-key (kbd "s-C-h") #'evil-window-move-far-right)
   (exwm-input-set-key (kbd "s-C-l") #'evil-window-move-far-left)
+
   (exwm-input-set-key (kbd "s-c") #'exwm-input-toggle-keyboard)
-  ;; (exwm-input-set-key (kbd "s-c") #'exwm-input-toggle-keyboard)
+
   ;; ;; (exwm-input-set-key (kbd "s-r") #'exwm-reset)
   ;; ;; (exwm-input-set-key (kbd "s-f") #'my/toggle-single-window)
   (exwm-input-set-key (kbd "s-F") #'exwm-toggle-floating-window)
@@ -997,7 +1018,7 @@ configured to use @ (at symbol) as separator."
   ;; (exwm-input-set-key (kbd "s-I") #'evil-window-delete)
   (exwm-input-set-key (kbd "s-'") #'hydra-text-scale/body)
   (exwm-input-set-key (kbd "s-.") #'hydra-cycle-buffers/body)
-  ;; (exwm-input-set-key (kbd "s-,") #'exwm-window-resize/body)
+
   (exwm-input-set-key (kbd "C-c x") #'exwm/escape)
   (exwm-input-set-key (kbd "C-c X") #'exwm/enter-insert-state)
   (exwm-input-set-key (kbd "s-d") 'counsel-linux-app)
@@ -1011,6 +1032,7 @@ configured to use @ (at symbol) as separator."
   ;; Keep in mind that changing this list after EXWM initializes has no effect.
   ;; Workspace switching
   (exwm-input-set-key (kbd "C-?") #'execute-extended-command)
+  (global-set-key (kbd "C-?") #'execute-extended-command)
   ;; (setq exwm-input-simulation-keys
   ;;       '(
   ;;         ([?\C-y] . [?\C-v])))
@@ -1138,7 +1160,7 @@ configured to use @ (at symbol) as separator."
 
   ;; (exwm-input-set-key (kbd "M-y") #'my/exwm-counsel-yank-pop)
   (exwm-input-set-key (kbd "M-y") 'consult-yank-pop)
-  (exwm-input-set-key (kbd "M-Y") 'my/exwm-counsel-yank-pop)
+  (exwm-input-set-key (kbd "M-Y") 'my/exwm-counsel-yank-pop) ;;for pasting stuff in x windowapps
 
   (use-package desktop-environment
     :after exwm
@@ -1323,6 +1345,9 @@ and adapted to use simulations keys to have a common yank keystroke."
 
   (exwm-enable))
 #+end_src
+
+#+RESULTS:
+: t
 
 ** Desktop File
 
@@ -3073,6 +3098,57 @@ Prepends the value of `exwm-autostart-environmwnt' to
       (add-hook 'exwm-init-hook exwm-custom-init t))
     ))
 #+end_src
+** final touchups
+
+XDG compliance and WM settings
+I have to set a few environment variables for the sake of compliance with various specifications, most notably the XDG Base Directory Specification. Also in this block I set an environment variable signaling to Java applications that the window manager is not a reparenting window manager.
+#+begin_src emacs-lisp :tangle yes
+
+(setenv "XDG_CURRENT_DESKTOP" "emacs")
+(setenv "GTK2_RC_FILES" (expand-file-name "~/.config/gtk-2.0/gtkrc"))
+;; (setenv "GTK3_INI_FILES" (expand-file-name "~/.config/gtk-3.0/settings.ini"))
+(setenv "QT_QPA_PLATFORMTHEME" "gtk2")
+
+;;Make Java applications aware this is a non-reparenting window manager.
+(setenv "_JAVA_AWT_WM_NONREPARENTING" "1")
+#+end_src
+
+#+RESULTS:
+: 1
+
+Disable screen blanking
+I don’t need my laptop’s screen shutting off just because I’m sitting and watching a video with the laptop idle too long.
+#+begin_src emacs-lisp :tangle yes
+(start-process "Disable Blanking" nil "xset"
+               "s" "off" "-dpms")
+#+end_src
+
+Disable the trackpad
+This thing is disgusting, and I prefer trackpoints way more.
+#+begin_src emacs-lisp :tangle no
+
+(start-process "Trackpad Setup" nil "xinput"
+               "disable" (shell-command-to-string
+                          (concat "xinput | grep Synap | head -n 1 | "
+                                  "sed -r 's/.*id=([0-9]+).*/\\1/' | "
+                                  "tr '\n' ' ' | sed 's/ //'")))
+#+end_src
+
+#+RESULTS:
+: #<process Trackpad Setup>
+
+Set fallback cursor
+Some X windows will have weird cursors if this isn’t done.
+#+begin_src emacs-lisp :tangle yes
+
+(start-process "Fallback Cursor" nil "xsetroot"
+               "-cursor_name" "left_ptr")
+#+end_src
+Banish the mouse
+I’ve always been mixed on this behavior but it seems like a good idea.
+#+begin_src emacs-lisp :tangle yes
+(start-process "Mouse banisher" nil "xbanish")
+#+end_src
 * DONE services
 CLOSED: [2022-03-31 Thu 20:07]
 ** DONE Proced (process monitor, similar to `top')
@@ -4502,43 +4578,42 @@ the others only specify a background attribute.
   ;; the `:custom' keyword of `use-package', or related).  Read their
   ;; doc strings if you still want to use `setq'.
   :config
-  (custom-set-variables
-   '(lin-mode-hooks
-     '(bongo-mode-hook
-       dired-mode-hook
-       elfeed-search-mode-hook
-       git-rebase-mode-hook
-       ibuffer-mode-hook
-       ilist-mode-hook
-       ledger-report-mode-hook
-       log-view-mode-hook
-       magit-log-mode-hook
-       mu4e-headers-mode
-       notmuch-search-mode-hook
-       notmuch-tree-mode-hook
-       occur-mode-hook
-       org-agenda-mode-hook
-       tabulated-list-mode-hook))
-   '(lin-face 'lin-blue))) ; check `lin-face' doc string for alternative styles
+  (setq lin-face 'lin-blue)
+  (setq lin-mode-hooks
+        '(bongo-mode-hook
+          dired-mode-hook
+          elfeed-search-mode-hook
+          git-rebase-mode-hook
+          ibuffer-mode-hook
+          ilist-mode-hook
+          ledger-report-mode-hook
+          log-view-mode-hook
+          magit-log-mode-hook
+          mu4e-headers-mode
+          notmuch-search-mode-hook
+          notmuch-tree-mode-hook
+          occur-mode-hook
+          org-agenda-mode-hook
+          tabulated-list-mode-hook))
+  (lin-global-mode 1)) ; applies to all `lin-mode-hooks'
 #+end_src
 
 #+RESULTS:
 : t
 
 *** pulsar.el (highlight cursor position)
-:PROPERTIES:
-:CUSTOM_ID: h:6bbc41d6-da7c-4301-84c6-c5887c29283f
-:END:
 
 This is a small package of mine that highlights the current line after a
 given command is invoked.  The affected commands are defined in the user
-option =pulsar-pulse-functions=.  This is one of the few options I set
-with =customize-set-variable=.  Unlike =setq= this has the ability to
-run the custom-setter code specified in the option's definition.  Put
-concretely, it makes sure the affected functions are updated properly.
+option =pulsar-pulse-functions=.  Then all one needs is to enable the
+minor mode, either globally (=pulsar-global-mode=) or hook the local
+mode (=pulsar-mode=) to the desired major-mode hooks.  I just enable the
+global mode.
 
 Pulsar builds on top of the built-in =pulse.el=.  More information in
 the official manual: https://protesilaos.com/emacs/pulsar.
+
+Also watch my [[https://protesilaos.com/codelog/2022-03-14-emacs-pulsar-demo/][demonstration of pulsar]] (2022-03-14).
 
 #+begin_src emacs-lisp
 ;;; pulsar.el (highlight cursor position)
@@ -4591,21 +4666,25 @@ the official manual: https://protesilaos.com/emacs/pulsar.
   (setq pulsar-face 'pulsar-magenta)
   (setq pulsar-highlight-face 'pulsar-green)
 
-  (pulsar-global-mode 1))
+  (pulsar-global-mode 1)
 
   ;; pulsar does not define any key bindings.  This is just my personal
   ;; preference.  Remember to read the manual on the matter.  Evaluate:
   ;;
   ;; (info "(elisp) Key Binding Conventions")
-  ;; (let ((map global-map))
-  ;;   (define-key map (kbd "C-x l") #'pulsar-pulse-line) ; override `count-lines-page'
-  ;;   (define-key map (kbd "C-x L") #'pulsar-highlight-dwim))) ; or use `pulsar-highlight-line'
+  (let ((map global-map))
+    (define-key map (kbd "C-x l") #'pulsar-pulse-line) ; override `count-lines-page'
+    (define-key map (kbd "C-x L") #'pulsar-highlight-dwim))) ; or use `pulsar-highlight-line'
 #+end_src
 
 #+RESULTS:
 : t
 
-*** general line
+This is the code for =pulsar.el=:
+
+#+include: prot-lisp/pulsar.el src emacs-lisp :tangle no
+
+**** general line
 I set comment-line to 'SPC TAB TAB' which is a rather comfortable keybinding for me on my ZSA Moonlander keyboard.  The standard Emacs keybinding for comment-line is 'C-x C-;'.  The other keybindings are for commands that toggle on/off various line-related settings.  Doom Emacs uses 'SPC t' for "toggle" commands, so I choose 'SPC t' plus 'key' for those bindings.
 
 | COMMAND                  | DESCRIPTION                               | KEYBINDING  |
@@ -7244,7 +7323,7 @@ are just some tweaks to make it work the way I prefer.
   (unless (equal persp-mode t)
     (persp-mode)))
 #+end_src
-** DONE Nicer buffer name for buffers with same name
+** DONE Nicer buffer name for buffers with same name uniquify
 CLOSED: [2022-04-02 Sat 23:19]
 #+BEGIN_SRC emacs-lisp
 (use-package uniquify
@@ -7252,9 +7331,10 @@ CLOSED: [2022-04-02 Sat 23:19]
   :config
   (setq uniquify-buffer-name-style 'forward)
   (setq uniquify-strip-common-suffix t)
-  (setq uniquify-after-kill-buffer-p t)
+  (setq uniquify-after-kill-buffer-p t))
   ;; (setq uniquify-ignore-buffers-re "^\\*") ; don't muck with special buffers
-  (setq uniquify-separator "/"))
+  ;; (setq uniquify-separator "/"))
+
 #+END_SRC
 
 #+RESULTS:
@@ -7353,9 +7433,6 @@ CLOSED: [2022-04-02 Sat 23:27]
 : t
 
 ** Window configuration
-:PROPERTIES:
-:CUSTOM_ID: h:12591f89-eeea-4b12-93e8-9293504e5a12
-:END:
 
 I believe that Emacs' true power lies in its buffer management rather
 than its multiplexing.  The latter becomes inefficient at scale, since
@@ -7373,10 +7450,7 @@ of history and layouts, as well as directional or direct window
 navigation.
 
 *** Window rules and basic tweaks (window.el)
-:PROPERTIES:
-:CUSTOM_ID: h:3d8ebbb1-f749-412e-9c72-5d65f48d5957
-:END:
-
+**** desc
 The =display-buffer-alist= is intended as a rule-set for controlling the
 placement of windows.  This is mostly needed for ancillary buffers, such
 as shells, compilation output, and the like.  The objective is to create
@@ -7416,6 +7490,7 @@ For a demo of the =display-buffer-alist= and the functions that
 accompany it, watch my [[https://protesilaos.com/codelog/2020-01-07-emacs-display-buffer/][video on rules for buffer placement]]
 (2020-01-07).
 
+**** code
 #+begin_src emacs-lisp :tangle no
 ;;; Window rules and basic tweaks (window.el)
 (use-package window
@@ -7520,6 +7595,9 @@ accompany it, watch my [[https://protesilaos.com/codelog/2020-01-07-emacs-displa
     (define-key map "<" #'shrink-window-horizontally)))
 #+end_src
 
+#+RESULTS:
+: t
+
 *** Directional window motions (windmove)
 :PROPERTIES:
 :CUSTOM_ID: h:230d96c8-a955-4b82-844d-9de9a1b7c531
@@ -7564,6 +7642,139 @@ Also read: [[#h:6b4f7792-6ccd-45d5-b262-01d200639072][Window history (winner-mod
 #+RESULTS:
 : t
 
+*** Tabs for window layouts (tab-bar.el and prot-tab.el)
+
+**** desc
+Starting with version 27.1, Emacs has built-in support for two distinct
+concepts of "tabs":
+
+1. Work spaces that contain windows in any given layout.
+2. A list of buffers presented as buttons at the top of the window.
+
+The former, represented by the =tab-bar= library, is best understood as
+the equivalent of "virtual desktops", as these are used in most desktop
+environments or window managers.
+
+The latter, implemented in =tab-line=, is the same as the tabs you are
+used to in web browsers.  Each buffer is assigned to a single tab.
+Clicking on the tab takes you to the corresponding buffer.
+
+I do not need the =tab-line= as I find such tabs to be inefficient at
+scale.  Finding a buffer through search mechanisms is generally faster:
+it does not matter whether you have ten or a hundred buffers on the list
+(unless, of course, they all have similar names in which case you are in
+trouble either way---do not forget to check my [[#h:06290f9c-491c-45b2-b213-0248f890c83d][Ibuffer settings]]).
+
+On the other hand, the work spaces (=tab-bar=) are very useful for
+organising the various applications that are running inside of Emacs.
+You can, for example, have your current project on tab (workspace) 1,
+your email and news reader on 2, music on 3, and so on.  Of course, this
+can also be achieved by using separate frames for each of these, though
+I generally prefer working in a single frame (plus you can define a
+window configuration or frameset in a register).
+
+Starting with Emacs 28, the =tab-bar= can re-use indicators from the mode
+line.  With a bit of tweaking (and dirty hacks---but, hey, they work!)
+we can hide all mode lines and replace them with a single status bar
+that spans the length of the frame (just like the Tmux status line, if
+you have ever used that).  I was aware of this possibility for a long
+time, as I keep track of developments in emacs.git, but I never actually
+tinkered with the available options...  Until Philip Kaludercic
+published the article [[http://ruzkuku.com/texts/emacs-global.html][Emacs 28 has a global mode line]] (2021-07-29) which
+inspired me to finally start experimenting.
+
+As of this writing (2021-07-30), upstream Emacs only covers the part of
+the mode line that shows the current time and the like (technically the
+=global-mode-string=).  So my =prot-tab.el= library, which is reproduced
+after the following package configurations, implements some more
+indicators that I want to use.
+
+The minor mode which takes care of this new "status line" concept is
+=prot-tab-status-line=.  Check the code to notice the dirty hacks I
+alluded to.
+
+In the past, I was using a command which would merely toggle the display
+of the =tab-bar= (=prot-tab-bar-toggle=), but now that I can finally avoid
+the duplication of information and keep things cleaner, I think I am not
+going back to the paradigm where each window has its own mode line.
+
+To learn about the key bindings that the =tab-bar= uses, type its prefix
+key =C-x t= and follow it up with =C-h= (read [[#h:83730fe8-d917-4d94-96f4-bbc5c900fe38][How do you learn Emacs?]]).
+
+Finally, now that =tab-bar-history-mode= is a de facto replacement for
+=winner-mode=.  Like Winner, it stores a history of window layouts.
+Unlike Winner, it keeps histories that are specific to each tab.  The
+problem with Winner is that when we switch between tabs, it continues to
+retain a linear history, so when we try to undo in one tab, we
+effectively get the state of the previous one.  As such, my two commands
+=prot-tab-winner-undo= and =prot-tab-winner-redo= provide thin wrappers
+around the two modes.  If tabs are present, then we use the history for
+them, else we fall back to Winner.
+
+Here are my settings, followed by the entirety of =prot-tab.el=.
+
+**** code
+#+begin_src emacs-lisp :tangle no
+;;; Tabs for window layouts (tab-bar.el and prot-tab.el)
+(use-package tab-bar
+  :config
+  (setq tab-bar-close-button-show nil)
+  (setq tab-bar-close-last-tab-choice nil)
+  (setq tab-bar-close-tab-select 'recent)
+  (setq tab-bar-new-tab-choice t)
+  (setq tab-bar-new-tab-to 'right)
+ (setq tab-bar-position nil)
+  (setq tab-bar-show nil)
+  (setq tab-bar-tab-hints nil)
+  (setq tab-bar-tab-name-function 'tab-bar-tab-name-current)
+
+  (tab-bar-mode -1)                     ; see `prot-tab-status-line'
+
+  ;; Same concept as `winner-mode'.  See the `prot-tab-winner-undo' and
+  ;; its counterpart.
+  (tab-bar-history-mode 1))
+
+(load "prot-tab")
+(use-package prot-tab
+  :config
+  (setq prot-tab-tab-select-num-threshold 3)
+  (setq tab-bar-format                    ; Emacs 28
+        '(prot-tab-format-space-single
+          prot-tab-format-mule-info
+          prot-tab-format-modified
+          tab-bar-format-tabs-groups
+          prot-tab-format-space-double
+          prot-tab-format-position
+          prot-tab-format-space-double
+          prot-tab-format-vc
+          prot-tab-format-space-double
+          prot-tab-format-modes         ; FIXME 2021-07-30: Make it work with `minions'.
+          tab-bar-format-align-right
+          prot-tab-format-misc-info
+          prot-tab-format-space-double
+          tab-bar-format-global
+          prot-tab-format-space-single))
+
+  (add-hook 'after-init-hook #'prot-tab-status-line)
+
+  (let ((map global-map))
+    (define-key map (kbd "C-x <right>") #'prot-tab-winner-redo)
+    (define-key map (kbd "C-x <left>") #'prot-tab-winner-undo)
+    (define-key map (kbd "<f8>") #'prot-tab-status-line) ; unopinionated alternative: `prot-tab-bar-toggle'
+    (define-key map (kbd "C-x t t") #'prot-tab-select-tab-dwim)))
+
+;; ;; This is only included as a reference.
+;; (prot-emacs-builtin-package 'tab-line
+;;   (global-tab-line-mode -1))
+#+end_src
+
+#+RESULTS:
+: t
+
+The =prot-tab.el= code, which is in [[https://gitlab.com/protesilaos/dotfiles][my dotfiles' repo]]:
+
+#+include: prot-lisp/prot-tab.el src emacs-lisp :tangle no
+
 *** Transposition and rotation of windows
 :PROPERTIES:
 :CUSTOM_ID: h:753ea060-57e4-4dba-9bf9-b6337e478839
@@ -7585,6 +7796,10 @@ have the right settings, you can repeat again just by pressing another =z=
   (let ((map global-map))
     (define-key map (kbd "C-x M-r") #'rotate-frame-clockwise)))
 #+end_src
+
+#+RESULTS:
+: t
+
 ** Tabs
 *** Awesome Tab eaf
 AceJump
@@ -7886,8 +8101,11 @@ To use tabs in Doom Emacs, be sure to uncomment "tabs" in Doom's init.el.  Displ
 
 #+end_src
 
+#+RESULTS:
+: t
+
 *** tab bar
-#+begin_src emacs-lisp
+#+begin_src emacs-lisp :tangle no
 
 ;;;----------------------------------------------------------------
 ;; ** TABS!TABS!TABS!
@@ -7992,9 +8210,9 @@ To use tabs in Doom Emacs, be sure to uncomment "tabs" in Doom's init.el.  Displ
 #+end_src
 
 #+RESULTS:
-: t
 
-** Shackle
+** DONE Shackle
+CLOSED: [2022-04-05 Tue 19:20]
 Shackle is an easy way to customise the display rules for windows rather than messing up with display-buffer-alist.
 
 #+begin_src emacs-lisp :tangle no
@@ -8199,8 +8417,6 @@ The following functions helps achieve this:
 ** all in one setup
 #+begin_src emacs-lisp :tangle no
 
-;; (load "better-buffers")
-;; (load "setup-ibuffer")
 
 ;; * WINDOW MANAGEMENT
 ;;;################################################################
@@ -8212,9 +8428,9 @@ The following functions helps achieve this:
 ;; Wasamasa's Shackle package simplifies Emacs' rather arcane display-buffer
 ;; rules so you don't have to tear your hair out understanding how to configure
 ;; it. Unfortunately I did, see [[*SETUP-WINDOWS][setup-windows]].
-;; (use-package shackle
-;;   :disabled t
-;;   :init (shackle-mode))
+(use-package shackle
+  :disabled t
+  :init (shackle-mode))
 
 ;;;----------------------------------------------------------------
 ;; ** SETUP-WINDOWS
@@ -8253,7 +8469,6 @@ Also kill this window, tab or frame if necessary."
       (kill-buffer-and-window))))
 
 ;; setup-windows:
-;; #+INCLUDE: "./lisp/setup-windows.org" :minlevel 2
 
 ;;;----------------------------------------------------------------
 ;; ** POPUPS
@@ -8483,10 +8698,10 @@ Also kill this window, tab or frame if necessary."
 
 (use-package windmove
   :bind
-  (("H-<right>" . windmove-swap-states-right)
-   ("H-<down>" . windmove-swap-states-down)
-   ("H-<up>" . windmove-swap-states-up)
-   ("H-<left>" . windmove-swap-states-left)))
+  (("s-S-<right>" . windmove-swap-states-right)
+   ("s-S-<down>" . windmove-swap-states-down)
+   ("s-S-<up>" . windmove-swap-states-up)
+   ("s-S-<left>" . windmove-swap-states-left)))
   ;; :config
   ;; (use-package emacs-i3))
 
@@ -8568,6 +8783,9 @@ surrounded by word boundaries."
 
 #+end_src
 
+#+RESULTS:
+: reb-replace-regexp
+
 ** Edwina
 #+begin_src emacs-lisp :tangle no
 (use-package edwina
@@ -8599,7 +8817,7 @@ surrounded by word boundaries."
 
     [:pad-keys t
      ["Appearance"
-      ("t" "color theme" my/toggle-theme)
+      ("t" "color theme" consult-theme)
       ("B" "BIG mode"    presentation-mode)
       ;; ("M" "smart modeline" ignore)
       ("8" "pretty symbols" (lambda () (interactive)
@@ -8649,6 +8867,9 @@ surrounded by word boundaries."
       ("p" "smartparens" smartparens-mode)]]))
 #+end_src
 
+#+RESULTS:
+: toggle-modes
+
 * General interface and interactions
 This section contains configurations for all aspects of the Emacs user
 interface, as well lots of small or self-contained tweaks that cover a
@@ -8681,7 +8902,9 @@ not have a modeline, such as what happens when I enable my custom
 information to the tab bar (in effect, it creates a universal status
 line---see [[#h:63ad472f-c9c2-40ad-9675-1dc529487788][Tabs for window layouts (tab-bar.el and prot-tab.el)]]).
 
-#+begin_src emacs-lisp :tangle no
+#+begin_src emacs-lisp
+  (setq outline-minor-mode-highlight 'override) ; emacs28
+  (setq outline-minor-mode-cycle t)             ; emacs28
 ;;; Window divider mode
 (setq window-divider-default-right-width 1)
 (setq window-divider-default-bottom-width 1)
@@ -9203,6 +9426,7 @@ Bookmarks are somewhat like registers in that they record positions you can jump
       (:prefix ("b". "buffer")
        :desc "List bookmarks" "L" #'list-bookmarks
        :desc "Save current bookmarks to bookmark file" "w" #'bookmark-save))
+  (setq bookmark-set-fringe-mark t) ; Emacs28
 #+END_SRC
 
 #+RESULTS:
@@ -9525,6 +9749,12 @@ CLOSED: [2022-04-01 Fri 15:50]
       search-whitespace-regexp ".*?"
       isearch-allow-scroll 'unlimited)
 (load "setup-isearch")
+
+  ;; These variables are from Emacs 28
+  (setq isearch-repeat-on-direction-change t)
+  (setq lazy-highlight-initial-delay 0.5)
+  (setq lazy-highlight-no-delay-length 3)
+  (setq isearch-wrap-pause t)
 #+end_src
 
 #+RESULTS:
@@ -10508,7 +10738,7 @@ point.
 #+end_src
 
 #+RESULTS:
-: flymake-goto-prev-error
+: t
 
 
 **** Flymake + Shellcheck
@@ -11348,6 +11578,8 @@ ecosystem:
   ;;       dired-hide-details-hide-symlink-targets nil
   ;;       delete-by-moving-to-trash t)
 
+  ;; And this is for Emacs 28
+  (setq dired-do-revert-buffer (lambda (dir) (not (file-remote-p dir))))
   (defun dired-find-file-other-window ()
   "In Dired, visit this file or directory in another window. If `ace-window' is available, use it to select window for visiting this file.`"
   (interactive)
@@ -12664,7 +12896,7 @@ in the manual of the themes.  If you are using them, evaluate this form:
 : t
 
 ** karthydra
-#+begin_src emacs-lisp :tangle no
+#+begin_src emacs-lisp
 
 ;;;----------------------------------------------------------------
 ;; ** HYDRAS
@@ -13413,459 +13645,31 @@ active region use it instead."
 #+RESULTS:
 : google-search-at-point
 
-** ELFEED
-*** elfeed
-#+begin_src emacs-lisp :tangle ~/.config/doom/lisp/setup-elfeed.el
+** paths
+#+begin_src emacs-lisp :tangle yes
 
-;;; Elfeed  -*- lexical-binding: t; -*-
+;; * PATHS
 
-;; Elfeed, the feed reader for emacs, is the best feed reading experience I've
-;; had since Google reader in the late 2000s. Not the best feed reading
-;; experience in Emacs. Best, period.
-;;
-;; Part of the reason is that it's eminently hackable, see [[https://karthinks.com/software/declickbaiting-elfeed][Declickbaiting Elfeed]] and [[https://karthinks.com/software/lazy-elfeed][Lazy Elfeed]].
-;;
-;; Customizations below include
-;; - Date oriented browsing (browse by date with "f" and "b"). This mimics how
-;;   you move by day in =org-agenda=.
-;; - Single key browsing (space to keep reading)
-;; - Send entries to mpv
-;; - Easy taggers
-;; - De-clickbait title entires
-;; - tag completion
-
-(use-package elfeed
-  :commands (elfeed elfeed-update elfeed-search-bookmark-handler)
-  ;; :load-path ("~/.local/share/git/elfeed/"
-  ;;             "~/.local/share/git/elfeed/web")
+;; I avoid defining too many custom helpers, =dir-concat= is an exception.
+(use-package emacs
   :config
-  (setq-default elfeed-db-directory (dir-concat user-cache-directory "~/.elfeed")
-                elfeed-save-multiple-enclosures-without-asking t
-                elfeed-search-clipboard-type 'CLIPBOARD
-                elfeed-search-filter "#50 +unread "
-                elfeed-show-entry-switch #'elfeed-display-buffer)
-  ;;----------------------------------------------------------------------
-  ;;*** Helper functions
-  ;;----------------------------------------------------------------------
+  (defun dir-concat (dir file)
+    "join path DIR with filename FILE correctly"
+    (concat (file-name-as-directory dir) file))
 
+  ;; ;; Adds ~/.emacs.d to the load-path
+  ;; (push (dir-concat user-emacs-directory "plugins/") load-path)
+  ;; (push (dir-concat user-emacs-directory "lisp/") load-path)
 
-  (defun elfeed-search-show-entry-pre (&optional lines)
-  "Returns a function to scroll forward or back in the Elfeed
-  search results, displaying entries without switching to them."
-    (lambda (times)
-      (interactive "p")
-      (forward-line (* times (or lines 0)))
-      (recenter)
-      (call-interactively #'elfeed-search-show-entry)
-      (select-window (previous-window))
-      (unless elfeed-search-remain-on-entry (forward-line -1))))
-
-  (general-def :keymaps 'elfeed-search-mode-map
-               :states  '(normal visual)
-               "gj" (elfeed-search-show-entry-pre 1)
-               "gk" (elfeed-search-show-entry-pre -1)
-               "]]" (elfeed-search-show-entry-pre 1)
-               "[[" (elfeed-search-show-entry-pre -1))
-  (general-def :keymaps 'elfeed-search-mode-map
-               "M-RET" (elfeed-search-show-entry-pre)
-               "w" 'elfeed-search-yank
-               "M-n" (elfeed-search-show-entry-pre 1)
-               "M-p" (elfeed-search-show-entry-pre -1))
-
-  (defun elfeed-display-buffer (buf &optional act)
-    (pop-to-buffer buf '((display-buffer-reuse-window display-buffer-in-direction)
-                         (direction . above)
-                         (window-height . 0.7)))
-    ;; (set-window-text-height (get-buffer-window) (round (* 0.7 (frame-height))))
-    )
-
-  (advice-add 'elfeed-kill-buffer :after 'delete-window-if-not-single)
-  (advice-add 'elfeed-show-entry :after (defun elfeed-visual-lines-a (_entry)
-                                          (visual-line-mode 1)))
-
-  (defun elfeed-scroll-up-command (&optional arg)
-    "Scroll up or go to next feed item in Elfeed"
-    (interactive "^P")
-    (let ((scroll-error-top-bottom nil))
-      (condition-case-unless-debug nil
-          (scroll-up-command arg)
-        (error (elfeed-show-next)))))
-
-  (defun elfeed-scroll-down-command (&optional arg)
-    "Scroll up or go to next feed item in Elfeed"
-    (interactive "^P")
-    (let ((scroll-error-top-bottom nil))
-      (condition-case-unless-debug nil
-          (scroll-down-command arg)
-        (error (elfeed-show-prev)))))
-
-  (defun elfeed-search-tag-as (mytag)
-    "Returns a function that tags an elfeed entry or selection as
-MYTAG"
-    (lambda ()
-      "Toggle a tag on an Elfeed search selection"
-      (interactive)
-      (elfeed-search-toggle-all mytag)))
-
-  (general-def :keymaps 'elfeed-search-mode-map
-    :states  '(normal visual emacs)
-    "l"      (elfeed-search-tag-as 'later)
-    "d"      (elfeed-search-tag-as 'junk)
-    "a"      (elfeed-search-tag-as 'listen))
-  (bind-key "l" (elfeed-search-tag-as 'later) elfeed-search-mode-map)
-  (bind-key "u" (elfeed-search-tag-as 'unread) elfeed-search-mode-map)
-  (bind-key "a" (elfeed-search-tag-as 'listen) elfeed-search-mode-map)
-
-  (defun elfeed-show-tag-as (mytag)
-    "Returns a function that tags an elfeed entry or selection as
-MYTAG"
-    (lambda ()
-      "Toggle a tag on an Elfeed entry being displayed"
-      (interactive)
-      (elfeed-tag elfeed-show-entry mytag)
-      (elfeed-search-update-entry elfeed-show-entry)
-      (unless elfeed-search-remain-on-entry (elfeed-show-next))))
-
-  (general-def :keymaps 'elfeed-show-mode-map
-    :states '(normal visual emacs)
-    "l"     (elfeed-show-tag-as 'later)
-    "d"     (elfeed-show-tag-as 'junk))
-
-  (bind-key "l" (elfeed-show-tag-as 'later)  elfeed-show-mode-map)
-  (bind-key "u" (elfeed-show-tag-as 'unread) elfeed-show-mode-map)
-  (bind-key "a" (elfeed-show-tag-as 'listen) elfeed-show-mode-map)
-
-  (setq elfeed-feeds my-elfeed-feeds)
-
-  (defun elfeed-show-eww-open (&optional use-generic-p)
-    "open with eww"
-    (interactive "P")
-    (let ((browse-url-browser-function #'eww-browse-url))
-      (elfeed-show-visit use-generic-p)
-      (add-hook 'eww-after-render-hook 'eww-readable nil t)))
-
-  (defun elfeed-search-eww-open (&optional use-generic-p)
-    "open with eww"
-    (interactive "P")
-    (let ((browse-url-browser-function #'eww-browse-url))
-      (elfeed-search-browse-url use-generic-p)
-      (add-hook 'eww-after-render-hook 'eww-readable nil t)))
-
-  (defun elfeed-mpv-url (&optional use-single-p)
-    "Visit the current entry in umpv or (with prefix arg
-USE-SINGLE-P) with mpv."
-    (interactive "P")
-    (let ((browse-url-browser-function (if use-single-p
-                                           (lambda (url &optional _) (browse-url-umpv url t))
-                                           #'browse-url-umpv)))
-      (pcase major-mode
-        ('elfeed-search-mode (elfeed-search-browse-url))
-        ('elfeed-show-mode (elfeed-show-visit)))))
-
-  (bind-key "m" #'elfeed-mpv-url elfeed-search-mode-map)
-  (bind-key "m" #'elfeed-mpv-url elfeed-show-mode-map)
-
-  (add-hook 'elfeed-new-entry-hook
-            (elfeed-make-tagger :feed-title "The Linux Experiment"
-                                :entry-title "Linux News"
-                                :add '(news listen)))
-
-  (add-hook 'elfeed-new-entry-hook
-            (elfeed-make-tagger :feed-title "Skill Up"
-                                :entry-title "This Week"
-                                :add '(news listen)))
-
-  (add-hook 'elfeed-new-entry-hook
-            (elfeed-make-tagger :feed-title "TechLinked"
-                                :add '(news listen)))
-
-  (add-hook 'elfeed-new-entry-hook
-            (elfeed-make-tagger :feed-title "ACG"
-                                :entry-title "\\(?:Roundup\\|Gaming News\\)"
-                                :add '(news listen)))
-
-  (add-hook 'elfeed-new-entry-hook #'elfeed-declickbait-entry)
-
-  (defun elfeed-declickbait-entry (entry)
-    (when-let ((title (elfeed-entry-title entry))
-               (feed (elfeed-entry-feed entry))
-               (feed-url (elfeed-feed-url feed))
-               (youtube-p (string-match-p "youtube\\.com" feed-url)))
-      (setf (elfeed-meta entry :title)
-            (elfeed-title-transform title))))
-
-  (defun elfeed-title-transform (title)
-    "Declickbait string TITLE."
-    (let* ((trim "\\(?:\\(?:\\.\\.\\.\\|[!?]\\)+\\)")
-           (arr (split-string title nil t trim))
-           (s-table (copy-syntax-table)))
-      (modify-syntax-entry ?\' "w" s-table)
-      (with-syntax-table s-table
-        (mapconcat (lambda (word)
-                     (cond
-                      ((member word '("AND" "OR" "IF" "ON" "IT" "TO"
-                                      "A" "OF" "VS" "IN" "FOR" "WAS"
-                                      "IS" "BE" "SO"))
-                       (downcase word))
-                      ((member word '("WE" "DAY" "HOW" "WHY" "NOW" "OLD"
-                                      "NEW" "MY" "TOO" "GOT" "GET" "THE"
-                                      "ONE" "DO" "YOU" "BAD" "ALL" "CAN"
-                                      "HE" "EAT"))
-                       (capitalize word))
-                      ((and (> (length word) 3)
-                            (string-match-p "\\`[A-Z\\.\\?\\!\\':,’\\-]*\\'"
-                                            word))
-                       (capitalize word))
-                      (t word)))
-                   arr " "))))
-
-  (defun my/elfeed-search-by-day (dir)
-    (lambda (&optional arg)
-      (interactive "p")
-      (let* ((entry (elfeed-search-selected :ignore-region))
-             (this-day (or (and (string-match-p ".*@\\(.+\\)--.*" elfeed-search-filter)
-                                (time-to-seconds
-                                 (encode-time
-                                  (parse-time-string
-                                   (concat (replace-regexp-in-string
-                                            ".*@.*?--\\([^[:space:]]+?\\)" "\\1"
-                                            elfeed-search-filter)
-                                           " 00:00:00 Z")))))
-                           (and entry
-                                (elfeed-entry-date entry))
-                           (time-to-seconds
-                            (current-time))))
-             (next-day (time-add this-day (days-to-time (or arg 1))))
-             (next-next-day (time-add next-day (days-to-time (or arg 1))))
-             (prev-day (time-subtract this-day (days-to-time (or arg 1))))
-             from to)
-        (pcase dir
-          ('next (setq from next-day
-                       to   next-next-day))
-          ('prev (setq from prev-day
-                       to   this-day))
-          (_     (setq from this-day
-                       to   next-day)))
-        (setq elfeed-search-filter (concat (replace-regexp-in-string
-                                            "@[^[:space:]]*" ""
-                                            elfeed-search-filter)
-                                           "@"  (elfeed-search-format-date from)
-                                           "--" (elfeed-search-format-date to)))
-        (elfeed-search-update :force))))
-
-  (define-key elfeed-search-mode-map (kbd ".") (my/elfeed-search-by-day 'this))
-  (define-key elfeed-search-mode-map (kbd "b") (my/elfeed-search-by-day 'next))
-  (define-key elfeed-search-mode-map (kbd "f") (my/elfeed-search-by-day 'prev))
-
-  (defvar elfeed-search-filter-map
-    (let ((map (make-sparse-keymap)))
-      (define-key map (kbd "+") (lambda () (interactive) (my/elfeed-search-tag-filter "+")))
-      (define-key map (kbd "-") (lambda () (interactive) (my/elfeed-search-tag-filter "-")))
-      (define-key map (kbd "@") (lambda () (interactive) (my/elfeed-search-tag-filter "@")))
-      (define-key map (kbd "RET") 'exit-minibuffer)
-      (define-key map (kbd "<tab>") 'minibuffer-force-complete-and-exit)
-      (define-key map (kbd "C-g") 'abort-recursive-edit)
-      map)
-    "Keymap active when entering filter terms in elfeed")
-
-  (defun elfeed-search-live-filter ()
-    "Filter the elfeed-search buffer as the filter is written."
-    (interactive)
-    (unwind-protect
-        (let ((elfeed-search-filter-active :live))
-          (setq elfeed-search-filter
-                (read-from-minibuffer "Filter: " elfeed-search-filter elfeed-search-filter-map)))
-      (elfeed-search-update :force)))
-
-  (defun my/elfeed-search-tag-filter (plus-minus)
-    "Filter `elfeed' by tags using completion."
-    (let ((elfeed-search-filter-active nil))
-      (if (equal plus-minus "@")
-          (insert (format "@%s "
-                          (replace-regexp-in-string
-                           " +" "-"
-                           (replace-regexp-in-string
-                            " to " "--"
-                            (read-from-minibuffer "Date range: ")))))
-        (let* ((db-tags (elfeed-db-get-all-tags))
-               (tag (completing-read (format "%s %s" elfeed-search-filter plus-minus) db-tags nil t)))
-          (insert (concat plus-minus tag " ")))))
-    (elfeed-search-update :force))
-
-  (defun my/elfeed-quick-switch-filter ()
-    (interactive)
-    (bookmark-jump
-     (consult--read
-      (consult--bookmark-candidates)
-      :prompt "Elfeed bookmark: "
-      :initial "elfeed/")))
-  ;;----------------------------------------------------------------------
-  ;; Faces
-  ;;----------------------------------------------------------------------
-  ;; (defface elfeed-entry-read-later
-  ;;   '((t :foreground "#b48ead"))
-  ;;   "Marks a 'read-later' Elfeed entry.")
-  ;; (push '(later elfeed-entry-read-later)
-  ;;       elfeed-search-face-alist)
-  :general
-  (:states '(normal visual)
-           :keymaps 'elfeed-search-mode-map
-           "SPC" 'space-menu
-           "gO"  'elfeed-search-eww-open
-           "c"   'elfeed-search-clear-filter
-           "gy"  'elfeed-search-yank
-           )
-
-  (:states '(normal visual)
-           :keymaps 'elfeed-show-mode-map
-           "SPC"   'elfeed-scroll-up-command
-           "S-SPC" 'elfeed-scroll-down-command
-           "gO"    'elfeed-show-eww-open
-           "gy"    'elfeed-show-yank
-           "<tab>" 'elfeed-show-next-link)
-  (:keymaps 'elfeed-show-mode-map
-            "SPC" 'elfeed-scroll-up-command
-            "S-SPC" 'elfeed-scroll-down-command
-            "W" 'elfeed-search-eww-open
-            "w" 'elfeed-show-yank
-            "B" 'elfeed-show-eww-open
-            "x" 'elfeed-search-browse-url)
-  (:keymaps 'elfeed-search-mode-map
-            "C-<tab>" 'my/elfeed-quick-switch-filter
-            "B" 'elfeed-search-eww-open
-            "W" 'elfeed-search-eww-open
-            "x" 'elfeed-search-browse-url))
-
-;; * WALLABAG
-(use-package wallabag
-  :load-path "plugins/wallabag"
-  :commands wallabag-post-entry
-  :config
-  (setq wallabag-data-dir "~/.cache/wallabag")
-  (let ((creds (split-string (shell-command-to-string
-                              "pass show api/wallabag/qutescript"))))
-    (setq wallabag-credentials
-          `((client-secret  . ,(nth 0 creds))
-            (client-id      . ,(nth 2 creds))
-            (host           . ,(nth 4 creds))))))
-
-;; ** ELFEED + WALLABAG
-
-;; More integration: Send Elfeed entries to my Wallabag instance to read later
-(use-package elfeed
-  :defer
-  :config
-  (use-package wallabag
-    :config
-    (defun elfeed-post-to-wallabag ()
-      "Post current entry (or entry at point) to Wallabag"
-      (interactive)
-      (let ((entries (elfeed-search-selected))
-            (links (pcase major-mode
-                     ('elfeed-show-mode
-                      (list (elfeed-entry-link elfeed-show-entry)))
-                     ('elfeed-search-mode
-                      (mapcar #'elfeed-entry-link (elfeed-search-selected))))))
-        (dolist (link links nil)
-          (wallabag-post-entry link)
-          (when (eq major-mode 'elfeed-search-mode)
-            (elfeed-untag entries 'unread)
-            (mapc #'elfeed-search-update-entry entries)
-            (unless (or elfeed-search-remain-on-entry
-                        (use-region-p))
-              (forward-line))))))
-    :bind (:map elfeed-show-mode-map
-                ("R" . elfeed-post-to-wallabag)
-                :map elfeed-search-mode-map
-                ("R" . elfeed-post-to-wallabag))))
-
-;; ** ELFEED + ORG-LINK
-;;
-;; Org-Link handling for Elfeed buffers
-(use-package ol
-  :after (elfeed org)
-  :config
-  (org-link-set-parameters "elfeed"
-                           :follow #'org-elfeed-open
-                           :store  #'org-elfeed-store-link)
-
-  (defun org-elfeed-store-link ()
-    "Store a link to an Elfeed entry."
-    (when-let* ((entry (pcase major-mode
-                         ('elfeed-show-mode elfeed-show-entry)
-                         ('elfeed-search-mode (elfeed-search-selected :ignore-region))))
-           (entry-id (elfeed-entry-id entry))
-           (title (elfeed-entry-title entry)))
-      (let ((link))
-        (org-link-store-props :type "elfeed")
-        (setq link (concat "elfeed:id:" (car entry-id) "@@" (cdr entry-id)))
-        (org-add-link-props :link link :description title)
-        link)))
-
-  (defun org-elfeed-open (link)
-    "Follow an elfeed entry specified by LINK."
-    (require 'elfeed)
-    (let* ((url+title (split-string (substring link 3) "@@"))
-                (url (nth 0 url+title))
-                (title (nth 1 url+title))
-                (entry (elfeed-db-get-entry (cons url title))))
-      (elfeed-show-entry entry))))
-
-
-;; ** +AUTOTAGGING SETUP+
-
-;; Currently disabled: More Elfeed taggers
-(use-package elfeed-custom
-  :disabled
-  :config
-  (progn
-    ;; Mark all YouTube entries
-    (add-hook 'elfeed-new-entry-hook
-              (elfeed-make-tagger :feed-url "youtube\\.com"
-                                  :add '(video youtube)))
-    ;; Avoiding tagging old entries as unread:
-
-    ;; Entries older than 2 weeks are marked as read
-    (add-hook 'elfeed-new-entry-hook
-              (elfeed-make-tagger :before "2 weeks ago"
-                                  :remove 'unread))
-
-    ;; Or building your own subset feeds:
-    (add-hook 'elfeed-new-entry-hook
-              (elfeed-make-tagger :feed-url "example\\.com"
-                                  :entry-title '(not "something interesting")
-                                  :add 'junk
-                                  :remove 'unread))))
-;;; Use `M-x elfeed-apply-hooks-now' to apply elfeed-new-entry-hook to all
-;;; existing entries. Otherwise hooks will only apply to new entries on
-;;; discovery.
-;;; ----------------------------------------------------------------------
- ;;
-;;; (defun elfeed-search-eww-open (&optional use-generic-p)
-;;;   "open with eww"
-;;;   (interactive "P")
-;;;   (let ((entries (elfeed-search-selected)))
-;;;     (cl-loop for entry in entries
-;;;              do (elfeed-untag entry 'unread)
-;;;              when (elfeed-entry-link entry)
-;;;              do (eww-browse-url it t))
-;;;     (mapc #'elfeed-search-update-entry entries)
-;;;     (unless (use-region-p) (forward-line))))
- ;;
-;;; For quick tagging
-;;; (defvar my-feeds nil)
-;;; (let ((tags '("always" "rare" "sometimes" "junk"))
-;;;       history)
-;;;   (dolist (feed elfeed-feeds)
-;;;     (let ((choices (completing-read-multiple (format "%s: " feed) tags nil nil nil)))
-;;;       (add-to-list 'my-feeds (append (list feed) (mapcar 'make-symbol choices)))
-;;;       (setq tags (delete-dups (append choices tags)))
-;;;       )
-;;;     ))
-
-(provide 'setup-elfeed)
-;; setup-elfeed.el ends here
+  ;; cache directory
+  (defvar user-cache-directory "~/.cache/emacs/"
+  "Location where files created by emacs are placed."))
 #+end_src
+
+#+RESULTS:
+: t
+
+** ELFEED
 *** Elfeed goodies
 An RSS newsfeed reader for Emacs.
 
@@ -14001,6 +13805,7 @@ EWW is the Emacs Web Wowser, the builtin browser in Emacs.  Below I set urls to 
 ;;        :desc "Eww web browser" "w" #'eww
 ;;        :desc "Eww reload page" "R" #'eww-reload))
 
+   ;; :browser 'browse-url-qutebrowser) this can be used to open specific urls with specific brouwser
 (use-package eww
   :ensure nil
   :config
@@ -14045,6 +13850,7 @@ EWW is the Emacs Web Wowser, the builtin browser in Emacs.  Below I set urls to 
   (defengine youtube
     "http://www.youtube.com/results?aq=f&oq=&search_query=%s"
     :keybinding "y")
+   ;; :browser 'browse-url-qutebrowser)
   (defengine vidpuffy
     "https://vid.puffyan.us/search?q=%s"
     :keybinding "v")
@@ -14183,6 +13989,9 @@ EWW is the Emacs Web Wowser, the builtin browser in Emacs.  Below I set urls to 
   (engine/set-keymap-prefix (kbd "s-b"))
   (engine-mode t))
 #+END_SRC
+
+#+RESULTS:
+: t
 
 *** Simple HTML Renderer (shr), Emacs Web Wowser (eww), Elpher, and prot-eww.el
 **** desc
@@ -14517,6 +14326,79 @@ buffer."
 
 );end with eveal after load eww
 #+end_src
+*** nyxt
+#+begin_src emacs-lisp :tangle no
+(load "emacs-with-nyxt.el")
+#+end_src
+
+#+RESULTS:
+: t
+
+#+begin_src emacs-lisp :tangle no
+(defun my/start-and-connect-to-nyxt (&optional no-maximize)
+  "Start Nyxt with swank capabilities."
+  (interactive)
+  (async-shell-command (format "nyxt -e \"(nyxt-user::start-swank)\""))
+  (sleep-for my/slime-nyxt-delay)
+  (my/slime-connect "localhost" "4006")
+  (unless no-maximize (my/slime-repl-send-string "(toggle-fullscreen)")))
+#+end_src
+
+#+RESULTS:
+: my/start-and-connect-to-nyxt
+
+#+begin_src emacs-lisp :tangle no
+(defun my/slime-connect (host port)
+  (defun true (&rest args) 't)
+  (advice-add 'slime-check-version :override #'true)
+  (slime-connect host port)
+  (sleep-for my/slime-nyxt-delay)
+  (advice-remove 'slime-check-version #'true))
+
+#+end_src
+
+#+RESULTS:
+: my/slime-connect
+
+#+begin_src emacs-lisp :tangle no
+(defun my/slime-repl-send-string (sexp)
+  (defun true (&rest args) 't)
+  (advice-add 'slime-check-version :override #'true)
+  (if (slime-connected-p)
+      (slime-repl-send-string sexp)
+    (error "Slime is not connected to Nyxt. Run `my/start-and-connect-to-nyxt' first."))
+  (sleep-for my/slime-nyxt-delay)
+  (advice-remove 'slime-check-version #'true))
+#+end_src
+
+#+RESULTS:
+: my/slime-repl-send-string
+
+
+
+#+begin_src emacs-lisp :tangle no
+(defun my/browse-url-nyxt (url &optional buffer-title)
+  (interactive "sURL: ")
+  (my/slime-repl-send-string
+   (format
+    "(buffer-load \"%s\" %s)"
+    url
+    (if buffer-title (format ":buffer (make-buffer :title \"%s\")" buffer-title) ""))))
+#+end_src
+
+#+RESULTS:
+: my/browse-url-nyxt
+
+#+begin_src emacs-lisp :tangle no
+(defun browse-url-nyxt (url &optional new-window)
+  (interactive "sURL: ")
+  (unless (slime-connected-p) (my/start-and-connect-to-nyxt))
+  (my/browse-url-nyxt url url))
+#+end_src
+
+#+RESULTS:
+: browse-url-nyxt
+
 ** browse url
 #+begin_src emacs-lisp
 
@@ -16067,7 +15949,9 @@ Also see: [[#h:aa64c61e-49b5-41b0-b1fe-10bbe3be661f][Sample configuration for MP
     (define-key map (kbd "b") #'prot-elfeed-bongo-insert-item)))
 
 (with-eval-after-load 'elfeed
-  (prot-emacs-builtin-package 'prot-elfeed
+  (load "prot-elfeed")
+  (use-package prot-elfeed
+    :config
     (setq prot-elfeed-tag-faces t)
     (prot-elfeed-fontify-tags)
     (add-hook 'elfeed-search-mode-hook #'prot-elfeed-load-feeds)
@@ -16086,12 +15970,73 @@ Also see: [[#h:aa64c61e-49b5-41b0-b1fe-10bbe3be661f][Sample configuration for MP
       (define-key map (kbd "+") #'prot-elfeed-toggle-tag))))
 #+end_src
 
+#+RESULTS:
+: t
+
 * Applications and utilities
 
 This section includes configurations for programs like email clients,
 news reader, music players…  Anything you would normally see in a
 standalone application.  The end goal is to eventually integrate every
 aspect of my computing inside of Emacs.
+
+** System Package Managment
+
+This one is a pleasant surprise to have honestly. Having Emacs handle system packages as well as its own makes life a million times easier. Since I use yay on Arch, I configure an entry for it and use it if it’s installed.
+
+#+begin_src emacs-lisp
+
+
+(use-package system-packages
+  :ensure t
+  :defer t
+  :init
+  (when (executable-find "yay")
+    ;; (pdumper-require 'system-packages)
+    (add-to-list 'system-packages-supported-package-managers
+                 '(yay .
+                       ((default-sudo . nil)
+                        (install . "yay -S")
+                        (search . "yay -Ss")
+                        (uninstall . "yay -Rs")
+                        (update . "yay -Syu")
+                        (clean-cache . "yay -Sc")
+                        (log . "car /var/log/pacman.log")
+                        (get-info . "yay -Qi")
+                        (get-info-remote . "yay -Si")
+                        (list-files-provided-by . "yay -Ql")
+                        (verify-all-packages . "yay -Qkk")
+                        (verify-all-dependencies . "yay -Dk")
+                        (remove-orphaned . "yay -Rns $(yay -Qtdq)")
+                        (list-installed-packages . "yay -Qe")
+                        (list-installed-packages-all . "yay -Q")
+                        (list-dependencies-of . "yay -Qi")
+                        (noconfirm . "--noconfirm"))))
+    (setq system-packages-use-sudo nil
+          system-packages-package-manager 'yay))
+  :custom (system-packages-noconfirm t)
+  :bind (("C-c P i" . system-packages-install)
+         ("C-c P e" . system-packages-ensure)
+         ("C-c P u" . system-packages-update)
+         ("C-c P r" . system-packages-uninstall)
+         ("C-c P o" . system-packages-remove-orphaned)
+         ("C-c P c" . system-packages-clean-cache)
+         ("C-c P l" . system-packages-log)
+         ("C-c P s" . system-packages-search)
+         ("C-c P g" . system-packages-get-info)
+         ("C-c P d" . system-packages-list-dependencies-of)
+         ("C-c P f" . system-packages-list-files-provided-by)
+         ("C-c P p" . system-packages-list-installed-packages)
+         ("C-c P f" . system-packages-verify-all-dependencies)
+         ("C-c P v" . system-packages-verify-all-packages)))
+
+(setq system-packages-use-sudo t)
+;; (setq system-packages-package-manager 'pacaur)
+(setq system-packages-package-manager 'yay)
+#+end_src
+
+#+RESULTS:
+: system-packages-verify-all-packages
 
 ** Custom extensions for "focus mode" (logos.el)
 :PROPERTIES:
@@ -16192,6 +16137,58 @@ Other potentially relevant parts of my dotemacs:
 
 #+RESULTS:
 : t
+** Auto git clone
+#+begin_src emacs-lisp :tangle yes
+
+;; Misc git functions
+(use-package emacs
+  :config
+  ;; From http://xenodium.com/emacs-clone-git-repo-from-clipboard/
+  ;; Auto-git-clone url in clipboard
+  (defun my/git-clone-clipboard-url ()
+    "Clone git URL in clipboard asynchronously and open in dired when finished."
+    (interactive)
+    (cl-assert (or (string-match-p "^git@github.com" (current-kill 0))
+                   (string-match-p "^git@.*\\.org" (current-kill 0))
+                   (string-match-p "^\\(http\\|https\\|ssh\\)://" (current-kill 0)))
+               nil
+               "No URL in clipboard")
+    (let* ((url (current-kill 0))
+           (download-dir (expand-file-name "~/learnlinux/gitclones/"))
+           (project-dir (concat (file-name-as-directory download-dir)
+                                (file-name-base url)))
+           (default-directory download-dir)
+           (command (format "git clone %s" url))
+           (buffer (generate-new-buffer (format "*%s*" command)))
+           (proc))
+      (when (file-exists-p project-dir)
+        (if (y-or-n-p (format "%s exists. delete?" (file-name-base url)))
+            (delete-directory project-dir t)
+          (user-error "Bailed")))
+      (switch-to-buffer buffer)
+      (setq proc (start-process-shell-command
+                  (shell-quote-argument (nth 0 (split-string command)))
+                  buffer command))
+      (with-current-buffer buffer
+        (setq default-directory download-dir)
+        (shell-command-save-pos-or-erase)
+        (require 'shell)
+        (shell-mode)
+        (view-mode +1))
+      (set-process-sentinel proc (lambda (process state)
+                                   (let ((output (with-current-buffer (process-buffer process)
+                                                   (buffer-string))))
+                                     (kill-buffer (process-buffer process))
+                                     (if (= (process-exit-status process) 0)
+                                         (progn
+                                           (message "finished: %s" command)
+                                           (dired project-dir))
+                                       (user-error (format "%s\n%s" command output))))))
+      (set-process-filter proc #'comint-output-filter))))
+#+end_src
+
+#+RESULTS:
+: t
 
 ** Games
 Games
@@ -16211,7 +16208,37 @@ I also use Emacs to play games and do other fun things. Using swiper means I don
 (use-package sudoku
   ;; :ensure t
   :defer t
-  :bind ("C-c g s" . sudoku))
+  :bind (("C-c g s" . sudoku)
+  :map sudoku-mode-map
+  ("j" . sudoku-move-point-down)
+  ("J" . sudoku-move-point-downmost)
+  ("k" . sudoku-move-point-up)
+  ("K" . sudoku-move-point-upmost)
+  ("h" . sudoku-move-point-left)
+  ("H" . sudoku-move-point-leftmost)
+  ("l" . sudoku-move-point-right)
+  ("L" . sudoku-move-point-rightmost)
+
+  ;; Start/quit/print game
+  ("N" . sudoku)
+  ("q" . sudoku-quit)
+  ("Q" . sudoku-quit-immediately)
+  ("P" . sudoku-print)
+
+  ;; Undo/redo
+  ("u"    . sudoku-undo)
+  ("\C-r" . sudoku-redo)
+
+  ;; Inserting values
+  ("1" . sudoku-change-point)
+  ("2" . sudoku-change-point)
+  ("3" . sudoku-change-point)
+  ("4" . sudoku-change-point)
+  ("5" . sudoku-change-point)
+  ("6" . sudoku-change-point)
+  ("7" . sudoku-change-point)
+  ("8" . sudoku-change-point)
+  ("9" . sudoku-change-point)))
 ;; Tetris
 ;; Tetris is my childhood. No way I wouldn’t set it up to be nice and comfy.
 
@@ -16219,30 +16246,51 @@ I also use Emacs to play games and do other fun things. Using swiper means I don
   :defer t
   :bind (("C-c g t" . 'tetris)
          :map tetris-mode-map
-         ("w" . tetris-move-bottom)
-         ("a" . tetris-move-left)
+         ("j" . tetris-move-bottom)
+         ("h" . tetris-move-left)
          ("s" . tetris-mode-down)
-         ("d" . tetris-move-right)
+         ("l" . tetris-move-right)
          ([left] . tetris-rotate-next)
+         ("a" . tetris-rotate-next)
          ([right] . tetris-rotate-prev)
+         ("t" . tetris-rotate-prev)
          ([?\t] . tetris-pause-game)
          ("r" . tetris-start-game)
          ("e" . tetris-end-game)))
-;; Chess
-;; Just for fun. I suck at chess but it’s nice to have.
+  ;; Chess
+  ;; Just for fun. I suck at chess but it’s nice to have.
 
-(use-package chess
-  ;; :ensure t
-  :defer t
-  :bind ("C-c g c" . chess))
-;; 2048
-;; A simple and fun game. Was a big deal when I was in high school. I still play it from time to time, to pass the time and remember my powers of 2.
+  (use-package chess
+    ;; :ensure t
+    :defer t
+    :bind ("C-c g c" . chess))
+  ;; 2048
+  ;; A simple and fun game. Was a big deal when I was in high school. I still play it from time to time, to pass the time and remember my powers of 2.
 
-(use-package 2048-game
-  ;; :ensure t
-  :defer t
-  :bind ("C-c g 2" . 2048-game))
+  (use-package 2048-game
+    ;; :ensure t
+    :defer t
+    :bind (("C-c g 2" . 2048-game)
+    :map 2048-mode-map
+    ("j" . 2048-down)
+    ("k" . 2048-up)
+    ("h" . 2048-left)
+    ("l" . 2048-right)))
+
+
+  (use-package pacmacs
+    ;; :ensure t
+    :defer t
+    :bind (("C-c g p" . pacmacs)
+    :map pacmacs-mode-map
+    ("h" . pacmacs-left)
+    ("j" . pacmacs-down)
+    ("k" . pacmacs-up)
+    ("l" . pacmacs-right)))
 #+end_src
+
+#+RESULTS:
+: pacmacs-right
 
 ** Define Word
 #+begin_src emacs-lisp
@@ -18143,9 +18191,10 @@ cycling by repeated presses of =C-SPC=.  Again though, this is not the
 type of functionality I rely on: for more deliberate actions of this
 sort, consider Emacs' registers or bookmarks.
 
-#+begin_src emacs-lisp :tangle no
+#+begin_src emacs-lisp
 ;;; Repeatable key chords (repeat-mode)
-(prot-emacs-builtin-package 'repeat
+(use-package repeat
+  :config
   (setq repeat-on-final-keystroke t)
   (setq set-mark-command-repeat-pop t)
 
@@ -18552,9 +18601,49 @@ _v_: vol     _a_: seek bw     _#_: shuffle            _s_elect
 : my/volume-decrease
 * Eaf  Core
 #+begin_src emacs-lisp :tangle no
+(use-package! eaf
+  :commands (eaf-open-browser eaf-open find-file)
+  :config
+  (use-package! ctable)
+  (use-package! deferred)
+  (use-package! epc))
+#+end_src
+
+#+RESULTS:
+
+** load eaf apps
+#+begin_src emacs-lisp :tangle yes
 
 (add-to-list 'load-path "~/.emacs.d/site-lisp/emacs-application-framework/")
-;; (require 'eaf')
+(require 'eaf)
+ (require 'eaf-pdf-viewer)
+ (require 'eaf-rss-reader)
+ (require 'eaf-markdown-previewer)
+ (require 'eaf-airshare)
+ (require 'eaf-file-sender)
+ (require 'eaf-jupyter)
+ (require 'eaf-browser)
+ (require 'eaf-terminal)
+ (require 'eaf-mindmap)
+ (require 'eaf-system-monitor)
+ (require 'eaf-camera)
+ (require 'eaf-org-previewer)
+ (require 'eaf-org)
+ (require 'eaf-image-viewer)
+ ;; (require 'eaf-mermaid)
+ ;; (require 'eaf-demo)
+ ;; (require 'eaf-video-player)
+ ;; (require 'eaf-vue-demo)
+ ;; (require 'eaf-music-player)
+ ;; (require 'eaf-file-browser)
+ ;; (require 'eaf-netease-cloud-music)
+ ;; (require 'eaf-file-manager)
+ ;; (require 'eaf-evil)
+
+#+end_src
+
+** eaf config
+#+begin_src emacs-lisp :tangle no
 (use-package eaf
   :load-path "~/.emacs.d/site-lisp/emacs-application-framework"
   :custom
@@ -18563,43 +18652,19 @@ _v_: vol     _a_: seek bw     _#_: shuffle            _s_elect
   (browse-url-browser-function 'eaf-open-browser)
 (setq eaf-browser-translate-language "es")
 (setq eaf-browser-continue-where-left-off t)
-(setq eaf-browser-download-path "~/Downloads/")
+(setq eaf-browser-download-path "~/Downloads/eaf/")
 (setq eaf-mindmap-dark-mode "follow") ; default option
 (setq eaf-browser-dark-mode "force")
 (setq eaf-terminal-dark-mode nil)
 (setq eaf-pdf-dark-mode "ignore") ; see below
 (setq eaf-browser-default-search-engine "duckduckgo")
-(setq eaf-music-play-order "random")
-(setq eaf-browse-blank-page-url "https://duckduckgo.com")
+(setq eaf-mus  ic-play-order "random")
+(setq eaf-browser-blank-page-url "https://duckduckgo.com")
+(setq eaf-browser-default-search-engine "duckduckgo")
   :config
   (defalias 'browse-web #'eaf-open-browser))
-  ;; (eaf-bind-key scroll_up "C-n" eaf-pdf-viewer-keybinding)
-  ;; (eaf-bind-key scroll_down "C-p" eaf-pdf-viewer-keybinding)
   ;; (eaf-bind-key take_photo "p" eaf-camera-keybinding)
   ;; (eaf-bind-key nil "M-q" eaf-browser-keybinding)) ;; unbind, see more in the Wiki
- (require 'eaf-pdf-viewer)
- ;; (require 'eaf-rss-reader)
- ;; (require 'eaf-markdown-previewer)
- ;; (require 'eaf-demo)
- (require 'eaf-airshare)
- ;; (require 'eaf-mermaid)
- (require 'eaf-file-sender)
- ;; (require 'eaf-video-player)
- ;; (require 'eaf-vue-demo)
- (require 'eaf-jupyter)
- (require 'eaf-browser)
- (require 'eaf-terminal)
- (require 'eaf-mindmap)
- ;; (require 'eaf-music-player)
- (require 'eaf-system-monitor)
- ;; (require 'eaf-file-browser)
- (require 'eaf-camera)
- (require 'eaf-org-previewer)
- (require 'eaf-org)
- ;; (require 'eaf-netease-cloud-music)
- (require 'eaf-image-viewer)
- ;; (require 'eaf-file-manager)
- ;; (require 'eaf-evil)
   ;; (eaf-bind-key scroll_up "C-n" eaf-pdf-viewer-keybinding)
   ;; (eaf-bind-key scroll_down "C-p" eaf-pdf-viewer-keybinding)
   ;; (eaf-bind-key take_photo "p" eaf-camera-keybinding)
@@ -18625,6 +18690,114 @@ _v_: vol     _a_: seek bw     _#_: shuffle            _s_elect
 
 #+RESULTS:
 : ((\.pdf\' . eaf-org-open-file) (remote . emacs) (auto-mode . emacs) (directory . emacs) (\.mm\' . default) (\.x?html?\' . default) (\.pdf\' . default))
+** eaf browser keybinds
+#+begin_src emacs-lisp :tangle yes
+    (setq eaf-browser-keybinding
+    '(("C--" . "zoom_out")
+      ("C-=" . "zoom_in")
+      ("C-0" . "zoom_reset")
+      ("C-s" . "search_text_forward")
+      ("C-r" . "search_text_backward")
+      ("C-n" . "scroll_up")
+      ("C-p" . "scroll_down")
+      ("C-f" . "scroll_right")
+      ("C-b" . "scroll_left")
+      ("C-v" . "scroll_up_page")
+      ("C-y" . "yank_text")
+      ("C-w" . "kill_text")
+      ("M-e" . "atomic_edit")
+      ("M-c" . "caret_toggle_browsing")
+      ("M-D" . "select_text")
+      ("M-s" . "open_link")
+      ("M-S" . "open_link_new_buffer")
+      ("M-B" . "open_link_background_buffer")
+      ("C-/" . "undo_action")
+      ("M-_" . "redo_action")
+      ("M-w" . "copy_text")
+      ("M-f" . "history_forward")
+      ("M-b" . "history_backward")
+      ("M-q" . "delete_cookie")
+      ("M-Q" . "delete_all_cookies")
+      ("C-t" . "toggle_password_autofill")
+      ("C-d" . "save_page_password")
+      ("M-a" . "toggle_adblocker")
+      ("C-M-q"  "clear_history")
+      ("C-M-i"  "import_chrome_history")
+      ("M-v"  "scroll_down_page")
+      ("M-<"  "watch-other-window-up-line")
+      ("M->"  watch-other-window-down-line)
+      ("M-p"  "scroll_down_page")
+      ("M-t"  "new_blank_page")
+      ("M-d"  "toggle_dark_mode")
+      ("SPC"  "insert_or_scroll_up_page")
+      ("J"  "insert_or_select_left_tab")
+      ("K"  "insert_or_select_right_tab")
+      ("j"  "insert_or_scroll_up")
+      ("k"  "insert_or_scroll_down")
+      ("h"  "insert_or_scroll_left")
+      ("l"  "insert_or_scroll_right")
+      ("f"  "insert_or_open_link")
+      ("F"  "insert_or_open_link_background_buffer")
+      ("O"  "insert_or_open_link_new_buffer_other_window")
+      ("B"  "insert_or_open_link_background_buffer")
+      ("c"  "insert_or_caret_at_line")
+      ("u"  "insert_or_scroll_down_page")
+      ("d"  "insert_or_scroll_up_page")
+      ("H"  "insert_or_history_backward")
+      ("L"  "insert_or_history_forward")
+      ("t"  "insert_or_new_blank_page")
+      ("T"  "insert_or_recover_prev_close_page")
+      ("i"  "insert_or_focus_input")
+      ("I"  "insert_or_open_downloads_setting")
+      ("r"  "insert_or_refresh_page")
+      ("g"  "insert_or_scroll_to_begin")
+      ("x"  "insert_or_close_buffer")
+      ("G"  "insert_or_scroll_to_bottom")
+      ("-"  "insert_or_zoom_out")
+      ("="  "insert_or_zoom_in")
+      ("0"  "insert_or_zoom_reset")
+      ("m"  "insert_or_save_as_bookmark")
+      ("o"  "insert_or_open_browser")
+      ("y"  "insert_or_download_youtube_video")
+      ("Y"  "insert_or_download_youtube_audio")
+      ("p"  "insert_or_toggle_device")
+      ("P"  "insert_or_duplicate_page")
+      ("1"  "insert_or_save_as_pdf")
+      ("2"  "insert_or_save_as_single_file")
+      ("3"  "insert_or_save_as_screenshot")
+      ("v"  "insert_or_view_source")
+      ("e"  "insert_or_edit_url")
+      ("n"  "insert_or_export_text")
+      (","  "insert_or_switch_to_reader_mode")
+       ("."  "insert_or_translate_text")
+        (";"  "insert_or_translate_page")
+        ("C-M-c"  "copy_code")
+        ("C-M-l"  "copy_link")
+        ("C-a"  "select_all_or_input_text")
+        ("M-u"  "clear_focus")
+        ("C-j"  "open_downloads_setting")
+        ("M-o"  "eval_js")
+        ("M-O"  "eval_js_file")
+        ("<escape>"  "eaf-browser-send-esc-or-exit-fullscreen")
+        ("M-,"  "eaf-send-down-key")
+        ("M-."  "eaf-send-up-key")
+        ("M-m"  "eaf-send-return-key")
+        ("<f5>"  "emacs-session-save")
+        ("<f12>"  "open_devtools")
+        ("<C-return>"  "eaf-send-ctrl-return-sequence")
+        ("C-<left>"  "eaf-send-ctrl-left-sequence")
+        ("C-<right>"  "eaf-send-ctrl-right-sequence")
+        ("C-<delete>"  "eaf-send-ctrl-delete-sequence")
+        ("C-<backspace>"  "eaf-send-ctrl-backspace-sequence")))
+
+#+end_src
+
+#+RESULTS:
+: ((C-- . zoom_out) (C-= . zoom_in) (C-0 . zoom_reset) (C-s . search_text_forward) (C-r . search_text_backward) (C-n . scroll_up) (C-p . scroll_down) (C-f . scroll_right) (C-b . scroll_left) (C-v . scroll_up_page) (C-y . yank_text) (C-w . kill_text) (M-e . atomic_edit) (M-c . caret_toggle_browsing) (M-D . select_text) (M-s . open_link) (M-S . open_link_new_buffer) (M-B . open_link_background_buffer) (C-/ . undo_action) (M-_ . redo_action) (M-w . copy_text) (M-f . history_forward) (M-b . history_backward) (M-q . delete_cookie) (M-Q . delete_all_cookies) (C-t . toggle_password_autofill) (C-d . save_page_password) (M-a . toggle_adblocker) (C-M-q clear_history) (C-M-i import_chrome_history) (M-v scroll_down_page) (M-< watch-other-window-up-line) (M-> watch-other-window-down-line) (M-p scroll_down_page) (M-t new_blank_page) (M-d toggle_dark_mode) (SPC insert_or_scroll_up_page) (J insert_or_select_left_tab) (K insert_or_select_right_tab) (j insert_or_scroll_up) (k insert_or_scroll_down) (h insert_or_scroll_left) (l insert_or_scroll_right) (f insert_or_open_link) (F insert_or_open_link_background_buffer) (O insert_or_open_link_new_buffer_other_window) (B insert_or_open_link_background_buffer) (c insert_or_caret_at_line) (u insert_or_scroll_down_page) (d insert_or_scroll_up_page) (H insert_or_history_backward) (L insert_or_history_forward) (t insert_or_new_blank_page) (T insert_or_recover_prev_close_page) (i insert_or_focus_input) (I insert_or_open_downloads_setting) (r insert_or_refresh_page) (g insert_or_scroll_to_begin) (x insert_or_close_buffer) (G insert_or_scroll_to_bottom) (- insert_or_zoom_out) (= insert_or_zoom_in) (0 insert_or_zoom_reset) (m insert_or_save_as_bookmark) (o insert_or_open_browser) (y insert_or_download_youtube_video) (Y insert_or_download_youtube_audio) (p insert_or_toggle_device) (P insert_or_duplicate_page) (1 insert_or_save_as_pdf) (2 insert_or_save_as_single_file) (3 insert_or_save_as_screenshot) (v insert_or_view_source) (e insert_or_edit_url) (n insert_or_export_text) (, insert_or_switch_to_reader_mode) (. insert_or_translate_text) (; insert_or_translate_page) (C-M-c copy_code) (C-M-l copy_link) (C-a select_all_or_input_text) (M-u clear_focus) (C-j open_downloads_setting) (M-o eval_js) (M-O eval_js_file) (<escape> eaf-browser-send-esc-or-exit-fullscreen) (M-, eaf-send-down-key) (M-. eaf-send-up-key) (M-m eaf-send-return-key) (<f5> emacs-session-save) (<f12> open_devtools) (<C-return> eaf-send-ctrl-return-sequence) (C-<left> eaf-send-ctrl-left-sequence) (C-<right> eaf-send-ctrl-right-sequence) (C-<delete> eaf-send-ctrl-delete-sequence) (C-<backspace> eaf-send-ctrl-backspace-sequence))
+** eaf evil
+
+ I usually don't use it as it causes issues with doom keybinds
+
 #+begin_src emacs-lisp :tangle no
 (require 'eaf-evil)
 
@@ -21493,3 +21666,4 @@ Refer to [[#h:77d14350-978d-4820-ab7f-4641706c445a][Custom extensions for "focus
  - ~use-package!~ for configuring packages
  - ~add-load-path!~ for adding directories to the ~load-path~ where ~Emacs~ looks when
    you load packa
+

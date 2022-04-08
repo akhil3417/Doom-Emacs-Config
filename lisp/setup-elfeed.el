@@ -21,7 +21,8 @@
   ;; :load-path ("~/.local/share/git/elfeed/"
   ;;             "~/.local/share/git/elfeed/web")
   :config
-  (setq-default elfeed-db-directory (dir-concat user-cache-directory "~/.elfeed")
+  ;; (setq elfeed-db-directory (concat user-emacs-directory "elfeed/"))
+  (setq-default elfeed-db-directory (dir-concat user-cache-directory "elfeed")
                 elfeed-save-multiple-enclosures-without-asking t
                 elfeed-search-clipboard-type 'CLIPBOARD
                 elfeed-search-filter "#50 +unread "
@@ -117,7 +118,7 @@ MYTAG"
   (bind-key "u" (elfeed-show-tag-as 'unread) elfeed-show-mode-map)
   (bind-key "a" (elfeed-show-tag-as 'listen) elfeed-show-mode-map)
 
-  (setq elfeed-feeds my-elfeed-feeds)
+  ;; (setq elfeed-feeds my-elfeed-feeds)
 
   (defun elfeed-show-eww-open (&optional use-generic-p)
     "open with eww"
