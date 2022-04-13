@@ -419,8 +419,8 @@ send a notification when the process has exited."
 
 ;; ** Calling and exiting eshell
 (use-package eshell
-  :bind (("H-<return>" . eshell)
-         ("H-!" . eshell-here))
+  :bind (("s-<return>" . eshell)
+         ("s-!" . eshell-here))
   :config
   (advice-add 'eshell-life-is-too-much :after #'delete-window-if-not-single)
   (advice-add 'eshell-mark-output :after #'activate-mark)

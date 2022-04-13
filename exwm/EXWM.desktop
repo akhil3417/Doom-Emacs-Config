@@ -1,3 +1,4 @@
+# [[file:../config.org::*Desktop File][Desktop File:2]]
   [Desktop Entry]
   Name=EXWM
   Comment=Emacs Window Manager
@@ -6,3 +7,4 @@
   Type=Application
   X-LightDM-DesktopName=exwm
   DesktopNames=exwm
+# Desktop File:2 ends here

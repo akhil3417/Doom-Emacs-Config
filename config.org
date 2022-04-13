@@ -71,6 +71,8 @@ This file shouldn't be byte compiled.
 
 #+end_src
 
+#+RESULTS:
+
 You'll then need to restart Emacs for your changes to take effect! Or at least,
 run =M-x doom/reload=.
 
@@ -99,6 +101,12 @@ To install ~some-package~ from MELPA, ELPA or emacsmirror:
   (package! slime)
   (package! sly)
 
+  (package! epc)
+  (package! ctable)
+  (package! deferred)
+  (package! s)
+
+  (package! telega)
   (package! smart-mode-line)
   (package! system-packages)
   (package! presentation)
@@ -159,7 +167,7 @@ To install ~some-package~ from MELPA, ELPA or emacsmirror:
   (package! dired-single)
   (package! dired-collapse)
   (package! dired-ranger)
-  ;; (package! bufler)
+  (package! bufler)
   (package! corfu)
   (package! flx)
   (package! simpleclip)
@@ -175,7 +183,6 @@ To install ~some-package~ from MELPA, ELPA or emacsmirror:
   (package! bookmark)
   (package! beginend)
   ;; (package! drag-stuff)
-  ;; (package! fast-scroll)
   (package! dired-subtree)
   (package! eshell-bookmark)
   (package! eshell-prompt-extras)
@@ -204,7 +211,6 @@ To install ~some-package~ from MELPA, ELPA or emacsmirror:
   (package! exwm)
   (package! desktop-environment)
   (package! browse-url)
-  ;; (package! hungry-delete)
   ;; (package! dimmer)
   ;; (package! goggles)
   ;; (package! which-func)
@@ -218,22 +224,14 @@ To install ~some-package~ from MELPA, ELPA or emacsmirror:
   ;; (package! popwin)
   ;; (package! pretty-mode)
   (package! systemd)
-  ;; (package! google-maps)
   ;; (package! git-timemachine)
-  ;; (package! elfeed)
   (package! org-pdfview)
   (package! xelb)
-  ;; (package! buffer-move)
   (package! exwm-edit)
   (package! emms)
   (package! page-break-lines)
-  ;; (package! org-roam-server)
-  ;; (package! org-ref)
   (package! nov)
-  ;; (package! dired-narrow)
-  ;; (package! lsp-treemacs)
   (package! multi-vterm)
-  ;; (package! aggressive-indent)
   (package! cloc)
   (package! yahtzee)
   (package! sudoku)
@@ -410,15 +408,15 @@ Speaking of ~GPG~, I want to use =~/.authinfo.gpg= instead of the default in
 make a difference, and I don't want to accidentally purge this file I have done
 src_shell{rm -rf~/.emac.d~ before}. I also want to cache as much as possible, as
 my home machine is pretty safe, and my laptop is shutdown a lot.
-#+begin_src emacs-lisp
+#+begin_src emacs-lisp :tangle no
 (setq auth-sources '("~/.authinfo.gpg")
-      auth-source-cache-expiry nil) ; default is 7200 (2h)
+      auth-source-cache-expiry nil)
+ ; default is 7200 (2h)
 (use-package auth-source-pass
   :init (auth-source-pass-enable))
 #+end_src
 
 #+RESULTS:
-: auth-source-pass
 ** directories
 #+begin_src emacs-lisp :tangle no
 (setq my/home-dir "/home/shiva/")
@@ -605,67 +603,53 @@ setting, and load it if it exists.
 : hydra-brightness-up/body
 
 * Exwm Config
-** Exwm
-#+begin_src emacs-lisp
-  (require 'exwm)
-  ;; using xim input
-  (require 'exwm-xim)
-  (exwm-xim-enable)
-  (push ?\C-\\ exwm-input-prefix-keys)   ;; use Ctrl + \ to switch input method
-#+END_SRC
+** Defvar exwm
+#+begin_src emacs-lisp :tangle no
 
-#+begin_src emacs-lisp
+(defvar exwm-locking-command "lock"
+  "Command to run when locking session")
 
-(setq-default tab-width 2)
-(setq-default evil-shift-width tab-width);; Window manager
-(setq-default indent-tabs-mode nil)
-(use-package exwm
-  :init
-  (setq mouse-autoselect-window nil
-        focus-follows-mouse t
-        exwm-workspace-warp-cursor t
-        exwm-workspace-number 5)
-                                        ;exwm-workspace-display-echo-area-timeout 5
-                                        ;exwm-workspace-minibuffer-position 'bottom) ;; Annoying focus issues
-  :config
+(defvar exwm-install-logind-lock-handler nil
+  "If this is non-nil and `exwm-locking-command' is set, register a D-BUS handler on the session lock signal.")
+
+(defvar exwm-app-launcher--prompt "$ "
+  "Prompt for the EXWM application launcher")
+
+(defvar exwm-hide-tiling-modeline nil
+  "Whether to hide modeline.")
+
+(defvar exwm-buffer-name-prefix "X:"
+  "A prefix to append to each buffer managed by exwm")
+
+(defvar exwm-enable-systray nil ;; 't
+  "Whether to enable EXWM's bundled system tray implementation.")
+
+(defvar exwm-autostart-xdg-applications nil
+  "Whether to run $XDG_USER_HOME/autostart applications after initialization.")
+
+(defvar exwm-autostart-environment '()
+  "List of \"KEY=value\" strings which should be set when running autostart applications.
+
+Example: '(\"DESKTOP_SESSION=kde\" \"KDE_SESSION_VERSION=5\") ")
+
+(defvar exwm-custom-init nil
+  "This can be set to a function that runs after all other EXWM initialization.")
+
+(defvar exwm-workspace-switch-wrap t
+  "Whether `exwm/workspace-next' and `exwm/workspace-prev' should wrap.")
+
+(defvar exwm-randr-dwim t
+  "Whether to try to dwim workspace/screen association in the screen change hook.")
+
+(defvar exwm-move-frame-at-edge t
+  "If enabled, use framemove to switch frames when trying to move
+  outside of current frame." )
+#+end_src
+** funcs
+#+begin_src emacs-lisp :tangle no
 
 (defun exwm//persp-mode-inhibit-p (frame)
   (frame-parameter frame 'unsplittable))
-
-  (defun efs/exwm-update-class ()
-    (add-hook 'exwm-update-class-hook #'efs/exwm-update-class
-              (lambda ()
-                (exwm-workspace-rename-buffer exwm-class-name)))
-    (add-hook 'exwm-update-title-hook #'efs/exwm-update-title
-              (lambda ()
-                (pcase exwm-class-name
-                  ("Vimb" (exwm-workspace-rename-buffer (format "vimb: %s" exwm-title)))
-                  ("firefoxdeveloperedition" (exwm-workspace-rename-buffer (format "FirefoxD: %s" exwm-title)))
-                  ("qutebrowser" (exwm-workspace-rename-buffer (format "#F %s" exwm-title)))))))
-
-  (defun exwm/run-in-background (command)
-    (let ((command-parts (split-string command "[ ]+")))
-      (apply #'call-process `(,(car command-parts) nil 0 nil ,@(cdr command-parts)))))
-
-  (defun exwm/bind-function (key invocation &rest bindings)
-    "Bind KEYs to FUNCTIONs globally"
-    (while key
-      (exwm-input-set-key (kbd key)
-                          `(lambda ()
-                             (interactive)
-                             (funcall ',invocation)))
-      (setq key (pop bindings)
-            invocation (pop bindings))))
-
-  (defun exwm/bind-command (key command &rest bindings)
-    "Bind KEYs to COMMANDs globally"
-    (while key
-      (exwm-input-set-key (kbd key)
-                          `(lambda ()
-                             (interactive)
-                             (exwm/run-in-background ,command)))
-      (setq key (pop bindings)
-            command (pop bindings))))
 
 ;; Simulate insert state by using line mode without passthrough
 (defun exwm/enter-insert-state ()
@@ -696,6 +680,438 @@ setting, and load it if it exists.
     (exwm/enter-insert-state)
     ;; (exwm-input-toggle-keyboard)
     (call-interactively 'exwm-input-release-keyboard)))
+
+(defun exwm/switch-to-buffer-or-run (window-class command)
+  "Switch to first buffer with window-class, and if not present, run command."
+  (let ((buffer
+         (cl-find window-class (buffer-list) :key (lambda(b) (cdr (assoc 'exwm-class-name (buffer-local-variables b)))) :test 'string-equal)))
+    (if buffer
+        (exwm-workspace-switch-to-buffer buffer)
+      (start-process-shell-command command nil command))))
+
+;; Helper
+;; TODO: actually incorporate exwm-workspace-switch-wrap here...
+(defun exwm//ws-offset (offset)
+  "Return the number of the workspace which is OFFSET workspaces
+  away from the current workspace, cycling if necessary."
+  (mod (+ offset exwm-workspace-current-index) (exwm-workspace--count)))
+
+(defun exwm/workspace-next ()
+  "Switch to next exwm-workspace (to the right)."
+  (interactive)
+  (exwm-workspace-switch (exwm//ws-offset 1)))
+
+(defun exwm/workspace-prev ()
+  "Switch to next exwm-workspace (to the left)."
+  (interactive)
+  (exwm-workspace-switch (exwm//ws-offset -1)))
+
+;; Buffer move between frames semantics:
+;; - In source window, display last buffer that was replaced in this frame using `other-window'
+;; - In target frame, show the buffer in the active window
+(defun exwm/workspace-move-buffer-to-workspace (ws-id)
+  "Move the current buffer to the exwm-workspace with id WS-ID"
+  (let ((target-frame (exwm-workspace--workspace-from-frame-or-index ws-id))
+        (src-exwm-id exwm--id))
+    (if src-exwm-id
+        (progn
+          (exwm-workspace-move-window target-frame src-exwm-id)
+          (exwm-workspace-switch target-frame))
+      (let ((src-buffer (current-buffer)))
+        (switch-to-buffer (other-buffer src-buffer))
+        (pop-to-buffer src-buffer `((display-buffer-in-previous-window
+                                     display-buffer-use-some-window
+                                     display-buffer-pop-up-window
+                                     ;; display-buffer-use-some-frame
+                                     )
+                                    (inhibit-same-window . t)
+                                    (reusable-frames . ,target-frame)
+                                    ;; (frame-predicate . (lambda(f) (eql f ,target-frame)))
+                                    ))))))
+
+(defun exwm/workspace-move-buffer-next ()
+  "Display active buffer in next frame (to the right)."
+  (interactive)
+  (exwm/workspace-move-buffer-to-workspace (exwm//ws-offset 1)))
+
+(defun exwm/workspace-move-buffer-prev ()
+  "Display active buffer in next frame (to the right)."
+  (interactive)
+  (exwm/workspace-move-buffer-to-workspace (exwm//ws-offset -1)))
+
+(defun exwm/layout-toggle-fullscreen ()
+  "Togggles full screen for Emacs and X windows"
+  (interactive)
+  (if exwm--id
+      (if (exwm-layout--fullscreen-p)
+          (exwm-reset)
+        (exwm-layout-set-fullscreen))
+    (spacemacs/toggle-maximize-buffer)))
+
+(defun exwm/run-program-in-home (command)
+  (let ((default-directory user-home-directory))
+    (start-process-shell-command command nil command)))
+
+(defun exwm/app-launcher (command)
+  "Launches an application in your PATH.
+Can show completions at point for COMMAND using helm or ivy"
+  (interactive (list (read-shell-command exwm-app-launcher--prompt)))
+  (exwm/run-program-in-home command))
+
+(defun exwm/launch-split-below (command)
+  (interactive (list (read-shell-command exwm-app-launcher--prompt)))
+  (split-window-below-and-focus)
+  (exwm/run-program-in-home command))
+
+(defun exwm/launch-split-right (command)
+  (interactive (list (read-shell-command exwm-app-launcher--prompt)))
+  (split-window-right-and-focus)
+  (exwm/run-program-in-home command))
+
+(defun exwm/jump-to-last-exwm ()
+  (interactive)
+  (exwm-workspace-switch exwm-toggle-workspace))
+
+(defun exwm/exwm-buffers-info ()
+  (interactive)
+  "Helper, return information about open exwm windows"
+  (cl-loop for buffer in (buffer-list)
+        for name = (buffer-name buffer)
+        for ecname = (buffer-local-value 'exwm-class-name buffer)
+        when ecname
+        do (message "Buffer name: '%s', exwm class name: '%s'" name ecname)))
+
+(defun exwm//convert-key-to-event (key)
+  "Converts something from (kbd ...) format to something suitable for
+    exwm-input-prefix-keys"
+  (let ((key (kbd key)))
+    (if (and (sequencep key)
+             (= (length key) 1))
+        (etypecase key
+          (string (string-to-char key))
+          (vector (elt key 0)))
+      (error "cannot convert to key event: %s" key))))
+
+
+(let ((debug-modes-active nil))
+  (defun exwm/toggle-debug-mode ()
+   "Toggle exwm and xcb debug modes"
+   (interactive)
+   (setf debug-modes-active (not debug-modes-active))
+   (message (if debug-modes-active
+                "Enabling xcb and exwm debug modes."
+              "Disabling xcb and exqm debug modes."))
+   (let ((flag (if debug-modes-active 1 0)))
+     (exwm-debug flag)
+     (xcb:debug flag))))
+
+(defvar exwm//autostart-process-list nil
+  "List of processes run during autostart.")
+
+(defun exwm/autostart-process (name command &optional directory)
+  "Can be used during initialization to run COMMAND as a process
+  with NAME and add it to the list of autostarted processes.
+
+DIRECTORY can be set to a string which will be used as working directory for the
+process.  If not supplied, will be set to `user-home-directory'.
+
+Prepends the value of `exwm-autostart-environmwnt' to
+`process-environment' for the started process.
+"
+  (push (let ((default-directory (or directory user-home-directory))
+              (process-environment (append exwm-autostart-environment process-environment)))
+          (start-process-shell-command name nil command))
+        exwm//autostart-process-list))
+
+(defun exwm//start-desktop-application (basename xdg)
+  "Autostart an application from a XDG desktop entry specification."
+  (let* ((type (gethash "Type" xdg))
+         ;; (name (gethash "Name" xdg))
+         (cmd (gethash "Exec" xdg))
+         (hidden (gethash "Hidden" xdg))
+         (include (gethash "OnlyShowIn" xdg))
+         (exclude (gethash "NotShowIn" xdg))
+         (try-exec (gethash "TryExec" xdg))
+         (exec-directory (gethash "Path" xdg))
+         ;; (dbus-p (gethash "DBusActivatable" xdg)) ; TODO: support
+         (included-p (cond (include (member "EXWM" (split-string include ";" t)))
+                           (exclude (not (member "EXWM" (split-string exclude ";" t))))
+                           (t)))
+         (should-exec-p (and
+                         (string= type "Application")
+                         included-p
+                         (if try-exec
+                             (executable-find try-exec)
+                           t))))
+    (when should-exec-p (exwm/autostart-process basename cmd exec-directory))))
+
+(defun exwm//read-xdg-autostart-files ()
+  "Return a hashtable for autostart applications as defined by the freedesktop specification."
+  (cl-loop with xdg-specs = (make-hash-table :test 'equal)
+           for dir in (append (xdg-config-dirs) (list (xdg-config-home)))
+           for autostart-dir = (expand-file-name "autostart/" dir)
+           for autostart-files = (when (file-exists-p autostart-dir)
+                                   (directory-files autostart-dir t (rx (1+ word) ".desktop")))
+           do
+           (cl-loop for file in autostart-files do
+                    (setf (gethash (file-name-base file) xdg-specs) (xdg-desktop-read-file file)))
+           finally (return xdg-specs)))
+
+(defun exwm//autostart-xdg-applications ()
+  "Run the autostart applications as defined by the freedesktop autostart specification."
+  (unless exwm//autostart-process-list
+    (cl-loop for basename being the hash-keys of
+             (exwm//read-xdg-autostart-files)
+             using (hash-values xdg) do
+             (exwm//start-desktop-application basename xdg))))
+
+(defun exwm//kill-autostart-processes ()
+  (cl-loop for p in exwm//autostart-process-list do
+        (if (process-live-p p) (kill-process p)))
+  (setq exwm//autostart-process-list nil))
+
+(let ((sm-keyvec (elt (edmacro-parse-keys doom-leader-key t) 0))
+      (our-keyvec (elt (edmacro-parse-keys "s-SPC" t) 0)))
+  (defun exwm//which-key-transform-filter (oldargs)
+    (cl-destructuring-bind (key-seq &rest rest) oldargs
+      (list* (cl-substitute sm-keyvec our-keyvec key-seq) rest))))
+
+;; D-Bus locking
+;; We should be able to talk to loginctl to handle the current session, so we
+;; can react to the lock signal.
+
+(defun exwm//install-logind-lock-handler ()
+  (let ((session (dbus-call-method :system "org.freedesktop.login1" "/org/freedesktop/login1"
+                                   "org.freedesktop.login1.Manager" "GetSessionByPID" (emacs-pid))))
+    (dbus-register-signal :system "org.freedesktop.login1" session
+                          "org.freedesktop.login1.Session" "Lock"
+                          (lambda()
+                            (message "Lock signal received")
+                            (start-process-shell-command "session-lock" nil exwm-locking-command)))))
+
+
+#+end_src
+
+** misc
+#+begin_src emacs-lisp :tangle no
+
+(defun exwm/init-framemove ()
+  (use-package framemove
+    :after exwm
+    :config
+    (progn
+      ;; Emacs frame parameters don't seem to be too reliable...
+      (define-advice fm-frame-bbox (:around (oldfun frame) exwm-frame-bbox-from-randr)
+        (if (frame-parameter frame 'exwm-geometry)
+            (exwm//fm-frame-bbox-from-randr frame)
+          (funcall oldfun frame)))
+      (setq framemove-hook-into-windmove exwm-move-frame-at-edge))))
+
+(defun exwm/init-exwm ()
+  (use-package exwm
+    :init
+    ;; Disable dialog boxes since they are unusable in EXWM
+    (setq use-dialog-box nil)
+    ;; You may want Emacs to show you the time
+    (display-time-mode t)
+    (when exwm-hide-tiling-modeline
+      (add-hook 'exwm-mode-hook #'hidden-mode-line-mode))
+    (setq exwm-input-line-mode-passthrough t)
+
+
+
+    ;; make winner aware of new window configuration
+    (with-eval-after-load 'winner
+      (add-hook 'exwm-manage-finish-hook 'winner-save-old-configurations t))
+    :config
+
+    ;; make sure that displaying transient states gets the keyboard input.
+    ;; Borrowed from: https://github.com/abo-abo/hydra/issues/232
+    (define-advice hydra-set-transient-map (:around (fun keymap on-exit &optional foreign-keys) exwm-passthrough)
+      (setq exwm-input-line-mode-passthrough t)
+      (let ((on-exit (lexical-let ((on-exit on-exit))
+                       (lambda ()
+                         (setq exwm-input-line-mode-passthrough nil)
+                         (when on-exit (funcall on-exit))))))
+        (funcall fun keymap on-exit foreign-keys)))
+
+    ;; override persp-mode's idea of frame creation for floating frames.  These
+    ;; are characterized by the 'unsplittable' frame parameter, and should not
+    ;; be tried to assign an existing layout to.
+
+    (eval-after-load 'persp-mode
+      (advice-add 'persp-init-new-frame :before-until 'exwm//persp-mode-inhibit-p))
+
+    ;; (eval-after-load 'terminal-here
+    ;;   (exwm-input-set-key (kbd "<s-return>") 'terminal-here-launch))
+
+    (add-hook 'exwm-update-class-hook 'exwm/rename-buffer)
+    (add-hook 'exwm-update-title-hook 'exwm/rename-buffer)
+
+    ;; kick all exwm buffers into insert mode per default
+    (add-hook 'exwm-manage-finish-hook 'exwm/enter-insert-state)
+
+    (evil-define-key 'normal exwm-mode-map (kbd "i") 'exwm/enter-insert-state)
+    ;; Quick swtiching between workspaces
+    (defvar exwm-toggle-workspace 0
+      "Previously selected workspace. Used with `exwm/jump-to-last-exwm'.")
+
+    (defadvice exwm-workspace-switch (before save-toggle-workspace activate)
+      (setq exwm-toggle-workspace exwm-workspace-current-index))
+
+    (when (and exwm-install-logind-lock-handler
+               exwm-locking-command)
+      (add-hook 'exwm-init-hook 'exwm//install-logind-lock-handler))
+    (when exwm-autostart-xdg-applications
+      (add-hook 'exwm-init-hook 'exwm//autostart-xdg-applications t))
+    (add-hook 'exwm-init-hook 'exwm//install-frame-keybindings t)
+    (when exwm-custom-init
+      (add-hook 'exwm-init-hook exwm-custom-init t))
+    ))
+#+end_src
+** final touchups
+
+XDG compliance and WM settings
+I have to set a few environment variables for the sake of compliance with various specifications, most notably the XDG Base Directory Specification. Also in this block I set an environment variable signaling to Java applications that the window manager is not a reparenting window manager.
+
+#+begin_src emacs-lisp
+
+(setenv "XDG_CURRENT_DESKTOP" "emacs")
+(setenv "GTK2_RC_FILES" (expand-file-name "~/.config/gtk-2.0/gtkrc"))
+;; (setenv "GTK3_INI_FILES" (expand-file-name "~/.config/gtk-3.0/settings.ini"))
+(setenv "QT_QPA_PLATFORMTHEME" "gtk2")
+
+;;Make Java applications aware this is a non-reparenting window manager.
+(setenv "_JAVA_AWT_WM_NONREPARENTING" "1")
+#+end_src
+
+#+RESULTS:
+: 1
+
+Disable screen blanking
+I don’t need my laptop’s screen shutting off just because I’m sitting and watching a video with the laptop idle too long.
+#+begin_src emacs-lisp
+(start-process "Disable Blanking" nil "xset"
+               "s" "off" "-dpms")
+#+end_src
+
+Disable the trackpad
+This thing is disgusting, and I prefer trackpoints way more.
+#+begin_src emacs-lisp :tangle no
+
+(start-process "Trackpad Setup" nil "xinput"
+               "disable" (shell-command-to-string
+                          (concat "xinput | grep Synap | head -n 1 | "
+                                  "sed -r 's/.*id=([0-9]+).*/\\1/' | "
+                                  "tr '\n' ' ' | sed 's/ //'")))
+#+end_src
+
+#+RESULTS:
+: #<process Trackpad Setup>
+
+Set fallback cursor
+Some X windows will have weird cursors if this isn’t done.
+#+begin_src emacs-lisp :tangle no
+
+(start-process "Fallback Cursor" nil "xsetroot"
+               "-cursor_name" "left_ptr")
+#+end_src
+Banish the mouse
+I’ve always been mixed on this behavior but it seems like a good idea.
+#+begin_src emacs-lisp
+(start-process "Mouse banisher" nil "xbanish")
+#+end_src
+** Exwm
+#+begin_src emacs-lisp :tangle no
+  (require 'exwm)
+  ;; using xim input
+  (require 'exwm-xim)
+  (exwm-xim-enable)
+  (push ?\C-\\ exwm-input-prefix-keys)   ;; use Ctrl + \ to switch input method
+#+END_SRC
+
+#+begin_src emacs-lisp
+
+(setq-default tab-width 2)
+(setq-default evil-shift-width tab-width);; Window manager
+(setq-default indent-tabs-mode nil)
+(use-package exwm
+  :init
+  (setq mouse-autoselect-window nil
+        focus-follows-mouse t
+        exwm-workspace-warp-cursor t
+        exwm-workspace-number 5)
+                                        ;exwm-workspace-display-echo-area-timeout 5
+                                        ;exwm-workspace-minibuffer-position 'bottom ;; Annoying focus issues
+  :config
+
+  (defun exwm//persp-mode-inhibit-p (frame)
+    (frame-parameter frame 'unsplittable))
+
+    (add-hook 'exwm-update-class-hook
+              (lambda ()
+                (exwm-workspace-rename-buffer exwm-class-name)))
+    (add-hook 'exwm-update-title-hook
+              (lambda ()
+                (pcase exwm-class-name
+                  ("Vimb" (exwm-workspace-rename-buffer (format "vimb: %s" exwm-title)))
+                  ("firefoxdeveloperedition" (exwm-workspace-rename-buffer (format "FirefoxD: %s" exwm-title)))
+                  ("qutebrowser" (exwm-workspace-rename-buffer (format "#F %s" exwm-title))))))
+
+  (defun exwm/run-in-background (command)
+    (let ((command-parts (split-string command "[ ]+")))
+      (apply #'call-process `(,(car command-parts) nil 0 nil ,@(cdr command-parts)))))
+
+  (defun exwm/bind-function (key invocation &rest bindings)
+    "Bind KEYs to FUNCTIONs globally"
+    (while key
+      (exwm-input-set-key (kbd key)
+                          `(lambda ()
+                             (interactive)
+                             (funcall ',invocation)))
+      (setq key (pop bindings)
+            invocation (pop bindings))))
+
+  (defun exwm/bind-command (key command &rest bindings)
+    "Bind KEYs to COMMANDs globally"
+    (while key
+      (exwm-input-set-key (kbd key)
+                          `(lambda ()
+                             (interactive)
+                             (exwm/run-in-background ,command)))
+      (setq key (pop bindings)
+            command (pop bindings))))
+
+  ;; Simulate insert state by using line mode without passthrough
+  (defun exwm/enter-insert-state ()
+    (interactive)
+    (setq exwm-input-line-mode-passthrough nil)
+    (call-interactively 'exwm-input-grab-keyboard)
+    (evil-insert-state))
+
+  ;; Simulate normal state by using line mode with passthrough, i.e. forward all commands to emacs
+  (defun exwm/enter-normal-state ()
+    (interactive)
+    (setq exwm-input-line-mode-passthrough t)
+    (call-interactively 'exwm-input-grab-keyboard)
+    (evil-normal-state))
+
+  (defun exwm/escape ()
+    "Switch to normal state, and cancel possible fullscreen layout.  Also close minibuffer."
+    (interactive)
+    (exwm/enter-normal-state)
+    (exwm-layout-unset-fullscreen)
+    (when (active-minibuffer-window)
+      (minibuffer-keyboard-quit)))
+
+  (defun exwm/enter-char-mode ()
+    "Enter EXWM char mode."
+    (interactive)
+    (when exwm--id
+      (exwm/enter-insert-state)
+      ;; (exwm-input-toggle-keyboard)
+      (call-interactively 'exwm-input-release-keyboard)))
+
   (defun efs/exwm-init-hook ()
     ;; Make workspace 1 be the one where we land at startup
     (exwm-workspace-switch-create 1)
@@ -711,7 +1127,7 @@ setting, and load it if it exists.
     ;; (eshell)
     ;; (exwm/run-in-background "syncthing-gtk --minimized")
     ;; (exwm/run-in-background "udiskie -t")
-    ;; (exwm/run-in-background "redshift -l 47.675510:-122.203362 -t 6500:3500"))
+    ;; (exwm/run-in-background "redshift -l 47.675510:-122.203362 -t 6500:3500")
     ;; Set up perspective names on initial workspaces
     (exwm-workspace-switch-create 0)
     (persp-switch "Chat")
@@ -734,616 +1150,601 @@ setting, and load it if it exists.
     (efs/start-panel)
     ;; Launch apps that will run in the background
     (exwm/run-in-background "dunst")
-    ;; (exwm/run-in-background "nm-applet")
-    ;; (exwm/run-in-background "pasystray")
-    ;; (exwm/run-in-background "volumeicon")
+    (exwm/run-in-background "nm-applet")
+    (exwm/run-in-background "pasystray")
+    (exwm/run-in-background "volumeicon")
     (exwm/run-in-background "blueman-applet"))
-  (use-package exwm
-    :config
 
-    ;; (add-hook 'exwm-mode-hook
-    ;;           (lambda ()
-    ;;             (evil-local-set-key 'motion (kbd "C-u") nil)))
+;; When EXWM starts up, do some extra confifuration
+(add-hook 'exwm-init-hook #'efs/exwm-init-hook)
+  ;; (add-hook 'exwm-mode-hook
+  ;;           (lambda ()
+  ;;             (evil-local-set-key 'motion (kbd "C-u") nil)))
 
-    (defun dw/setup-window-by-class ()
-      (interactive)
-      (pcase exwm-class-name
-        ("Pidgin" (exwm-workspace-move-window 0))
-        ("Pidgin<2>" (exwm-workspace-move-window 0))
-        ("discord" (exwm-workspace-move-window 3))
-        ("Microsoft Teams - Preview" (exwm-workspace-move-window 3))
-        ("Spotify" (exwm-workspace-move-window 4))
-        ("Vimb" (exwm-workspace-move-window 2))
-        ("qutebrowser" (exwm-workspace-move-window 2)
-                                ;; (exwm-layout-toggle-mode-line)
-                                (exwm-workspace-toggle-minibuffer))
-        ("firefoxdeveloperedition" (exwm-workspace-move-window 2)
-                                (exwm-layout-toggle-mode-line))
-        ("qjackctl" (exwm-floating-toggle-floating))
-        ("mpv" (exwm-floating-toggle-floating)
-         (exwm/position-window))
-        ("gsi" (exwm-input-toggle-keyboard)))
-
-    ;; position a window
-    (defun exwm/position-window ()
-      (let* ((pos (frame-position))
-             (pos-x (car pos))
-             (pos-y (cdr pos)))
-
-        (exwm-floating-move (- pos-x) (- pos-y)))))
-    ;; Manipulate windows as they're created
-    (add-hook 'exwm-manage-finish-hook
-              (lambda ()
-                ;; Send the window where it belongs
-                (dw/setup-window-by-class)))
-
-    ;; Hide the modeline on all X windows
-    (add-hook 'exwm-floating-setup-hook
-              (lambda ()
-                (exwm-layout-hide-mode-line))))
-
-  (defun efs/set-wallpaper ()
+  (defun dw/setup-window-by-class ()
     (interactive)
-    ;; NOTE: You will need to update this to a valid background path!
-    (start-process-shell-command
-     "feh" nil  "feh --bg-scale /usr/share/backgrounds/dtos-backgrounds/3JWY37f.jpg"))
-  (efs/set-wallpaper)
+    (pcase exwm-class-name
+      ("Pidgin" (exwm-workspace-move-window 0))
+      ("Pidgin<2>" (exwm-workspace-move-window 0))
+      ("discord" (exwm-workspace-move-window 3))
+      ("Microsoft Teams - Preview" (exwm-workspace-move-window 3))
+      ("Spotify" (exwm-workspace-move-window 4))
+      ("Vimb" (exwm-workspace-move-window 2))
+      ("qutebrowser" (exwm-workspace-move-window 2)
+       (exwm-layout-toggle-mode-line)
+      (exwm-workspace-toggle-minibuffer))
+    ("firefoxdeveloperedition" (exwm-workspace-move-window 2)
+               (exwm-workspace-toggle-minibuffer)
+                 (exwm-layout-toggle-mode-line))
+    ("qjackctl" (exwm-floating-toggle-floating))
+    ;; ("mpv" (exwm-floating-toggle-floating)
+    ;;  (exwm/position-window))
+    ("mpv" (exwm-workspace-move-window 4)
+     (exwm-layout-toggle-mode-line))
+    ("gsi" (exwm-input-toggle-keyboard)))
 
-  (setq-default my/exwm--do-not-mass-kill nil)
-  (defun my/exwm-toggle-or-set-buffer-protection (&optional arg value)
-    "Toggle or set EXWM mass-buffer-deletion protection.
+  ;; position a window
+  (defun exwm/position-window ()
+    (let* ((pos (frame-position))
+           (pos-x (car pos))
+           (pos-y (cdr pos)))
+
+      (exwm-floating-move (- pos-x) (- pos-y)))))
+;; Manipulate windows as they're created
+(add-hook 'exwm-manage-finish-hook
+          (lambda ()
+            ;; Send the window where it belongs
+            (dw/setup-window-by-class)))
+
+;; Hide the modeline on all X windows
+(add-hook 'exwm-floating-setup-hook
+          (lambda ()
+            (exwm-layout-hide-mode-line)))
+
+(defun efs/set-wallpaper ()
+  (interactive)
+  ;; NOTE: You will need to update this to a valid background path!
+  (start-process-shell-command
+   "feh" nil  "feh --bg-scale /usr/share/backgrounds/dtos-backgrounds/3JWY37f.jpg"))
+(efs/set-wallpaper)
+
+(setq-default my/exwm--do-not-mass-kill nil)
+(defun my/exwm-toggle-or-set-buffer-protection (&optional arg value)
+  "Toggle or set EXWM mass-buffer-deletion protection.
 When called interactively, toggle. Otherwise set to VALUE."
-    (interactive "p")
-    (when (derived-mode-p 'exwm-mode)
-      (if arg
-          (progn
-            (if my/exwm--do-not-mass-kill
-                (kill-local-variable 'my/exwm--do-not-mass-kill)
-              (setq-local my/exwm--do-not-mass-kill t))
-            (when arg
-              (message "EXWM buffer protection set to %s" my/exwm--do-not-mass-kill)))
-        (setq-local my/exwm--do-not-mass-kill value))))
-  (defun my/exwm-kill-unprotected-by-prefix (prefix)
-    "Kill all EXWM buffers with PREFIX that have `my/exwm--do-not-mass-kill' set to nil."
-    (interactive "sPrefix: ")
-    (dolist (buf (buffer-list (current-buffer)))
-      (with-current-buffer buf
-        (when
-            (and
-             (eq major-mode 'exwm-mode)
-             (string-prefix-p (concat prefix "#") (buffer-name))
-             (not my/exwm--do-not-mass-kill))
-          (kill-buffer)))))
+  (interactive "p")
+  (when (derived-mode-p 'exwm-mode)
+    (if arg
+        (progn
+          (if my/exwm--do-not-mass-kill
+              (kill-local-variable 'my/exwm--do-not-mass-kill)
+            (setq-local my/exwm--do-not-mass-kill t))
+          (when arg
+            (message "EXWM buffer protection set to %s" my/exwm--do-not-mass-kill)))
+      (setq-local my/exwm--do-not-mass-kill value))))
+(defun my/exwm-kill-unprotected-by-prefix (prefix)
+  "Kill all EXWM buffers with PREFIX that have `my/exwm--do-not-mass-kill' set to nil."
+  (interactive "sPrefix: ")
+  (dolist (buf (buffer-list (current-buffer)))
+    (with-current-buffer buf
+      (when
+          (and
+           (eq major-mode 'exwm-mode)
+           (string-prefix-p (concat prefix "#") (buffer-name))
+           (not my/exwm--do-not-mass-kill))
+        (kill-buffer)))))
 
-  (defun my/exwm--format-window-title-firefox (title &optional length)
-    "Removes noise from and trims Firefox window titles.
+(defun my/exwm--format-window-title-firefox (title &optional length)
+  "Removes noise from and trims Firefox window titles.
 Assumes the Add URL to Window Title extension is enabled and
 configured to use @ (at symbol) as separator."
-    (let* ((length (or length 45))
-           (title (concat "F# " (replace-regexp-in-string " [-—] Firefox Developer Edition$" "" title)))
-           (title-and-hostname (split-string title "@" nil " "))
-           (hostname (substring (car (last title-and-hostname)) 0 -1))
-           (page-title (string-join (reverse (nthcdr 1 (reverse title-and-hostname))) " "))
-           (short-title (reverse (string-truncate-left (reverse page-title) length))))
-      (if (length> title-and-hostname 1)
-          (concat short-title " @ " hostname)
-        (reverse (string-truncate-left (reverse title) length)))))
-  ;; to disable simulation keys for whtever
+  (let* ((length (or length 45))
+         (title (concat "F# " (replace-regexp-in-string " [-—] Firefox Developer Edition$" "" title)))
+         (title-and-hostname (split-string title "@" nil " "))
+         (hostname (substring (car (last title-and-hostname)) 0 -1))
+         (page-title (string-join (reverse (nthcdr 1 (reverse title-and-hostname))) " "))
+         (short-title (reverse (string-truncate-left (reverse page-title) length))))
+    (if (length> title-and-hostname 1)
+        (concat short-title " @ " hostname)
+      (reverse (string-truncate-left (reverse title) length)))))
+;; to disable simulation keys for whtever
 ;; (add-hook 'exwm-manage-finish-hook
 ;;           (lambda ()
 ;;             (when (and exwm-class-name
 ;;                        (string= exwm-class-name "Firefox"))
 ;;               (exwm-input-set-local-simulation-keys nil))))
 
-  (defun efs/exwm-update-class ()
-    (exwm-workspace-rename-buffer exwm-class-name))
 
-  (defun efs/exwm-update-title ()
-    (pcase exwm-class-name
-      ("firefoxdeveloperedition" (exwm-workspace-rename-buffer (format "F# %s" exwm-title)))))
-  (add-hook 'exwm-update-title-hook #'efs/exwm-update-title)
+;; position a window
+(defun efs/position-window ()
+  (let* ((pos (frame-position))
+         (pos-x (car pos))
+         (pos-y (cdr pos)))
 
-  (defun efs/exwm-update-title ()
-    (pcase exwm-class-name
-      ("qutebrowser" (exwm-workspace-rename-buffer (format "F# %s" exwm-title)))))
-  (add-hook 'exwm-update-title-hook #'efs/exwm-update-title)
-  ;; position a window
-  (defun efs/position-window ()
-    (let* ((pos (frame-position))
-           (pos-x (car pos))
-           (pos-y (cdr pos)))
+    (exwm-floating-move (- pos-x) (- pos-y))))
 
-      (exwm-floating-move (- pos-x) (- pos-y))))
-
-  (add-hook 'exwm-mode-hook
-            (lambda ()
-              (evil-local-set-key 'motion (kbd "C-u") nil)))
+(add-hook 'exwm-mode-hook
+          (lambda ()
+            (evil-local-set-key 'motion (kbd "C-u") nil)))
 
 
-  ;; (defun efs/configure-window-by-class ()
-  ;;   (interactive)
-  ;;   (message "Window '%s' appeared!" exwm-class))
+;; (defun efs/configure-window-by-class ()
+;;   (interactive)
+;;   (message "Window '%s' appeared!" exwm-class))
                                         ; This function isn't currently used, only serves as an example how to
-  ;; here uxrvt
+;; here uxrvt
 
-  (use-package! exwm-mff
-    :config
-    (add-hook 'exwm-mode-hook 'exwm-mff-mode))
-
-
-  (defun zackteo/launch (command)
-    (interactive (list (read-shell-command "$ ")))
-    (start-process-shell-command command nil command))
-
-  (defun zackteo/screen-to-clipboard ()
-    (interactive  )
-    (shell-command
-     (concat "bash -c 'FILENAME=$(date +'%Y-%m-%d-%H:%M:%S').png && maim -s $FILENAME"
-             " && xclip $FILENAME -selection clipboard "
-             "-t image/png &> /dev/null && rm $FILENAME'"))
-    (message "Added to clipboard."))
-
-  (defun zackteo/flameshot ()
-    (interactive)
-    (shell-command "flameshot gui"))
-
-  (define-ibuffer-column exwm-class (:name "Class")
-    (if (bound-and-true-p exwm-class-name)
-        exwm-class-name
-      ""))
-  (define-ibuffer-column exwm-instance (:name "Instance")
-    (if (bound-and-true-p exwm-instance-name)
-        exwm-instance-name
-      ""))
-  (define-ibuffer-column exwm-urgent (:name "U")
-    (if (bound-and-true-p exwm--hints-urgency)
-        "U"
-      " "))
-  ;; Set the default number of workspaces
-  (setq exwm-workspace-number 7)
-  ;; When window "class" updates, use it to set the buffer name
-  (add-hook 'exwm-update-class-hook #'efs/exwm-update-class)
-
-  ;; When window title updates, use it to set the buffer name
-  (add-hook 'exwm-update-title-hook #'efs/exwm-update-title)
-
-  ;; Configure windows as they're created
-  ;; (add-hook 'exwm-manage-finish-hook #'efs/configure-window-by-class)
-
-  ;; When EXWM starts up, do some extra confifuration
-  (add-hook 'exwm-init-hook #'efs/exwm-init-hook)
-
-  ;; Rebind CapsLock to Ctrl
-  ;; (start-process-shell-command "xmodmap" nil "xmodmap ~/.config/doom/exwm/Xmodmap")
-
-  ;; NOTE: Uncomment the following two options if you want window buffers
-  ;;       to be available on all workspaces!
-
-  ;; Automatically move EXWM buffer to current workspace when selected
-  (setq exwm-layout-show-all-buffers t)
-
-  ;; Display all EXWM buffers in every workspace buffer list
-  (setq exwm-workspace-show-all-buffers t)
-
-  (setq exwm-workspace-switch-create-limit 9)
-
-  ;; (setq exwm-debug-on t)
-
-  ;; NOTE: Uncomment this option if you want to detach the minibuffer!
-  ;; Detach the minibuffer (show it with exwm-workspace-toggle-minibuffer)
-  ;; (setq exwm-workspace-minibuffer-position 'top)
-
-  ;; NOTE: This is disabled because we now use Polybar!
-  ;; Load the system tray before exwm-init
-  (require 'exwm-systemtray)
-  (setq exwm-systemtray-height 16)
-  (exwm-systemtray-enable)
-
-  ;; Automatically send the mouse cursor to the selected workspace's display
-  (setq exwm-workspace-warp-cursor t)
-  ;; Window focus should follow the mouse pointer
-  (setq mouse-autoselect-window t
-        focus-follows-mouse t)
-  ;; ;; Don't override any keybindings in line-mode
-  ;; (setq exwm-input-prefix-keys '())
-  (defun my/exwm--format-window-title-urxvt (title)
-    "Removes noise from URxvt window titles."
-    (concat "U# " (replace-regexp-in-string ":.*$" "" title)))
-
-  (defun my/exwm--format-window-title-alacritty (title)
-    "Removes noise from URxvt window titles."
-    (concat "U# " (replace-regexp-in-string ":.*$" "" title)))
+;; (use-package! exwm-mff
+;;   :config
+;;   (add-hook 'exwm-mode-hook 'exwm-mff-mode))
 
 
-  (defun my/exwm--format-window-title-st (title)
-    "Removes noise from URxvt window titles."
-    (concat "U# " (replace-regexp-in-string ":.*$" "" title)))
+(defun zackteo/launch (command)
+  (interactive (list (read-shell-command "$ ")))
+  (start-process-shell-command command nil command))
 
-  (defun my/exwm--format-window-title-* (title)
-    "Removes annoying notifications counters."
-    (string-trim (replace-regexp-in-string "([[:digit:]]+)" "" title)))
+(defun zackteo/screen-to-clipboard ()
+  (interactive  )
+  (shell-command
+   (concat "bash -c 'FILENAME=$(date +'%Y-%m-%d-%H:%M:%S').png && maim -s $FILENAME"
+           " && xclip $FILENAME -selection clipboard "
+           "-t image/png &> /dev/null && rm $FILENAME'"))
+  (message "Added to clipboard."))
 
-  (defun my/exwm-buffer-name ()
-    "Guesses (and formats) the buffer name using the class of the X client."
-    (let ((title (my/exwm--format-window-title-* exwm-title))
-          (formatter (intern
-                      (format "my/exwm--format-window-title-%s"
-                              (downcase exwm-class-name)))))
-      (if (fboundp formatter)
-          (funcall formatter title)
-        title)))
-  ;; Undo window configurations
-  (exwm-input-set-key (kbd "s-u") #'winner-undo)
-  (exwm-input-set-key (kbd "s-U") #'winner-redo)
+(defun zackteo/flameshot ()
+  (interactive)
+  (shell-command "flameshot gui"))
 
-  ;; ;; Moving Windows
-  (exwm-input-set-key (kbd "s-t") #'toggle-window-split)
-  (exwm-input-set-key (kbd "s-s") #'swap-windows)
+(define-ibuffer-column exwm-class (:name "Class")
+  (if (bound-and-true-p exwm-class-name)
+      exwm-class-name
+    ""))
+(define-ibuffer-column exwm-instance (:name "Instance")
+  (if (bound-and-true-p exwm-instance-name)
+      exwm-instance-name
+    ""))
+(define-ibuffer-column exwm-urgent (:name "U")
+  (if (bound-and-true-p exwm--hints-urgency)
+      "U"
+    " "))
+;; Set the default number of workspaces
+(setq exwm-workspace-number 7)
 
-  (exwm-input-set-key (kbd "s-h") #'next-user-buffer)
-  (exwm-input-set-key (kbd "s-a") #'previous-user-buffer)
+;; Configure windows as they're created
+;; (add-hook 'exwm-manage-finish-hook #'efs/configure-window-by-class)
 
 
-  (exwm-input-set-key (kbd "s-C-L") #'doom/window-maximize-horizontally)
-  (exwm-input-set-key (kbd "s-C-U") #'doom/window-maximize-vertically)
+;; Rebind CapsLock to Ctrl
+;; (start-process-shell-command "xmodmap" nil "xmodmap ~/.config/doom/exwm/Xmodmap")
 
-  ;; Workspaces
-  (exwm-input-set-key (kbd "s-]") #'exwm/workspace-next)
-  (exwm-input-set-key (kbd "s-[") #'exwm/workspace-prev)
-  (exwm-input-set-key (kbd "s-}") #'exwm/workspace-move-buffer-next)
-  (exwm-input-set-key (kbd "s-{") #'exwm/workspace-move-buffer-prev)
+;; NOTE: Uncomment the following two options if you want window buffers
+;;       to be available on all workspaces!
 
-  (exwm-input-set-key (kbd "s-W") #'exwm-workspace-swap)
-  (exwm-input-set-key (kbd "s-C-w") #'exwm-workspace-move)
-  (exwm-input-set-key (kbd "<s-return>") #'eshell)
-  (exwm-input-set-key (kbd "<s-S-return>") #'dmenu)
+;; Automatically move EXWM buffer to current workspace when selected
+;; (setq exwm-layout-show-all-buffers t)
 
-  ;; (exwm-input-set-key (kbd "s-C") #'kill-current-buffer)
+;; Display all EXWM buffers in every workspace buffer list
+(setq exwm-workspace-show-all-buffers t)
 
- (global-set-key (kbd "s-q") 'kill-buffer-and-window)
-  (exwm-input-set-key (kbd "s-C-h") #'evil-window-move-far-right)
-  (exwm-input-set-key (kbd "s-C-l") #'evil-window-move-far-left)
+(setq exwm-workspace-switch-create-limit 9)
 
-  (exwm-input-set-key (kbd "s-c") #'exwm-input-toggle-keyboard)
+;; (setq exwm-debug-on t)
 
-  ;; ;; (exwm-input-set-key (kbd "s-r") #'exwm-reset)
-  ;; ;; (exwm-input-set-key (kbd "s-f") #'my/toggle-single-window)
-  (exwm-input-set-key (kbd "s-F") #'exwm-toggle-floating-window)
-  (exwm-input-set-key (kbd "s-m") #'exwm-layout-toggle-mode-line)
-  ;; (exwm-input-set-key (kbd "<f11>") #'exwm-layout-toggle-fullscreen)
+;; NOTE: Uncomment this option if you want to detach the minibuffer!
+;; Detach the minibuffer (show it with exwm-workspace-toggle-minibuffer)
+;; (setq exwm-workspace-minibuffer-position 'top)
+
+;; NOTE: This is disabled because we now use Polybar!
+;; Load the system tray before exwm-init
+(require 'exwm-systemtray)
+(setq exwm-systemtray-height 16)
+(exwm-systemtray-enable)
+
+;; Automatically send the mouse cursor to the selected workspace's display
+(setq exwm-workspace-warp-cursor t)
+;; Window focus should follow the mouse pointer
+(setq mouse-autoselect-window t
+      focus-follows-mouse t)
+;; ;; Don't override any keybindings in line-mode
+;; (setq exwm-input-prefix-keys '())
+(defun my/exwm--format-window-title-urxvt (title)
+  "Removes noise from URxvt window titles."
+  (concat "U# " (replace-regexp-in-string ":.*$" "" title)))
+
+(defun my/exwm--format-window-title-alacritty (title)
+  "Removes noise from URxvt window titles."
+  (concat "U# " (replace-regexp-in-string ":.*$" "" title)))
+
+
+(defun my/exwm--format-window-title-st (title)
+  "Removes noise from URxvt window titles."
+  (concat "U# " (replace-regexp-in-string ":.*$" "" title)))
+
+(defun my/exwm--format-window-title-* (title)
+  "Removes annoying notifications counters."
+  (string-trim (replace-regexp-in-string "([[:digit:]]+)" "" title)))
+
+(defun my/exwm-buffer-name ()
+  "Guesses (and formats) the buffer name using the class of the X client."
+  (let ((title (my/exwm--format-window-title-* exwm-title))
+        (formatter (intern
+                    (format "my/exwm--format-window-title-%s"
+                            (downcase exwm-class-name)))))
+    (if (fboundp formatter)
+        (funcall formatter title)
+      title)))
+;; Undo window configurations
+(exwm-input-set-key (kbd "s-u") #'winner-undo)
+(exwm-input-set-key (kbd "s-U") #'winner-redo)
+
+;; ;; Moving Windows
+(exwm-input-set-key (kbd "s-t") #'toggle-window-split)
+(exwm-input-set-key (kbd "s-s") #'swap-windows)
+
+(exwm-input-set-key (kbd "s-h") #'next-user-buffer)
+(exwm-input-set-key (kbd "s-a") #'previous-user-buffer)
+
+
+(exwm-input-set-key (kbd "s-C-L") #'doom/window-maximize-horizontally)
+(exwm-input-set-key (kbd "s-C-U") #'doom/window-maximize-vertically)
+
+;; Workspaces
+(exwm-input-set-key (kbd "s-]") #'exwm/workspace-next)
+(exwm-input-set-key (kbd "s-[") #'exwm/workspace-prev)
+(exwm-input-set-key (kbd "s-}") #'exwm/workspace-move-buffer-next)
+(exwm-input-set-key (kbd "s-{") #'exwm/workspace-move-buffer-prev)
+
+(exwm-input-set-key (kbd "s-W") #'exwm-workspace-swap)
+(exwm-input-set-key (kbd "s-C-w") #'exwm-workspace-move)
+;; (exwm-input-set-key (kbd "<s-return>") #'eshell)
+(exwm-input-set-key (kbd "<s-S-return>") #'dmenu)
+
+;; (exwm-input-set-key (kbd "s-C") #'kill-current-buffer)
+
+(global-set-key (kbd "s-q") 'kill-buffer-and-window)
+(exwm-input-set-key (kbd "s-C-h") #'evil-window-move-far-right)
+(exwm-input-set-key (kbd "s-C-l") #'evil-window-move-far-left)
+
+(exwm-input-set-key (kbd "s-c") #'exwm-input-toggle-keyboard)
+
+;; ;; (exwm-input-set-key (kbd "s-r") #'exwm-reset)
+;; ;; (exwm-input-set-key (kbd "s-f") #'my/toggle-single-window)
+(exwm-input-set-key (kbd "s-F") #'exwm-toggle-floating-window)
+(exwm-input-set-key (kbd "s-m") #'exwm-layout-toggle-mode-line)
+;; (exwm-input-set-key (kbd "<f11>") #'exwm-layout-toggle-fullscreen)
 (global-set-key [f11] 'toggle-frame-fullscreen)
-  (exwm-input-set-key (kbd "s-C-r") #'resize-window)
-  (exwm-input-set-key (kbd "<C-escape>") #'consult-buffer)
-  (exwm-input-set-key (kbd "C-c o") #'consult-buffer-other-window)
-  ;; (exwm-input-set-key (kbd "s-I") #'evil-window-delete)
-  (exwm-input-set-key (kbd "s-'") #'hydra-text-scale/body)
-  (exwm-input-set-key (kbd "s-.") #'hydra-cycle-buffers/body)
+(exwm-input-set-key (kbd "s-C-r") #'resize-window)
+(exwm-input-set-key (kbd "<C-escape>") #'consult-buffer)
+(exwm-input-set-key (kbd "C-c o") #'consult-buffer-other-window)
+;; (exwm-input-set-key (kbd "s-I") #'evil-window-delete)
+(exwm-input-set-key (kbd "s-'") #'hydra-text-scale/body)
+(exwm-input-set-key (kbd "s-.") #'hydra-cycle-buffers/body)
 
-  (exwm-input-set-key (kbd "C-c x") #'exwm/escape)
-  (exwm-input-set-key (kbd "C-c X") #'exwm/enter-insert-state)
-  (exwm-input-set-key (kbd "s-d") 'counsel-linux-app)
+(exwm-input-set-key (kbd "C-c x") #'exwm/escape)
+(exwm-input-set-key (kbd "C-c X") #'exwm/enter-insert-state)
+(exwm-input-set-key (kbd "s-d") 'counsel-linux-app)
 
-  ;; Autorandr
-  ;; ;; Ctrl+Q will enable the next key to be sent directly
-  (define-key exwm-mode-map [?\C-q] 'exwm-input-send-next-key)
+;; Autorandr
+;; ;; Ctrl+Q will enable the next key to be sent directly
+(define-key exwm-mode-map [?\C-q] 'exwm-input-send-next-key)
 
-  (global-set-key (kbd "s-n") 'counsel-network-manager)
-  ;; ;; Set up global key bindings.  These always work, no matter the input state!
-  ;; Keep in mind that changing this list after EXWM initializes has no effect.
-  ;; Workspace switching
-  (exwm-input-set-key (kbd "C-?") #'execute-extended-command)
-  (global-set-key (kbd "C-?") #'execute-extended-command)
-  ;; (setq exwm-input-simulation-keys
-  ;;       '(
-  ;;         ([?\C-y] . [?\C-v])))
+(global-set-key (kbd "s-n") 'counsel-network-manager)
+;; ;; Set up global key bindings.  These always work, no matter the input state!
+;; Keep in mind that changing this list after EXWM initializes has no effect.
+;; Workspace switching
+(exwm-input-set-key (kbd "C-?") #'execute-extended-command)
+(global-set-key (kbd "C-?") #'execute-extended-command)
+;; (setq exwm-input-simulation-keys
+;;       '(
+;;         ([?\C-y] . [?\C-v])))
 
-  (setq exwm-input-simulation-keys
-        ;; '(
-        ;;   ([?\C-y] . [?\C-v])))
+(setq exwm-input-simulation-keys
+      ;; '(
+      ;;   ([?\C-y] . [?\C-v]))
 
 
-        '(([C-u] . [C-u])       ; multiplier, doesn't need to be here but reminder
-          ;; movement TODO add more more text like jump para
-          ([?\C-b] . [left])
-          ([?\M-b] . [C-left])
-          ([?\C-f] . [right])
-          ([?\M-f] . [C-right])
-          ([?\C-p] . [up])
-          ([?\C-n] . [down])
-          ([?\C-a] . [home]) ;; to change??
-          ([?\C-e] . [end])
-          ([?\C-v] . [next])
-          ([?\M-v] . [prior])
-          ([?\M-<] . [C-home])
-          ([?\M->] . [C-end])
-          ;; delete
-          ([?\C-d] . [delete])
-          ([?\M-d] . [C-delete])
-          ;; kill/cut/copy/paste/selection
-          ([?\C-k] . [S-end C-x])
-          ([?\C-w] . [?\C-x])
-          ([?\M-w] . [?\C-c])
-          ([?\C-y] . [?\C-v])             ; Add C-S-V ?
-          ([?\s-a] . [?\C-a])             ; should it be s-h cause C-x h
-          ([?\s-h] . [?\C-a])             ; just both lmao
-          ;; undo/redo
-          ([?\C-/] . [?\C-z])
-          ([?\C-?] . [?\C-y])             ; redo
-          ;; search
-          ([?\C-s] . [?\C-f])
-          ;; selection-shift movements
-          ([?\C-\S-b] . [S-left])
-          ([?\C-\S-f] . [S-right])
-          ([?\C-\S-p] . [S-up])
-          ([?\C-\S-n] . [S-down])
-          ([?\M-B] . [C-S-left])
-          ([?\M-F] . [C-S-right])
-          ;; newline/esc
-          ([\\S-\\r] . [end return])
-          ([?\C-g] . [escape])
-          ;;Navigation C-] is going to home ? Alt-Home?
-          ([?\M-\[] . [M-left])           ; back
-          ([?\M-\]] . [M-right])          ; forward
-          ;; Toggle Developer Tools
-          ([?\M-i] . [C-S-i])
-          ([?\M-k] . [C-S-k]) ;; web console - can't toggle
-          ;; C-S-M Responsive Design View
-          ;; C-S-S Debugger
-          ;; M-s Menu
+      '(([C-u] . [C-u])       ; multiplier, doesn't need to be here but reminder
+        ;; movement TODO add more more text like jump para
+        ([?\C-b] . [left])
+        ([?\M-b] . [C-left])
+        ([?\C-f] . [right])
+        ([?\M-f] . [C-right])
+        ([?\C-p] . [up])
+        ([?\C-n] . [down])
+        ([?\C-a] . [home]) ;; to change??
+        ([?\C-e] . [end])
+        ([?\C-v] . [next])
+        ([?\M-v] . [prior])
+        ([?\M-<] . [C-home])
+        ([?\M->] . [C-end])
+        ;; delete
+        ([?\C-d] . [delete])
+        ([?\M-d] . [C-delete])
+        ;; kill/cut/copy/paste/selection
+        ([?\C-k] . [S-end C-x])
+        ([?\C-w] . [?\C-x])
+        ([?\M-w] . [?\C-c])
+        ([?\C-y] . [?\C-v])             ; Add C-S-V ?
+        ([?\s-a] . [?\C-a])             ; should it be s-h cause C-x h
+        ([?\s-h] . [?\C-a])             ; just both lmao
+        ;; undo/redo
+        ([?\C-/] . [?\C-z])
+        ([?\C-?] . [?\C-y])             ; redo
+        ;; search
+        ([?\C-s] . [?\C-f])
+        ;; selection-shift movements
+        ([?\C-\S-b] . [S-left])
+        ([?\C-\S-f] . [S-right])
+        ([?\C-\S-p] . [S-up])
+        ([?\C-\S-n] . [S-down])
+        ([?\M-B] . [C-S-left])
+        ([?\M-F] . [C-S-right])
+        ;; newline/esc
+        ([\\S-\\r] . [end return])
+        ([?\C-g] . [escape])
+        ;;Navigation C-] is going to home ? Alt-Home?
+        ([?\M-\[] . [M-left])           ; back
+        ([?\M-\]] . [M-right])          ; forward
+        ;; Toggle Developer Tools
+        ([?\M-i] . [C-S-i])
+        ([?\M-k] . [C-S-k]) ;; web console - can't toggle
+        ;; C-S-M Responsive Design View
+        ;; C-S-S Debugger
+        ;; M-s Menu
 
-          ;; firefox stuffs? F7 Caret mode!!
-          ;; Focus Tab Bar
-          ([?\s-z] . [?\C-l S-tab S-tab S-tab]) ;; sometime no back history button hmmm
-          ;; copy link
-          ([?\C-l] . [?\C-l ?\C-c])
-          ;; questionable shifting line up/down
-          ([?\M-p] . [home S-end ?\C-c backspace delete up home return up ?\C-v])
-          ([?\M-n] . [home S-end ?\C-c backspace delete end return ?\C-v])
-          ([?\C-\"] . [\" end \" return]) ;; quoting
+        ;; firefox stuffs? F7 Caret mode!!
+        ;; Focus Tab Bar
+        ([?\s-z] . [?\C-l S-tab S-tab S-tab]) ;; sometime no back history button hmmm
+        ;; copy link
+        ([?\C-l] . [?\C-l ?\C-c])
+        ;; questionable shifting line up/down
+        ([?\M-p] . [home S-end ?\C-c backspace delete up home return up ?\C-v])
+        ([?\M-n] . [home S-end ?\C-c backspace delete end return ?\C-v])
+        ([?\C-\"] . [\" end \" return]) ;; quoting
 
-          ;; Ensure ways to still access old bindings
-          ([?\C-\s-b] . [?\C-b]) ;; bookmark
-          ([?\C-\s-s] . [?\C-s]) ;; save
-          ([?\C-\s-p] . [C-p])
-          ([?\C-\s-n] . [C-n])
-          ([?\C-\S-w] . [?\C-w]) ;; close
-          ([?\C-\s-k] . [C-k])
-          ([?\C-\s-b] . [?\C-b]) ;; bookmark
-          ([?\C-\s-s] . [?\C-s]) ;; save
-          ;; QuickFind next
-          ([?\C-,] . [C-g])
-          ([?\C-.] . [C-S-g])
-          ;;idk
-          ;; ([?\C-\S-u] . [C-S-f])
-          ;; Open new window?
-          ;; ([?\M-P] . [C-S-p])
-          ;; ([?\M-N] . [C-S-n])
-          ;; ([?\C-\'] . [\" home \" return])
-          ;; idk
-          ))
-  (setq exwm-manage-force-tiling t)
+        ;; Ensure ways to still access old bindings
+        ([?\C-\s-b] . [?\C-b]) ;; bookmark
+        ([?\C-\s-s] . [?\C-s]) ;; save
+        ([?\C-\s-p] . [C-p])
+        ([?\C-\s-n] . [C-n])
+        ([?\C-\S-w] . [?\C-w]) ;; close
+        ([?\C-\s-k] . [C-k])
+        ([?\C-\s-b] . [?\C-b]) ;; bookmark
+        ([?\C-\s-s] . [?\C-s]) ;; save
+        ;; QuickFind next
+        ([?\C-,] . [C-g])
+        ([?\C-.] . [C-S-g])
+        ;;idk
+        ;; ([?\C-\S-u] . [C-S-f])
+        ;; Open new window?
+        ;; ([?\M-P] . [C-S-p])
+        ;; ([?\M-N] . [C-S-n])
+        ;; ([?\C-\'] . [\" home \" return])
+        ;; idk
+        ))
+(setq exwm-manage-force-tiling t)
 
-  ;; (define-key exwm-mode-map (kbd "C-c") nil)
-  (setq exwm-input-prefix-keys
-        '(?\C-x
-          ?\C-h
-          ?\M-x
-          ?\M-`
-          ?\M-&
-          ?\s-@
-          ?\C-c
-          ?\M-b
-          ?\s-b
-          ?\C-W
-          ?\M-:
-          ?\C-\M-j  ;; Buffer list
-          ?\C-\M-k  ;; Browser list
-          ?\C-\M-n  ;; Next workspace
-          ?\C-\     ;; Ctrl+Space
-          ?\C-\;))
-  ;; Buffer switching
-  ;; (add-to-list 'exwm-input-prefix-keys ?\s-@)
-  ;; (add-to-list 'exwm-input-prefix-keys ?\C-c)
-  ;; (add-to-list 'exwm-input-prefix-keys ?\M-b)
-  ;; ;; Engine mode
-  ;; (add-to-list 'exwm-input-prefix-keys ?\s-b)
-  ;; (add-to-list 'exwm-input-prefix-keys ?\C-W)
-  ;; (exwm/bind-function
-  ;;   "s-o" 'exwm/run-qute
-  ;;   "s-q" 'kill-buffer)
-  ;; Project
-  ;; (add-to-list 'exwm-input-prefix-keys ?\C-p)
-  ;; Window switching
-  (define-key exwm-mode-map (kbd "<f8>") 'other-window)
-  (define-key exwm-mode-map (kbd "C-<f8>") 'window-swap-states)
-  (define-key exwm-mode-map (kbd "M-<f8>") 'rotate-frame-clockwise)
+;; (define-key exwm-mode-map (kbd "C-c") nil)
+(setq exwm-input-prefix-keys
+      '(?\C-x
+        ?\C-h
+        ?\M-x
+        ?\M-`
+        ?\M-&
+        ?\s-@
+        ?\C-c
+        ?\M-b
+        ?\s-b
+        ?\C-W
+        ?\M-:
+        ?\C-\M-j  ;; Buffer list
+        ?\C-\M-k  ;; Browser list
+        ?\C-\M-n  ;; Next workspace
+        ?\C-\     ;; Ctrl+Space
+        ?\C-\;))
+;; Buffer switching
+;; (add-to-list 'exwm-input-prefix-keys ?\s-@)
+;; (add-to-list 'exwm-input-prefix-keys ?\C-c)
+;; (add-to-list 'exwm-input-prefix-keys ?\M-b)
+;; ;; Engine mode
+;; (add-to-list 'exwm-input-prefix-keys ?\s-b)
+;; (add-to-list 'exwm-input-prefix-keys ?\C-W)
+;; (exwm/bind-function
+;;   "s-o" 'exwm/run-qute
+;;   "s-q" 'kill-buffer)
+;; Project
+;; (add-to-list 'exwm-input-prefix-keys ?\C-p)
+;; Window switching
+(define-key exwm-mode-map (kbd "<f8>") 'other-window)
+(define-key exwm-mode-map (kbd "C-<f8>") 'window-swap-states)
+(define-key exwm-mode-map (kbd "M-<f8>") 'rotate-frame-clockwise)
 
-  ;; (exwm-input-set-key (kbd "M-y") #'my/exwm-counsel-yank-pop)
-  (exwm-input-set-key (kbd "M-y") 'consult-yank-pop)
-  (exwm-input-set-key (kbd "M-Y") 'my/exwm-counsel-yank-pop) ;;for pasting stuff in x windowapps
+;; (exwm-input-set-key (kbd "M-y") #'my/exwm-counsel-yank-pop)
+(exwm-input-set-key (kbd "M-y") 'consult-yank-pop)
+(exwm-input-set-key (kbd "M-Y") 'my/exwm-counsel-yank-pop) ;;for pasting stuff in x windowapps
 
-  (use-package desktop-environment
-    :after exwm
-    :config (desktop-environment-mode)
-    :custom
-    (desktop-environment-brightness-small-increment "2%+")
-    (desktop-environment-brightness-small-decrement "2%-")
-    (desktop-environment-brightness-normal-increment "5%+")
-    (desktop-environment-brightness-normal-decrement "5%-")
-    (desktop-environment-screenshot-command "flameshot gui"))
+(use-package desktop-environment
+  :after exwm
+  :config (desktop-environment-mode)
+  :custom
+  (desktop-environment-brightness-small-increment "2%+")
+  (desktop-environment-brightness-small-decrement "2%-")
+  (desktop-environment-brightness-normal-increment "5%+")
+  (desktop-environment-brightness-normal-decrement "5%-")
+  (desktop-environment-screenshot-command "flameshot gui"))
 
-  ;; This needs a more elegant ASCII banner
-  (defhydra hydra-exwm-move-resize (:timeout 4)
-    "Move/Resize Window (Shift is bigger steps, Ctrl moves window)"
-    ("j" (lambda () (interactive) (exwm-layout-enlarge-window 10)) "V 10")
-    ("J" (lambda () (interactive) (exwm-layout-enlarge-window 30)) "V 30")
-    ("k" (lambda () (interactive) (exwm-layout-shrink-window 10)) "^ 10")
-    ("K" (lambda () (interactive) (exwm-layout-shrink-window 30)) "^ 30")
-    ("h" (lambda () (interactive) (exwm-layout-shrink-window-horizontally 10)) "< 10")
-    ("H" (lambda () (interactive) (exwm-layout-shrink-window-horizontally 30)) "< 30")
-    ("l" (lambda () (interactive) (exwm-layout-enlarge-window-horizontally 10)) "> 10")
-    ("L" (lambda () (interactive) (exwm-layout-enlarge-window-horizontally 30)) "> 30")
-    ("C-j" (lambda () (interactive) (exwm-floating-move 0 10)) "V 10")
-    ("C-S-j" (lambda () (interactive) (exwm-floating-move 0 30)) "V 30")
-    ("C-k" (lambda () (interactive) (exwm-floating-move 0 -10)) "^ 10")
-    ("C-S-k" (lambda () (interactive) (exwm-floating-move 0 -30)) "^ 30")
-    ("C-h" (lambda () (interactive) (exwm-floating-move -10 0)) "< 10")
-    ("C-S-h" (lambda () (interactive) (exwm-floating-move -30 0)) "< 30")
-    ("C-l" (lambda () (interactive) (exwm-floating-move 10 0)) "> 10")
-    ("C-S-l" (lambda () (interactive) (exwm-floating-move 30 0)) "> 30")
-    ("f" nil "finished" :exit t))
+;; This needs a more elegant ASCII banner
+(defhydra hydra-exwm-move-resize (:timeout 4)
+  "Move/Resize Window (Shift is bigger steps, Ctrl moves window)"
+  ("j" (lambda () (interactive) (exwm-layout-enlarge-window 10)) "V 10")
+  ("J" (lambda () (interactive) (exwm-layout-enlarge-window 30)) "V 30")
+  ("k" (lambda () (interactive) (exwm-layout-shrink-window 10)) "^ 10")
+  ("K" (lambda () (interactive) (exwm-layout-shrink-window 30)) "^ 30")
+  ("h" (lambda () (interactive) (exwm-layout-shrink-window-horizontally 10)) "< 10")
+  ("H" (lambda () (interactive) (exwm-layout-shrink-window-horizontally 30)) "< 30")
+  ("l" (lambda () (interactive) (exwm-layout-enlarge-window-horizontally 10)) "> 10")
+  ("L" (lambda () (interactive) (exwm-layout-enlarge-window-horizontally 30)) "> 30")
+  ("C-j" (lambda () (interactive) (exwm-floating-move 0 10)) "V 10")
+  ("C-S-j" (lambda () (interactive) (exwm-floating-move 0 30)) "V 30")
+  ("C-k" (lambda () (interactive) (exwm-floating-move 0 -10)) "^ 10")
+  ("C-S-k" (lambda () (interactive) (exwm-floating-move 0 -30)) "^ 30")
+  ("C-h" (lambda () (interactive) (exwm-floating-move -10 0)) "< 10")
+  ("C-S-h" (lambda () (interactive) (exwm-floating-move -30 0)) "< 30")
+  ("C-l" (lambda () (interactive) (exwm-floating-move 10 0)) "> 10")
+  ("C-S-l" (lambda () (interactive) (exwm-floating-move 30 0)) "> 30")
+  ("f" nil "finished" :exit t))
 
-  (defun my/exwm-counsel-yank-pop ()
-    "Same as `counsel-yank-pop' and paste into exwm buffer.
+(defun my/exwm-counsel-yank-pop ()
+  "Same as `counsel-yank-pop' and paste into exwm buffer.
 Stolen from https://github.com/DamienCassou/gpastel#for-exwmcounsel-users
 and adapted to use simulations keys to have a common yank keystroke."
-    (interactive)
-    (let ((inhibit-read-only t)
-          (yank-pop-change-selection t))
-      (call-interactively #'counsel-yank-pop))
-    (when (derived-mode-p 'exwm-mode)
-      ;; https://github.com/ch11ng/exwm/issues/413#issuecomment-386858496
-      (exwm-input--set-focus (exwm--buffer->id (window-buffer (selected-window))))
-      (let ((keys (gethash [?\C-y]
-                           exwm-input--simulation-keys)))
-        (dolist (key keys)
-          (exwm-input--fake-key key)))))
+  (interactive)
+  (let ((inhibit-read-only t)
+        (yank-pop-change-selection t))
+    (call-interactively #'counsel-yank-pop))
+  (when (derived-mode-p 'exwm-mode)
+    ;; https://github.com/ch11ng/exwm/issues/413#issuecomment-386858496
+    (exwm-input--set-focus (exwm--buffer->id (window-buffer (selected-window))))
+    (let ((keys (gethash [?\C-y]
+                         exwm-input--simulation-keys)))
+      (dolist (key keys)
+        (exwm-input--fake-key key)))))
 
-  (add-hook 'exwm-update-title-hook
-            (lambda ()
-              (exwm-workspace-rename-buffer (my/exwm-buffer-name))))
+(add-hook 'exwm-update-title-hook
+          (lambda ()
+            (exwm-workspace-rename-buffer (my/exwm-buffer-name))))
 
-  (add-hook 'exwm-manage-finish-hook
-            (lambda ()
-              (setq-local default-directory (expand-file-name "~/"))
-              (when (and exwm-class-name
-                         (string= (downcase exwm-class-name) "urxvt"))
-                (exwm-input-set-local-simulation-keys
-                 (append
-                  exwm-input-simulation-keys
-                  '(([?\C-y] . [?\C-\S-v])))))
-              (when (and exwm-class-name
-                         (string= (downcase exwm-class-name) "firefoxdeveloperedition"))
-                (exwm-input-set-local-simulation-keys
-                 (append
-                  exwm-input-simulation-keys
-                  '(([?\C-s] . [?\C-f]) ; Swiper!
-                    ([?\C-g] . [escape])
-                    ([?\C-t] . nil))))))) ; Prevent accidental tab ; creation
+(add-hook 'exwm-manage-finish-hook
+          (lambda ()
+            (setq-local default-directory (expand-file-name "~/"))
+            (when (and exwm-class-name
+                       (string= (downcase exwm-class-name) "urxvt"))
+              (exwm-input-set-local-simulation-keys
+               (append
+                exwm-input-simulation-keys
+                '(([?\C-y] . [?\C-\S-v])))))
+            (when (and exwm-class-name
+                       (string= (downcase exwm-class-name) "firefoxdeveloperedition"))
+              (exwm-input-set-local-simulation-keys
+               (append
+                exwm-input-simulation-keys
+                '(([?\C-s] . [?\C-f]) ; Swiper!
+                  ([?\C-g] . [escape])
+                  ([?\C-t] . nil))))))) ; Prevent accidental tab ; creation
 
 
-  (setq exwm-input-global-keys
-        `(
-          ([?\s-r]
-           . exwm-reset)
-          ([?\s-c]
-           . exwm-input-toggle-keyboard)
-          ([?\s-f]
-           . my/toggle-single-window)
-          ([?\s-z]
-           . split-window-below)
-          ([?\s-v]
-           . split-window-right)
-          ([?\s-I]
-           . delete-window)
-          ([?\s-e] . dired-jump)
-          ([?\s-E] . (lambda () (interactive) (dired "~")))
-          ([?\s-C] . (lambda () (interactive) (kill-buffer)))
-          ;; Switch workspace
-          ([?\s-w] . exwm-workspace-switch)
-          ([?\s-`] . (lambda () (interactive) (exwm-workspace-switch-create 0)))
-          ([?\s-d] .
-           (lambda ()
-             (interactive)
-             (counsel-linux-app)))
+(setq exwm-input-global-keys
+      `(
+        ([?\s-r]
+         . exwm-reset)
+        ([?\s-c]
+         . exwm-input-toggle-keyboard)
+        ([?\s-f]
+         . my/toggle-single-window)
+        ([?\s-z]
+         . split-window-below)
+        ([?\s-v]
+         . split-window-right)
+        ([?\s-I]
+         . delete-window)
+        ([?\s-e] . dired-jump)
+        ([?\s-E] . (lambda () (interactive) (dired "~")))
+        ([?\s-C] . (lambda () (interactive) (kill-buffer)))
+        ;; Switch workspace
+        ([?\s-w] . exwm-workspace-switch)
+        ([?\s-`] . (lambda () (interactive) (exwm-workspace-switch-create 0)))
+        ([?\s-d] .
+         (lambda ()
+           (interactive)
+           (counsel-linux-app)))
 
-          ;; go to scratch
-          ([s-escape] . (lambda ()
-                          (interactive)
-                          (switch-to-buffer "*scratch*")))
-          ;; Bind "s-<f2>" to "slock", a simple X display locker.
-          ([s-f2] . (lambda ()
-                      (interactive)
-                      (start-process "" nil "/usr/bin/slock")))
-          ;; simple text to speech. Need to copy clipboard
-          ([s-f7] . (lambda ()
-                      (interactive)
-                      (start-process-shell-command "" nil "xclip -o -sel clip | espeak-ng")))
+        ;; go to scratch
+        ([s-escape] . (lambda ()
+                        (interactive)
+                        (switch-to-buffer "*scratch*")))
+        ;; Bind "s-<f2>" to "slock", a simple X display locker.
+        ([s-f2] . (lambda ()
+                    (interactive)
+                    (start-process "" nil "/usr/bin/slock")))
+        ;; simple text to speech. Need to copy clipboard
+        ([s-f7] . (lambda ()
+                    (interactive)
+                    (start-process-shell-command "" nil "xclip -o -sel clip | espeak-ng")))
 
-          ;;youtube ytfzf
-          ([?\s-Y] . (lambda ()
-                       (interactive)
-                       (start-process-shell-command "" nil "yt -D")))
+        ;;youtube ytfzf
+        ([?\s-Y] . (lambda ()
+                     (interactive)
+                     (start-process-shell-command "" nil "yt -D")))
 
-          ;; youtube
-          ([?\s-y] . (lambda ()
-                          (interactive)
-                          (ytel)));;ytel-search for buffers list though i usually export it via exbark export
-          ;; Launch applications via shell command
-	  ([?\s-&] . (lambda (command)
-		       (interactive (list (read-shell-command "$ ")))
-		       (start-process-shell-command command nil command)))
-          ([?\s-#] .
-           (lambda ()
-             (interactive)
-             (my/ivy-switch-buffer-firefox)))
-          ,@(mapcar (lambda (i)
-                      `(,(kbd (format "s-%d" (car i))) .
-                        (lambda ()
-                          (interactive)
-                          (my/switch-to-buffer-if-exists-back-and-forth ,(cdr i)))))
-                    '((2 . "Telegram") (3 . "Signal") (6 . "*eshell*")))
-          ,@(mapcar (lambda (i)
-                      `(,(kbd (format "s-%d" i)) .
-                        (lambda (arg)
-                          (interactive "P")
-                          (my/bookmark-buffer-or-switch-to-bookmark arg))))
-                    '(6 7))
+        ;; youtube
+        ([?\s-y] . (lambda ()
+                     (interactive)
+                     (ytel)));;ytel-search for buffers list though i usually export it via exbark export
+        ;; Launch applications via shell command
+	([?\s-&] . (lambda (command)
+		     (interactive (list (read-shell-command "$ ")))
+		     (start-process-shell-command command nil command)))
+        ([?\s-#] .
+         (lambda ()
+           (interactive)
+           (my/ivy-switch-buffer-firefox)))
+        ,@(mapcar (lambda (i)
+                    `(,(kbd (format "s-%d" (car i))) .
+                      (lambda ()
+                        (interactive)
+                        (my/switch-to-buffer-if-exists-back-and-forth ,(cdr i)))))
+                  '((2 . "Telegram") (3 . "Signal") (6 . "*eshell*")))
+        ,@(mapcar (lambda (i)
+                    `(,(kbd (format "s-%d" i)) .
+                      (lambda (arg)
+                        (interactive "P")
+                        (my/bookmark-buffer-or-switch-to-bookmark arg))))
+                  '(6 7))
 
-	  ;; 's-N': Switch to certain workspace with Super (Win) plus a number key (0 - 9)
-	  ,@(mapcar (lambda (i)
-	              `(,(kbd (format "s-%d" i)) .
-	        	(lambda ()
-	        	  (interactive)
-	        	  (exwm-workspace-switch-create ,i))))
-	            (number-sequence 0 5))
+	;; 's-N': Switch to certain workspace with Super (Win) plus a number key (0 - 9)
+	,@(mapcar (lambda (i)
+	            `(,(kbd (format "s-%d" i)) .
+	              (lambda ()
+	        	(interactive)
+	        	(exwm-workspace-switch-create ,i))))
+	          (number-sequence 0 5))
 
-          ([?\s-8]
-           . my/ivy-switch-buffer-detached-command)
-          ;; ([?\s-8]
-          ;;  . mu4e-headers-search-bookmark)
-          ([?\s-9] .
-           (lambda ()
-             (interactive)
-             (my/ivy-switch-buffer-urxvt)))
-          ;; ([?\s-0]
-          ;;  . erc-track-switch-buffer)
-          ;; ([?\s-r] .
-          ;;  (lambda ()
-          ;;    (interactive)
-          ;;    (eradio-toggle)))
-          ([?\s-$] .
-           (lambda ()
-             (interactive)
-             (start-process "" nil "/usr/bin/firefox-developer-edition")))
-          ([?\s-p]
-           . my/exwm-toggle-or-set-buffer-protection)
-          ([?\s-q] .
-           (lambda ()
-             (interactive)
-             (start-process "" nil "/usr/bin/alacritty")))
-          ([?\s-=]
-           . balance-windows)
-          ([?\s-L] .
-           (lambda ()
-             (interactive)
-             (exwm-layout-enlarge-window-horizontally 100)))
-          ([?\s-U] .
-           (lambda ()
-             (interactive)
-             (exwm-layout-shrink-window-horizontally 100)))))
+        ([?\s-8]
+         . my/ivy-switch-buffer-detached-command)
+        ;; ([?\s-8]
+        ;;  . mu4e-headers-search-bookmark)
+        ([?\s-9] .
+         (lambda ()
+           (interactive)
+           (my/ivy-switch-buffer-urxvt)))
+        ;; ([?\s-0]
+        ;;  . erc-track-switch-buffer)
+        ;; ([?\s-r] .
+        ;;  (lambda ()
+        ;;    (interactive)
+        ;;    (eradio-toggle)))
+        ([?\s-$] .
+         (lambda ()
+           (interactive)
+           (start-process "" nil "/usr/bin/firefox-developer-edition")))
+        ([?\s-p]
+         . my/exwm-toggle-or-set-buffer-protection)
+        ([?\s-q] .
+         (lambda ()
+           (interactive)
+           (start-process "" nil "/usr/bin/alacritty")))
+        ([?\s-=]
+         . balance-windows)
+        ([?\s-L] .
+         (lambda ()
+           (interactive)
+           (exwm-layout-enlarge-window-horizontally 100)))
+        ([?\s-U] .
+         (lambda ()
+           (interactive)
+           (exwm-layout-shrink-window-horizontally 100)))))
 
-  (exwm-enable))
+(exwm-enable))
 #+end_src
 
 #+RESULTS:
@@ -1385,7 +1786,7 @@ sudo ln -f ~/.config/doom/exwm/EXWM.desktop /usr/share/xsessions/EXWM.desktop
 # xset -dpms
 # xset s off
 
-killall emacs
+# killall emacs
 # Disable access control for the current user.
 xhost +SI:localuser:$USER
 
@@ -1415,7 +1816,7 @@ wmname LG3D
 # xset r rate 200 30
 
 # Set default cursor.
-xsetroot -cursor_name left_ptr
+# xsetroot -cursor_name left_ptr
 
 # Hide the mouse pointer if unused for a duration
 /usr/bin/unclutter &
@@ -1440,10 +1841,10 @@ picom &
   # Enable screen locking on suspend
 xss-lock -- slock &
 # Uncomment the following block to use the exwm-xim module. Not something I use.
-export XMODIFIERS=@im=exwm-xim
-export GTK_IM_MODULE=xim
-export QT_IM_MODULE=xim
-export CLUTTER_IM_MODULE=xim
+# export XMODIFIERS=@im=exwm-xim
+# export GTK_IM_MODULE=xim
+# export QT_IM_MODULE=xim
+# export CLUTTER_IM_MODULE=xim
 
 # If Emacs is started in server mode, `emacsclient` is a convenient way to
 # edit files in place (used by e.g. `git commit`).
@@ -1460,10 +1861,11 @@ export _JAVA_AWT_WM_NONREPARENTING=1
 # "exwm-enable" has to be called before the frame is spawned.
 # usr/local/bin/emacs --daemon --eval "(require 'exwm)" -f exwm-enable
 # emacs --daemon --eval "(require 'exwm)" -f exwm-enable
-# exec dbus-launch --exit-with-session emacs -mm #--debug-init
+ # exec dbus-launch --exit-with-session emacs -mm --debug-init -l ~/.emacs.d/desktop.el
+exec dbus-launch --exit-with-session emacs -mm #--debug-init
 
 # exec emacs --daemon && emacsclient -c --eval "(exwm-enable)"
-exec dbus-launch --exit-with-session emacs --eval "(exwm-enable)"
+# exec dbus-launch --exit-with-session emacs --eval "(exwm-enable)"
 # exec emacsclient -c
 #+end_src
 ** Keyboard Configuration
@@ -1643,7 +2045,7 @@ font-3 = "Fira Mono:size=6;-3"
 modules-left = exwm exwm-path exwm-workspace
 modules-center = spotify
 ; modules-left = exwm-workspace
-modules-right = wireless-network networkspeedup networkspeeddown  cpu memory uptime arch-aur-updates battery temperature date
+modules-right =  wireless-network networkspeedup networkspeeddown  cpu memory uptime arch-aur-updates battery temperature date
 
 ; exwm-workspace exwm exwm-path spotify mu4e telegram xkeyboard cpu cpu1 date battery1 battery temperture temperature1 xbacklight wireless-network wired-network
 ; weathe volume uptime filesystem pulseaudio memory wlan eth network networkspeedup networkspeeddown networkspeedup1 networkspeeddown1 arch-aur-updates aur-updates
@@ -2732,423 +3134,6 @@ I'd like to have just the buffer name, then if applicable the project folder
 
 For example when I open my config file it the window will be titled =config.org ●
 doom= then as soon as I make a change it will become =config.org ◉ doom=.
-** Defvar exwm
-#+begin_src emacs-lisp
-
-(defvar exwm-locking-command "lock"
-  "Command to run when locking session")
-
-(defvar exwm-install-logind-lock-handler nil
-  "If this is non-nil and `exwm-locking-command' is set, register a D-BUS handler on the session lock signal.")
-
-(defvar exwm-app-launcher--prompt "$ "
-  "Prompt for the EXWM application launcher")
-
-(defvar exwm-hide-tiling-modeline nil
-  "Whether to hide modeline.")
-
-(defvar exwm-buffer-name-prefix "X:"
-  "A prefix to append to each buffer managed by exwm")
-
-(defvar exwm-enable-systray nil ;; 't
-  "Whether to enable EXWM's bundled system tray implementation.")
-
-(defvar exwm-autostart-xdg-applications nil
-  "Whether to run $XDG_USER_HOME/autostart applications after initialization.")
-
-(defvar exwm-autostart-environment '()
-  "List of \"KEY=value\" strings which should be set when running autostart applications.
-
-Example: '(\"DESKTOP_SESSION=kde\" \"KDE_SESSION_VERSION=5\") ")
-
-(defvar exwm-custom-init nil
-  "This can be set to a function that runs after all other EXWM initialization.")
-
-(defvar exwm-workspace-switch-wrap t
-  "Whether `exwm/workspace-next' and `exwm/workspace-prev' should wrap.")
-
-(defvar exwm-randr-dwim t
-  "Whether to try to dwim workspace/screen association in the screen change hook.")
-
-(defvar exwm-move-frame-at-edge t
-  "If enabled, use framemove to switch frames when trying to move
-  outside of current frame." )
-#+end_src
-** funcs
-#+begin_src emacs-lisp
-
-(defun exwm//persp-mode-inhibit-p (frame)
-  (frame-parameter frame 'unsplittable))
-
-;; Simulate insert state by using line mode without passthrough
-(defun exwm/enter-insert-state ()
-  (interactive)
-  (setq exwm-input-line-mode-passthrough nil)
-  (call-interactively 'exwm-input-grab-keyboard)
-  (evil-insert-state))
-
-;; Simulate normal state by using line mode with passthrough, i.e. forward all commands to emacs
-(defun exwm/enter-normal-state ()
-  (interactive)
-  (setq exwm-input-line-mode-passthrough t)
-  (call-interactively 'exwm-input-grab-keyboard)
-  (evil-normal-state))
-
-(defun exwm/escape ()
-  "Switch to normal state, and cancel possible fullscreen layout.  Also close minibuffer."
-  (interactive)
-  (exwm/enter-normal-state)
-  (exwm-layout-unset-fullscreen)
-  (when (active-minibuffer-window)
-    (minibuffer-keyboard-quit)))
-
-(defun exwm/enter-char-mode ()
-  "Enter EXWM char mode."
-  (interactive)
-  (when exwm--id
-    (exwm/enter-insert-state)
-    ;; (exwm-input-toggle-keyboard)
-    (call-interactively 'exwm-input-release-keyboard)))
-
-(defun exwm/switch-to-buffer-or-run (window-class command)
-  "Switch to first buffer with window-class, and if not present, run command."
-  (let ((buffer
-         (cl-find window-class (buffer-list) :key (lambda(b) (cdr (assoc 'exwm-class-name (buffer-local-variables b)))) :test 'string-equal)))
-    (if buffer
-        (exwm-workspace-switch-to-buffer buffer)
-      (start-process-shell-command command nil command))))
-
-;; Helper
-;; TODO: actually incorporate exwm-workspace-switch-wrap here...
-(defun exwm//ws-offset (offset)
-  "Return the number of the workspace which is OFFSET workspaces
-  away from the current workspace, cycling if necessary."
-  (mod (+ offset exwm-workspace-current-index) (exwm-workspace--count)))
-
-(defun exwm/workspace-next ()
-  "Switch to next exwm-workspace (to the right)."
-  (interactive)
-  (exwm-workspace-switch (exwm//ws-offset 1)))
-
-(defun exwm/workspace-prev ()
-  "Switch to next exwm-workspace (to the left)."
-  (interactive)
-  (exwm-workspace-switch (exwm//ws-offset -1)))
-
-;; Buffer move between frames semantics:
-;; - In source window, display last buffer that was replaced in this frame using `other-window'
-;; - In target frame, show the buffer in the active window
-(defun exwm/workspace-move-buffer-to-workspace (ws-id)
-  "Move the current buffer to the exwm-workspace with id WS-ID"
-  (let ((target-frame (exwm-workspace--workspace-from-frame-or-index ws-id))
-        (src-exwm-id exwm--id))
-    (if src-exwm-id
-        (progn
-          (exwm-workspace-move-window target-frame src-exwm-id)
-          (exwm-workspace-switch target-frame))
-      (let ((src-buffer (current-buffer)))
-        (switch-to-buffer (other-buffer src-buffer))
-        (pop-to-buffer src-buffer `((display-buffer-in-previous-window
-                                     display-buffer-use-some-window
-                                     display-buffer-pop-up-window
-                                     ;; display-buffer-use-some-frame
-                                     )
-                                    (inhibit-same-window . t)
-                                    (reusable-frames . ,target-frame)
-                                    ;; (frame-predicate . (lambda(f) (eql f ,target-frame)))
-                                    ))))))
-
-(defun exwm/workspace-move-buffer-next ()
-  "Display active buffer in next frame (to the right)."
-  (interactive)
-  (exwm/workspace-move-buffer-to-workspace (exwm//ws-offset 1)))
-
-(defun exwm/workspace-move-buffer-prev ()
-  "Display active buffer in next frame (to the right)."
-  (interactive)
-  (exwm/workspace-move-buffer-to-workspace (exwm//ws-offset -1)))
-
-(defun exwm/layout-toggle-fullscreen ()
-  "Togggles full screen for Emacs and X windows"
-  (interactive)
-  (if exwm--id
-      (if (exwm-layout--fullscreen-p)
-          (exwm-reset)
-        (exwm-layout-set-fullscreen))
-    (spacemacs/toggle-maximize-buffer)))
-
-(defun exwm/run-program-in-home (command)
-  (let ((default-directory user-home-directory))
-    (start-process-shell-command command nil command)))
-
-(defun exwm/app-launcher (command)
-  "Launches an application in your PATH.
-Can show completions at point for COMMAND using helm or ivy"
-  (interactive (list (read-shell-command exwm-app-launcher--prompt)))
-  (exwm/run-program-in-home command))
-
-(defun exwm/launch-split-below (command)
-  (interactive (list (read-shell-command exwm-app-launcher--prompt)))
-  (split-window-below-and-focus)
-  (exwm/run-program-in-home command))
-
-(defun exwm/launch-split-right (command)
-  (interactive (list (read-shell-command exwm-app-launcher--prompt)))
-  (split-window-right-and-focus)
-  (exwm/run-program-in-home command))
-
-(defun exwm/jump-to-last-exwm ()
-  (interactive)
-  (exwm-workspace-switch exwm-toggle-workspace))
-
-(defun exwm/exwm-buffers-info ()
-  (interactive)
-  "Helper, return information about open exwm windows"
-  (cl-loop for buffer in (buffer-list)
-        for name = (buffer-name buffer)
-        for ecname = (buffer-local-value 'exwm-class-name buffer)
-        when ecname
-        do (message "Buffer name: '%s', exwm class name: '%s'" name ecname)))
-
-(defun exwm//convert-key-to-event (key)
-  "Converts something from (kbd ...) format to something suitable for
-    exwm-input-prefix-keys"
-  (let ((key (kbd key)))
-    (if (and (sequencep key)
-             (= (length key) 1))
-        (etypecase key
-          (string (string-to-char key))
-          (vector (elt key 0)))
-      (error "cannot convert to key event: %s" key))))
-
-
-(let ((debug-modes-active nil))
-  (defun exwm/toggle-debug-mode ()
-   "Toggle exwm and xcb debug modes"
-   (interactive)
-   (setf debug-modes-active (not debug-modes-active))
-   (message (if debug-modes-active
-                "Enabling xcb and exwm debug modes."
-              "Disabling xcb and exqm debug modes."))
-   (let ((flag (if debug-modes-active 1 0)))
-     (exwm-debug flag)
-     (xcb:debug flag))))
-
-(defvar exwm//autostart-process-list nil
-  "List of processes run during autostart.")
-
-(defun exwm/autostart-process (name command &optional directory)
-  "Can be used during initialization to run COMMAND as a process
-  with NAME and add it to the list of autostarted processes.
-
-DIRECTORY can be set to a string which will be used as working directory for the
-process.  If not supplied, will be set to `user-home-directory'.
-
-Prepends the value of `exwm-autostart-environmwnt' to
-`process-environment' for the started process.
-"
-  (push (let ((default-directory (or directory user-home-directory))
-              (process-environment (append exwm-autostart-environment process-environment)))
-          (start-process-shell-command name nil command))
-        exwm//autostart-process-list))
-
-(defun exwm//start-desktop-application (basename xdg)
-  "Autostart an application from a XDG desktop entry specification."
-  (let* ((type (gethash "Type" xdg))
-         ;; (name (gethash "Name" xdg))
-         (cmd (gethash "Exec" xdg))
-         (hidden (gethash "Hidden" xdg))
-         (include (gethash "OnlyShowIn" xdg))
-         (exclude (gethash "NotShowIn" xdg))
-         (try-exec (gethash "TryExec" xdg))
-         (exec-directory (gethash "Path" xdg))
-         ;; (dbus-p (gethash "DBusActivatable" xdg)) ; TODO: support
-         (included-p (cond (include (member "EXWM" (split-string include ";" t)))
-                           (exclude (not (member "EXWM" (split-string exclude ";" t))))
-                           (t)))
-         (should-exec-p (and
-                         (string= type "Application")
-                         included-p
-                         (if try-exec
-                             (executable-find try-exec)
-                           t))))
-    (when should-exec-p (exwm/autostart-process basename cmd exec-directory))))
-
-(defun exwm//read-xdg-autostart-files ()
-  "Return a hashtable for autostart applications as defined by the freedesktop specification."
-  (cl-loop with xdg-specs = (make-hash-table :test 'equal)
-           for dir in (append (xdg-config-dirs) (list (xdg-config-home)))
-           for autostart-dir = (expand-file-name "autostart/" dir)
-           for autostart-files = (when (file-exists-p autostart-dir)
-                                   (directory-files autostart-dir t (rx (1+ word) ".desktop")))
-           do
-           (cl-loop for file in autostart-files do
-                    (setf (gethash (file-name-base file) xdg-specs) (xdg-desktop-read-file file)))
-           finally (return xdg-specs)))
-
-(defun exwm//autostart-xdg-applications ()
-  "Run the autostart applications as defined by the freedesktop autostart specification."
-  (unless exwm//autostart-process-list
-    (cl-loop for basename being the hash-keys of
-             (exwm//read-xdg-autostart-files)
-             using (hash-values xdg) do
-             (exwm//start-desktop-application basename xdg))))
-
-(defun exwm//kill-autostart-processes ()
-  (cl-loop for p in exwm//autostart-process-list do
-        (if (process-live-p p) (kill-process p)))
-  (setq exwm//autostart-process-list nil))
-
-(let ((sm-keyvec (elt (edmacro-parse-keys doom-leader-key t) 0))
-      (our-keyvec (elt (edmacro-parse-keys "s-SPC" t) 0)))
-  (defun exwm//which-key-transform-filter (oldargs)
-    (cl-destructuring-bind (key-seq &rest rest) oldargs
-      (list* (cl-substitute sm-keyvec our-keyvec key-seq) rest))))
-
-;; D-Bus locking
-;; We should be able to talk to loginctl to handle the current session, so we
-;; can react to the lock signal.
-
-(defun exwm//install-logind-lock-handler ()
-  (let ((session (dbus-call-method :system "org.freedesktop.login1" "/org/freedesktop/login1"
-                                   "org.freedesktop.login1.Manager" "GetSessionByPID" (emacs-pid))))
-    (dbus-register-signal :system "org.freedesktop.login1" session
-                          "org.freedesktop.login1.Session" "Lock"
-                          (lambda()
-                            (message "Lock signal received")
-                            (start-process-shell-command "session-lock" nil exwm-locking-command)))))
-
-
-#+end_src
-
-** misc
-#+begin_src emacs-lisp
-
-(defun exwm/init-framemove ()
-  (use-package framemove
-    :after exwm
-    :config
-    (progn
-      ;; Emacs frame parameters don't seem to be too reliable...
-      (define-advice fm-frame-bbox (:around (oldfun frame) exwm-frame-bbox-from-randr)
-        (if (frame-parameter frame 'exwm-geometry)
-            (exwm//fm-frame-bbox-from-randr frame)
-          (funcall oldfun frame)))
-      (setq framemove-hook-into-windmove exwm-move-frame-at-edge))))
-
-(defun exwm/init-exwm ()
-  (use-package exwm
-    :init
-    ;; Disable dialog boxes since they are unusable in EXWM
-    (setq use-dialog-box nil)
-    ;; You may want Emacs to show you the time
-    (display-time-mode t)
-    (when exwm-hide-tiling-modeline
-      (add-hook 'exwm-mode-hook #'hidden-mode-line-mode))
-    (setq exwm-input-line-mode-passthrough t)
-
-
-
-    ;; make winner aware of new window configuration
-    (with-eval-after-load 'winner
-      (add-hook 'exwm-manage-finish-hook 'winner-save-old-configurations t))
-    :config
-
-    ;; make sure that displaying transient states gets the keyboard input.
-    ;; Borrowed from: https://github.com/abo-abo/hydra/issues/232
-    (define-advice hydra-set-transient-map (:around (fun keymap on-exit &optional foreign-keys) exwm-passthrough)
-      (setq exwm-input-line-mode-passthrough t)
-      (let ((on-exit (lexical-let ((on-exit on-exit))
-                       (lambda ()
-                         (setq exwm-input-line-mode-passthrough nil)
-                         (when on-exit (funcall on-exit))))))
-        (funcall fun keymap on-exit foreign-keys)))
-
-    ;; override persp-mode's idea of frame creation for floating frames.  These
-    ;; are characterized by the 'unsplittable' frame parameter, and should not
-    ;; be tried to assign an existing layout to.
-
-    (eval-after-load 'persp-mode
-      (advice-add 'persp-init-new-frame :before-until 'exwm//persp-mode-inhibit-p))
-
-    (eval-after-load 'terminal-here
-      (exwm-input-set-key (kbd "<s-return>") 'terminal-here-launch))
-
-    (add-hook 'exwm-update-class-hook 'exwm/rename-buffer)
-    (add-hook 'exwm-update-title-hook 'exwm/rename-buffer)
-
-    ;; kick all exwm buffers into insert mode per default
-    (add-hook 'exwm-manage-finish-hook 'exwm/enter-insert-state)
-
-    (evil-define-key 'normal exwm-mode-map (kbd "i") 'exwm/enter-insert-state)
-    ;; Quick swtiching between workspaces
-    (defvar exwm-toggle-workspace 0
-      "Previously selected workspace. Used with `exwm/jump-to-last-exwm'.")
-
-    (defadvice exwm-workspace-switch (before save-toggle-workspace activate)
-      (setq exwm-toggle-workspace exwm-workspace-current-index))
-
-    (when (and exwm-install-logind-lock-handler
-               exwm-locking-command)
-      (add-hook 'exwm-init-hook 'exwm//install-logind-lock-handler))
-    (when exwm-autostart-xdg-applications
-      (add-hook 'exwm-init-hook 'exwm//autostart-xdg-applications t))
-    (add-hook 'exwm-init-hook 'exwm//install-frame-keybindings t)
-    (when exwm-custom-init
-      (add-hook 'exwm-init-hook exwm-custom-init t))
-    ))
-#+end_src
-** final touchups
-
-XDG compliance and WM settings
-I have to set a few environment variables for the sake of compliance with various specifications, most notably the XDG Base Directory Specification. Also in this block I set an environment variable signaling to Java applications that the window manager is not a reparenting window manager.
-#+begin_src emacs-lisp :tangle yes
-
-(setenv "XDG_CURRENT_DESKTOP" "emacs")
-(setenv "GTK2_RC_FILES" (expand-file-name "~/.config/gtk-2.0/gtkrc"))
-;; (setenv "GTK3_INI_FILES" (expand-file-name "~/.config/gtk-3.0/settings.ini"))
-(setenv "QT_QPA_PLATFORMTHEME" "gtk2")
-
-;;Make Java applications aware this is a non-reparenting window manager.
-(setenv "_JAVA_AWT_WM_NONREPARENTING" "1")
-#+end_src
-
-#+RESULTS:
-: 1
-
-Disable screen blanking
-I don’t need my laptop’s screen shutting off just because I’m sitting and watching a video with the laptop idle too long.
-#+begin_src emacs-lisp :tangle yes
-(start-process "Disable Blanking" nil "xset"
-               "s" "off" "-dpms")
-#+end_src
-
-Disable the trackpad
-This thing is disgusting, and I prefer trackpoints way more.
-#+begin_src emacs-lisp :tangle no
-
-(start-process "Trackpad Setup" nil "xinput"
-               "disable" (shell-command-to-string
-                          (concat "xinput | grep Synap | head -n 1 | "
-                                  "sed -r 's/.*id=([0-9]+).*/\\1/' | "
-                                  "tr '\n' ' ' | sed 's/ //'")))
-#+end_src
-
-#+RESULTS:
-: #<process Trackpad Setup>
-
-Set fallback cursor
-Some X windows will have weird cursors if this isn’t done.
-#+begin_src emacs-lisp :tangle yes
-
-(start-process "Fallback Cursor" nil "xsetroot"
-               "-cursor_name" "left_ptr")
-#+end_src
-Banish the mouse
-I’ve always been mixed on this behavior but it seems like a good idea.
-#+begin_src emacs-lisp :tangle yes
-(start-process "Mouse banisher" nil "xbanish")
-#+end_src
 * DONE services
 CLOSED: [2022-03-31 Thu 20:07]
 ** DONE Proced (process monitor, similar to `top')
@@ -6896,52 +6881,53 @@ By default, Doom Emacs does not use 'SPC v', so the format I use for these bindi
   (defun my/ivy-switch-buffer-detached-command ()
     "Use ivy to select a compilation buffer."
     (interactive)
-    (my/ivy-switch-buffer-by-prefix "d"))
+    (my/ivy-switch-buffer-by-prefix "d")))
 
-  (setcdr (assoc t ivy-format-functions-alist) #'ivy-format-function-line)
-  ;; (ivy-mode 1)
-  (setq ivy-use-virtual-buffers t)
-  (setq ivy-wrap t)
-  (setq ivy-count-format "(%d/%d) ")
-  (setq enable-recursive-minibuffers t)
+  ;; (setcdr (assoc t ivy-format-functions-alist) #'ivy-format-function-line)
+  ;; ;; (ivy-mode 1)
+  ;; (setq ivy-use-virtual-buffers t)
+  ;; (setq ivy-wrap t)
+  ;; (setq ivy-count-format "(%d/%d) ")
+  ;; (setq enable-recursive-minibuffers t)
 
-  ;; Use different regex strategies per completion command
-  (push '(completion-at-point . ivy--regex-fuzzy) ivy-re-builders-alist) ;; This doesn't seem to work...
-  (push '(swiper . ivy--regex-ignore-order) ivy-re-builders-alist)
-  (push '(counsel-M-x . ivy--regex-ignore-order) ivy-re-builders-alist)
+  ;; ;; Use different regex strategies per completion command
+  ;; (push '(completion-at-point . ivy--regex-fuzzy) ivy-re-builders-alist) ;; This doesn't seem to work...
+  ;; (push '(swiper . ivy--regex-ignore-order) ivy-re-builders-alist)
+  ;; (push '(counsel-M-x . ivy--regex-ignore-order) ivy-re-builders-alist)
 
   ;; Set minibuffer height for different commands
-  (setf (alist-get 'counsel-projectile-ag ivy-height-alist) 15)
-  (setf (alist-get 'counsel-projectile-rg ivy-height-alist) 15)
-  (setf (alist-get 'swiper ivy-height-alist) 15)
-  (setf (alist-get 'counsel-switch-buffer ivy-height-alist) 7))
+  ;; (setf (alist-get 'counsel-projectile-ag ivy-height-alist) 15)
+  ;; (setf (alist-get 'counsel-projectile-rg ivy-height-alist) 15)
+  ;; (setf (alist-get 'swiper ivy-height-alist) 15)
+  ;; (setf (alist-get 'counsel-switch-buffer ivy-height-alist) 7))
+
   ;; (setf (alist-get '+default/search-emacsd ivy-height-alist) 7)
   ;; (setf (alist-get '+vertico/project-search-from-cwd ivy-height-alist) 7))
-(use-package ivy-hydra
-  :defer t
-  :after hydra)
+;; (use-package ivy-hydra
+;;   :defer t
+;;   :after hydra)
 
-(use-package ivy-rich
-  :init
-  ;; (ivy-rich-mode 1)
-  :after counsel
-  :config
-  (setq ivy-format-function #'ivy-format-function-line)
-  (setq ivy-rich-display-transformers-list
-        (plist-put ivy-rich-display-transformers-list
-                   'ivy-switch-buffer
-                   '(:columns
-                     ((ivy-rich-candidate (:width 40))
-                      (ivy-rich-switch-buffer-indicators (:width 4 :face error :align right)); return the buffer indicators
-                      (ivy-rich-switch-buffer-major-mode (:width 12 :face warning))          ; return the major mode info
-                      (ivy-rich-switch-buffer-project (:width 15 :face success))             ; return project name using `projectile'
-                      (ivy-rich-switch-buffer-path (:width (lambda (x) (ivy-rich-switch-buffer-shorten-path x (ivy-rich-minibuffer-width 0.3))))))  ; return file path relative to project root or `default-directory' if project is nil
-                     :predicate
-                     (lambda (cand)
-                       (if-let ((buffer (get-buffer cand)))
-                           ;; Don't mess with EXWM buffers
-                           (with-current-buffer buffer
-                             (not (derived-mode-p 'exwm-mode)))))))))
+;; (use-package ivy-rich
+;;   :init
+;;   ;; (ivy-rich-mode 1)
+;;   :after counsel
+;;   :config
+;;   (setq ivy-format-function #'ivy-format-function-line)
+;;   (setq ivy-rich-display-transformers-list
+;;         (plist-put ivy-rich-display-transformers-list
+;;                    'ivy-switch-buffer
+;;                    '(:columns
+;;                      ((ivy-rich-candidate (:width 40))
+;;                       (ivy-rich-switch-buffer-indicators (:width 4 :face error :align right)); return the buffer indicators
+;;                       (ivy-rich-switch-buffer-major-mode (:width 12 :face warning))          ; return the major mode info
+;;                       (ivy-rich-switch-buffer-project (:width 15 :face success))             ; return project name using `projectile'
+;;                       (ivy-rich-switch-buffer-path (:width (lambda (x) (ivy-rich-switch-buffer-shorten-path x (ivy-rich-minibuffer-width 0.3))))))  ; return file path relative to project root or `default-directory' if project is nil
+;;                      :predicate
+;;                      (lambda (cand)
+;;                        (if-let ((buffer (get-buffer cand)))
+;;                            ;; Don't mess with EXWM buffers
+;;                            (with-current-buffer buffer
+;;                              (not (derived-mode-p 'exwm-mode)))))))))
 
 (use-package counsel
   :demand t
@@ -15986,7 +15972,7 @@ This one is a pleasant surprise to have honestly. Having Emacs handle system pac
 
 #+begin_src emacs-lisp
 
-
+(require 'system-packages)
 (use-package system-packages
   :ensure t
   :defer t
@@ -16036,12 +16022,9 @@ This one is a pleasant surprise to have honestly. Having Emacs handle system pac
 #+end_src
 
 #+RESULTS:
-: system-packages-verify-all-packages
+: yay
 
 ** Custom extensions for "focus mode" (logos.el)
-:PROPERTIES:
-:CUSTOM_ID: h:77d14350-978d-4820-ab7f-4641706c445a
-:END:
 
 Also watch: [[https://protesilaos.com/codelog/2022-03-11-emacs-logos-demo/][Emacs: demonstration of logos.el]] (2022-03-11).
 
@@ -16965,20 +16948,45 @@ fi
 For managing my ebooks, I'll hook into the well-established ebook library
 manager [[https://calibre-ebook.com/][calibre]]. A number of Emacs clients for this exist, but this seems like a
 good option.
-#+begin_src emacs-lisp :tangle packages.el
-(package! calibredb :pin "cb93563d0ec9e0c653210bc574f9546d1e7db437")
-#+end_src
 
 Then for reading them, the only currently viable options seems to be [[https://depp.brause.cc/nov.el/][nov.el]].
 #+begin_src emacs-lisp :tangle packages.el
-(package! nov :pin "2b4a7231aff6211a5a2f28719d830887aec6cc57")
+ ;; (package! calibredb :pin "cb93563d0ec9e0c653210bc574f9546d1e7db437")
+ (package! calibredb)
 #+end_src
+
+PS: If sqlite3 and calibredb is in not in your system path, set them with
+
+#+begin_src emacs-lisp :tangle packages.el
+ ;; (package! nov :pin "2b4a7231aff6211a5a2f28719d830887aec6cc57")
+ (package! nov)
+#+end_src
+
+#+begin_src emacs-lisp
+
+(setq sql-sqlite-program "/usr/bin/sqlite3")
+(setq calibredb-program "/usr/bin/calibredb")
+
+(setq calibredb-library-alist '(("~/Documents/EBooks Library")
+                                  ("~/Documents/LIB1")))
+#+end_src
+
+#+RESULTS:
+| ~/Documents/EBooks Library |
+| ~/Documents/LIB1           |
 
 Together these should give me a rather good experience reading ebooks.
 
+Virtual libraries are some convenient shortcuts for quick filtering the Ebooks by setting the calibredb-search-filter.
+#+begin_src emacs-lisp
+(setq calibredb-virtual-library-alist '(("1. Development - work" . "work \\(pdf\\|epub\\)")
+                                        ("2. Read it later" . "Readit epub")
+                                        ("3. Development - rust" . "rust")))
+#+end_src
 =calibredb= lets us use calibre through Emacs, because who wouldn't want to use
 something through Emacs?
 #+begin_src emacs-lisp
+
 (use-package! calibredb
   :commands calibredb
   :config
@@ -17046,6 +17054,9 @@ something through Emacs?
         :ne "M-T" #'calibredb-set-metadata--title
         :ne "M-c" #'calibredb-set-metadata--comments))
 #+end_src
+
+#+RESULTS:
+: t
 
 Then, to actually read the ebooks we use =nov=.
 
@@ -17117,6 +17128,10 @@ Then, to actually read the ebooks we use =nov=.
 
   (add-hook 'nov-mode-hook #'+nov-mode-setup))
 #+end_src
+
+#+RESULTS:
+: ((\.odc\' . archive-mode) (\.odf\' . archive-mode) (\.odi\' . archive-mode) (\.otp\' . archive-mode) (\.odp\' . archive-mode) (\.otg\' . archive-mode) (\.odg\' . archive-mode) (\.ots\' . archive-mode) (\.ods\' . archive-mode) (\.odm\' . archive-mode) (\.ott\' . archive-mode) (\.odt\' . archive-mode) (\.epub\' . nov-mode) (\.[pP][dD][fF]\' . pdf-view-mode) (authinfo.gpg\' . authinfo-color-mode) (/bspwmrc\' . sh-mode) (\.\(?:zunit\|env\)\' . sh-mode) (\.bats\' . sh-mode) (/README\(?:\.md\)?\' . gfm-mode) (\.Cask\' . emacs-lisp-mode) (\.pdf\' . pdf-view-mode) (\(?:\(?:\.\(?:b\(?:\(?:abel\|ower\)rc\)\|json\(?:ld\)?\)\|composer\.lock\)\'\) . json-mode) (\.kbd\' . kbd-mode) (\.pgn\' . chess-pgn-mode) (/systemd/[^z-a]+?\.d/[^/]+?\.conf\' . systemd-mode) (\.#\(?:[.0-9@-Z\_a-z-]+?\.\(?:automount\|busname\|link\|mount\|net\(?:dev\|work\)\|s\(?:ervice\|lice\|ocket\|wap\)\|t\(?:arget\|imer\)\)\|override\.conf\)[[:xdigit:]]\{16\}\' . systemd-mode) ([.0-9@-Z\_a-z-]+?\.\(?:automount\|busname\|link\|mount\|net\(?:dev\|work\)\|s\(?:ervice\|lice\|ocket\|wap\)\|t\(?:arget\|imer\)\)\' . systemd-mode) (\.nspawn\' . systemd-mode) (\.\(?:md\|markdown\|mkd\|mdown\|mkdn\|mdwn\)\' . markdown-mode) (\.hsc\' . haskell-mode) (\.l[gh]s\' . haskell-literate-mode) (\.hsig\' . haskell-mode) (\.[gh]s\' . haskell-mode) (\.cabal\'\|/cabal\.project\|/\.cabal/config\' . haskell-cabal-mode) (\.chs\' . haskell-c2hs-mode) (\.ghci\' . ghci-script-mode) (\.dump-simpl\' . ghc-core-mode) (\.hcr\' . ghc-core-mode) (/git-rebase-todo\' . git-rebase-mode) (\.dockerfile\' . dockerfile-mode) (/Dockerfile\(?:\.[^/\]*\)?\' . dockerfile-mode) (/git/ignore\' . gitignore-mode) (/info/exclude\' . gitignore-mode) (/\.gitignore\' . gitignore-mode) (/etc/gitconfig\' . gitconfig-mode) (/\.gitmodules\' . gitconfig-mode) (/git/config\' . gitconfig-mode) (/modules/.*/config\' . gitconfig-mode) (/\.git/config\' . gitconfig-mode) (/\.gitconfig\' . gitconfig-mode) (/git/attributes\' . gitattributes-mode) (/info/attributes\' . gitattributes-mode) (/\.gitattributes\' . gitattributes-mode) (\.gpg\(~\|\.~[0-9]+~\)?\' nil epa-file) (\.elc\' . elisp-byte-code-mode) (\.vr[hi]?\' . vera-mode) (\(?:\.\(?:rbw?\|ru\|rake\|thor\|jbuilder\|rabl\|gemspec\|podspec\)\|/\(?:Gem\|Rake\|Cap\|Thor\|Puppet\|Berks\|Brew\|Vagrant\|Guard\|Pod\)file\)\' . ruby-mode) (\.re?st\' . rst-mode) (\.py[iw]?\' . python-mode) (\.m\' . octave-maybe-mode) (\.less\' . less-css-mode) (\.scss\' . scss-mode) (\.awk\' . awk-mode) (\.\(u?lpc\|pike\|pmod\(\.in\)?\)\' . pike-mode) (\.idl\' . idl-mode) (\.java\' . java-mode) (\.m\' . objc-mode) (\.ii\' . c++-mode) (\.i\' . c-mode) (\.lex\' . c-mode) (\.y\(acc\)?\' . c-mode) (\.h\' . c-or-c++-mode) (\.c\' . c-mode) (\.\(CC?\|HH?\)\' . c++-mode) (\.[ch]\(pp\|xx\|\+\+\)\' . c++-mode) (\.\(cc\|hh\)\' . c++-mode) (\.\(bat\|cmd\)\' . bat-mode) (\.[sx]?html?\(\.[a-zA-Z_]+\)?\' . mhtml-mode) (\.svgz?\' . image-mode) (\.svgz?\' . xml-mode) (\.x[bp]m\' . image-mode) (\.x[bp]m\' . c-mode) (\.p[bpgn]m\' . image-mode) (\.tiff?\' . image-mode) (\.gif\' . image-mode) (\.png\' . image-mode) (\.jpe?g\' . image-mode) (\.te?xt\' . text-mode) (\.[tT]e[xX]\' . tex-mode) (\.ins\' . tex-mode) (\.ltx\' . latex-mode) (\.dtx\' . doctex-mode) (\.org\' . org-mode) (\.dir-locals\(?:-2\)?\.el\' . lisp-data-mode) (eww-bookmarks\' . lisp-data-mode) (tramp\' . lisp-data-mode) (/archive-contents\' . lisp-data-mode) (places\' . lisp-data-mode) (\.emacs-places\' . lisp-data-mode) (\.el\' . emacs-lisp-mode) (Project\.ede\' . emacs-lisp-mode) (\.\(scm\|stk\|ss\|sch\)\' . scheme-mode) (\.l\' . lisp-mode) (\.li?sp\' . lisp-mode) (\.[fF]\' . fortran-mode) (\.for\' . fortran-mode) (\.p\' . pascal-mode) (\.pas\' . pascal-mode) (\.\(dpr\|DPR\)\' . delphi-mode) (\.\([pP]\([Llm]\|erl\|od\)\|al\)\' . perl-mode) (Imakefile\' . makefile-imake-mode) (Makeppfile\(?:\.mk\)?\' . makefile-makepp-mode) (\.makepp\' . makefile-makepp-mode) (\.mk\' . makefile-gmake-mode) (\.make\' . makefile-gmake-mode) ([Mm]akefile\' . makefile-gmake-mode) (\.am\' . makefile-automake-mode) (\.texinfo\' . texinfo-mode) (\.te?xi\' . texinfo-mode) (\.[sS]\' . asm-mode) (\.asm\' . asm-mode) (\.css\' . css-mode) (\.mixal\' . mixal-mode) (\.gcov\' . compilation-mode) (/\.[a-z0-9-]*gdbinit . gdb-script-mode) (-gdb\.gdb . gdb-script-mode) ([cC]hange\.?[lL]og?\' . change-log-mode) ([cC]hange[lL]og[-.][0-9]+\' . change-log-mode) (\$CHANGE_LOG\$\.TXT . change-log-mode) (\.scm\.[0-9]*\' . scheme-mode) (\.[ckz]?sh\'\|\.shar\'\|/\.z?profile\' . sh-mode) (\.bash\' . sh-mode) (/PKGBUILD\' . sh-mode) (\(/\|\`\)\.\(bash_\(profile\|history\|log\(in\|out\)\)\|z?log\(in\|out\)\)\' . sh-mode) (\(/\|\`\)\.\(shrc\|zshrc\|m?kshrc\|bashrc\|t?cshrc\|esrc\)\' . sh-mode) (\(/\|\`\)\.\([kz]shenv\|xinitrc\|startxrc\|xsession\)\' . sh-mode) (\.m?spec\' . sh-mode) (\.m[mes]\' . nroff-mode) (\.man\' . nroff-mode) (\.sty\' . latex-mode) (\.cl[so]\' . latex-mode) (\.bbl\' . latex-mode) (\.bib\' . bibtex-mode) (\.bst\' . bibtex-style-mode) (\.sql\' . sql-mode) (\(acinclude\|aclocal\|acsite\)\.m4\' . autoconf-mode) (\.m[4c]\' . m4-mode) (\.mf\' . metafont-mode) (\.mp\' . metapost-mode) (\.vhdl?\' . vhdl-mode) (\.article\' . text-mode) (\.letter\' . text-mode) (\.i?tcl\' . tcl-mode) (\.exp\' . tcl-mode) (\.itk\' . tcl-mode) (\.icn\' . icon-mode) (\.sim\' . simula-mode) (\.mss\' . scribe-mode) (\.f9[05]\' . f90-mode) (\.f0[38]\' . f90-mode) (\.indent\.pro\' . fundamental-mode) (\.\(pro\|PRO\)\' . idlwave-mode) (\.srt\' . srecode-template-mode) (\.prolog\' . prolog-mode) (\.tar\' . tar-mode) (\.\(arc\|zip\|lzh\|lha\|zoo\|[jew]ar\|xpi\|rar\|cbr\|7z\|squashfs\|ARC\|ZIP\|LZH\|LHA\|ZOO\|[JEW]AR\|XPI\|RAR\|CBR\|7Z\|SQUASHFS\)\' . archive-mode) (\.oxt\' . archive-mode) (\.\(deb\|[oi]pk\)\' . archive-mode) (\`/tmp/Re . text-mode) (/Message[0-9]*\' . text-mode) (\`/tmp/fol/ . text-mode) (\.oak\' . scheme-mode) (\.sgml?\' . sgml-mode) (\.x[ms]l\' . xml-mode) (\.dbk\' . xml-mode) (\.dtd\' . sgml-mode) (\.ds\(ss\)?l\' . dsssl-mode) (\.js[mx]?\' . javascript-mode) (\.har\' . javascript-mode) (\.json\' . javascript-mode) (\.[ds]?va?h?\' . verilog-mode) (\.by\' . bovine-grammar-mode) (\.wy\' . wisent-grammar-mode) ([:/\]\..*\(emacs\|gnus\|viper\)\' . emacs-lisp-mode) (\`\..*emacs\' . emacs-lisp-mode) ([:/]_emacs\' . emacs-lisp-mode) (/crontab\.X*[0-9]+\' . shell-script-mode) (\.ml\' . lisp-mode) (\.ld[si]?\' . ld-script-mode) (ld\.?script\' . ld-script-mode) (\.xs\' . c-mode) (\.x[abdsru]?[cnw]?\' . ld-script-mode) (\.zone\' . dns-mode) (\.soa\' . dns-mode) (\.asd\' . lisp-mode) (\.\(asn\|mib\|smi\)\' . snmp-mode) (\.\(as\|mi\|sm\)2\' . snmpv2-mode) (\.\(diffs?\|patch\|rej\)\' . diff-mode) (\.\(dif\|pat\)\' . diff-mode) (\.[eE]?[pP][sS]\' . ps-mode) (\.\(?:PDF\|DVI\|OD[FGPST]\|DOCX\|XLSX?\|PPTX?\|pdf\|djvu\|dvi\|od[fgpst]\|docx\|xlsx?\|pptx?\)\' . doc-view-mode-maybe) (configure\.\(ac\|in\)\' . autoconf-mode) (\.s\(v\|iv\|ieve\)\' . sieve-mode) (BROWSE\' . ebrowse-tree-mode) (\.ebrowse\' . ebrowse-tree-mode) (#\*mail\* . mail-mode) (\.g\' . antlr-mode) (\.mod\' . m2-mode) (\.ses\' . ses-mode) (\.docbook\' . sgml-mode) (\.com\' . dcl-mode) (/config\.\(?:bat\|log\)\' . fundamental-mode) (/\.\(authinfo\|netrc\)\' . authinfo-mode) (\.\(?:[iI][nN][iI]\|[lL][sS][tT]\|[rR][eE][gG]\|[sS][yY][sS]\)\' . conf-mode) (\.la\' . conf-unix-mode) (\.ppd\' . conf-ppd-mode) (java.+\.conf\' . conf-javaprop-mode) (\.properties\(?:\.[a-zA-Z0-9._-]+\)?\' . conf-javaprop-mode) (\.toml\' . conf-toml-mode) (\.desktop\' . conf-desktop-mode) (/\.redshift\.conf\' . conf-windows-mode) (\`/etc/\(?:DIR_COLORS\|ethers\|.?fstab\|.*hosts\|lesskey\|login\.?de\(?:fs\|vperm\)\|magic\|mtab\|pam\.d/.*\|permissions\(?:\.d/.+\)?\|protocols\|rpc\|services\)\' . conf-space-mode) (\`/etc/\(?:acpid?/.+\|aliases\(?:\.d/.+\)?\|default/.+\|group-?\|hosts\..+\|inittab\|ksysguarddrc\|opera6rc\|passwd-?\|shadow-?\|sysconfig/.+\)\' . conf-mode) ([cC]hange[lL]og[-.][-0-9a-z]+\' . change-log-mode) (/\.?\(?:gitconfig\|gnokiirc\|hgrc\|kde.*rc\|mime\.types\|wgetrc\)\' . conf-mode) (/\.\(?:asound\|enigma\|fetchmail\|gltron\|gtk\|hxplayer\|mairix\|mbsync\|msmtp\|net\|neverball\|nvidia-settings-\|offlineimap\|qt/.+\|realplayer\|reportbug\|rtorrent\.\|screen\|scummvm\|sversion\|sylpheed/.+\|xmp\)rc\' . conf-mode) (/\.\(?:gdbtkinit\|grip\|mpdconf\|notmuch-config\|orbital/.+txt\|rhosts\|tuxracer/options\)\' . conf-mode) (/\.?X\(?:default\|resource\|re\)s\> . conf-xdefaults-mode) (/X11.+app-defaults/\|\.ad\' . conf-xdefaults-mode) (/X11.+locale/.+/Compose\' . conf-colon-mode) (/X11.+locale/compose\.dir\' . conf-javaprop-mode) (\.~?[0-9]+\.[0-9][-.0-9]*~?\' nil t) (\.\(?:orig\|in\|[bB][aA][kK]\)\' nil t) ([/.]c\(?:on\)?f\(?:i?g\)?\(?:\.[a-zA-Z0-9._-]+\)?\' . conf-mode-maybe) (\.[1-9]\' . nroff-mode) (\.art\' . image-mode) (\.avs\' . image-mode) (\.bmp\' . image-mode) (\.cmyk\' . image-mode) (\.cmyka\' . image-mode) (\.crw\' . image-mode) (\.dcr\' . image-mode) (\.dcx\' . image-mode) (\.dng\' . image-mode) (\.dpx\' . image-mode) (\.fax\' . image-mode) (\.hrz\' . image-mode) (\.icb\' . image-mode) (\.icc\' . image-mode) (\.icm\' . image-mode) (\.ico\' . image-mode) (\.icon\' . image-mode) (\.jbg\' . image-mode) (\.jbig\' . image-mode) (\.jng\' . image-mode) (\.jnx\' . image-mode) (\.miff\' . image-mode) (\.mng\' . image-mode) (\.mvg\' . image-mode) (\.otb\' . image-mode) (\.p7\' . image-mode) (\.pcx\' . image-mode) (\.pdb\' . image-mode) (\.pfa\' . image-mode) (\.pfb\' . image-mode) (\.picon\' . image-mode) (\.pict\' . image-mode) (\.rgb\' . image-mode) (\.rgba\' . image-mode) (\.tga\' . image-mode) (\.wbmp\' . image-mode) (\.webp\' . image-mode) (\.wmf\' . image-mode) (\.wpg\' . image-mode) (\.xcf\' . image-mode) (\.xmp\' . image-mode) (\.xwd\' . image-mode) (\.yuv\' . image-mode) (/LICENSE\' . text-mode) (\.log\' . text-mode) (rc\' . conf-mode) (\.\(?:hex\|nes\)\' . hexl-mode))
+
 ** Calculator
 Emacs includes the venerable =calc=, which is a pretty impressive RPN (Reverse
 Polish Notation) calculator. However, we can do a bit to improve the experience.
@@ -18507,7 +18522,7 @@ Modeled after `emms-player-pause'."
 ^Volume^     ^Controls^       ^Playback^              ^Misc^
 ^^^^^^^^----------------------------------------------------------------
 _d_: inc     _n_: next        _r_: repeat one [% s(my/tick-symbol emms-repeat-track)]     _t_oggle modeline
-_o_: dec     _p_: prev        _R_: repeat all [% s(my/tick-symbol emms-repeat-playlist)]     _T_oggle only time
+_o_: dec     _c_: prev        _R_: repeat all [% s(my/tick-symbol emms-repeat-playlist)]     _T_oggle only time
 _v_: vol     _a_: seek bw     _#_: shuffle            _s_elect
 ^ ^          _h_: seek fw     _%_: sort               _g_oto EMMS buffer
 ^ ^        _SPC_: play/pause                        _l_yrics
@@ -18517,7 +18532,7 @@ _v_: vol     _a_: seek bw     _#_: shuffle            _s_elect
     ("o" emms-volume-lower)
     ("v" sndio-win-open :exit t)
     ("n" emms-next)
-    ("p" emms-previous)
+    ("c" emms-previous) ;;blame my keyboard layout for not beign mnemonic
     ("a" emms-seek-backward)
     ("h" emms-seek-forward)
     ("SPC" emms-pause)
@@ -18541,7 +18556,7 @@ _v_: vol     _a_: seek bw     _#_: shuffle            _s_elect
 #+end_src
 
 #+RESULTS:
-: #s(hash-table size 65 test eql rehash-size 1.5 rehash-threshold 0.8125 data (:use-package (25135 524 430308 775000) :init (25135 524 430230 345000) :init-secs (0 0 60438 559000) :use-package-secs (0 0 60525 457000) :config (25135 524 430121 18000) :config-secs (0 0 60291 670000)))
+: hydra-emms/body
 
 #+BEGIN_SRC emacs-lisp :tangle no
 (emms-all)
@@ -18600,56 +18615,78 @@ _v_: vol     _a_: seek bw     _#_: shuffle            _s_elect
 #+RESULTS:
 : my/volume-decrease
 * Eaf  Core
+** eaf confv2
 #+begin_src emacs-lisp :tangle no
-(use-package! eaf
-  :commands (eaf-open-browser eaf-open find-file)
+
+;; Don't forget to run M-x eaf-install-dependencies
+(use-package eaf
+  ;; :unless gv/is-termux
+  :bind (("C-c W" . gv/bm))
+  ;; :demand t
+  ;; Set to "/usr/share/emacs/site-lisp/eaf" if installed from AUR
+  :load-path "~/.emacs.d/site-lisp/emacs-application-framework/"
+  :init
+  (use-package epc      :defer t :ensure t)
+  (use-package ctable   :defer t :ensure t)
+  (use-package deferred :defer t :ensure t)
+  (use-package s        :defer t :ensure t)
+  ;; (setq browse-url-browser-function 'eaf-open-browser)
   :config
-  (use-package! ctable)
-  (use-package! deferred)
-  (use-package! epc))
+  (defun slurp (f)
+    (with-temp-buffer
+      (insert-file-contents f)
+      (buffer-substring-no-properties
+       (point-min)
+       (point-max))))
+  (defun gv/bm ()
+    (interactive)
+    (add-to-list 'load-path "~/.emacs.d/site-lisp/emacs-application-framework/app/browser/")
+    (require 'eaf-browser)
+
+    (let ((selected (completing-read
+                     "Select URL: " (split-string
+                                     (slurp "~/.config/bookmarks") "\n" t))))
+      (let ((url (car (split-string
+                       selected
+                       " " t))))
+        (if (string-match-p "\\http.*\\'" url)
+            ;; Open selected url
+            (eaf-open-browser url)
+          ;; Search entered text
+          (eaf-search-it selected)))))
+  (setq eaf-browser-continue-where-left-off t)
+  (setq eaf-browser-dnefault-search-engine "duckduckgo")
+  (setq eaf-browser-enable-adblocker "true")
+  ;; (eaf-bind-key scroll_up "C-n" eaf-pdf-viewer-keybinding)
+  ;; (eaf-bind-key scroll_down "C-p" eaf-pdf-viewer-keybinding)
+  ;; (eaf-bind-key take_photo "p" eaf-camera-keybinding)
+  ;; (dolist (keys '("i" "h" "j" "k" "l"
+  ;;              "d" "f" "x" ","
+  ;;              "-" "." "0" "1"
+  ;;              "2" "=" "B" "F"
+  ;;              "G" "H" "I" "J"
+  ;;              "K" "L" "P" "T"
+  ;;              "Y" "c" "d" "e"
+  ;;              "f" "g" "m" "n"
+  ;;              "o" "p" "r" "t"
+  ;;              "u" "v" "x" "y"
+  ;;              (eaf-bind-key nil key eaf-browser-keybinding))))
+  )
 #+end_src
 
 #+RESULTS:
-
-** load eaf apps
-#+begin_src emacs-lisp :tangle yes
-
-(add-to-list 'load-path "~/.emacs.d/site-lisp/emacs-application-framework/")
-(require 'eaf)
- (require 'eaf-pdf-viewer)
- (require 'eaf-rss-reader)
- (require 'eaf-markdown-previewer)
- (require 'eaf-airshare)
- (require 'eaf-file-sender)
- (require 'eaf-jupyter)
- (require 'eaf-browser)
- (require 'eaf-terminal)
- (require 'eaf-mindmap)
- (require 'eaf-system-monitor)
- (require 'eaf-camera)
- (require 'eaf-org-previewer)
- (require 'eaf-org)
- (require 'eaf-image-viewer)
- ;; (require 'eaf-mermaid)
- ;; (require 'eaf-demo)
- ;; (require 'eaf-video-player)
- ;; (require 'eaf-vue-demo)
- ;; (require 'eaf-music-player)
- ;; (require 'eaf-file-browser)
- ;; (require 'eaf-netease-cloud-music)
- ;; (require 'eaf-file-manager)
- ;; (require 'eaf-evil)
-
-#+end_src
+: gv/bm
 
 ** eaf config
 #+begin_src emacs-lisp :tangle no
+
+(add-to-list 'load-path "~/.emacs.d/site-lisp/emacs-application-framework/")
 (use-package eaf
   :load-path "~/.emacs.d/site-lisp/emacs-application-framework"
   :custom
-  (eaf-browser-continue-where-left-off t)
-  (eaf-browser-enable-adblocker t)
-  (browse-url-browser-function 'eaf-open-browser)
+  (setq eaf-browser-continue-where-left-off t)
+  (setq eaf-browser-enable-adblocker t)
+  (setq browse-url-browser-function 'eaf-open-browser)
 (setq eaf-browser-translate-language "es")
 (setq eaf-browser-continue-where-left-off t)
 (setq eaf-browser-download-path "~/Downloads/eaf/")
@@ -18658,7 +18695,7 @@ _v_: vol     _a_: seek bw     _#_: shuffle            _s_elect
 (setq eaf-terminal-dark-mode nil)
 (setq eaf-pdf-dark-mode "ignore") ; see below
 (setq eaf-browser-default-search-engine "duckduckgo")
-(setq eaf-mus  ic-play-order "random")
+(setq eaf-music-play-order "random")
 (setq eaf-browser-blank-page-url "https://duckduckgo.com")
 (setq eaf-browser-default-search-engine "duckduckgo")
   :config
@@ -18686,114 +18723,44 @@ _v_: vol     _a_: seek bw     _#_: shuffle            _s_elect
 ;; use `emacs-application-framework' to open PDF file: link
 (add-to-list 'org-file-apps '("\\.pdf\\'" . eaf-org-open-file))
 
+
 #+end_src
 
 #+RESULTS:
 : ((\.pdf\' . eaf-org-open-file) (remote . emacs) (auto-mode . emacs) (directory . emacs) (\.mm\' . default) (\.x?html?\' . default) (\.pdf\' . default))
-** eaf browser keybinds
-#+begin_src emacs-lisp :tangle yes
-    (setq eaf-browser-keybinding
-    '(("C--" . "zoom_out")
-      ("C-=" . "zoom_in")
-      ("C-0" . "zoom_reset")
-      ("C-s" . "search_text_forward")
-      ("C-r" . "search_text_backward")
-      ("C-n" . "scroll_up")
-      ("C-p" . "scroll_down")
-      ("C-f" . "scroll_right")
-      ("C-b" . "scroll_left")
-      ("C-v" . "scroll_up_page")
-      ("C-y" . "yank_text")
-      ("C-w" . "kill_text")
-      ("M-e" . "atomic_edit")
-      ("M-c" . "caret_toggle_browsing")
-      ("M-D" . "select_text")
-      ("M-s" . "open_link")
-      ("M-S" . "open_link_new_buffer")
-      ("M-B" . "open_link_background_buffer")
-      ("C-/" . "undo_action")
-      ("M-_" . "redo_action")
-      ("M-w" . "copy_text")
-      ("M-f" . "history_forward")
-      ("M-b" . "history_backward")
-      ("M-q" . "delete_cookie")
-      ("M-Q" . "delete_all_cookies")
-      ("C-t" . "toggle_password_autofill")
-      ("C-d" . "save_page_password")
-      ("M-a" . "toggle_adblocker")
-      ("C-M-q"  "clear_history")
-      ("C-M-i"  "import_chrome_history")
-      ("M-v"  "scroll_down_page")
-      ("M-<"  "watch-other-window-up-line")
-      ("M->"  watch-other-window-down-line)
-      ("M-p"  "scroll_down_page")
-      ("M-t"  "new_blank_page")
-      ("M-d"  "toggle_dark_mode")
-      ("SPC"  "insert_or_scroll_up_page")
-      ("J"  "insert_or_select_left_tab")
-      ("K"  "insert_or_select_right_tab")
-      ("j"  "insert_or_scroll_up")
-      ("k"  "insert_or_scroll_down")
-      ("h"  "insert_or_scroll_left")
-      ("l"  "insert_or_scroll_right")
-      ("f"  "insert_or_open_link")
-      ("F"  "insert_or_open_link_background_buffer")
-      ("O"  "insert_or_open_link_new_buffer_other_window")
-      ("B"  "insert_or_open_link_background_buffer")
-      ("c"  "insert_or_caret_at_line")
-      ("u"  "insert_or_scroll_down_page")
-      ("d"  "insert_or_scroll_up_page")
-      ("H"  "insert_or_history_backward")
-      ("L"  "insert_or_history_forward")
-      ("t"  "insert_or_new_blank_page")
-      ("T"  "insert_or_recover_prev_close_page")
-      ("i"  "insert_or_focus_input")
-      ("I"  "insert_or_open_downloads_setting")
-      ("r"  "insert_or_refresh_page")
-      ("g"  "insert_or_scroll_to_begin")
-      ("x"  "insert_or_close_buffer")
-      ("G"  "insert_or_scroll_to_bottom")
-      ("-"  "insert_or_zoom_out")
-      ("="  "insert_or_zoom_in")
-      ("0"  "insert_or_zoom_reset")
-      ("m"  "insert_or_save_as_bookmark")
-      ("o"  "insert_or_open_browser")
-      ("y"  "insert_or_download_youtube_video")
-      ("Y"  "insert_or_download_youtube_audio")
-      ("p"  "insert_or_toggle_device")
-      ("P"  "insert_or_duplicate_page")
-      ("1"  "insert_or_save_as_pdf")
-      ("2"  "insert_or_save_as_single_file")
-      ("3"  "insert_or_save_as_screenshot")
-      ("v"  "insert_or_view_source")
-      ("e"  "insert_or_edit_url")
-      ("n"  "insert_or_export_text")
-      (","  "insert_or_switch_to_reader_mode")
-       ("."  "insert_or_translate_text")
-        (";"  "insert_or_translate_page")
-        ("C-M-c"  "copy_code")
-        ("C-M-l"  "copy_link")
-        ("C-a"  "select_all_or_input_text")
-        ("M-u"  "clear_focus")
-        ("C-j"  "open_downloads_setting")
-        ("M-o"  "eval_js")
-        ("M-O"  "eval_js_file")
-        ("<escape>"  "eaf-browser-send-esc-or-exit-fullscreen")
-        ("M-,"  "eaf-send-down-key")
-        ("M-."  "eaf-send-up-key")
-        ("M-m"  "eaf-send-return-key")
-        ("<f5>"  "emacs-session-save")
-        ("<f12>"  "open_devtools")
-        ("<C-return>"  "eaf-send-ctrl-return-sequence")
-        ("C-<left>"  "eaf-send-ctrl-left-sequence")
-        ("C-<right>"  "eaf-send-ctrl-right-sequence")
-        ("C-<delete>"  "eaf-send-ctrl-delete-sequence")
-        ("C-<backspace>"  "eaf-send-ctrl-backspace-sequence")))
+** load eaf apps
+#+begin_src emacs-lisp :tangle no
+
+ (require 'eaf-pdf-viewer)
+ (require 'eaf-browser)
+ (require 'eaf-rss-reader)
+ (require 'eaf-markdown-previewer)
+ (require 'eaf-airshare)
+ (require 'eaf-file-sender)
+ (require 'eaf-jupyter)
+ (require 'eaf-browser)
+ (require 'eaf-terminal)
+ (require 'eaf-mindmap)
+ (require 'eaf-system-monitor)
+ (require 'eaf-camera)
+ (require 'eaf-org-previewer)
+ (require 'eaf-org)
+ (require 'eaf-image-viewer)
+ ;; (require 'eaf-mermaid)
+ ;; (require 'eaf-demo)
+ ;; (require 'eaf-video-player)
+ ;; (require 'eaf-vue-demo)
+ ;; (require 'eaf-music-player)
+ ;; (require 'eaf-file-browser)
+ ;; (require 'eaf-netease-cloud-music)
+ ;; (require 'eaf-file-manager)
+ ;; (require 'eaf-evil)
 
 #+end_src
 
 #+RESULTS:
-: ((C-- . zoom_out) (C-= . zoom_in) (C-0 . zoom_reset) (C-s . search_text_forward) (C-r . search_text_backward) (C-n . scroll_up) (C-p . scroll_down) (C-f . scroll_right) (C-b . scroll_left) (C-v . scroll_up_page) (C-y . yank_text) (C-w . kill_text) (M-e . atomic_edit) (M-c . caret_toggle_browsing) (M-D . select_text) (M-s . open_link) (M-S . open_link_new_buffer) (M-B . open_link_background_buffer) (C-/ . undo_action) (M-_ . redo_action) (M-w . copy_text) (M-f . history_forward) (M-b . history_backward) (M-q . delete_cookie) (M-Q . delete_all_cookies) (C-t . toggle_password_autofill) (C-d . save_page_password) (M-a . toggle_adblocker) (C-M-q clear_history) (C-M-i import_chrome_history) (M-v scroll_down_page) (M-< watch-other-window-up-line) (M-> watch-other-window-down-line) (M-p scroll_down_page) (M-t new_blank_page) (M-d toggle_dark_mode) (SPC insert_or_scroll_up_page) (J insert_or_select_left_tab) (K insert_or_select_right_tab) (j insert_or_scroll_up) (k insert_or_scroll_down) (h insert_or_scroll_left) (l insert_or_scroll_right) (f insert_or_open_link) (F insert_or_open_link_background_buffer) (O insert_or_open_link_new_buffer_other_window) (B insert_or_open_link_background_buffer) (c insert_or_caret_at_line) (u insert_or_scroll_down_page) (d insert_or_scroll_up_page) (H insert_or_history_backward) (L insert_or_history_forward) (t insert_or_new_blank_page) (T insert_or_recover_prev_close_page) (i insert_or_focus_input) (I insert_or_open_downloads_setting) (r insert_or_refresh_page) (g insert_or_scroll_to_begin) (x insert_or_close_buffer) (G insert_or_scroll_to_bottom) (- insert_or_zoom_out) (= insert_or_zoom_in) (0 insert_or_zoom_reset) (m insert_or_save_as_bookmark) (o insert_or_open_browser) (y insert_or_download_youtube_video) (Y insert_or_download_youtube_audio) (p insert_or_toggle_device) (P insert_or_duplicate_page) (1 insert_or_save_as_pdf) (2 insert_or_save_as_single_file) (3 insert_or_save_as_screenshot) (v insert_or_view_source) (e insert_or_edit_url) (n insert_or_export_text) (, insert_or_switch_to_reader_mode) (. insert_or_translate_text) (; insert_or_translate_page) (C-M-c copy_code) (C-M-l copy_link) (C-a select_all_or_input_text) (M-u clear_focus) (C-j open_downloads_setting) (M-o eval_js) (M-O eval_js_file) (<escape> eaf-browser-send-esc-or-exit-fullscreen) (M-, eaf-send-down-key) (M-. eaf-send-up-key) (M-m eaf-send-return-key) (<f5> emacs-session-save) (<f12> open_devtools) (<C-return> eaf-send-ctrl-return-sequence) (C-<left> eaf-send-ctrl-left-sequence) (C-<right> eaf-send-ctrl-right-sequence) (C-<delete> eaf-send-ctrl-delete-sequence) (C-<backspace> eaf-send-ctrl-backspace-sequence))
+: eaf-image-viewer
+
 ** eaf evil
 
  I usually don't use it as it causes issues with doom keybinds
@@ -18814,6 +18781,10 @@ _v_: vol     _a_: seek bw     _#_: shuffle            _s_elect
         (kbd "SPC"))))
 
 #+end_src
+
+#+RESULTS:
+| lambda | (prompt) | (if (derived-mode-p 'eaf-mode) (pcase eaf--buffer-app-name (browser (if (string= (eaf-call-sync call_function eaf--buffer-id is_focus) True) (kbd SPC) (kbd eaf-evil-leader-key))) (pdf-viewer (kbd eaf-evil-leader-key)) (image-viewer (kbd eaf-evil-leader-key)) (_ (kbd SPC))) (kbd SPC)) |
+
 * Miscellaneous
 
 I'd like some slightly nicer default buffer names

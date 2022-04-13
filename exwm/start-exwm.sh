@@ -1,4 +1,5 @@
 #!/bin/sh
+# [[file:../config.org::*launcher script v2][launcher script v2:1]]
 #!/bin/bash
 # Very important: Avoid spawning daemons here.
 # They will not exit with this process, so we will no longer have a clean X11 shutdown.
@@ -6,7 +7,7 @@
 # xset -dpms
 # xset s off
 
-killall emacs
+# killall emacs
 # Disable access control for the current user.
 xhost +SI:localuser:$USER
 
@@ -36,7 +37,7 @@ wmname LG3D
 # xset r rate 200 30
 
 # Set default cursor.
-xsetroot -cursor_name left_ptr
+# xsetroot -cursor_name left_ptr
 
 # Hide the mouse pointer if unused for a duration
 /usr/bin/unclutter &
@@ -61,10 +62,10 @@ picom &
   # Enable screen locking on suspend
 xss-lock -- slock &
 # Uncomment the following block to use the exwm-xim module. Not something I use.
-export XMODIFIERS=@im=exwm-xim
-export GTK_IM_MODULE=xim
-export QT_IM_MODULE=xim
-export CLUTTER_IM_MODULE=xim
+# export XMODIFIERS=@im=exwm-xim
+# export GTK_IM_MODULE=xim
+# export QT_IM_MODULE=xim
+# export CLUTTER_IM_MODULE=xim
 
 # If Emacs is started in server mode, `emacsclient` is a convenient way to
 # edit files in place (used by e.g. `git commit`).
@@ -81,8 +82,10 @@ export _JAVA_AWT_WM_NONREPARENTING=1
 # "exwm-enable" has to be called before the frame is spawned.
 # usr/local/bin/emacs --daemon --eval "(require 'exwm)" -f exwm-enable
 # emacs --daemon --eval "(require 'exwm)" -f exwm-enable
-# exec dbus-launch --exit-with-session emacs -mm #--debug-init
+ # exec dbus-launch --exit-with-session emacs -mm --debug-init -l ~/.emacs.d/desktop.el
+exec dbus-launch --exit-with-session emacs -mm #--debug-init
 
 # exec emacs --daemon && emacsclient -c --eval "(exwm-enable)"
-exec dbus-launch --exit-with-session emacs --eval "(exwm-enable)"
+# exec dbus-launch --exit-with-session emacs --eval "(exwm-enable)"
 # exec emacsclient -c
+# launcher script v2:1 ends here
