@@ -142,15 +142,16 @@ When the number of characters in a buffer exceeds this threshold,
   (use-package org
     :defer
     :bind (:map org-mode-map
-                ("C-c C-j" . consult-org-heading)
+                ;; ("C-c C-j" . consult-org-heading)
                 ("M-s M-j" . consult-org-heading)))
 
   :bind (("C-x b"   . consult-buffer)
-         ("C-x C-r" . consult-recent-file)
+         ("C-x C-R" . consult-recent-file)
          ("C-x M-k" . consult-kmacro)
          ("C-x M-:" . consult-complex-command)
          ("M-s M-o" . consult-multi-occur)
-         ("M-X" . consult-mode-command);;C-c m
+         ;; ("M-X" . consult-mode-command);;C-c m
+         ("C-c m" . consult-mode-command);;C-c m
          ;; ("C-h C-m" . consult-minor-mode-menu)
          ("C-h h" . consult-minor-mode-menu)
          ;; ("C-c C-j" . consult-outline) ;;M-g o

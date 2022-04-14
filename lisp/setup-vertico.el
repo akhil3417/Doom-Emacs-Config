@@ -2,7 +2,7 @@
 ;; Vertico
 (use-package vertico
   ;; :commands vertico-mode
-  ;; :load-path "~/.local/share/git/vertico/"
+  :hook (doom-first-input . vertico-mode)
   :after minibuffer
   :commands vertico-mode
   :init (vertico-mode 1)
@@ -26,9 +26,18 @@
               ("C-c C-o" . embark-export)
               ("C-l"     . embark-export))
   :config
-  (setq vertico-count 15
+  (setq vertico-resize t
+        vertico-count 17
         vertico-cycle t
-        vertico-resize t)
+        completion-in-region-function
+        (lambda (&rest args)
+          (apply (if vertico-mode
+                     #'consult-completion-in-region
+                   #'completion--in-region)
+                 args)))
+  (add-hook 'rfn-eshadow-update-overlay-hook #'vertico-directory-tidy)
+  (add-hook 'minibuffer-setup-hook #'vertico-repeat-save)
+  (map! :map vertico-map [backspace] #'vertico-directory-delete-char)
   (advice-add #'tmm-add-prompt :after #'minibuffer-hide-completions))
 
   (define-key vertico-map "\M-V" #'vertico-multiform-vertical)
@@ -37,7 +46,6 @@
   (define-key vertico-map "\M-R" #'vertico-multiform-reverse)
   (define-key vertico-map "\M-U" #'vertico-multiform-unobtrusive)
 (use-package vertico-multiform
- :load-path "~/.config/doom/lisp/"
   :commands vertico-multiform-mode
   :after vertico-flat
   :bind (:map vertico-map
@@ -89,7 +97,6 @@
   :after vertico-flat)
 
 (use-package vertico-grid
- :load-path "~/.config/doom/lisp/"
   :after vertico
   ;; :bind (:map vertico-map ("M-q" . vertico-grid-mode))
   :config
@@ -108,7 +115,6 @@
   (setq vertico-grid-lookahead 50))
 
 (use-package vertico-quick
- :load-path "~/.config/doom/lisp/"
   :after vertico
   :bind (:map vertico-map
          ("M-i" . vertico-quick-insert)
@@ -122,7 +128,6 @@
       (embark-act arg))))
 
 (use-package vertico-directory
- :load-path "~/.config/doom/lisp/"
   ;; :hook (rfn-eshadow-update-overlay vertico-directory-tidy)
   :after vertico
   :bind (:map vertico-map
@@ -132,7 +137,6 @@
          ("RET"   . vertico-directory-enter)))
 
 (use-package vertico-repeat
- :load-path "~/.config/doom/lisp/"
   :after vertico
   :bind (("C-x ." . vertico-repeat)
          ("H-."   . vertico-repeat)))
@@ -143,13 +147,11 @@
   :after vertico)
 
 (use-package vertico-flat
- :load-path "~/.config/doom/lisp/"
   ;; :bind (:map vertico-map
   ;;             ("M-q" . vertico-flat-mode))
   :after vertico)
 
 (use-package vertico-buffer
- :load-path "~/.config/doom/lisp/"
   :after vertico
   ;; :hook (vertico-buffer-mode . vertico-buffer-setup)
   :config

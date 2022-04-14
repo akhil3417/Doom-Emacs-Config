@@ -106,6 +106,8 @@ To install ~some-package~ from MELPA, ELPA or emacsmirror:
   (package! deferred)
   (package! s)
 
+  (package! sdcv)
+  (package! wordnut)
   (package! telega)
   (package! smart-mode-line)
   (package! system-packages)
@@ -432,27 +434,26 @@ my home machine is pretty safe, and my laptop is shutdown a lot.
 #+begin_src emacs-lisp
 ;; -*- lexical-binding: t -*-
 (add-to-list 'load-path "~/.config/doom/lisp/")
+
 ;; (load "prot-common.el")
 ;; (load "setup-ui.el")
 
 (load "setup-minibuffer.el")
 (load "better-buffers.el")
-(load "setup-corfu.el")
+;; (load "setup-corfu.el")
 
-;; (load "setup-marginalia.el")
 (load "setup-orderless.el")
 (load "setup-vertico.el")
 (load "setup-embark.el")
 
-(load "setup-consult.el")
 (load "utilities.el")
-;; (load "sweet-kill.el")
-(load "setup-ytel.el")
+;; (load "setup-consult.el")
+(load "sweet-kill.el") ;;overide doom session kill messages
+(load "setup-ytel.el");; youttuuube
 ;; (load "setup-dired.el")
 ;; (load "setup-email.el")
 ;; (load "setup-elfeed.el")
 
-;; (load "setup-ibuffer.el")
 (load "setup-shell.el")
 
 ;; (load "setup-email.el")
@@ -460,7 +461,6 @@ my home machine is pretty safe, and my laptop is shutdown a lot.
 ;; (load "setup-elfeed.el")
 
 ;; (load "setup-eww.el")
-;; (require 'setup-eww)
 
 
 ;; ytel provides an elfeed-like interface to search invidious instances for
@@ -3912,14 +3912,14 @@ CLOSED: [2022-03-30 Wed 11:36]
   (setq modus-themes-italic-constructs nil
         modus-themes-bold-constructs nil
         modus-themes-mixed-fonts nil
-        modus-themes-subtle-line-numbers nil
+        modus-themes-subtle-line-numbers t
         modus-themes-intense-mouseovers nil
-        modus-themes-deuteranopia nil
+        modus-themes-deuteranopia t
         modus-themes-tabs-accented nil
-        modus-themes-variable-pitch-ui t
+        modus-themes-variable-pitch-ui nil
         modus-themes-inhibit-reload t ; only applies to `customize-set-variable' and related
 
-        modus-themes-fringes 'subtle ; {nil,'subtle,'intense}
+        modus-themes-fringes nil ; {nil,'subtle,'intense}
 
         ;; Options for `modus-themes-lang-checkers' are either nil (the
         ;; default), or a list of properties that may include any of those
@@ -3933,7 +3933,7 @@ CLOSED: [2022-03-30 Wed 11:36]
         ;; of padding and NATNUM), and a floating point for the height of
         ;; the text relative to the base font size (or a cons cell of
         ;; height and FLOAT)
-        modus-themes-mode-line nil
+        modus-themes-mode-line '(borderless (padding 3))
 
         ;; Options for `modus-themes-markup' are either nil, or a list
         ;; that can combine any of `bold', `italic', `background',
@@ -3943,7 +3943,7 @@ CLOSED: [2022-03-30 Wed 11:36]
         ;; Options for `modus-themes-syntax' are either nil (the default),
         ;; or a list of properties that may include any of those symbols:
         ;; `faint', `yellow-comments', `green-strings', `alt-syntax'
-        modus-themes-syntax '(yellow-comments alt-syntax green-strings faint)
+        modus-themes-syntax nil
 
         ;; Options for `modus-themes-hl-line' are either nil (the default),
         ;; or a list of properties that may include any of those symbols:
@@ -3953,13 +3953,13 @@ CLOSED: [2022-03-30 Wed 11:36]
         ;; Options for `modus-themes-paren-match' are either nil (the
         ;; default), or a list of properties that may include any of those
         ;; symbols: `bold', `intense', `underline'
-        modus-themes-paren-match '(intense)
+        modus-themes-paren-match '(bold)
 
         ;; Options for `modus-themes-links' are either nil (the default),
         ;; or a list of properties that may include any of those symbols:
         ;; `neutral-underline' OR `no-underline', `faint' OR `no-color',
         ;; `bold', `italic', `background'
-        modus-themes-links '(neutral-underline background)
+        modus-themes-links '(no-underline background faint)
 
         ;; Options for `modus-themes-box-buttons' are either nil (the
         ;; default), or a list that can combine any of `flat',
@@ -3967,12 +3967,12 @@ CLOSED: [2022-03-30 Wed 11:36]
         ;; `all-buttons', the symbol of any font weight as listed in
         ;; `modus-themes-weights', and a floating point number
         ;; (e.g. 0.9) for the height of the button's text.
-        modus-themes-box-buttons '(all-buttons variable-pitch (height 0.9) flat faint accented)
+        modus-themes-box-buttons '(variable-pitch (height 0.9) flat faint accented)
 
         ;; Options for `modus-themes-prompts' are either nil (the
         ;; default), or a list of properties that may include any of those
         ;; symbols: `background', `bold', `gray', `intense', `italic'
-        modus-themes-prompts '(background subtle)
+        modus-themes-prompts '(italic gray intense bold)
 
         ;; The `modus-themes-completions' is an alist that reads three
         ;; keys: `matches', `selection', `popup'.  Each accepts a nil
@@ -3988,21 +3988,21 @@ CLOSED: [2022-03-30 Wed 11:36]
         ;; covered in `modus-themes-weights'.  Bold is used in the absence
         ;; of an explicit WEIGHT.
         modus-themes-completions
-        '((matches . (extrabold background))
+        '((matches . (extrabold background intense))
           (selection . (semibold intense accented text-also))
           (popup . (accented intense)))
 
-        modus-themes-mail-citations nil ; {nil,'intense,'faint,'monochrome}
+        modus-themes-mail-citations 'faint ; {nil,'intense,'faint,'monochrome}
 
         ;; Options for `modus-themes-region' are either nil (the default),
         ;; or a list of properties that may include any of those symbols:
         ;; `no-extend', `bg-only', `accented'
-        modus-themes-region '(no-extend)
+        modus-themes-region '(no-extend accented)
 
         ;; Options for `modus-themes-diffs': nil, 'desaturated, 'bg-only
-        modus-themes-diffs 'desaturated
+        modus-themes-diffs nil
 
-        modus-themes-org-blocks 'gray-background ; {nil,'gray-background,'tinted-background}
+        modus-themes-org-blocks nil ; {nil,'gray-background,'tinted-background}
 
         modus-themes-org-agenda ; this is an alist: read the manual or its doc string
         '((header-block . (variable-pitch regular 1.4))
@@ -4012,7 +4012,7 @@ CLOSED: [2022-03-30 Wed 11:36]
           (habit . nil))
 
         modus-themes-headings ; this is an alist: read the manual or its doc string
-        '((t . (variable-pitch extrabold)))
+        '((t . (extrabold)))
 
         ;; Sample for headings:
 
@@ -6162,6 +6162,76 @@ all three of the above is easier to learn and more consistent overall.
   (dolist (fn '(pulsar-recenter-top pulsar-reveal-entry))
     (add-hook 'consult-after-jump-hook fn)))
 #+end_src
+*** consult keybinds
+#+begin_src emacs-lisp :tangle no
+
+  (use-package org
+    :defer
+    :bind (:map org-mode-map
+                ;; ("C-c C-j" . consult-org-heading)
+                ("M-s M-j" . consult-org-heading))
+
+  :bind (("C-x b"   . consult-buffer)
+         ("C-x C-R" . consult-recent-file)
+         ("C-x M-k" . consult-kmacro)
+         ("C-x M-r" . consult-complex-command);;M-:
+         ("M-s M-o" . consult-multi-occur)
+         ;; ("M-X" . consult-mode-command);;C-c m
+         ("C-c m" . consult-mode-command);;C-c m
+         ;; ("C-h C-m" . consult-minor-mode-menu)
+         ("C-h h" . consult-minor-mode-menu)
+         ;; ("C-c C-j" . consult-outline) ;;M-g o
+         ("M-s M-j" . consult-outline) ;;M-s M-s
+         ("M-s M-l" . consult-line)
+         ("M-s l"   . consult-line-symbol-at-point)
+         ("M-s f"   . consult-fd)
+         ("M-R"   . consult-keep-lines)
+         ("M-F"   . consult-focus-lines)
+         ("M-s M-f"   . consult-find)
+         ("M-s M-l" . consult-locate)
+         ("M-s g"   . consult-ripgrep)
+         ("M-s M-g"   . consult-grep)
+         ("M-s G"   . consult-git-grep)
+         ("M-s M-h"   . consult-history)
+         ("M-g i"   . consult-imenu)
+         ("M-g m"   . consult-mark)
+         ("M-y"   . consult-yank-pop) ;; M-s M-y
+         ("M-g M"   . consult-global-mark)
+         ("<help> a" . consult-apropos)
+         ("M-s i" . consult-imenu-all)
+         ;; ("s-b" . consult-buffer)
+         ("M-g e" . consult-compile-error)
+         ;; ("M-g g" . consult-goto-line) ;;doom already have this
+         ;; ("H-b" . consult-buffer)
+         ("M-M" . consult-register-store)
+         ;; ("C-x r r" . consult-register) ;;spc r r
+         ("M-s k l" . consult-focus-lines)
+         ("M-'" . consult-register-load)
+         :map ctl-x-r-map
+         ("b" . consult-bookmark) ; C-c b
+         ("X" . consult-register);;C-M-#
+         :map ctl-x-4-map
+         ("b" . consult-buffer-other-window)
+         :map ctl-x-5-map
+         ("b" . consult-buffer-other-frame)
+         :map tab-prefix-map
+         ("b" . consult-buffer-other-tab)))
+         ;; :map space-menu-file-map
+         ;; ("l" . consult-locate)
+         ;; :map minibuffer-local-map
+         ;; ("M-r" . consult-history)))
+
+
+  ;; :bind (("C-c h" . consult-history)
+  ;;        ("C-c k" . consult-kmacro)
+  ;;        ("M-#" . consult-register-load);; M '
+  ;;        ("M-'" . consult-register-store)
+  ;;        ("M-s e" . consult-isearch))
+
+#+end_src
+
+#+RESULTS:
+: consult-buffer-other-tab
 
 ** Marginalia
 #+begin_quote
@@ -13522,6 +13592,22 @@ actually useful.  Well done, Daniel!
 #+RESULTS:
 : t
 
+** launch firefox
+#+begin_src emacs-lisp :tangle yes
+
+    (defun my/launch-firefox-private (&optional arg)
+      "Launch Firefox.
+  With `\\[universal-argument]' prefix argument ARG, create private
+  window."
+      (interactive "P")
+      (make-process
+       :name "firefoxdeveloperedition"
+       :command `("firefox-developer-edition" ,(if arg "--private-window" "--new-window"))))
+#+end_src
+
+#+RESULTS:
+: my/launch-firefox-private
+
 ** Mentor (rtorrent)
 #+begin_src emacs-lisp
 (require 'mentor)
@@ -16275,15 +16361,6 @@ I also use Emacs to play games and do other fun things. Using swiper means I don
 #+RESULTS:
 : pacmacs-right
 
-** Define Word
-#+begin_src emacs-lisp
-
-;; define-word
-;; define-word is a GNU Emacs package that lets you see the definition of a word or a phrase at point, without having to switch to a browser.
-
-(use-package define-word)
-  ;; :ensure t)
-#+end_src
 ** tmr.el (TMR Must Recur)
 :PROPERTIES:
 :CUSTOM_ID: h:c90ba6fa-ebec-42a2-98a6-3ff9027b1ffa
@@ -16870,6 +16947,7 @@ file uploading script (which I've renamed to ~upload~).
 : t
 
 ** Dictionary
+
 Doom already loads =define-word=, and provides it's own definition service using
 [[https://github.com/gromnitsky/wordnut][wordnut]]. However, using an offline dictionary possess a few compelling
 advantages, namely:
@@ -16881,7 +16959,7 @@ To interface with this, we'll use a my =lexic= package.
 
 
 #+begin_src emacs-lisp :tangle (if (executable-find "sdcv") "packages.el" "no")
-(package! lexic :recipe (:local-repo "lisp/lexic"))
+(package! lexic :recipe (:host github :repo"tecosaur/lexic" :files ("*.el" "filters" "preprocessors")))
 #+end_src
 
 Given that a request for a CLI is the [[https://github.com/goldendict/goldendict/issues/37][most upvoted issue]] on GitHub for
@@ -20917,7 +20995,7 @@ those changes, especially since it is theme-agnostic.
   (setq org-modern-label-border 1)
   (setq org-modern-variable-pitch nil)
   (setq org-modern-timestamp t)
-  (setq org-modern-table t)
+ (setq org-modern-table t)
   (setq org-modern-table-vertical 1)
   (setq org-modern-table-horizontal 0)
   (setq org-modern-list ; I swap the defaults for + and *
