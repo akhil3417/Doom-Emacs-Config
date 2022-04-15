@@ -1,3 +1,5 @@
+;; -*- lexical-binding: t -*-
+;; all hail the minibuffer
 (use-package minibuffer
   :config
 ;; Minibuffer completion
@@ -86,5 +88,16 @@ instead."
       (select-window mini))))
 
 )
+
+;; add prompt inidcator to `completing-read-multiple'.
+(defun op/crm-indicator (args)
+  (cons (concat "[CRM] " (car args))
+        (cdr args)))
+(advice-add #'completing-read-multiple :filter-args #'op/crm-indicator)
+
+;; Try really hard to keep the cursor from getting stuck in the read-only prompt
+;; portion of the minibuffer.
+(setq minibuffer-prompt-properties '(read-only t intangible t cursor-intangible t face minibuffer-prompt))
+(add-hook 'minibuffer-setup-hook #'cursor-intangible-mode)
 
 (provide 'setup-minibuffer)

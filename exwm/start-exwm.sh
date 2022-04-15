@@ -1,5 +1,4 @@
 #!/bin/sh
-# [[file:../config.org::*launcher script v2][launcher script v2:1]]
 #!/bin/bash
 # Very important: Avoid spawning daemons here.
 # They will not exit with this process, so we will no longer have a clean X11 shutdown.
@@ -88,4 +87,3 @@ exec dbus-launch --exit-with-session emacs -mm #--debug-init
 # exec emacs --daemon && emacsclient -c --eval "(exwm-enable)"
 # exec dbus-launch --exit-with-session emacs --eval "(exwm-enable)"
 # exec emacsclient -c
-# launcher script v2:1 ends here

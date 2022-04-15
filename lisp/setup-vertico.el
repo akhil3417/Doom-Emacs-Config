@@ -93,7 +93,6 @@
        (vertico-multiform--temporary-mode 'vertico-reverse-mode 1))))
 
 (use-package vertico-unobtrusive
- :load-path "~/.config/doom/lisp/"
   :after vertico-flat)
 
 (use-package vertico-grid
