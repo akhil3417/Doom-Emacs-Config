@@ -13,6 +13,16 @@
   (setq lazy-count-suffix-format nil)
   (setq isearch-yank-on-move 'shift)
   (setq isearch-allow-scroll 'unlimited)
+  ;; These variables are from Emacs 28
+  (setq isearch-repeat-on-direction-change t)
+  (setq lazy-highlight-initial-delay 0.5)
+  (setq lazy-highlight-no-delay-length 3)
+  (setq isearch-wrap-pause t)
+
+  (define-key minibuffer-local-isearch-map (kbd "M-/") #'isearch-complete-edit)
+  (let ((map isearch-mode-map))
+    (define-key map (kbd "C-g") #'isearch-cancel) ; instead of `isearch-abort'
+    (define-key map (kbd "M-/") #'isearch-complete)))
 
   (defun my/isearch-mark-and-exit ()
     "Mark the current search string and exit the search."

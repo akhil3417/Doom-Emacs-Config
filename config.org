@@ -455,6 +455,7 @@ my home machine is pretty safe, and my laptop is shutdown a lot.
 
 (load "setup-embark.el")
 (load "utilities.el");;essential
+(load "setup-isearch")
 
 ;; ytel provides an elfeed-like interface to search invidious instances for
 ;; youtube videos. Phew. The churn rate of Invidious urls is quite high, which
@@ -9645,24 +9646,6 @@ CLOSED: [2022-04-01 Fri 15:50]
 ;; (use-package impatient-mode
 ;;   :ensure t)
 #+end_src
-
-** DONE Isearch
-CLOSED: [2022-04-01 Fri 15:50]
-#+begin_src emacs-lisp
-(setq isearch-lazy-count t
-      search-whitespace-regexp ".*?"
-      isearch-allow-scroll 'unlimited)
-(load "setup-isearch")
-
-  ;; These variables are from Emacs 28
-  (setq isearch-repeat-on-direction-change t)
-  (setq lazy-highlight-initial-delay 0.5)
-  (setq lazy-highlight-no-delay-length 3)
-  (setq isearch-wrap-pause t)
-#+end_src
-
-#+RESULTS:
-: t
 
 ** iedit
 #+begin_src emacs-lisp
@@ -20206,7 +20189,7 @@ responsive.
 (defun locally-defer-font-lock ()
   "Set jit-lock defer and stealth, when buffer is over a certain size."
   ;; (when (> (buffer-size) 50000)
-  (when (> (buffer-size) 3000);;as my laptop barely runs without graphics card
+  (when (> (buffer-size) 5000);;as my laptop barely runs without graphics card
     (setq-local jit-lock-defer-time 0.05
                 jit-lock-stealth-time 1)))
 
