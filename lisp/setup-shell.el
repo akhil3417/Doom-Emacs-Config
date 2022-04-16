@@ -357,7 +357,7 @@ argument arg, Also copy the prompt and input."
    'eshell-mode-hook
    (lambda ()
      (define-key eshell-mode-map (kbd "C-c M-w") 'my/eshell-copy-output)
-     (define-key eshell-mode-map (kbd "C-c C-l") 'my/eshell-export-output)))
+     (define-key eshell-mode-map (kbd "C-c a C-l") 'my/eshell-export-output)))
 
   ;;From https://github.com/nbarrientos/dotfiles/.emacs.d/init.el
   (defun my/eshell-send-detached-input (&optional arg)

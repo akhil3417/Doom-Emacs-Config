@@ -6,13 +6,14 @@
 
 
 ABOUT THIS CONFIG →
+
 This is my personal Doom Emacs config.  Doom Emacs is a distribution of Emacs that uses the "evil" keybindings (Vim keybindings) and includes a number of nice extensions and a bit of configuration out of the box.  I am maintaining this config not just for myself, but also for those that want to explore some of what is possible with Emacs.  I will add a lot of examples of plugins and settings, some of them I may not even use personally.  I am doing this so that others can save their time and so that people can use ready snippets without errors.
 
 *Note*: The sections that are tagged as DONE in this org document mean that I have
 learned everything about them and are included in the workflow or may not
 require further attention.
 
-* Loading instructions
+* Packages managment
 ** Info
 This is where you install packages, by declaring them with the ~package!~ macro in
 =packages.el=, then running ~doom refresh~ on the command line.
@@ -127,7 +128,7 @@ To install ~some-package~ from MELPA, ELPA or emacsmirror:
   (package! volatile-highlights)
   (package! shell-pop)
   (package! key-chord)
-  (package! undo-tree)
+  ;; (package! undo-tree)
   (package! recursion-indicator)
   (package! ibuffer-project)
   (package! ibuffer-vc)
@@ -198,7 +199,7 @@ To install ~some-package~ from MELPA, ELPA or emacsmirror:
   (package! dired-open)
   (package! dmenu)
   (package! elfeed-goodies)
-  (package! emojify)
+  ;; (package! emojify)
   (package! evil-tutor)
   (package! ivy-posframe)
   (package! ox-gemini)
@@ -208,7 +209,8 @@ To install ~some-package~ from MELPA, ELPA or emacsmirror:
   (package! rainbow-mode)
   (package! resize-window)
   (package! tldr)
-  (package! wc-mode)
+
+
   (package! exwm)
   (package! desktop-environment)
   (package! browse-url)
@@ -223,14 +225,17 @@ To install ~some-package~ from MELPA, ELPA or emacsmirror:
   ;; (package! impatient-mode)
   (package! pdf-tools)
   ;; (package! popwin)
-  ;; (package! pretty-mode)
   (package! systemd)
   ;; (package! git-timemachine)
   (package! org-pdfview)
   (package! xelb)
+
   (package! exwm-edit)
+
   (package! emms)
-  (package! page-break-lines)
+
+  ;; (package! page-break-lines)
+
   (package! nov)
   (package! multi-vterm)
   (package! cloc)
@@ -395,7 +400,7 @@ It's useful to have some basic personal information
 | #<subr F616e6f6e796d6f75732d6c616d626461_anonymous_lambda_7> | mixed-pitch-mode | locally-defer-font-lock | +org-pretty-mode | er/add-org-mode-expansions | turn-on-flyspell | org-appear-mode | elpher-org-mode-integration | +lookup--init-org-mode-handlers-h | (closure ((hook . org-mode-hook) (--dolist-tail--) t) (&rest _) (add-hook 'before-save-hook 'org-encrypt-entries nil t)) | #[0 \300\301\302\303\304$\207 [add-hook change-major-mode-hook org-show-all append local] 5] | #[0 \300\301\302\303\304$\207 [add-hook change-major-mode-hook org-babel-show-result-all append local] 5] | org-babel-result-hide-spec | org-babel-hide-all-hashes | #[0 \301\211\207 [imenu-create-index-function org-imenu-get-tree] 2] | flymake-proselint-setup | beginend-org-mode | doom-disable-show-paren-mode-h | doom-disable-show-trailing-whitespace-h | +org-enable-auto-reformat-tables-h | +org-enable-auto-update-cookies-h | +org-make-last-point-visible-h | evil-org-mode | toc-org-enable | embrace-org-mode-hook | org-eldoc-load | +literate-enable-recompile-h |
 
 #+begin_src emacs-lisp
-(setq package-native-compile t)
+;; (setq package-native-compile t)
 (setq org-directory "~/org/")
 (setq user-full-name "Akhil Pratap Singh"
       user-mail-address "akhilpratapsingh3417@gmail.com")
@@ -411,7 +416,7 @@ Speaking of ~GPG~, I want to use =~/.authinfo.gpg= instead of the default in
 make a difference, and I don't want to accidentally purge this file I have done
 src_shell{rm -rf~/.emac.d~ before}. I also want to cache as much as possible, as
 my home machine is pretty safe, and my laptop is shutdown a lot.
-#+begin_src emacs-lisp :tangle yes
+#+begin_src emacs-lisp :tangle no
 (setq auth-sources '("~/.authinfo.gpg")
       auth-source-cache-expiry nil)
  ; default is 7200 (2h)
@@ -461,6 +466,7 @@ my home machine is pretty safe, and my laptop is shutdown a lot.
 
 ;; (load "setup-consult.el")
 ;; (load "sweet-kill.el") ;;overide doom session kill messages
+
 ;; (load "setup-dired.el")
 ;; (load "setup-email.el")
 ;; (load "setup-elfeed.el")
@@ -469,23 +475,10 @@ my home machine is pretty safe, and my laptop is shutdown a lot.
 ;; (load "setup-email.el")
 
 
-;; (load "setup-eww.el")
 
 
 
 #+end_src
-** Simple settings
-Browsing the web and seeing [[https://github.com/angrybacon/dotemacs/blob/master/dotemacs.org#use-better-defaults][angrybacon/dotemacs]] and comparing with the values
-shown by =SPC h v= and selecting what I thought looks good, I've ended up adding
-the following:
-
-#+begin_src emacs-lisp
-
-#+end_src
-
-#+RESULTS:
-: t
-
 ** Auto-customisations
 
 By default changes made via a customisation interface are added to =init.el=.
@@ -1846,7 +1839,7 @@ export _JAVA_AWT_WM_NONREPARENTING=1
 # emacs --daemon --eval "(require 'exwm)" -f exwm-enable
  # exec dbus-launch --exit-with-session emacs -mm --debug-init -l ~/.emacs.d/desktop.el
 exec dbus-launch --exit-with-session emacs -mm #--debug-init
-
+# exec emacs
 # exec emacs --daemon && emacsclient -c --eval "(exwm-enable)"
 # exec dbus-launch --exit-with-session emacs --eval "(exwm-enable)"
 # exec emacsclient -c
@@ -6011,7 +6004,7 @@ all three of the above is easier to learn and more consistent overall.
     (add-hook 'consult-after-jump-hook fn)))
 #+end_src
 *** consult keybinds
-#+begin_src emacs-lisp :tangle no
+#+begin_src emacs-lisp
 
   (use-package org
     :defer
@@ -6146,11 +6139,7 @@ shadow)=, but I don't like that.
 : +marginalia-file-size-colorful
 
 ** Embark
-*** Extended minibuffer actions and more (embark.el and prot-embark.el)
-
-:PROPERTIES:
-:CUSTOM_ID: h:d67ed8d0-d711-48b0-9f40-f88ae2e5c984
-:END:
+*** desc
 
 Video introduction: [[https://protesilaos.com/codelog/2021-01-09-emacs-embark-extras/][Embark and my extras]] (2021-01-09).  Also read
 [[https://karthinks.com/software/fifteen-ways-to-use-embark/][Fifteen ways to use Embark]] (2021-10-06) by Karthik Chikmagalur.
@@ -6278,6 +6267,7 @@ contains a few keymaps that integrate Embark with packages like =consult=
 provides glue code that allows Embark to produce a correct export buffer
 while using relevant Consult commands, such as =consult-grep=.
 
+*** code
 #+begin_src emacs-lisp :tangle no
 ;;; Extended minibuffer actions and more (embark.el and prot-embark.el)
 (use-package embark
@@ -6341,9 +6331,6 @@ This is =prot-embark.el= (part of [[https://gitlab.com/protesilaos/dotfiles][my 
 #+include: prot-lisp/prot-embark.el src emacs-lisp :tangle no
 
 ** Minibuffer history (savehist-mode)
-:PROPERTIES:
-:CUSTOM_ID: h:2733674b-51f9-494e-b34d-e8842ac4ef96
-:END:
 
 The built-in =savehist-mode= keeps a record of actions involving the
 minibuffer.  You can access previous inputs with =M-p= and =M-n=.  Well
@@ -6374,14 +6361,7 @@ the minibuffer-specific setup.
 #+RESULTS:
 : t
 
-** In-buffer completions
-:PROPERTIES:
-:CUSTOM_ID: h:98876022-57cc-40de-936e-4ee42cefd69a
-:END:
-*** CAPE (extra completion-at-point backends)
-:PROPERTIES:
-:CUSTOM_ID: h:5c227fea-189a-43a2-bf1e-70aeececfcb8
-:END:
+** CAPE (extra completion-at-point backends)
 
 The =cape= package, by Daniel Mendler (developer of Consult, Vertico,
 Corfu, ...), adds more backends to the =completion-at-point-functions=
@@ -6403,88 +6383,6 @@ completion.
 #+RESULTS:
 : t
 
-*** Dabbrev (dynamic word completion)
-:PROPERTIES:
-:CUSTOM_ID: h:57dcf193-0c4e-4ee6-9b2d-6892558b0a84
-:END:
-
-This is Emacs' own approach to dynamic/arbitrary text completion inside
-the buffer: "dynamic abbreviation" or else =dabbrev=.  This mechanism
-works by reading all text before point to find a suitable match.
-Different scenaria determine whether it should also look forward and in
-other buffers.  In essence, Dabbrev helps you re-type what you already
-have.
-
-With =dabbrev-expand= we make an attempt to complete the text at point.
-Repeated invocations will cycle through the candidates.  No feedback is
-provided, much in the same way yanking from the kill-ring works (though
-for Emacs28 =yank-pop= on =M-y= will use completion if the previous command
-was not =yank= on =C-y=).  To complete a phrase, matching the last succesful
-=dabbrev-expand=, you need to supply an empty space and call the command
-again.  This will match the next word, and so on for N words.
-
-Whereas =dabbrev-completion= benefits from minibuffer interactivity and
-the pattern matching styles in effect ([[#h:98d3abcc-f34e-4029-aabc-740f0b6421f8][Completion framework and extras]]).
-With the help of Corfu, the completion candidates are displayed in a
-pop-up window near point ([[#h:675ebef4-d74d-41af-808d-f9579c2a5ec4][Corfu for in-buffer completion]]).
-
-The =dabbrev-abbrev-char-regexp= is configured to match both regular words
-and symbols (e.g. words separated by hyphens).  This makes it equally
-suitable for code and ordinary language.
-
-While the =dabbrev-abbrev-skip-leading-regexp= is instructed to also
-expand words and symbols that start with any of these: =$=, =*=, =/=, ===, =~=, ='=.
-This regexp may be expanded in the future, but the idea is to be able to
-perform completion in contexts where the known word/symbol is preceded
-by a special character.  For example, in the =org-mode= version of this
-document, all inline code must be placed between the equals sign.  So
-now typing the ===, then a letter, will still allow me to expand text
-based on that input.
-
-To check what I have on regular expressions, see further below my
-configurations and documentation for [[#h:6c6759c8-3ae3-40b0-8356-05cc0975e12a][re-builder (regexp-builder)]].
-
-#+begin_src emacs-lisp :tangle no
-;;; Dabbrev (dynamic word completion)
-(use-package dabbrev
-  :config
-  (setq dabbrev-abbrev-char-regexp "\\sw\\|\\s_")
-  (setq dabbrev-abbrev-skip-leading-regexp "[$*/=~']")
-  (setq dabbrev-backward-only nil)
-  (setq dabbrev-case-distinction 'case-replace)
-  (setq dabbrev-case-fold-search nil)
-  (setq dabbrev-case-replace 'case-replace)
-  (setq dabbrev-check-other-buffers t)
-  (setq dabbrev-eliminate-newlines t)
-  (setq dabbrev-upcase-means-case-search t)
-  (let ((map global-map))
-    (define-key map (kbd "M-/") #'dabbrev-expand)
-    (define-key map (kbd "C-x M-/") #'dabbrev-completion)))
-
-#+end_src
-
-#+RESULTS:
-: t
-
-#+begin_src emacs-lisp :tangle no
-
-;;;----------------------------------------------------------------
-;; ** DABBREV Karthiks
-;;;----------------------------------------------------------------
-
-(use-package dabbrev
-  :commands (dabbrev-expand dabbrev-completion)
-  :config
-  (setq dabbrev-abbrev-char-regexp "\\sw\\|\\s_")
-  (setq dabbrev-abbrev-skip-leading-regexp "\\$\\|\\*\\|/\\|=")
-  (setq dabbrev-backward-only nil)
-  (setq dabbrev-case-distinction nil)
-  (setq dabbrev-case-fold-search t)
-  (setq dabbrev-case-replace nil)
-  (setq dabbrev-check-other-buffers t)
-  (setq dabbrev-eliminate-newlines nil)
-  (setq dabbrev-upcase-means-case-search t))
-#+end_src
 ** IVY
 Ivy is a generic completion mechanism for Emacs.
 *** IVY-POSFRAME
@@ -6952,22 +6850,6 @@ modify parts of the directory before switching to it."
 #+RESULTS:
 : swiper-thing-at-point
 
-*** corfu
-#+begin_src emacs-lisp
-(use-package corfu
-  ;; :straight '(corfu :host github
-  ;;                   :repo "minad/corfu")
-  :bind (:map corfu-map
-         ("C-j" . corfu-next)
-         ("C-k" . corfu-previous)
-         ("C-f" . corfu-insert))
-  :custom
-  (corfu-cycle t)
-  :config
-  (corfu-global-mode))
-;; (load "setup-corfu")
-
-#+end_src
 * Buffers
 ** desc
 Doom Emacs uses 'SPC b' for keybindings related to bookmarks and buffers.
@@ -7067,7 +6949,8 @@ Regarding /buffers/, the text you are editing in Emacs resides in an object call
 #+RESULTS:
 : t
 
-** Helper functions to clean up the gazillion buffers
+** DONE Helper functions to clean up the gazillion buffers
+CLOSED: [2022-04-15 Fri 14:04]
 
 When switching projects in Emacs, it can be prudent to clean up every
 once in a while. Deleting all buffers except the current one is one of
@@ -8693,25 +8576,25 @@ surrounded by word boundaries."
 : reb-replace-regexp
 
 ** Edwina
-#+begin_src emacs-lisp :tangle no
+#+begin_src emacs-lisp
 (use-package edwina
-  :ensure t
+  :defer t
   :config
-  (setq display-buffer-base-action '(display-buffer-below-selected))
+  (setq display-buffer-base-action '(display-buffer-below-selected)))
   ;; (edwina-setup-dwm-keys)
-  (edwina-mode 1))
+  ;; (edwina-mode 1))
 
 #+end_src
 
 #+RESULTS:
 : t
 ** transient
-#+begin_src emacs-lisp :tangle no
+#+begin_src emacs-lisp
 
 (use-package transient
   :defines toggle-modes
-  :bind (("<f8>"  . toggle-modes)
-         ("C-c t" . toggle-modes))
+  :bind (("<f8>"  . toggle-modes))
+         ;; ("C-c t" . toggle-modes))
   :config
   (transient-bind-q-to-quit)
   (setq transient-display-buffer-action '(display-buffer-below-selected))
@@ -8781,24 +8664,6 @@ This section contains configurations for all aspects of the Emacs user
 interface, as well lots of small or self-contained tweaks that cover a
 wide range of built-in libraries.
 
-** Go to last change
-
-I could not find any built-in method of /reliably/ moving back to the
-last change.  Using the mark ring is always an option, but does not fill
-the exact same niche.
-
-The =C-z= binding is [[#h:ae48fe61-a3c3-4132-8986-785f9bfbeafb][disabled elsewhere in this document]].  It minimises
-the Emacs GUI by default.  A complete waste of an extremely valuable key
-binding!
-
-Already included in doom emacs
-#+begin_src emacs-lisp :tangle no
-;;; Go to last change
-(use-package goto-last-change
-  :config
-  (define-key global-map (kbd "C-z") #'goto-last-change))
-#+end_src
-
 ** Window divider mode
 
 This is a built-in mode that can draw both vertical and horizontal
@@ -8850,23 +8715,6 @@ buffer-local.
 #+RESULTS:
 : t
 
-** Rainbow mode for colour previewing (rainbow-mode.el)
-
-The following package reads a colour value, such as hexadecimal RGB,
-and sets the background for the value in that colour.  Quite useful
-when reviewing my themes (=rainbow-mode= is activated manually).
-
-#+begin_src emacs-lisp :tangle no
-;;; Rainbow mode for colour previewing (rainbow-mode.el)
-(use-package rainbow-mode
-  :config
-  (setq rainbow-ansi-colors nil)
-  (setq rainbow-x-colors nil))
-#+end_src
-
-#+RESULTS:
-: t
-
 ** Depth-based code colourisation (prism.el)
 *** desc
 Adam Porter's (aka alphapapa) =prism.el= colourises programming code based
@@ -8904,10 +8752,12 @@ To disable the effect, just do =M-x prot-prism-disable=.
 #+begin_src emacs-lisp :tangle no
 ;;; Depth-based code colourisation (prism.el)
 (use-package prism
+  :config
   (setq prism-comments 't))
 
-(load "prot-prism")
+(load "prot-prism.el")
 (use-package prot-prism
+  :config
   (setq prot-prism-negative-space-sensitive-modes
         '(sh-mode yaml-mode))
 
@@ -8915,6 +8765,7 @@ To disable the effect, just do =M-x prot-prism-disable=.
 #+end_src
 
 #+RESULTS:
+: t
 
 ** Outline mode, outline minor mode, and extras (prot-outline.el)
 *** desc
@@ -9587,6 +9438,153 @@ have the following.
 #+RESULTS:
 | +abbrev-file-name |
 
+** Dabbrev (dynamic word completion)
+:PROPERTIES:
+:CUSTOM_ID: h:57dcf193-0c4e-4ee6-9b2d-6892558b0a84
+:END:
+
+This is Emacs' own approach to dynamic/arbitrary text completion inside
+the buffer: "dynamic abbreviation" or else =dabbrev=.  This mechanism
+works by reading all text before point to find a suitable match.
+Different scenaria determine whether it should also look forward and in
+other buffers.  In essence, Dabbrev helps you re-type what you already
+have.
+
+With =dabbrev-expand= we make an attempt to complete the text at point.
+Repeated invocations will cycle through the candidates.  No feedback is
+provided, much in the same way yanking from the kill-ring works (though
+for Emacs28 =yank-pop= on =M-y= will use completion if the previous command
+was not =yank= on =C-y=).  To complete a phrase, matching the last succesful
+=dabbrev-expand=, you need to supply an empty space and call the command
+again.  This will match the next word, and so on for N words.
+
+Whereas =dabbrev-completion= benefits from minibuffer interactivity and
+the pattern matching styles in effect ([[#h:98d3abcc-f34e-4029-aabc-740f0b6421f8][Completion framework and extras]]).
+With the help of Corfu, the completion candidates are displayed in a
+pop-up window near point ([[#h:675ebef4-d74d-41af-808d-f9579c2a5ec4][Corfu for in-buffer completion]]).
+
+The =dabbrev-abbrev-char-regexp= is configured to match both regular words
+and symbols (e.g. words separated by hyphens).  This makes it equally
+suitable for code and ordinary language.
+
+While the =dabbrev-abbrev-skip-leading-regexp= is instructed to also
+expand words and symbols that start with any of these: =$=, =*=, =/=, ===, =~=, ='=.
+This regexp may be expanded in the future, but the idea is to be able to
+perform completion in contexts where the known word/symbol is preceded
+by a special character.  For example, in the =org-mode= version of this
+document, all inline code must be placed between the equals sign.  So
+now typing the ===, then a letter, will still allow me to expand text
+based on that input.
+
+To check what I have on regular expressions, see further below my
+configurations and documentation for [[#h:6c6759c8-3ae3-40b0-8356-05cc0975e12a][re-builder (regexp-builder)]].
+
+#+begin_src emacs-lisp :tangle no
+;;; Dabbrev (dynamic word completion)
+(use-package dabbrev
+  :config
+  (setq dabbrev-abbrev-char-regexp "\\sw\\|\\s_")
+  (setq dabbrev-abbrev-skip-leading-regexp "[$*/=~']")
+  (setq dabbrev-backward-only nil)
+  (setq dabbrev-case-distinction 'case-replace)
+  (setq dabbrev-case-fold-search nil)
+  (setq dabbrev-case-replace 'case-replace)
+  (setq dabbrev-check-other-buffers t)
+  (setq dabbrev-eliminate-newlines t)
+  (setq dabbrev-upcase-means-case-search t)
+  (let ((map global-map))
+    (define-key map (kbd "M-/") #'dabbrev-expand)
+    (define-key map (kbd "C-x M-/") #'dabbrev-completion)))
+
+#+end_src
+
+#+RESULTS:
+: t
+
+#+begin_src emacs-lisp :tangle no
+
+;;;----------------------------------------------------------------
+;; ** DABBREV Karthiks
+;;;----------------------------------------------------------------
+
+(use-package dabbrev
+  :commands (dabbrev-expand dabbrev-completion)
+  :config
+  (setq dabbrev-abbrev-char-regexp "\\sw\\|\\s_")
+  (setq dabbrev-abbrev-skip-leading-regexp "\\$\\|\\*\\|/\\|=")
+  (setq dabbrev-backward-only nil)
+  (setq dabbrev-case-distinction nil)
+  (setq dabbrev-case-fold-search t)
+  (setq dabbrev-case-replace nil)
+  (setq dabbrev-check-other-buffers t)
+  (setq dabbrev-eliminate-newlines nil)
+  (setq dabbrev-upcase-means-case-search t))
+#+end_src
+** Abberviation
+#+begin_src emacs-lisp :tangle no
+;; Where I store the abbreviation I need.
+
+;;; my-abbrev --- Abbrev stuff  -*- lexical-binding: t; -*-
+;;; Commentary:
+
+;; This adds various abbrevs for various modes.  Abbrevs are useful to
+;; avoid typos, for instance.  To prevent the expansion, type ``word
+;; C-q SPC'' instead of ``word SPC''.
+
+;;; Code:
+
+(clear-abbrev-table global-abbrev-table)
+
+(define-abbrev-table 'global-abbrev-table
+  '(("prots@" "ports@")
+
+    ("supprots" "supports")
+
+    ("het" "the")
+    ("teh" "the")
+
+    ("wehn" "when")
+
+    ("perchè" "perché")
+    ("perche" "perché")
+    ("nonchè" "nonché")
+    ("nonche" "nonché")
+    ("quetse" "queste")
+    ("sovlgimento" "svolgimento")
+    ("sovlgere" "svolgere")
+    ("sbagilo" "sbaglio")
+    ("caffe" "caffè")))
+
+(when (boundp 'text-mode-abbrev-table)
+  (clear-abbrev-table text-mode-abbrev-table))
+
+(define-abbrev-table 'text-mode-abbrev-table
+  '(("hw" "hardware")
+    ("sw" "software")))
+
+(when (boundp 'clojure-mode-abbrev-table)
+  (clear-abbrev-table clojure-mode-abbrev-table))
+
+(define-abbrev-table 'clojure-mode-abbrev-table
+  '(("erq" "req")))
+
+(when (boundp 'c-mode-abbrev-table)
+  (clear-abbrev-table c-mode-abbrev-table))
+
+(define-abbrev-table 'c-mode-abbrev-table
+  '(("inculde" "include")
+    ("inlcude" "include")))
+
+;; turn on abbrev mode globally
+(setq-default abbrev-mode t)
+
+(provide 'my-abbrev)
+;;; my-abbrev.el ends here
+#+end_src
+
+#+RESULTS:
+: my-abbrev
+
 ** DONE Ispell
 CLOSED: [2022-04-01 Fri 15:55]
 **** Downloading dictionaries
@@ -9690,8 +9688,12 @@ CLOSED: [2022-04-01 Fri 15:50]
                                                   tide-references-mode
                                                   image-dired-mode
                                                   image-dired-thumbnail-mode
+                                                  ytel-mode
                                                   eww-mode))
 #+END_SRC
+
+#+RESULTS:
+| elfeed-show-mode | elfeed-search-mode | forge-pullreq-list-mode | forge-topic-list-mode | dired-mode | tide-references-mode | image-dired-mode | image-dired-thumbnail-mode | ytel-mode | eww-mode |
 
 Turning off evil when working in =cider--debug= minor mode:
 
@@ -9961,71 +9963,6 @@ Some custom functions to insert the date.  The function 'insert-todays-date' can
         :desc "Insert any date" "a" #'dt/insert-any-date
         :desc "Insert todays date" "t" #'dt/insert-todays-date))
 #+end_src
-** Abberviation
-#+begin_src emacs-lisp
-;; Where I store the abbreviation I need.
-
-;;; my-abbrev --- Abbrev stuff  -*- lexical-binding: t; -*-
-;;; Commentary:
-
-;; This adds various abbrevs for various modes.  Abbrevs are useful to
-;; avoid typos, for instance.  To prevent the expansion, type ``word
-;; C-q SPC'' instead of ``word SPC''.
-
-;;; Code:
-
-(clear-abbrev-table global-abbrev-table)
-
-(define-abbrev-table 'global-abbrev-table
-  '(("prots@" "ports@")
-
-    ("supprots" "supports")
-
-    ("het" "the")
-    ("teh" "the")
-
-    ("wehn" "when")
-
-    ("perchè" "perché")
-    ("perche" "perché")
-    ("nonchè" "nonché")
-    ("nonche" "nonché")
-    ("quetse" "queste")
-    ("sovlgimento" "svolgimento")
-    ("sovlgere" "svolgere")
-    ("sbagilo" "sbaglio")
-    ("caffe" "caffè")))
-
-(when (boundp 'text-mode-abbrev-table)
-  (clear-abbrev-table text-mode-abbrev-table))
-
-(define-abbrev-table 'text-mode-abbrev-table
-  '(("hw" "hardware")
-    ("sw" "software")))
-
-(when (boundp 'clojure-mode-abbrev-table)
-  (clear-abbrev-table clojure-mode-abbrev-table))
-
-(define-abbrev-table 'clojure-mode-abbrev-table
-  '(("erq" "req")))
-
-(when (boundp 'c-mode-abbrev-table)
-  (clear-abbrev-table c-mode-abbrev-table))
-
-(define-abbrev-table 'c-mode-abbrev-table
-  '(("inculde" "include")
-    ("inlcude" "include")))
-
-;; turn on abbrev mode globally
-(setq-default abbrev-mode t)
-
-(provide 'my-abbrev)
-;;; my-abbrev.el ends here
-#+end_src
-
-#+RESULTS:
-: my-abbrev
-
 ** REGISTERS
 Emacs registers are compartments where you can save text, rectangles and positions for later use. Once you save text or a rectangle in a register, you can copy it into the buffer once or many times; once you save a position in a register, you can jump back to that position once or many times.  The default GNU Emacs keybindings for these commands (with the exception of counsel-register) involves 'C-x r' followed by one or more other keys.  I wanted to make this a little more user friendly, and since I am using Doom Emacs, I choose to replace the 'C-x r' part of the key chords with 'SPC r'.
 
@@ -10254,7 +10191,7 @@ Mainly useful in C and derived, and only when ACTION is insert."
 : #s(hash-table size 65 test eql rehash-size 1.5 rehash-threshold 0.8125 data (:use-package (25134 3983 706869 375000) :init (25134 3983 706498 821000) :init-secs (0 0 94934 396000) :use-package-secs (0 0 95376 547000) :config (25134 3983 706480 126000) :config-secs (0 0 94860 423000)))
 
 ** undo tree
-#+begin_src emacs-lisp
+#+begin_src emacs-lisp :tangle no
 
 (use-package undo-tree
   :config
@@ -10589,9 +10526,6 @@ Summary of what these do:
 
 ** Code and text linters
 *** Flymake
-:PROPERTIES:
-:CUSTOM_ID: h:b8bfcc05-c0d3-4093-b3fe-f06187d22c6a
-:END:
 
 This is a built-in linter interface.  It visualises in a buffer what you
 would otherwise get on the command-line prompt (or compilation log),
@@ -10788,7 +10722,7 @@ there’s a noticable lag when typing normally (delay too large)
 (use-package! key-chord
   :config
   ;; (key-chord-mode 1)
-  (setq key-chord-one-key-delay 0.20 ; same key (e.g. xx)
+  (setq key-chord-one-key-delay 0.10 ; same key (e.g. xx) 20 delay
         key-chord-two-keys-delay 0.05))
 #+end_src
 
@@ -10964,28 +10898,36 @@ likes of =ansi-term= or =vterm=.
   (require 'em-hist)
   (setq eshell-hist-ignoredups t)
   (setq eshell-save-history-on-exit t))
-(load "prot-eshell")
+#+end_src
+
+#+begin_src emacs-lisp :tangle yes
+
+(require 'em-cmpl)
+(load "prot-eshell.el")
 (use-package prot-eshell
   :config
   (setq prot-eshell-output-buffer "*Exported Eshell output*")
   (setq prot-eshell-output-delimiter "* * *")
   (let ((map eshell-mode-map))
     (define-key map (kbd "M-k") #'eshell-kill-input)
-    (define-key map (kbd "C-c C-f") #'prot-eshell-ffap-find-file)
-    (define-key map (kbd "C-c C-j") #'prot-eshell-ffap-dired-jump)
-    (define-key map (kbd "C-c C-w") #'prot-eshell-ffap-kill-save)
-    (define-key map (kbd "C-c C->") #'prot-eshell-redirect-to-buffer)
-    (define-key map (kbd "C-c C-e") #'prot-eshell-export)
-    (define-key map (kbd "C-c C-r") #'prot-eshell-root-dir))
+    (define-key map (kbd "C-c a C-f") #'prot-eshell-ffap-find-file)
+    (define-key map (kbd "C-c a C-j") #'prot-eshell-ffap-dired-jump)
+    (define-key map (kbd "C-c a C-w") #'prot-eshell-ffap-kill-save)
+    (define-key map (kbd "C-c a C-r") #'prot-eshell-redirect-to-buffer)
+    (define-key map (kbd "C-c a C-e") #'prot-eshell-export)
+    (define-key map (kbd "C-c a C-r") #'prot-eshell-root-dir))
   (let ((map eshell-cmpl-mode-map))
-    (define-key map (kbd "C-c TAB") #'prot-eshell-ffap-insert) ; C-c C-i
-    (define-key map (kbd "C-c C-h") #'prot-eshell-narrow-output-highlight-regexp))
+    (define-key map (kbd "C-c a TAB") #'prot-eshell-ffap-insert) ; C-c C-i
+    (define-key map (kbd "C-c a C-h") #'prot-eshell-narrow-output-highlight-regexp))
   (let ((map eshell-hist-mode-map))
     (define-key map (kbd "M-s") #'nil) ; I use this prefix for lots of more useful commands
-    (define-key map (kbd "M-r") #'prot-eshell-complete-history)
-    (define-key map (kbd "C-c C-d") #'prot-eshell-complete-recent-dir)
-    (define-key map (kbd "C-c C-s") #'prot-eshell-find-subdirectory-recursive)))
+    ;; (define-key map (kbd "M-r") #'prot-eshell-complete-history)
+    (define-key map (kbd "C-c a C-d") #'prot-eshell-complete-recent-dir)
+    (define-key map (kbd "C-c a C-s") #'prot-eshell-find-subdirectory-recursive)))
 #+end_src
+
+#+RESULTS:
+: t
 
 *** DONE Shell (M-x shell)
 CLOSED: [2022-04-01 Fri 15:58]
@@ -13475,7 +13417,6 @@ CLOSED: [2022-04-14 Thu 17:30]
        :demand t
        :init
             (require 'google-translate)
-
        :functions (my-google-translate-at-point google-translate--search-tkk)
        :custom
        (google-translate-backend-method 'curl)
@@ -13568,7 +13509,7 @@ active region use it instead."
 #+RESULTS:
 : google-search-at-point
 
-** paths
+** Custom Helper
 #+begin_src emacs-lisp :tangle yes
 
 ;; * PATHS
@@ -13591,76 +13532,6 @@ active region use it instead."
 
 #+RESULTS:
 : t
-
-** ELFEED
-*** Elfeed goodies
-An RSS newsfeed reader for Emacs.
-
-#+BEGIN_SRC emacs-lisp :tangle no
-
-(use-package! elfeed-goodies)
-(elfeed-goodies/setup)
-(setq elfeed-goodies/entry-pane-size 0.5)
-(add-hook 'elfeed-show-mode-hook 'visual-line-mode)
-(evil-define-key 'normal elfeed-show-mode-map
-  (kbd "J") 'elfeed-goodies/split-show-next
-  (kbd "K") 'elfeed-goodies/split-show-prev)
-(evil-define-key 'normal elfeed-search-mode-map
-  (kbd "J") 'elfeed-goodies/split-show-next
-  (kbd "K") 'elfeed-goodies/split-show-prev)
-(setq elfeed-feeds (quote
-          (("https://www.reddit.com/r/linux.rss" reddit linux)
-          ("https://www.reddit.com/r/commandline.rss" reddit commandline)
-          ("https://www.reddit.com/r/distrotube.rss" reddit distrotube)
-          ("https://www.reddit.com/r/emacs.rss" reddit emacs)
-          ("https://www.gamingonlinux.com/article_rss.php" gaming linux)
-          ("https://hackaday.com/blog/feed/" hackaday linux)
-          ("https://opensource.com/feed" opensource linux)
-          ("https://linux.softpedia.com/backend.xml" softpedia linux)
-          ("https://itsfoss.com/feed/" itsfoss linux)
-          ("https://www.zdnet.com/topic/linux/rss.xml" zdnet linux)
-          ("https://www.phoronix.com/rss.php" phoronix linux)
-          ("http://feeds.feedburner.com/d0od" omgubuntu linux)
-          ("https://www.computerworld.com/index.rss" computerworld linux)
-          ("https://www.networkworld.com/category/linux/index.rss" networkworld linux)
-          ("https://www.techrepublic.com/rssfeeds/topic/open-source/" techrepublic linux)
-          ("https://betanews.com/feed" betanews linux)
-          ("http://lxer.com/module/newswire/headlines.rss" lxer linux)
-          ("http://endlessparentheses.com/atom.xml" emacs)
-          ("http://planet.emacsen.org/atom.xml" emacs)
-          ("https://www.reddit.com/r/emacs/.rss" emacs)
-          ("https://www.reddit.com/r/orgmode/.rss" emacs)
-          ("http://www.blackhats.es/wordpress/?feed=rss2" emacs)
-          ("http://www.howardism.org/index.xml" emacs)
-          ("http://www.masteringemacs.org/feed/" emacs))))
-
-#+END_SRC
-
-#+RESULTS:
-| https://www.reddit.com/r/linux.rss                       | reddit        | linux       |
-| https://www.reddit.com/r/commandline.rss                 | reddit        | commandline |
-| https://www.reddit.com/r/distrotube.rss                  | reddit        | distrotube  |
-| https://www.reddit.com/r/emacs.rss                       | reddit        | emacs       |
-| https://www.gamingonlinux.com/article_rss.php            | gaming        | linux       |
-| https://hackaday.com/blog/feed/                          | hackaday      | linux       |
-| https://opensource.com/feed                              | opensource    | linux       |
-| https://linux.softpedia.com/backend.xml                  | softpedia     | linux       |
-| https://itsfoss.com/feed/                                | itsfoss       | linux       |
-| https://www.zdnet.com/topic/linux/rss.xml                | zdnet         | linux       |
-| https://www.phoronix.com/rss.php                         | phoronix      | linux       |
-| http://feeds.feedburner.com/d0od                         | omgubuntu     | linux       |
-| https://www.computerworld.com/index.rss                  | computerworld | linux       |
-| https://www.networkworld.com/category/linux/index.rss    | networkworld  | linux       |
-| https://www.techrepublic.com/rssfeeds/topic/open-source/ | techrepublic  | linux       |
-| https://betanews.com/feed                                | betanews      | linux       |
-| http://lxer.com/module/newswire/headlines.rss            | lxer          | linux       |
-| http://endlessparentheses.com/atom.xml                   | emacs         |             |
-| http://planet.emacsen.org/atom.xml                       | emacs         |             |
-| https://www.reddit.com/r/emacs/.rss                      | emacs         |             |
-| https://www.reddit.com/r/orgmode/.rss                    | emacs         |             |
-| http://www.blackhats.es/wordpress/?feed=rss2             | emacs         |             |
-| http://www.howardism.org/index.xml                       | emacs         |             |
-| http://www.masteringemacs.org/feed/                      | emacs         |             |
 
 ** EWW
 *** oantolin'eww
@@ -15727,11 +15598,78 @@ every variable is clear on what it is supposed to do.
   (define-key global-map (kbd "C-c i") #'irc))
 #+end_src
 
-** Elfeed feed reader, prot-elfeed.el and prot-elfeed-bongo.el
-:PROPERTIES:
-:CUSTOM_ID: h:0cd8ddab-55d1-40df-b3db-1234850792ba
-:END:
+** ELFEED
+*** Elfeed goodies
+An RSS newsfeed reader for Emacs.
 
+#+BEGIN_SRC emacs-lisp :tangle no
+
+(use-package! elfeed-goodies)
+(elfeed-goodies/setup)
+(setq elfeed-goodies/entry-pane-size 0.5)
+(add-hook 'elfeed-show-mode-hook 'visual-line-mode)
+(evil-define-key 'normal elfeed-show-mode-map
+  (kbd "J") 'elfeed-goodies/split-show-next
+  (kbd "K") 'elfeed-goodies/split-show-prev)
+(evil-define-key 'normal elfeed-search-mode-map
+  (kbd "J") 'elfeed-goodies/split-show-next
+  (kbd "K") 'elfeed-goodies/split-show-prev)
+(setq elfeed-feeds (quote
+          (("https://www.reddit.com/r/linux.rss" reddit linux)
+          ("https://www.reddit.com/r/commandline.rss" reddit commandline)
+          ("https://www.reddit.com/r/distrotube.rss" reddit distrotube)
+          ("https://www.reddit.com/r/emacs.rss" reddit emacs)
+          ("https://www.gamingonlinux.com/article_rss.php" gaming linux)
+          ("https://hackaday.com/blog/feed/" hackaday linux)
+          ("https://opensource.com/feed" opensource linux)
+          ("https://linux.softpedia.com/backend.xml" softpedia linux)
+          ("https://itsfoss.com/feed/" itsfoss linux)
+          ("https://www.zdnet.com/topic/linux/rss.xml" zdnet linux)
+          ("https://www.phoronix.com/rss.php" phoronix linux)
+          ("http://feeds.feedburner.com/d0od" omgubuntu linux)
+          ("https://www.computerworld.com/index.rss" computerworld linux)
+          ("https://www.networkworld.com/category/linux/index.rss" networkworld linux)
+          ("https://www.techrepublic.com/rssfeeds/topic/open-source/" techrepublic linux)
+          ("https://betanews.com/feed" betanews linux)
+          ("http://lxer.com/module/newswire/headlines.rss" lxer linux)
+          ("http://endlessparentheses.com/atom.xml" emacs)
+          ("http://planet.emacsen.org/atom.xml" emacs)
+          ("https://www.reddit.com/r/emacs/.rss" emacs)
+          ("https://www.reddit.com/r/orgmode/.rss" emacs)
+          ("http://www.blackhats.es/wordpress/?feed=rss2" emacs)
+          ("http://www.howardism.org/index.xml" emacs)
+          ("http://www.masteringemacs.org/feed/" emacs))))
+
+#+END_SRC
+
+#+RESULTS:
+| https://www.reddit.com/r/linux.rss                       | reddit        | linux       |
+| https://www.reddit.com/r/commandline.rss                 | reddit        | commandline |
+| https://www.reddit.com/r/distrotube.rss                  | reddit        | distrotube  |
+| https://www.reddit.com/r/emacs.rss                       | reddit        | emacs       |
+| https://www.gamingonlinux.com/article_rss.php            | gaming        | linux       |
+| https://hackaday.com/blog/feed/                          | hackaday      | linux       |
+| https://opensource.com/feed                              | opensource    | linux       |
+| https://linux.softpedia.com/backend.xml                  | softpedia     | linux       |
+| https://itsfoss.com/feed/                                | itsfoss       | linux       |
+| https://www.zdnet.com/topic/linux/rss.xml                | zdnet         | linux       |
+| https://www.phoronix.com/rss.php                         | phoronix      | linux       |
+| http://feeds.feedburner.com/d0od                         | omgubuntu     | linux       |
+| https://www.computerworld.com/index.rss                  | computerworld | linux       |
+| https://www.networkworld.com/category/linux/index.rss    | networkworld  | linux       |
+| https://www.techrepublic.com/rssfeeds/topic/open-source/ | techrepublic  | linux       |
+| https://betanews.com/feed                                | betanews      | linux       |
+| http://lxer.com/module/newswire/headlines.rss            | lxer          | linux       |
+| http://endlessparentheses.com/atom.xml                   | emacs         |             |
+| http://planet.emacsen.org/atom.xml                       | emacs         |             |
+| https://www.reddit.com/r/emacs/.rss                      | emacs         |             |
+| https://www.reddit.com/r/orgmode/.rss                    | emacs         |             |
+| http://www.blackhats.es/wordpress/?feed=rss2             | emacs         |             |
+| http://www.howardism.org/index.xml                       | emacs         |             |
+| http://www.masteringemacs.org/feed/                      | emacs         |             |
+
+*** Elfeed feed reader, prot-elfeed.el and prot-elfeed-bongo.el
+**** desc
 This is a standalone feed reader by Christopher Wellons that comes with
 good defaults and is very well designed overall.  It treats the stream
 of updates as a flat list that can be narrowed incrementally using an
@@ -15835,6 +15773,7 @@ older code: [[https://protesilaos.com/codelog/2020-09-11-emacs-elfeed-bongo/][Ma
 
 Also see: [[#h:aa64c61e-49b5-41b0-b1fe-10bbe3be661f][Sample configuration for MPV (Elfeed+Bongo extension)]].
 
+**** code
 #+begin_src emacs-lisp :tangle no
 ;;; Elfeed feed reader, prot-elfeed.el and prot-elfeed-bongo.el
 (use-package elfeed
@@ -17221,9 +17160,6 @@ panel.
 : latex-math-from-calc
 
 ** Version control tools
-:PROPERTIES:
-:CUSTOM_ID: h:0e2fe4c7-9d4b-4570-a293-9a9629021ff7
-:END:
 *** Diff-mode (and prot-diff.el extensions)
 :PROPERTIES:
 :CUSTOM_ID: h:2ff46d23-09d5-4d92-b0af-2339dc19719f
@@ -17991,7 +17927,7 @@ In a screenshot, it looks like this:
 
 ** Helper function to measure the running time of a function
 
-For example =(measure-time (prettier-eslint)=.
+For example =(measure-time (prettier-eslint))=.
 
 #+BEGIN_SRC emacs-lisp
   (defmacro measure-time (&rest body)
@@ -18004,9 +17940,6 @@ For example =(measure-time (prettier-eslint)=.
 #+RESULTS:
 : measure-time
 ** USLS --- Unassuming Sidenotes of Little Significance
-:PROPERTIES:
-:CUSTOM_ID: h:787df548-0d95-4512-a61d-27852198f561
-:END:
 
 NOTE 2021-12-29: USLS is subject to a rewrite.  I have been using it
 daily since its inception, though the code needs to be refactored.  As a

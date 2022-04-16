@@ -23,6 +23,9 @@
          ((shell-mode eshell-mode) . my/corfu-shell-settings))
   :bind (:map corfu-map
          ("TAB" . corfu-next)
+         ("C-j" . corfu-next)
+         ("C-k" . corfu-previous)
+         ("C-f" . corfu-insert)
          ([tab] . corfu-next)
          ("S-TAB" . corfu-previous)
          ([backtab] . corfu-previous)

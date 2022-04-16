@@ -1,1 +1,3 @@
-Xft.dpi:   100   # Set this to your desired DPI!  Larger number means bigger text and UI
+# [[file:../config.org::*DPI configuration][DPI configuration:1]]
+  Xft.dpi:   100   # Set this to your desired DPI!  Larger number means bigger text and UI
+# DPI configuration:1 ends here
