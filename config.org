@@ -141,7 +141,7 @@ To install ~some-package~ from MELPA, ELPA or emacsmirror:
   (package! winum)
   (package! osm)
   (package! olivetti)
-  (package! flycheck-aspell)
+  ;; (package! flycheck-aspell)
   ;; (package! desktop)
   ;; (package! amx)
   (package! framemove)
@@ -230,7 +230,6 @@ To install ~some-package~ from MELPA, ELPA or emacsmirror:
 
   (package! exwm-edit)
 
-  (package! emms)
 
   ;; (package! page-break-lines)
 
@@ -15710,6 +15709,101 @@ This section includes configurations for programs like email clients,
 news reader, music players…  Anything you would normally see in a
 standalone application.  The end goal is to eventually integrate every
 aspect of my computing inside of Emacs.
+** qutebrowser session save and restore
+#+begin_src emacs-lisp :tangle yes
+(require 'yaml)
+(require 'cl-lib)
+
+(defvar qbs/*qbs-db* "~/qb-session.org")
+(defvar qbs/*qbs-source* "~/.local/share/qutebrowser/sessions/default.yml")
+
+(defun qbs/file<-string (s file)
+  (with-temp-buffer
+    (insert s)
+    (write-region (point-min) (point-max) file t)))
+
+(defun qbs/string<-file (file)
+  (with-temp-buffer
+    (insert-file-contents file)
+    (buffer-string)))
+
+(defun qbs/title-urls<-yaml-string (str)
+  (let* ((ht (yaml-parse-string str))
+         (tabs (ht-get (elt (ht-get ht 'windows) 0) 'tabs)))
+    (seq-map (lambda (tab)
+               `(:title ,(ht-get (elt (ht-get tab 'history) 0) 'title)
+                 :url ,(ht-get (elt (ht-get tab 'history) 0) 'url)))
+             tabs)))
+
+(defun qbs/format-title-urls (data)
+  (eval `(concat
+          "\n"
+          "* "
+          ,(format-time-string "%Y%m%dT%H%M%S")
+          "\n"
+          ,@(cl-loop for entry in data
+                     collect (format "- [[%s][%s]]\n"
+                                     (cl-getf entry :url)
+                                     (cl-getf entry :title)))
+          "\n")))
+
+(defun qbs/save-qb-session ()
+  "Reads qb current default session and generate org-mode heading
+with items."
+  (interactive)
+  (let ((max-lisp-eval-depth 10000))
+    (qbs/file<-string
+     (qbs/format-title-urls
+      (qbs/title-urls<-yaml-string
+       (qbs/string<-file qbs/*qbs-source*)))
+     qbs/*qbs-db*)))
+
+(defun qbs/restore-qb-session ()
+  "Restore session for qutebrowser. Make sure to put cursor on
+date heading that contains list of urls."
+  (interactive)
+  (save-excursion
+    (beginning-of-line)
+    (when (looking-at "^\\*")
+      (forward-line 1)
+      (while (looking-at "^[-+][ ]+")
+        (progn (end-of-line)
+               (backward-char)
+               (org-open-at-point))
+        (forward-line 1)))))
+
+(provide 'qbs)
+#+end_src
+
+#+RESULTS:
+: qbs
+** org roam qutebrowser
+#+begin_src emacs-lisp :tangle yes
+(require 'org-roam-protocol)
+(setq org-roam-capture-ref-templates
+        '(("r" "ref" plain (function org-roam-capture--get-point)
+           "%?"
+           :file-name "${slug}"
+           :head "#+TITLE: ${title}
+#+ROAM_KEY: ${ref}"
+           :unnarrowed t)))
+
+#+end_src
+
+#+RESULTS:
+| r | ref | plain | #'org-roam-capture--get-point | %? | :file-name | ${slug} | :head | #+TITLE: ${title} |
+**
+#+begin_src python :tangle ~/.config/doom/org-roam-protocol-handler.py
+import os
+import sys
+import urllib.parse
+
+url   = urllib.parse.quote(sys.argv[1])
+title = urllib.parse.quote(sys.argv[2])
+
+command = "emacsclient \"org-protocol://roam-ref?template=r&ref="+url+"&title="+title+"\""
+os.system(command)
+#+end_src
 
 ** CLIPPY
 Gives us a popup box with "Clippy, the paper clip". You can make him say various things by calling 'clippy-say' function.  But the more useful functions of clippy are the two describe functions provided: 'clippy-describe-function' and 'clippy-describe-variable'.  Hit the appropriate keybinding while the point is over a function/variable to call it.  A popup with helpful clippy will appear, telling you about the function/variable (using describe-function and describe-variable respectively).
