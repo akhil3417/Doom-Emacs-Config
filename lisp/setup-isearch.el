@@ -22,7 +22,7 @@
   (define-key minibuffer-local-isearch-map (kbd "M-/") #'isearch-complete-edit)
   (let ((map isearch-mode-map))
     (define-key map (kbd "C-g") #'isearch-cancel) ; instead of `isearch-abort'
-    (define-key map (kbd "M-/") #'isearch-complete)))
+    (define-key map (kbd "M-/") #'isearch-complete))
 
   (defun my/isearch-mark-and-exit ()
     "Mark the current search string and exit the search."

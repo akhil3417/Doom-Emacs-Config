@@ -109,6 +109,7 @@ To install ~some-package~ from MELPA, ELPA or emacsmirror:
   (package! s)
 
   (package! sdcv)
+  (package! clippy)
   (package! wordnut)
   (package! telega)
   (package! smart-mode-line)
@@ -140,10 +141,7 @@ To install ~some-package~ from MELPA, ELPA or emacsmirror:
   (package! winum)
   (package! osm)
   (package! olivetti)
-  (package! flymake-shellcheck)
-  (package! flymake-proselint)
-  (package! flymake-diagnostic-at-point)
-  (package! package-lint-flymake)
+  (package! flycheck-aspell)
   ;; (package! desktop)
   ;; (package! amx)
   (package! framemove)
@@ -10507,145 +10505,6 @@ Summary of what these do:
 #+RESULTS:
 : t
 
-** Code and text linters
-*** Flymake
-
-This is a built-in linter interface.  It visualises in a buffer what you
-would otherwise get on the command-line prompt (or compilation log),
-while it also marks the line[s] where the note, warning, or error
-occurs.  In short, it is quite a nice tool to have.
-
-Several extensions to Flymake are already available, mostly targeted at
-programmers.  For my case, there is no need for any of those, while
-Flymake can lint Elisp without any further configuration.
-
-The external =flymake-diagnostic-at-point= package provides a simple and
-effective interface to displaying information about the warning at
-point.
-
-#+begin_src emacs-lisp
-;;; Flymake
-(use-package flymake
-    :ensure nil
-  :config
-  (setq flymake-fringe-indicator-position 'left-fringe)
-  (setq flymake-suppress-zero-counters t)
-  (setq flymake-start-on-flymake-mode t)
-  (setq flymake-no-changes-timeout nil)
-  (setq flymake-start-on-save-buffer t)
-  (setq flymake-proc-compilation-prevents-syntax-check t)
-  (setq flymake-wrap-around nil)
-  (setq flymake-mode-line-format
-        '("" flymake-mode-line-exception flymake-mode-line-counters))
-  (setq flymake-mode-line-counter-format
-        '(" " flymake-mode-line-error-counter
-          flymake-mode-line-warning-counter
-          flymake-mode-line-note-counter ""))
-
-  (let ((map flymake-mode-map))
-    (define-key map (kbd "C-c ! s") #'flymake-start)
-    (define-key map (kbd "C-c ! d") #'flymake-show-buffer-diagnostics) ; Emacs28
-    (define-key map (kbd "C-c ! n") #'flymake-goto-next-error)
-    (define-key map (kbd "C-c ! p") #'flymake-goto-prev-error)))
-
-  (let ((map flymake-mode-map))
-    (define-key map (kbd "C-c ! s") #'flymake-start)
-    (define-key map (kbd "C-c ! d") #'flymake-show-buffer-diagnostics) ; Emacs28
-    (define-key map (kbd "C-c ! n") #'flymake-goto-next-error)
-    (define-key map (kbd "C-c ! p") #'flymake-goto-prev-error))
-
-(use-package flymake-diagnostic-at-point
-  :config
-  (setq flymake-diagnostic-at-point-display-diagnostic-function
-        'flymake-diagnostic-at-point-display-minibuffer))
-#+end_src
-
-#+RESULTS:
-: t
-
-
-**** Flymake + Shellcheck
-:PROPERTIES:
-:CUSTOM_ID: h:a45fd661-8cd7-4ee7-bff0-5f738d82b73b
-:END:
-
-The =flymake-shellcheck= package simply adds support for Shellcheck, the
-linter for shell scripts.  It otherwise relies on the standard utilities
-of =flymake-mode= (see [[#h:b8bfcc05-c0d3-4093-b3fe-f06187d22c6a][main Flymake configs]]).
-
-#+begin_src emacs-lisp
-;;; Flymake + Shellcheck
-(use-package flymake-shellcheck
-  :config
-  (add-hook 'sh-mode-hook 'flymake-shellcheck-load))
-#+end_src
-
-#+RESULTS:
-
-**** Flymake + Proselint
-:PROPERTIES:
-:CUSTOM_ID: h:2a954862-c532-43e9-afdf-4bacd152295f
-:END:
-
-Manuel Uberti has published [[https://github.com/manuel-uberti/flymake-proselint][flymake-proselint on Github]] and MELPA.  It
-offers a Flymake interface to the external =proselint= executable (see
-[[#h:6dff70a8-7eba-4b5d-982c-f13d13ed3b3b][Proselint configuration]]).
-
-This comes in handy when I need to review some long-form text for common
-inconsistencies and stylistic irregularities.  Errors will be marked on
-the fringe, while you can quickly get an overview with pointers to the
-precise line number by invoking =flymake-show-diagnostics-buffer= (check
-my [[#h:b8bfcc05-c0d3-4093-b3fe-f06187d22c6a][configurations for Flymake]] and then also review what I have to
-spelling in [[#h:3f1b2856-c6b7-418a-9d7d-464bd1ebe69c][Flyspell and prot-spell.el (spell check)]]).
-
-To run the program, you just need to hook it to whatever major-mode you
-use for prose.  Then you need to enable =flymake-mode= to start using it.
-I prefer to do the final step manually, as I normally do not run a
-linter while writing: it is too distracting.
-
-#+begin_src emacs-lisp
-;;; Flymake + Proselint
-(use-package flymake-proselint
-  :ensure nil
-  :config
-  (add-hook 'markdown-mode-hook #'flymake-proselint-setup)
-  (add-hook 'org-mode-hook #'flymake-proselint-setup)
-  (add-hook 'text-mode-hook #'flymake-proselint-setup))
-#+end_src
-
-#+RESULTS:
-: t
-
-***** Proselint configuration
-:PROPERTIES:
-:CUSTOM_ID: h:6dff70a8-7eba-4b5d-982c-f13d13ed3b3b
-:END:
-
-This is my configuration for the external =proselint= executable (check
-[[https://github.com/amperser/proselint][that project's README]]).  The following should be made available at
-=~/.config/proselint/config=.
-
-See [[#h:2a954862-c532-43e9-afdf-4bacd152295f][Flymake + Proselint]] for how I use this tool to review my long-form
-writing.
-
-#+include: ../../proselint/.config/proselint/config src conf :tangle no
-
-*** Elisp packaging requirements
-
-With this in place we can perform checks that pertain to Emacs lisp
-packaging.  I use it for my themes but also for any elisp library I may
-want to send patches to.
-
-#+begin_src emacs-lisp
-;;; Elisp packaging requirements
-(use-package package-lint-flymake
-  :ensure nil
-  :config
-  (add-hook 'flymake-diagnostic-functions #'package-lint-flymake))
-#+end_src
-
-#+RESULTS:
-
 ** EVALUATE ELISP EXPRESSIONS
 Changing some keybindings from their defaults to better fit with Doom Emacs, and to avoid conflicts with my window managers which sometimes use the control key in their keybindings.  By default, Doom Emacs does not use 'SPC e' for anything, so I choose to use the format 'SPC e' plus 'key' for these (I also use 'SPC e' for 'eww' keybindings).
 
@@ -13384,6 +13243,33 @@ CLOSED: [2022-04-14 Thu 17:30]
 #+RESULTS:
 : my/launch-firefox-private
 
+** ERC
+ERC is a built-in Emacs IRC client.
+
+| COMMAND | DESCRIPTION                                 | KEYBINDING |
+|---------+---------------------------------------------+------------|
+| erc-tls | /Launch ERC using more secure TLS connection/ | SPC e E    |
+
+#+begin_src emacs-lisp
+(map! :leader
+      (:prefix ("e". "evaluate/ERC/EWW")
+       :desc "Launch ERC with TLS connection" "E" #'erc-tls))
+
+(setq erc-prompt (lambda () (concat "[" (buffer-name) "]"))
+      erc-server "irc.libera.chat"
+      erc-nick "akhil3417"
+      erc-user-full-name "Akhil Pratap Singh"
+      erc-track-shorten-start 24
+      erc-autojoin-channels-alist '(("irc.libera.chat" "#unixtube" "#emacs"))
+      erc-kill-buffer-on-part t
+      erc-fill-column 100
+      erc-fill-function 'erc-fill-static
+      erc-fill-static-center 20
+      ;; erc-auto-query 'bury
+      )
+
+#+end_src
+
 ** Mentor (rtorrent)
 #+begin_src emacs-lisp
 (require 'mentor)
@@ -15824,6 +15710,22 @@ This section includes configurations for programs like email clients,
 news reader, music players…  Anything you would normally see in a
 standalone application.  The end goal is to eventually integrate every
 aspect of my computing inside of Emacs.
+
+** CLIPPY
+Gives us a popup box with "Clippy, the paper clip". You can make him say various things by calling 'clippy-say' function.  But the more useful functions of clippy are the two describe functions provided: 'clippy-describe-function' and 'clippy-describe-variable'.  Hit the appropriate keybinding while the point is over a function/variable to call it.  A popup with helpful clippy will appear, telling you about the function/variable (using describe-function and describe-variable respectively).
+
+| COMMAND                  | DESCRIPTION                           | KEYBINDING |
+|--------------------------+---------------------------------------+------------|
+| clippy-describe-function | /Clippy describes function under point/ | SPC c h f  |
+| clippy-describe-variable | /Clippy describes variable under point/ | SPC c h v  |
+
+#+begin_src emacs-lisp
+(map! :leader
+      (:prefix ("c h" . "Help info from Clippy")
+       :desc "Clippy describes function under point" "f" #'clippy-describe-function
+       :desc "Clippy describes variable under point" "v" #'clippy-describe-variable))
+
+#+end_src
 
 ** DONE System Package Managment
 CLOSED: [2022-04-15 Fri 11:43]
