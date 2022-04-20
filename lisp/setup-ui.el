@@ -31,6 +31,7 @@
 ;; Mouse available in terminal
 (add-hook 'tty-setup-hook #'xterm-mouse-mode)
 
+
 ;; Scrolling
 (setq scroll-margin 0
       scroll-preserve-screen-position t
@@ -114,6 +115,29 @@
 
 ;; Underline looks a bit better when drawn lower
 (setq x-underline-at-descent-line t)
+
+(if (eq initial-window-system 'x)                 ; if started by emacs command or desktop file
+    (toggle-frame-maximized)
+  (toggle-frame-fullscreen))
+
+;; (setq default-frame-alist
+;;       (append (list
+;; 	       ;; '(font . "Roboto Mono Emacs Regular:size=14")
+;; 	       '(min-height . 1)  '(height     . 45)
+;; 	       '(min-width  . 1) '(width      . 81)
+;;                '(vertical-scroll-bars . nil)
+;;                '(internal-border-width . 40)
+;;                '(left-fringe    . 0)
+;;                '(right-fringe   . 0)
+;;                '(tool-bar-lines . 0)
+;;                '(menu-bar-lines . 0))))
+
+;  (setq centaur-tabs-style "wave")
+;  (setq centaur-tabs-set-bar 'under)
+;; Note: If you're not using Spacmeacs, in order for the underline to display
+;; correctly you must add the following line:
+;(setq x-underline-at-descent-line t)
+;
 (provide 'setup-ui)
 ;; setup-ui ends here
 ;; setup.ui:1 ends here
