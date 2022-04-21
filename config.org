@@ -7903,23 +7903,6 @@ stamp upon save, where relevant.  It works seamlessly.
 #+RESULTS:
 : t
 
-*** Auto revert mode
-
-This mode ensures that the buffer is updated whenever the file changes.
-A change can happen externally or by some other tool inside of Emacs
-(e.g. kill a Magit diff).
-
-#+begin_src emacs-lisp
-;;; Auto revert mode
-(use-package! autorevert
-  :config
-  (setq auto-revert-verbose t)
-  (add-hook 'after-init-hook #'global-auto-revert-mode))
-#+end_src
-
-#+RESULTS:
-: t
-
 *** Preserve contents of system clipboard
 
 Say you copied a link from your web browser, then switched to Emacs to
@@ -7935,21 +7918,6 @@ solution to this with the following:
 
 Now the contents of the clipboard are stored in the kill ring and can
 be retrieved from there (e.g. with =M-y=).
-
-*** Newline characters for file ending
-
-For some major modes, such as =diff-mode=, a final newline is of paramount
-importance.  Without it you cannot, for instance, apply a patch cleanly.
-As such, the =mode-require-final-newline= will add a newline character
-when visiting or saving a buffer of relevance.
-
-#+begin_src emacs-lisp
-;;; Newline characters for file ending
-(setq mode-require-final-newline 'visit-save)
-#+end_src
-
-#+RESULTS:
-: visit-save
 
 * Code & Edit
 ** DONE Bookmarks
