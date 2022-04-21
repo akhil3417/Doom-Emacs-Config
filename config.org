@@ -148,7 +148,6 @@ To install ~some-package~ from MELPA, ELPA or emacsmirror:
   (package! easy-kill)
   (package! exotica-theme)
   (package! underwater-theme)
-  (package! volatile-highlights)
   (package! shell-pop)
   (package! key-chord)
   ;; (package! undo-tree)
@@ -3443,16 +3442,6 @@ bindings and their functions.
 
 * DONE UI
 CLOSED: [2022-04-02 Sat 23:43]
-** DONE volatile highlights
-CLOSED: [2022-03-30 Wed 00:00]
-  #+begin_src emacs-lisp
-    (use-package! volatile-highlights
-      :config
-      (volatile-highlights-mode t))
-  #+end_src
-
-  #+RESULTS:
-  : t
 ** DONE Windows
 CLOSED: [2022-03-30 Wed 00:00]
 
@@ -3979,13 +3968,13 @@ CLOSED: [2022-03-31 Thu 19:17]
           (habit . traffic-light-deuteranopia))
         modus-themes-variable-pitch-ui nil
         modus-themes-hl-line '(intense accented)
-        modus-themes-mode-line '(borderless accented)
-        modus-themes-headings
-        '((1 . (background overline variable-pitch 1.28))
-          (2 . (overline rainbow 1.22))
-          (3 . (overline 1.17))
-          (4 . (1.14))
-          (t . (monochrome))))
+        modus-themes-mode-line '(borderless accented))
+        ;; modus-themes-headings
+        ;; '((1 . (background overline variable-pitch 1.28))
+        ;;   (2 . (overline rainbow 1.22))
+        ;;   (3 . (overline 1.17))
+        ;;   (4 . (1.14))
+        ;;   (t . (monochrome))))
   ;; (setq modus-themes-operandi-color-overrides '((bg-main . "#ededed")))
   (setq modus-themes-vivendi-color-overrides
         '((bg-main . "#100b17")
@@ -4210,6 +4199,7 @@ tweaks of my own.
 : t
 ** DONE doom themes ui
 CLOSED: [2022-03-31 Thu 19:33]
+
 #+begin_src emacs-lisp :tangle no
 
   (use-package! dracula-theme
@@ -4574,6 +4564,7 @@ Settings related to fonts within Doom Emacs:
 + 'font-lock-keyword-face' -- for keywords with special significance like 'setq' in elisp.
 Fira Code is amazing, and so is Roboto.
 
+
 #+begin_src emacs-lisp :tangle yes
 (setq doom-font (font-spec :family "FiraCode" :size 15 :weight 'light)
        doom-variable-pitch-font (font-spec :family "Roboto" :style "Regular" :size 12 :weight 'regular))
@@ -4640,7 +4631,7 @@ Fira Code is amazing, and so is Roboto.
 #+END_SRC
 
 #+RESULTS:
-| doom--customize-themes-h-13 | doom--customize-themes-h-14 | doom--customize-themes-h-33 | doom--customize-themes-h-34 | doom--customize-themes-h-35 | doom--customize-themes-h-36 |
+| doom--customize-themes-h-52 |
 
 In addition to these fonts, Merriweather is used with =nov.el=, and Alegreya as a
 serifed proportional font used by =mixed-pitch-mode= for =writeroom-mode= with Org
@@ -4703,11 +4694,6 @@ files.
 #+begin_quote
 From the =:ui zen= module.
 #+end_quote
-
-#+begin_src emacs-lisp :tangle yes
-(setq doom-theme 'doom-flatwhite)
-   #+end_src
-
 
 #+begin_src emacs-lisp :tangle yes
 
@@ -4799,6 +4785,7 @@ Setting the theme to doom-vibrant.  To try out new themes, I set a keybinding fo
   ;; (load-theme 'doom-one t)
   ;; (load-theme 'doom-one-light t)
   ;; (load-theme 'doom-nord-light t)
+;; (setq doom-theme 'doom-flatwhite)
 
   ;; Enable flashing mode-line on errors
   (doom-themes-visual-bell-config)
@@ -6936,17 +6923,15 @@ to clear them out once you're done working with those folders.
 ** PERSPECTIVE
 Perspective provides multiple named workspaces (or "perspectives") in Emacs, similar to having multiple desktops in window managers like Awesome and XMonad.  Each perspective has its own buffer list and its own window layout, making it easy to work on many separate projects without getting lost in all the buffers.  Switching to a perspective activates its window configuration, and when in a perspective, only its buffers are available (by default).  Doom Emacs uses 'SPC some_key' for binding some of the perspective commands, so I used this binging format for the perspective bindings that I created..
 
-╭────
-│ | COMMAND                    | DESCRIPTION                         | KEYBINDING |
-│ |----------------------------+-------------------------------------+------------|
-│ | persp-switch               | Switch to perspective NAME          | SPC DEL    |
-│ | persp-switch-to-buffer     | Switch to buffer in perspective     | SPC ,      |
-│ | persp-next                 | Switch to next perspective          | SPC ]      |
-│ | persp-prev                 | Switch to previous perspective      | SPC [      |
-│ | persp-add-buffer           | Add a buffer to current perspective | SPC +      |
-│ | persp-remove-by-name       | Remove perspective by name          | SPC -      |
-│ | +workspace/switch-to-{0-9} | Switch to workspace /n/               | SPC 0-9    |
-╰────
+| COMMAND                    | DESCRIPTION                         | KEYBINDING |
+|----------------------------+-------------------------------------+------------|
+| persp-switch               | Switch to perspective NAME          | SPC DEL    |
+| persp-switch-to-buffer     | Switch to buffer in perspective     | SPC ,      |
+| persp-next                 | Switch to next perspective          | SPC ]      |
+| persp-prev                 | Switch to previous perspective      | SPC [      |
+| persp-add-buffer           | Add a buffer to current perspective | SPC +      |
+| persp-remove-by-name       | Remove perspective by name          | SPC -      |
+| +workspace/switch-to-{0-9} | Switch to workspace /n/               | SPC 0-9    |
 
 #+begin_src emacs-lisp
 (map! :leader
@@ -7660,7 +7645,7 @@ To use tabs in Doom Emacs, be sure to uncomment "tabs" in Doom's init.el.  Displ
 #+END_SRC
 
 #+RESULTS:
-| elisp--font-lock-flush-elisp-buffers | evil-update-pending-maps | general-define-key-in-bug-reference-map52 | general-define-key-in-ranger-mode-map204 | general-define-key-in-ranger-mode-map206 | evil-collection-define-key-in-diff-hl-inline-popup-transient-mode-map | evil-collection-define-key-in-diff-hl-show-hunk--inline-popup-map | evil-define-key-in-centaur-tabs-mode-map | general-define-key-in-space-menu-window-map234 | evil-define-key-in-peep-dired-mode-map | evil-collection-define-key-in-pdf-outline-buffer-mode-map | evil-collection-define-key-in-pdf-outline-buffer-mode-map | evil-collection-define-key-in-gnus-bookmark-bmenu-mode-map | evil-collection-define-key-in-gnus-bookmark-bmenu-mode-map | evil-collection-define-key-in-gnus-browse-mode-map | evil-collection-define-key-in-gnus-browse-mode-map | evil-collection-define-key-in-gnus-server-mode-map | evil-collection-define-key-in-gnus-server-mode-map | evil-collection-define-key-in-gnus-server-mode-map | evil-collection-define-key-in-gnus-browse-mode-map | evil-collection-define-key-in-gnus-bookmark-bmenu-mode-map | evil-define-key-in-centaur-tabs-mode-map |
+: wave
 
 *** tab bar mode davi
 #+begin_src emacs-lisp :tangle no
@@ -9238,9 +9223,6 @@ have the following.
 | +abbrev-file-name |
 
 ** Dabbrev (dynamic word completion)
-:PROPERTIES:
-:CUSTOM_ID: h:57dcf193-0c4e-4ee6-9b2d-6892558b0a84
-:END:
 
 This is Emacs' own approach to dynamic/arbitrary text completion inside
 the buffer: "dynamic abbreviation" or else =dabbrev=.  This mechanism
@@ -17466,13 +17448,13 @@ CLOSED: [2022-03-30 Wed 09:28]
 ** EMMS
 One of the media players available for Emacs is emms, which stands for Emacs Multimedia System.  By default, Doom Emacs does not use 'SPC a',' so the format I use for these bindings is 'SPC a' plus 'key'.
 
-| COMMAND               | DESCRIPTION                       | KEYBINDING |
-|-----------------------+-----------------------------------+------------|
-| emms-playlist-mode-go | /Switch to the playlist buffer/     | SPC a a    |
-| emms-pause            | /Pause the track/                   | SPC a x    |
-| emms-stop             | /Stop the track/                    | SPC a s    |
-| emms-previous         | /Play previous track in playlist/   | SPC a p    |
-| emms-next             | /Play next track in playlist/       | SPC a n    |
+| COMMAND               | DESCRIPTION                     | KEYBINDING |
+|-----------------------+---------------------------------+------------|
+| emms-playlist-mode-go | /Switch to the playlist buffer/   | SPC a a    |
+| emms-pause            | /Pause the track/                 | SPC a x    |
+| emms-stop             | /Stop the track/                  | SPC a s    |
+| emms-previous         | /Play previous track in playlist/ | SPC a p    |
+| emms-next             | /Play next track in playlist/     | SPC a n    |
 
 #+begin_src emacs-lisp
        ;; (require 'emms-dbus)
