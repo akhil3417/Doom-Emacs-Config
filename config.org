@@ -513,19 +513,9 @@ setting, and load it if it exists.
 ** Rudimentry Settings
 #+begin_src emacs-lisp
 
-;; show the matching parenthesis when the cursor is above one of them.
-(setq show-paren-delay 0)
-;; (show-paren-mode t)
-;; Keybindings for scaling text (although hydra function exists)
-;; (global-set-key (kbd "C-=") 'text-scale-increase)
-;; (global-set-key (kbd "C--") 'text-scale-decrease)
-
 (global-set-key (kbd "<C-wheel-up>") 'text-scale-increase)
 (global-set-key (kbd "<C-wheel-down>") 'text-scale-decrease)
 
-;; Hydra allows for good keybindings for repetitive tasks
-(use-package! hydra)
-;; (use-package! ivy-hydra)
 
 (defhydra hydra-text-scale (:timeout 4) ; Change the size of text
   "scale text"
@@ -540,15 +530,6 @@ setting, and load it if it exists.
   ("SPC" kill-current-buffer "kill")
   ("q" nil "quit" :exit t))
 
-;; EXWM Functions:
-;; (defun max/exwm-update-class ()
-;;   (exwm-workspace-rename-buffer exwm-class-name))
-
-;; (defun max/exwm-init-hook ()
-;;   (exwm-workspace-switch-create 1)) ; Start on workspace 1, not 0
-
-
-
 ;; (global-set-key (kbd "<M-tab>") 'evil-window-next)
 ;; (global-set-key (kbd "<s-right>") 'evil-window-right)
 ;; (global-set-key (kbd "<s-up>") 'evil-window-up)
@@ -556,39 +537,6 @@ setting, and load it if it exists.
 ;; (global-set-key (kbd "<s-left>") 'evil-window-left)
 ;; This hydra function allows for control of volume
 
-(defhydra hydra-volume-up (:timeout 4)
-  "Configure Volume"
-  ;; ("j" desktop-environment-volume-normal-increment (<XF86AudioRaiseVolume>))
-  ;; ("k" desktop-environment-volume-normal-decrement (<XF86AudioLowerVolume>))
-  ("j" emms-volume-lower)
-  ("k" emms-volume-raise)
-  ("q" nil "quit" :exit t))
-;; This hydra function allows for control of brightness
-(defhydra hydra-brightness-up (:timeout 4)
-  "Configure Brightness"
-  ("j" desktop-environment-brightness-normal-increment "up")
-  ("k" desktop-environment-brightness-normal-decrement "down")
-  ("q" nil "quit" :exit t))
-
-;; (delete-selection-mode 1)
-;;delete all the whitespace
-;; (use-package! hungry-delete
-;;   :ensure t
-;;   :defer t
-;;   :init
-;;   (global-hungry-delete-mode 1))
-
-;; Move current line or region with M-up or M-down.
-
-;; browser settings
-;; (setq browse-url-browser-function 'eaf-open-browser)
-;; (defalias 'browse-web #'eaf-open-browser)
-;; (setq browse-url-browser-function 'browse-url-generic
-;;       browse-url-generic-program "firefox")
-;; (setq browse-url-browser-function 'browse-url-generic
-;;       browse-url-generic-program "qutebrowser")
-;; (set-fringe-mode 10)        ; Give some breathing room
-;; (global-set-key (kbd "<escape>") 'keyboard-escape-quit)
 
 #+end_src
 
@@ -638,336 +586,12 @@ Example: '(\"DESKTOP_SESSION=kde\" \"KDE_SESSION_VERSION=5\") ")
   "If enabled, use framemove to switch frames when trying to move
   outside of current frame." )
 #+end_src
-** funcs
-#+begin_src emacs-lisp :tangle no
-
-(defun exwm//persp-mode-inhibit-p (frame)
-  (frame-parameter frame 'unsplittable))
-
-;; Simulate insert state by using line mode without passthrough
-(defun exwm/enter-insert-state ()
-  (interactive)
-  (setq exwm-input-line-mode-passthrough nil)
-  (call-interactively 'exwm-input-grab-keyboard)
-  (evil-insert-state))
-
-;; Simulate normal state by using line mode with passthrough, i.e. forward all commands to emacs
-(defun exwm/enter-normal-state ()
-  (interactive)
-  (setq exwm-input-line-mode-passthrough t)
-  (call-interactively 'exwm-input-grab-keyboard)
-  (evil-normal-state))
-
-(defun exwm/escape ()
-  "Switch to normal state, and cancel possible fullscreen layout.  Also close minibuffer."
-  (interactive)
-  (exwm/enter-normal-state)
-  (exwm-layout-unset-fullscreen)
-  (when (active-minibuffer-window)
-    (minibuffer-keyboard-quit)))
-
-(defun exwm/enter-char-mode ()
-  "Enter EXWM char mode."
-  (interactive)
-  (when exwm--id
-    (exwm/enter-insert-state)
-    ;; (exwm-input-toggle-keyboard)
-    (call-interactively 'exwm-input-release-keyboard)))
-
-(defun exwm/switch-to-buffer-or-run (window-class command)
-  "Switch to first buffer with window-class, and if not present, run command."
-  (let ((buffer
-         (cl-find window-class (buffer-list) :key (lambda(b) (cdr (assoc 'exwm-class-name (buffer-local-variables b)))) :test 'string-equal)))
-    (if buffer
-        (exwm-workspace-switch-to-buffer buffer)
-      (start-process-shell-command command nil command))))
-
-;; Helper
-;; TODO: actually incorporate exwm-workspace-switch-wrap here...
-(defun exwm//ws-offset (offset)
-  "Return the number of the workspace which is OFFSET workspaces
-  away from the current workspace, cycling if necessary."
-  (mod (+ offset exwm-workspace-current-index) (exwm-workspace--count)))
-
-(defun exwm/workspace-next ()
-  "Switch to next exwm-workspace (to the right)."
-  (interactive)
-  (exwm-workspace-switch (exwm//ws-offset 1)))
-
-(defun exwm/workspace-prev ()
-  "Switch to next exwm-workspace (to the left)."
-  (interactive)
-  (exwm-workspace-switch (exwm//ws-offset -1)))
-
-;; Buffer move between frames semantics:
-;; - In source window, display last buffer that was replaced in this frame using `other-window'
-;; - In target frame, show the buffer in the active window
-(defun exwm/workspace-move-buffer-to-workspace (ws-id)
-  "Move the current buffer to the exwm-workspace with id WS-ID"
-  (let ((target-frame (exwm-workspace--workspace-from-frame-or-index ws-id))
-        (src-exwm-id exwm--id))
-    (if src-exwm-id
-        (progn
-          (exwm-workspace-move-window target-frame src-exwm-id)
-          (exwm-workspace-switch target-frame))
-      (let ((src-buffer (current-buffer)))
-        (switch-to-buffer (other-buffer src-buffer))
-        (pop-to-buffer src-buffer `((display-buffer-in-previous-window
-                                     display-buffer-use-some-window
-                                     display-buffer-pop-up-window
-                                     ;; display-buffer-use-some-frame
-                                     )
-                                    (inhibit-same-window . t)
-                                    (reusable-frames . ,target-frame)
-                                    ;; (frame-predicate . (lambda(f) (eql f ,target-frame)))
-                                    ))))))
-
-(defun exwm/workspace-move-buffer-next ()
-  "Display active buffer in next frame (to the right)."
-  (interactive)
-  (exwm/workspace-move-buffer-to-workspace (exwm//ws-offset 1)))
-
-(defun exwm/workspace-move-buffer-prev ()
-  "Display active buffer in next frame (to the right)."
-  (interactive)
-  (exwm/workspace-move-buffer-to-workspace (exwm//ws-offset -1)))
-
-(defun exwm/layout-toggle-fullscreen ()
-  "Togggles full screen for Emacs and X windows"
-  (interactive)
-  (if exwm--id
-      (if (exwm-layout--fullscreen-p)
-          (exwm-reset)
-        (exwm-layout-set-fullscreen))
-    (spacemacs/toggle-maximize-buffer)))
-
-(defun exwm/run-program-in-home (command)
-  (let ((default-directory user-home-directory))
-    (start-process-shell-command command nil command)))
-
-(defun exwm/app-launcher (command)
-  "Launches an application in your PATH.
-Can show completions at point for COMMAND using helm or ivy"
-  (interactive (list (read-shell-command exwm-app-launcher--prompt)))
-  (exwm/run-program-in-home command))
-
-(defun exwm/launch-split-below (command)
-  (interactive (list (read-shell-command exwm-app-launcher--prompt)))
-  (split-window-below-and-focus)
-  (exwm/run-program-in-home command))
-
-(defun exwm/launch-split-right (command)
-  (interactive (list (read-shell-command exwm-app-launcher--prompt)))
-  (split-window-right-and-focus)
-  (exwm/run-program-in-home command))
-
-(defun exwm/jump-to-last-exwm ()
-  (interactive)
-  (exwm-workspace-switch exwm-toggle-workspace))
-
-(defun exwm/exwm-buffers-info ()
-  (interactive)
-  "Helper, return information about open exwm windows"
-  (cl-loop for buffer in (buffer-list)
-        for name = (buffer-name buffer)
-        for ecname = (buffer-local-value 'exwm-class-name buffer)
-        when ecname
-        do (message "Buffer name: '%s', exwm class name: '%s'" name ecname)))
-
-(defun exwm//convert-key-to-event (key)
-  "Converts something from (kbd ...) format to something suitable for
-    exwm-input-prefix-keys"
-  (let ((key (kbd key)))
-    (if (and (sequencep key)
-             (= (length key) 1))
-        (etypecase key
-          (string (string-to-char key))
-          (vector (elt key 0)))
-      (error "cannot convert to key event: %s" key))))
-
-
-(let ((debug-modes-active nil))
-  (defun exwm/toggle-debug-mode ()
-   "Toggle exwm and xcb debug modes"
-   (interactive)
-   (setf debug-modes-active (not debug-modes-active))
-   (message (if debug-modes-active
-                "Enabling xcb and exwm debug modes."
-              "Disabling xcb and exqm debug modes."))
-   (let ((flag (if debug-modes-active 1 0)))
-     (exwm-debug flag)
-     (xcb:debug flag))))
-
-(defvar exwm//autostart-process-list nil
-  "List of processes run during autostart.")
-
-(defun exwm/autostart-process (name command &optional directory)
-  "Can be used during initialization to run COMMAND as a process
-  with NAME and add it to the list of autostarted processes.
-
-DIRECTORY can be set to a string which will be used as working directory for the
-process.  If not supplied, will be set to `user-home-directory'.
-
-Prepends the value of `exwm-autostart-environmwnt' to
-`process-environment' for the started process.
-"
-  (push (let ((default-directory (or directory user-home-directory))
-              (process-environment (append exwm-autostart-environment process-environment)))
-          (start-process-shell-command name nil command))
-        exwm//autostart-process-list))
-
-(defun exwm//start-desktop-application (basename xdg)
-  "Autostart an application from a XDG desktop entry specification."
-  (let* ((type (gethash "Type" xdg))
-         ;; (name (gethash "Name" xdg))
-         (cmd (gethash "Exec" xdg))
-         (hidden (gethash "Hidden" xdg))
-         (include (gethash "OnlyShowIn" xdg))
-         (exclude (gethash "NotShowIn" xdg))
-         (try-exec (gethash "TryExec" xdg))
-         (exec-directory (gethash "Path" xdg))
-         ;; (dbus-p (gethash "DBusActivatable" xdg)) ; TODO: support
-         (included-p (cond (include (member "EXWM" (split-string include ";" t)))
-                           (exclude (not (member "EXWM" (split-string exclude ";" t))))
-                           (t)))
-         (should-exec-p (and
-                         (string= type "Application")
-                         included-p
-                         (if try-exec
-                             (executable-find try-exec)
-                           t))))
-    (when should-exec-p (exwm/autostart-process basename cmd exec-directory))))
-
-(defun exwm//read-xdg-autostart-files ()
-  "Return a hashtable for autostart applications as defined by the freedesktop specification."
-  (cl-loop with xdg-specs = (make-hash-table :test 'equal)
-           for dir in (append (xdg-config-dirs) (list (xdg-config-home)))
-           for autostart-dir = (expand-file-name "autostart/" dir)
-           for autostart-files = (when (file-exists-p autostart-dir)
-                                   (directory-files autostart-dir t (rx (1+ word) ".desktop")))
-           do
-           (cl-loop for file in autostart-files do
-                    (setf (gethash (file-name-base file) xdg-specs) (xdg-desktop-read-file file)))
-           finally (return xdg-specs)))
-
-(defun exwm//autostart-xdg-applications ()
-  "Run the autostart applications as defined by the freedesktop autostart specification."
-  (unless exwm//autostart-process-list
-    (cl-loop for basename being the hash-keys of
-             (exwm//read-xdg-autostart-files)
-             using (hash-values xdg) do
-             (exwm//start-desktop-application basename xdg))))
-
-(defun exwm//kill-autostart-processes ()
-  (cl-loop for p in exwm//autostart-process-list do
-        (if (process-live-p p) (kill-process p)))
-  (setq exwm//autostart-process-list nil))
-
-(let ((sm-keyvec (elt (edmacro-parse-keys doom-leader-key t) 0))
-      (our-keyvec (elt (edmacro-parse-keys "s-SPC" t) 0)))
-  (defun exwm//which-key-transform-filter (oldargs)
-    (cl-destructuring-bind (key-seq &rest rest) oldargs
-      (list* (cl-substitute sm-keyvec our-keyvec key-seq) rest))))
-
-;; D-Bus locking
-;; We should be able to talk to loginctl to handle the current session, so we
-;; can react to the lock signal.
-
-(defun exwm//install-logind-lock-handler ()
-  (let ((session (dbus-call-method :system "org.freedesktop.login1" "/org/freedesktop/login1"
-                                   "org.freedesktop.login1.Manager" "GetSessionByPID" (emacs-pid))))
-    (dbus-register-signal :system "org.freedesktop.login1" session
-                          "org.freedesktop.login1.Session" "Lock"
-                          (lambda()
-                            (message "Lock signal received")
-                            (start-process-shell-command "session-lock" nil exwm-locking-command)))))
-
-
-#+end_src
-
-** misc
-#+begin_src emacs-lisp :tangle no
-
-(defun exwm/init-framemove ()
-  (use-package! framemove
-    :after exwm
-    :config
-    (progn
-      ;; Emacs frame parameters don't seem to be too reliable...
-      (define-advice fm-frame-bbox (:around (oldfun frame) exwm-frame-bbox-from-randr)
-        (if (frame-parameter frame 'exwm-geometry)
-            (exwm//fm-frame-bbox-from-randr frame)
-          (funcall oldfun frame)))
-      (setq framemove-hook-into-windmove exwm-move-frame-at-edge))))
-
-(defun exwm/init-exwm ()
-  (use-package! exwm
-    :init
-    ;; Disable dialog boxes since they are unusable in EXWM
-    (setq use-dialog-box nil)
-    ;; You may want Emacs to show you the time
-    (display-time-mode t)
-    (when exwm-hide-tiling-modeline
-      (add-hook 'exwm-mode-hook #'hidden-mode-line-mode))
-    (setq exwm-input-line-mode-passthrough t)
-
-
-
-    ;; make winner aware of new window configuration
-    (with-eval-after-load 'winner
-      (add-hook 'exwm-manage-finish-hook 'winner-save-old-configurations t))
-    :config
-
-    ;; make sure that displaying transient states gets the keyboard input.
-    ;; Borrowed from: https://github.com/abo-abo/hydra/issues/232
-    (define-advice hydra-set-transient-map (:around (fun keymap on-exit &optional foreign-keys) exwm-passthrough)
-      (setq exwm-input-line-mode-passthrough t)
-      (let ((on-exit (lexical-let ((on-exit on-exit))
-                       (lambda ()
-                         (setq exwm-input-line-mode-passthrough nil)
-                         (when on-exit (funcall on-exit))))))
-        (funcall fun keymap on-exit foreign-keys)))
-
-    ;; override persp-mode's idea of frame creation for floating frames.  These
-    ;; are characterized by the 'unsplittable' frame parameter, and should not
-    ;; be tried to assign an existing layout to.
-
-    (eval-after-load 'persp-mode
-      (advice-add 'persp-init-new-frame :before-until 'exwm//persp-mode-inhibit-p))
-
-    ;; (eval-after-load 'terminal-here
-    ;;   (exwm-input-set-key (kbd "<s-return>") 'terminal-here-launch))
-
-    (add-hook 'exwm-update-class-hook 'exwm/rename-buffer)
-    (add-hook 'exwm-update-title-hook 'exwm/rename-buffer)
-
-    ;; kick all exwm buffers into insert mode per default
-    (add-hook 'exwm-manage-finish-hook 'exwm/enter-insert-state)
-
-    (evil-define-key 'normal exwm-mode-map (kbd "i") 'exwm/enter-insert-state)
-    ;; Quick swtiching between workspaces
-    (defvar exwm-toggle-workspace 0
-      "Previously selected workspace. Used with `exwm/jump-to-last-exwm'.")
-
-    (defadvice exwm-workspace-switch (before save-toggle-workspace activate)
-      (setq exwm-toggle-workspace exwm-workspace-current-index))
-
-    (when (and exwm-install-logind-lock-handler
-               exwm-locking-command)
-      (add-hook 'exwm-init-hook 'exwm//install-logind-lock-handler))
-    (when exwm-autostart-xdg-applications
-      (add-hook 'exwm-init-hook 'exwm//autostart-xdg-applications t))
-    (add-hook 'exwm-init-hook 'exwm//install-frame-keybindings t)
-    (when exwm-custom-init
-      (add-hook 'exwm-init-hook exwm-custom-init t))
-    ))
-#+end_src
 ** final touchups
 
 XDG compliance and WM settings
 I have to set a few environment variables for the sake of compliance with various specifications, most notably the XDG Base Directory Specification. Also in this block I set an environment variable signaling to Java applications that the window manager is not a reparenting window manager.
 
-#+begin_src emacs-lisp
+#+begin_src emacs-lisp :tangle no
 
 (setenv "XDG_CURRENT_DESKTOP" "emacs")
 (setenv "GTK2_RC_FILES" (expand-file-name "~/.config/gtk-2.0/gtkrc"))
@@ -1011,7 +635,7 @@ Some X windows will have weird cursors if this isn’t done.
 #+end_src
 Banish the mouse
 I’ve always been mixed on this behavior but it seems like a good idea.
-#+begin_src emacs-lisp
+#+begin_src emacs-lisp :tangle no
 (start-process "Mouse banisher" nil "xbanish")
 #+end_src
 ** Exwm
@@ -16341,9 +15965,6 @@ panel.
 
 ** Version control tools
 *** Diff-mode (and prot-diff.el extensions)
-:PROPERTIES:
-:CUSTOM_ID: h:2ff46d23-09d5-4d92-b0af-2339dc19719f
-:END:
 
 This covers the standard =diff-mode.el=, which I use quite often, such as
 while interfacing with the built-in Version Control framework (see the
