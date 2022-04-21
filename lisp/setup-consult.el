@@ -1,6 +1,6 @@
 ;; -*- lexical-binding: t -*-
 ;; Consult
-(use-package consult
+(use-package! consult
   :ensure t
   :hook (minibuffer-setup . consult-completion-enable-in-minibuffer)
   ;; :hook ((shell-mode eshell-mode) . (lambda () (setq completion-in-region-function
@@ -129,7 +129,7 @@ When the number of characters in a buffer exceeds this threshold,
                                (xref-push-marker-stack)
                                (push-mark))))
 
-  (use-package consult-flymake
+  (use-package! consult-flymake
     :bind ("M-g f" . consult-flymake)
     ;; :config
     ;; (advice-add 'consult-flymake :before
@@ -139,7 +139,7 @@ When the number of characters in a buffer exceeds this threshold,
     ;;   (flymake-mode 1))
     )
 
-  (use-package org
+  (use-package! org
     :defer
     :bind (:map org-mode-map
                 ;; ("C-c C-j" . consult-org-heading)
@@ -204,7 +204,7 @@ When the number of characters in a buffer exceeds this threshold,
   ;;        ("M-s e" . consult-isearch))
 
 ;; Library support for consult-buffer
-(use-package consult
+(use-package! consult
   :defer
   :config
   (defvar consult--source-library nil
@@ -271,7 +271,7 @@ When the number of characters in a buffer exceeds this threshold,
   (add-to-list 'consult-buffer-sources 'consult--source-library)
   (consult-customize consult--source-library :preview-key (kbd "C-M-m")))
 
-(use-package consult-dir
+(use-package! consult-dir
   ;; :load-path "plugins/consult-dir/"
   :defer 2
   :after (consult bookmark marginalia)
@@ -297,7 +297,7 @@ When the number of characters in a buffer exceeds this threshold,
       (if (member category '(file))
           (call-interactively #'consult-dir)
         (call-interactively (lookup-key global-map (kbd "C-M-d"))))))
-  (use-package vertico
+  (use-package! vertico
     :defer
     :bind (:map vertico-map
                 ("C-M-d" . consult-dir-maybe)
@@ -306,7 +306,7 @@ When the number of characters in a buffer exceeds this threshold,
                 ("C-M-j" . consult-dir-jump-file)
                 ("H-M-j" . consult-dir-jump-file))))
 
-(use-package affe
+(use-package! affe
   :ensure t
   :bind (("M-s M-f" . affe-find)
          ("M-s M-g" . affe-grep))
@@ -317,7 +317,7 @@ When the number of characters in a buffer exceeds this threshold,
     ;; Manual preview key for `affe-grep'
   (consult-customize affe-grep :preview-key (kbd "C-M-m")))
 
-(use-package consult
+(use-package! consult
   :when (executable-find "ff-cache")
   :bind ("M-s /" . consult-dff)
   :config

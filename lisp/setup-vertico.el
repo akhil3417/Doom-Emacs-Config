@@ -1,6 +1,6 @@
 ;; -*- lexical-binding: t -*-
 ;; Vertico
-(use-package vertico
+(use-package! vertico
   ;; :commands vertico-mode
   :hook (doom-first-input . vertico-mode)
   :after minibuffer
@@ -45,7 +45,7 @@
   (define-key vertico-map "\M-F" #'vertico-multiform-flat)
   (define-key vertico-map "\M-R" #'vertico-multiform-reverse)
   (define-key vertico-map "\M-U" #'vertico-multiform-unobtrusive)
-(use-package vertico-multiform
+(use-package! vertico-multiform
   :commands vertico-multiform-mode
   :after vertico-flat
   :bind (:map vertico-map
@@ -92,10 +92,10 @@
          (vertico-multiform--temporary-mode 'vertico-reverse-mode -1)
        (vertico-multiform--temporary-mode 'vertico-reverse-mode 1))))
 
-(use-package vertico-unobtrusive
+(use-package! vertico-unobtrusive
   :after vertico-flat)
 
-(use-package vertico-grid
+(use-package! vertico-grid
   :after vertico
   ;; :bind (:map vertico-map ("M-q" . vertico-grid-mode))
   :config
@@ -113,7 +113,7 @@
   (setq vertico-grid-separator "    ")
   (setq vertico-grid-lookahead 50))
 
-(use-package vertico-quick
+(use-package! vertico-quick
   :after vertico
   :bind (:map vertico-map
          ("M-i" . vertico-quick-insert)
@@ -126,7 +126,7 @@
     (when (vertico-quick-jump)
       (embark-act arg))))
 
-(use-package vertico-directory
+(use-package! vertico-directory
   ;; :hook (rfn-eshadow-update-overlay vertico-directory-tidy)
   :after vertico
   :bind (:map vertico-map
@@ -135,22 +135,22 @@
          ("C-w"   . vertico-directory-delete-word)
          ("RET"   . vertico-directory-enter)))
 
-(use-package vertico-repeat
+(use-package! vertico-repeat
   :after vertico
   :bind (("C-x ." . vertico-repeat)
          ("H-."   . vertico-repeat)))
 
-(use-package vertico-reverse
+(use-package! vertico-reverse
   ;; :disabled
  :load-path "~/.config/doom/lisp/"
   :after vertico)
 
-(use-package vertico-flat
+(use-package! vertico-flat
   ;; :bind (:map vertico-map
   ;;             ("M-q" . vertico-flat-mode))
   :after vertico)
 
-(use-package vertico-buffer
+(use-package! vertico-buffer
   :after vertico
   ;; :hook (vertico-buffer-mode . vertico-buffer-setup)
   :config

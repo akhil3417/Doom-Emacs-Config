@@ -1,6 +1,6 @@
 ;; -*- lexical-binding: t -*-
 ;; Embark for actions
-(use-package embark
+(use-package! embark
   :demand
   :ensure t
   :after minibuffer
@@ -163,7 +163,7 @@
     ;; (cl-pushnew 'revert-buffer embark-allow-edit-actions)
     ;; (cl-pushnew 'rename-file-and-buffer embark-allow-edit-actions)
 
-    (use-package helpful
+    (use-package! helpful
       :defer
       :bind (:map embark-become-help-map
                   ("f" . helpful-callable)
@@ -214,7 +214,7 @@
         (embark-act arg)))
 
     ;; Which-key style indicator
-    (use-package which-key
+    (use-package! which-key
       :after which-key
       :config
       ;; From the embark wiki
@@ -241,7 +241,7 @@ targets."
              nil nil t)))))
 
     ;; Vertico highlight indicator
-    (use-package vertico
+    (use-package! vertico
       :defer
       :config
       (defun embark-vertico-indicator ()
@@ -254,7 +254,7 @@ targets."
                             fr))))))
       (add-to-list 'embark-indicators #'embark-vertico-indicator)))
 
-(use-package embark-consult
+(use-package! embark-consult
   :ensure t
   :after (embark consult)
   :demand
@@ -297,7 +297,7 @@ targets."
 
 ;;; Embark-Collect overlays
 ;; Disabled - don't need this with embark-live-mode (elm) active
-(use-package embark
+(use-package! embark
   :hook ((embark-collect-mode . my/embark-collect--live-setup))
   :disabled
   :config
@@ -333,7 +333,7 @@ highlighting."
                  (move-overlay my/embark-collect--overlay beg end)))))))
 
 ;;; Embark-avy
-(use-package avy-embark-collect
+(use-package! avy-embark-collect
   :disabled
   :after embark
   :bind (:map minibuffer-local-completion-map

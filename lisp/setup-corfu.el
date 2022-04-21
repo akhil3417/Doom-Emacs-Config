@@ -1,4 +1,4 @@
-(use-package corfu
+(use-package! corfu
   :ensure
   ;; Optional customizations
   ;; :custom
@@ -60,7 +60,7 @@
      ((derived-mode-p 'comint-mode)
       (comint-send-input)))))
 
-(use-package kind-icon
+(use-package! kind-icon
   :ensure t
   :after corfu
   :custom
@@ -69,7 +69,7 @@
   (add-to-list 'corfu-margin-formatters #'kind-icon-margin-formatter))
 
 ;; Add extensions
-(use-package cape
+(use-package! cape
   :ensure
   :bind (("C-c i" . cape-ispell)
          ("C-c E" . cape-line)
@@ -108,7 +108,7 @@
   (defun my/cape-text-mode-capfs ()
     (add-to-list 'completion-at-point-functions #'cape-dict))
   
-  (use-package pcomplete
+  (use-package! pcomplete
     :defer
     :config
     ;; Silence the pcomplete capf, no errors or messages!

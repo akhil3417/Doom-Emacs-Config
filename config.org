@@ -439,7 +439,7 @@ my home machine is pretty safe, and my laptop is shutdown a lot.
 (setq auth-sources '("~/.authinfo.gpg")
       auth-source-cache-expiry nil)
  ; default is 7200 (2h)
-(use-package auth-source-pass
+(use-package! auth-source-pass
   :init (auth-source-pass-enable))
 #+end_src
 
@@ -527,8 +527,8 @@ setting, and load it if it exists.
 (global-set-key (kbd "<C-wheel-down>") 'text-scale-decrease)
 
 ;; Hydra allows for good keybindings for repetitive tasks
-(use-package hydra)
-;; (use-package ivy-hydra)
+(use-package! hydra)
+;; (use-package! ivy-hydra)
 
 (defhydra hydra-text-scale (:timeout 4) ; Change the size of text
   "scale text"
@@ -575,7 +575,7 @@ setting, and load it if it exists.
 
 ;; (delete-selection-mode 1)
 ;;delete all the whitespace
-;; (use-package hungry-delete
+;; (use-package! hungry-delete
 ;;   :ensure t
 ;;   :defer t
 ;;   :init
@@ -892,7 +892,7 @@ Prepends the value of `exwm-autostart-environmwnt' to
 #+begin_src emacs-lisp :tangle no
 
 (defun exwm/init-framemove ()
-  (use-package framemove
+  (use-package! framemove
     :after exwm
     :config
     (progn
@@ -904,7 +904,7 @@ Prepends the value of `exwm-autostart-environmwnt' to
       (setq framemove-hook-into-windmove exwm-move-frame-at-edge))))
 
 (defun exwm/init-exwm ()
-  (use-package exwm
+  (use-package! exwm
     :init
     ;; Disable dialog boxes since they are unusable in EXWM
     (setq use-dialog-box nil)
@@ -1031,7 +1031,7 @@ I’ve always been mixed on this behavior but it seems like a good idea.
 (setq-default tab-width 2)
 (setq-default evil-shift-width tab-width);; Window manager
 (setq-default indent-tabs-mode nil)
-(use-package exwm
+(use-package! exwm
   :init
   (setq mouse-autoselect-window nil
         focus-follows-mouse t
@@ -1559,7 +1559,7 @@ configured to use @ (at symbol) as separator."
 (exwm-input-set-key (kbd "M-y") 'consult-yank-pop)
 (exwm-input-set-key (kbd "M-Y") 'my/exwm-counsel-yank-pop) ;;for pasting stuff in x windowapps
 
-(use-package desktop-environment
+(use-package! desktop-environment
   :after exwm
   :config (desktop-environment-mode)
   :custom
@@ -3031,7 +3031,7 @@ We can also set up some functions for enabling and disabling notifications at an
 ** movement and window switching
 #+begin_src emacs-lisp
 
-(use-package window
+(use-package! window
   :ensure nil
   :bind (("<f8>" . other-window)
          ("C-<f8>" . window-swap-states)
@@ -3048,19 +3048,19 @@ the previously multi-windowed one"
       (setq my-saved-window-configuration (current-window-configuration))
       (delete-other-windows)))))
 
-(use-package transpose-frame
+(use-package! transpose-frame
   :bind (("M-<f8>" . rotate-frame-clockwise)))
 
-(use-package bookmark
+(use-package! bookmark
   :ensure nil
   :custom
   (bookmark-save-flag 1))
 
-(use-package beginend
+(use-package! beginend
   :config
   (beginend-global-mode))
 
-;; (use-package drag-stuff
+;; (use-package! drag-stuff
 ;;   :bind
 ;;   (("C-M-<up>" . drag-stuff-up)
 ;;    ("C-M-<down>" . drag-stuff-down))
@@ -3070,14 +3070,14 @@ the previously multi-windowed one"
 #+end_src
 
 #+RESULTS:
-: #s(hash-table size 65 test eql rehash-size 1.5 rehash-threshold 0.8125 data (:use-package (25130 54428 460394 790000) :init (25130 54428 460089 20000) :init-secs (0 0 194 725000) :use-package-secs (0 0 527 776000)))
+: #s(hash-table size 65 test eql rehash-size 1.5 rehash-threshold 0.8125 data (:use-package! (25130 54428 460394 790000) :init (25130 54428 460089 20000) :init-secs (0 0 194 725000) :use-package-secs (0 0 527 776000)))
 
 ** Desktop Key Bindings
 
 We use the [[https://github.com/DamienCassou/desktop-environment][desktop-environment]] package to automatically bind to well-known programs for controlling the volume, screen brightness, media playback, and doing other things like locking the screen and taking screenshots.  Make sure that you install the necessary programs to make this functionality work!  Check the [[https://github.com/DamienCassou/desktop-environment#default-configuration][default programs]] list to know what you need to install.
 
 #+begin_src emacs-lisp
-(use-package desktop-environment
+(use-package! desktop-environment
   :after (exwm)
   :config
   (exwm-input-set-key (kbd "s-<up>") #'desktop-environment-volume-increment)
@@ -3145,7 +3145,7 @@ to keep track of the information on display.
 
 #+begin_src emacs-lisp
 ;;; Proced (process monitor, similar to `top')
-(use-package proced
+(use-package! proced
   :config
   (setq proced-auto-update-flag t)
   (setq proced-auto-update-interval 5)
@@ -3153,7 +3153,7 @@ to keep track of the information on display.
   (setq proced-filter 'user))
 
 (load "prot-proced")
-(use-package prot-proced
+(use-package! prot-proced
   :config
   (prot-proced-extra-keywords 1))
 #+end_src
@@ -3165,7 +3165,7 @@ to keep track of the information on display.
 CLOSED: [2022-03-31 Thu 20:05]
 #+begin_src emacs-lisp
 ;; Aurel: Search, vote for and download AUR packages
-(use-package aurel
+(use-package! aurel
   :defer t
   :config
   ;; Add "machine aur.archlinux.org login <user> password <password>" line to .authinfo
@@ -3173,14 +3173,14 @@ CLOSED: [2022-03-31 Thu 20:05]
 #+end_src
 
 #+RESULTS:
-: #s(hash-table size 65 test eql rehash-size 1.5 rehash-threshold 0.8125 data (:use-package (25088 10759 802159 219000) :init (25088 10759 802148 619000) :init-secs (0 0 148 255000) :use-package-secs (0 0 161 825000)))
+: #s(hash-table size 65 test eql rehash-size 1.5 rehash-threshold 0.8125 data (:use-package! (25088 10759 802159 219000) :init (25088 10759 802148 619000) :init-secs (0 0 148 255000) :use-package-secs (0 0 161 825000)))
 
 ** DONE Auth Sources
 CLOSED: [2022-03-31 Thu 20:05]
 #+begin_src emacs-lisp :tangle no
 
 ;;; Auth Source
-(use-package auth-source
+(use-package! auth-source
   ;; :ensure nil
   :custom
   (auth-source-save-behavior nil)
@@ -3424,7 +3424,7 @@ it to quickly store a password to the kill ring.
 
 #+begin_src emacs-lisp :tangle no
 ;;; Pass interface (password-store)
-(use-package password-store
+(use-package! password-store
   :config
   (setq password-store-time-before-clipboard-restore 30)
   ;; Mnemonic is the root of the "code" word (κώδικας).  But also to add
@@ -3440,7 +3440,7 @@ it with =M-x pass=.  There is a helpful section at the top with key
 bindings and their functions.
 
 #+begin_src emacs-lisp :tangle no
-(use-package pass)
+(use-package! pass)
 #+end_src
 
 * DONE UI
@@ -3448,7 +3448,7 @@ CLOSED: [2022-04-02 Sat 23:43]
 ** DONE volatile highlights
 CLOSED: [2022-03-30 Wed 00:00]
   #+begin_src emacs-lisp
-    (use-package volatile-highlights
+    (use-package! volatile-highlights
       :config
       (volatile-highlights-mode t))
   #+end_src
@@ -3630,7 +3630,7 @@ CLOSED: [2022-03-30 Wed 11:36]
 
 #+begin_src emacs-lisp :tangle no
 ;;; Modus themes (my highly accessible themes)
-(use-package modus-themes
+(use-package! modus-themes
   ;; Add all your customizations prior to loading the themes
   ;;
   ;; NOTE: these are not my preferences!  I am always testing various
@@ -3794,7 +3794,7 @@ CLOSED: [2022-03-30 Wed 11:36]
 
 #+begin_src emacs-lisp
 ;;; Modus themes (my highly accessible themes)
-(use-package modus-themes
+(use-package! modus-themes
   ;; Add all your customizations prior to loading the themes
   ;;
   ;; NOTE: these are not my preferences!  I am always testing various
@@ -3956,7 +3956,7 @@ CLOSED: [2022-03-31 Thu 19:17]
 
 ;; Protesilaos Stavrou's excellent high contrast themes, perfect for working in
 ;; bright sunlight (especially on my laptop's dim screen).
-(use-package modus-themes
+(use-package! modus-themes
   :ensure t
   :defer
   :init
@@ -4121,7 +4121,7 @@ CLOSED: [2022-03-31 Thu 19:31]
 ;; Presentation-mode will embiggen everything. Keycast-mode shows the keys being
 ;; pressed. Gif-screencast will screenshot each user action and compile them
 ;; into a gif.
-(use-package keycast
+(use-package! keycast
   :ensure t
   :commands keycast-mode
   :config
@@ -4179,7 +4179,7 @@ tweaks of my own.
 
 #+begin_src emacs-lisp
 ;;; Keycast mode
-(use-package keycast
+(use-package! keycast
   :config
   ;; Those are for `keycast-mode'
   (setq keycast-mode-line-window-predicate 'moody-window-active-p) ; assumes `moody.el'
@@ -4212,9 +4212,9 @@ tweaks of my own.
 : t
 ** DONE doom themes ui
 CLOSED: [2022-03-31 Thu 19:33]
-#+begin_src emacs-lisp
+#+begin_src emacs-lisp :tangle no
 
-  (use-package dracula-theme
+  (use-package! dracula-theme
     :disabled
     :defer
     :config
@@ -4223,7 +4223,7 @@ CLOSED: [2022-03-31 Thu 19:33]
                               ((t (:background "#282a36" :inverse-video nil :weight normal))))
                             '(aw-leading-char-face
                               ((t (:foreground "#bd93f9" :height 2.5 :weight normal))))))
-  (use-package dichromacy-theme
+  (use-package! dichromacy-theme
     :disabled
     :defer
     :config
@@ -4236,7 +4236,7 @@ CLOSED: [2022-03-31 Thu 19:33]
                             '(org-level-2 ((t (:foreground "#d55e00" :inherit bold :height 1.1))))
                             '(org-document-title ((t (:inherit bold :height 1.5))))
                             ))
-;;   (use-package gruvbox-theme
+;;   (use-package! gruvbox-theme
 ;;     :disabled
 ;;     :defer
 ;;     :config
@@ -4250,7 +4250,7 @@ CLOSED: [2022-03-31 Thu 19:33]
 ;; Henrik Lissner's Doom themes are a mainstay, mostly doom-rouge:
 ;;
 ;; [[file:/img/dotemacs/doom-rouge-demo.png]]
-(use-package doom-themes
+(use-package! doom-themes
   :ensure t
   :defer
   :init
@@ -4285,11 +4285,11 @@ CLOSED: [2022-03-31 Thu 19:33]
 
   :config
   (doom-themes-org-config)
-  (use-package doom-rouge-theme
+  (use-package! doom-rouge-theme
     :config
     (setq doom-rouge-padded-modeline nil))
 
-  (use-package doom-iosvkem-theme
+  (use-package! doom-iosvkem-theme
     :disabled
     ;; :custom-face
     ;; (default ((t (:background "#061229"))))
@@ -4298,7 +4298,7 @@ CLOSED: [2022-03-31 Thu 19:33]
           doom-Iosvkem-comment-bg nil
           doom-Iosvkem-brighter-modeline nil)))
 
-(use-package moody
+(use-package! moody
   :disabled
   :after (modus-themes smart-mode-line)
   :config
@@ -4313,7 +4313,7 @@ CLOSED: [2022-03-31 Thu 19:51]
 #+begin_src emacs-lisp
 
 ;; ** PRESENTATION (BIG) MODE
-(use-package presentation
+(use-package! presentation
   :ensure t
   :commands presentation-mode
   :config
@@ -4343,143 +4343,7 @@ default to be something roughly 80% of that size.
 #+RESULTS:
 : ((width . 80) (height . 24) (right-divider-width . 2) (bottom-divider-width . 2) (font . -*-Hack-*-*-*-*-15-*-*-*-*-*-*-*) (tool-bar-lines . 0) (menu-bar-lines . 0) (vertical-scroll-bars) (internal-border-width . 1) (buffer-predicate . exwm-layout--other-buffer-predicate) (left-fringe . 4) (right-fringe . 4))
 
-** DONE LINE and Visuals
-CLOSED: [2022-03-31 Thu 20:30]
-*** Line numbers and relevant indicators (prot-sideline.el)
-:PROPERTIES:
-:CUSTOM_ID: h:cb76fcee-e304-4b86-a764-6c3c6775da51
-:END:
-
-=prot-sideline.el= (reproduced after the package configurations) is a set
-of simplete-minded features:
-
-1. It bundles up together three distinct visual elements as part of a
-   common minor mode: =prot-sideline-mode=.  Its constituents are current
-   line highlighting (=hl-line-mode=), diff indicators (=diff-hl-mode=), and
-   line numbers (=display-line-numbers-mode=).  Line numbers and line
-   highlighting are built into Emacs.
-
-2. A simple toggle for =whitespace-mode=, which I only ever use to double
-   check some area's indentation or to confirm that no newline is
-   missing at the end of the file.
-
-Note that the =diff-hl= package offers some more features other than the
-obvious colour-coded highlighting of changes, such as the ability to
-move between diff hunks (with =C-x v [= and =C-x v ]=) or to revert the
-current hunk (=C-x v n=).  Those can come in handy (check my comprehensive
-extensions in [[#h:31deeff4-dfae-48d9-a906-1f3272f29bc9][Version control framework (vc.el and prot-vc.el)]]).
-
-#+begin_src emacs-lisp :tangle no
-;;; Line numbers and relevant indicators (prot-sideline.el)
-(load "prot-sideline")
-(use-package prot-sideline
-  :config
-  (require 'display-line-numbers)
-  ;; Set absolute line numbers.  A value of "relative" is also useful.
-  (setq display-line-numbers-type t)
-  ;; Those two variables were introduced in Emacs 27.1
-  (setq display-line-numbers-major-tick 0)
-  (setq display-line-numbers-minor-tick 0)
-  ;; Use absolute numbers in narrowed buffers
-  (setq-default display-line-numbers-widen t)
-
-  (use-package diff-hl
-    :config
-    (setq diff-hl-draw-borders nil)
-    (setq diff-hl-side 'left))
-
-  (require 'hl-line)
-  (setq hl-line-sticky-flag nil)
-  (setq hl-line-overlay-priority -50) ; emacs28
-
-  ;; (require 'whitespace)
-
-  (let ((map global-map))
-    (define-key map (kbd "<f6>") #'prot-sideline-negative-space-toggle)
-    (define-key map (kbd "<f7>") #'prot-sideline-mode)))
-#+end_src
-
-#+RESULTS:
-: t
-
-*** DONE Enhancements to hl-line-mode (lin.el)
-CLOSED: [2022-03-30 Wed 19:57]
-**** desc
-This is another package of mine: <https://protesilaos.com/emacs/lin>.
-Li is a stylistic enhancement for Emacs' built-in =hl-line-mode=.  It
-remaps the =hl-line= face (or equivalent) buffer-locally to a style that
-is optimal for major modes where line selection is the primary mode of
-interaction.
-
-The idea is that =hl-line-mode= cannot work equally well for contexts
-with competing priorities: (i) line selection, or (ii) simple line
-highlight.  In the former case, the current line needs to be made
-prominent because it carries a specific meaning of some significance in
-the given context: the user has to select a line.  Whereas in the latter
-case, the primary mode of interaction does not revolve around the line
-highlight itself: it may be because the focus is on editing text or
-reading through the buffer's contents, so the current line highlight is
-more of a reminder of the point's location on the vertical axis.
-
-=lin-mode= enables =hl-line-mode= by adding it to every hook specified
-in the user option =lin-mode-hooks=.  Users are advised to configure
-that variable with =customize-set-variable=, or the Custom UI, or
-equivalent as it has a function which automatically sets up Lin.  Those
-who prefer to set values with =setq= must handle the process manually,
-by using the =lin-setup= function.
-
-Users can selected their preferred style by customizing the user option
-=lin-face=.  Options include the faces =lin-red=, =lin-green=,
-=lin-yellow=, =lin-blue= (default), =lin-magenta=, =lin-cyan=,
-=lin-mac=, =lin-red-override-fg=, =lin-green-override-fg=,
-=lin-yellow-override-fg=, =lin-blue-override-fg=,
-=lin-magenta-override-fg=, =lin-cyan-override-fg=,
-=lin-mac-override-fg=, or any other face that preferably has a
-background attribute.  The Lin faces with the =-override-fg= suffix set
-a foreground value which replaces that of the underlying text.  Whereas
-the others only specify a background attribute.
-
-**** code
-#+begin_src emacs-lisp :tangle no
-;;; Enhancements to hl-line-mode (lin.el)
-
-(use-package lin
-  ;; Either run `lin-setup' or change `lin-mode-hooks'.  I prefer the
-  ;; latter.
-
-  ;; (lin-setup)
-
-  ;; Do not use `setq' for `lin-mode-hooks' and `lin-face'.  Both have a
-  ;; custom setter function associated with them, which automatically
-  ;; sets things up when they are configured via Custom (with
-  ;; `custom-set-variables', `customize-set-variable', the Custom UI,
-  ;; the `:custom' keyword of `use-package', or related).  Read their
-  ;; doc strings if you still want to use `setq'.
-  :config
-  (setq lin-face 'lin-blue)
-  (setq lin-mode-hooks
-        '(bongo-mode-hook
-          dired-mode-hook
-          elfeed-search-mode-hook
-          git-rebase-mode-hook
-          ibuffer-mode-hook
-          ilist-mode-hook
-          ledger-report-mode-hook
-          log-view-mode-hook
-          magit-log-mode-hook
-          mu4e-headers-mode
-          notmuch-search-mode-hook
-          notmuch-tree-mode-hook
-          occur-mode-hook
-          org-agenda-mode-hook
-          tabulated-list-mode-hook))
-  (lin-global-mode 1)) ; applies to all `lin-mode-hooks'
-#+end_src
-
-#+RESULTS:
-: t
-
-*** pulsar.el (highlight cursor position)
+** pulsar.el (highlight cursor position)
 
 This is a small package of mine that highlights the current line after a
 given command is invoked.  The affected commands are defined in the user
@@ -4496,7 +4360,7 @@ Also watch my [[https://protesilaos.com/codelog/2022-03-14-emacs-pulsar-demo/][d
 #+begin_src emacs-lisp
 ;;; pulsar.el (highlight cursor position)
 ;; Read the pulsar manual: <https://protesilaos.com/emacs/pulsar>.
-(use-package pulsar
+(use-package! pulsar
   :config
   (setq pulsar-pulse-functions
         '(recenter-top-bottom
@@ -4562,7 +4426,7 @@ This is the code for =pulsar.el=:
 
 #+include: prot-lisp/pulsar.el src emacs-lisp :tangle no
 
-**** general line
+** general line
 I set comment-line to 'SPC TAB TAB' which is a rather comfortable keybinding for me on my ZSA Moonlander keyboard.  The standard Emacs keybinding for comment-line is 'C-x C-;'.  The other keybindings are for commands that toggle on/off various line-related settings.  Doom Emacs uses 'SPC t' for "toggle" commands, so I choose 'SPC t' plus 'key' for those bindings.
 
 | COMMAND                  | DESCRIPTION                               | KEYBINDING  |
@@ -4596,7 +4460,7 @@ Emacs Dashboard is an extensible startup screen showing you recent files, bookma
 
 *** Configuring Dashboard
 #+begin_src emacs-lisp
-(use-package dashboard
+(use-package! dashboard
   :init      ;; tweak dashboard config before loading it
   (setq dashboard-set-heading-icons t)
   (setq dashboard-set-file-icons t)
@@ -4926,7 +4790,7 @@ Thankfully, it isn't to hard to add these to the ~composition-function-table~.
 ;;;################################################################I
 ;; * FONTS AND COLORS
 ;;;################################################################
-(use-package cus-face
+(use-package! cus-face
   :config
   (cond (IS-LINUX
          (set-fontset-font t 'unicode "Symbola" nil 'prepend)
@@ -5036,10 +4900,10 @@ https://github.com/seagle0128/doom-modeline
 ;; You must run (all-the-icons-install-fonts) one time after
 ;; installing this package!
 
-(use-package minions
+(use-package! minions
   :hook (doom-modeline-mode . minions-mode))
 
-(use-package doom-modeline
+(use-package! doom-modeline
   :after eshell     ;; Make sure it gets hooked after eshell
   :hook (after-init . doom-modeline-init)
   :custom-face
@@ -5147,7 +5011,7 @@ icon. Then we'll redefine two functions used to generate the modeline.
 ;; we make is to disable display of the global-mode-string when on Emacs 28 or
 ;; higher, we show this info in the less crowded tab-bar instead.
 
-(use-package smart-mode-line
+(use-package! smart-mode-line
   :ensure t
   :commands sml/setup
   :init
@@ -5165,7 +5029,7 @@ icon. Then we'll redefine two functions used to generate the modeline.
 ;; Some advice to add support for Evil to smart-mode-line, long since
 ;; deprecated.
 
-(use-package smart-mode-line
+(use-package! smart-mode-line
   :defines sml/fix-mode-line-a
   :disabled
   :config
@@ -5355,10 +5219,10 @@ want is to make the mode line gracefully adapt to changes in font size.
 
 #+begin_src emacs-lisp
 ;;; Moody.el (simple mode line configuration utility)
-(use-package moody)
+(use-package! moody)
 (add-to-list 'load-path "~/.config/doom/lisp/")
 (load "prot-moody.el")
-(use-package prot-moody
+(use-package! prot-moody
   :config
   ;; Adjust this and then evaluate `prot-moody-set-height'.  Not all
   ;; fonts work equally well with the same value.
@@ -5384,7 +5248,7 @@ few of them is usually okay, but a lot of them do not scale well.
 
 #+begin_src emacs-lisp
 ;;; Hide modeline "lighters" (minions.el)
-(use-package minions
+(use-package! minions
   :config
   (setq minions-mode-line-lighter ";")
   ;; NOTE: This will be expanded whenever I find a mode that should not
@@ -5414,7 +5278,7 @@ shows the level of recursion at the current minibuffer prompt (refer to
 
 #+begin_src emacs-lisp
 ;;; Mode line recursion indicators
-(use-package recursion-indicator
+(use-package! recursion-indicator
   :config
   (setq recursion-indicator-general "&")
   (setq recursion-indicator-minibuffer "@")
@@ -5458,7 +5322,7 @@ an overview of the current time in various parts of the planet.
 ***** code
 #+begin_src emacs-lisp :tangle no
 ;;; Display current time
-(use-package time
+(use-package! time
   :config
   (setq display-time-format "%a %e %b, %H:%M")
   ;;;; Covered by `display-time-format'
@@ -5527,7 +5391,7 @@ do not consider a good default for a global minor mode.
 
 #+begin_src emacs-lisp
 ;;; Name of current form (which-function-mode)
-(use-package which-func
+(use-package! which-func
   :config
   (setq which-func-unknown "")
   (setq which-func-format     ; NOTE 2021-07-28: removes square brackets
@@ -5634,7 +5498,7 @@ Winner mode has been included with GNU Emacs since version 20.  This is a global
 ;; Winner mode is disabled in favor of =tab-bar-history-mode=, which does the
 ;; same but with a separate window configuration history for each tab. This is
 ;; usually what I want.
-(use-package winner
+(use-package! winner
   ;; :disabled
   :commands winner-undo
   :bind (("C-c <left>" . winner-undo)
@@ -5828,7 +5692,7 @@ It's nice to have completions almost all the time, in my opinion. Key strokes
 are just waiting to be saved!
 #+begin_src emacs-lisp
 
-(use-package company
+(use-package! company
   :defer 3
   :general
   ("M-s <tab>"      'company-yasnippet)
@@ -6020,7 +5884,7 @@ all three of the above is easier to learn and more consistent overall.
 *** code
 #+begin_src emacs-lisp
 ;;; Enhanced minibuffer commands (consult.el)
-(use-package consult
+(use-package! consult
   :config
   (setq consult-line-numbers-widen t)
   ;; (setq completion-in-region-function #'consult-completion-in-region)
@@ -6070,7 +5934,7 @@ all three of the above is easier to learn and more consistent overall.
 *** consult keybinds
 #+begin_src emacs-lisp
 
-  (use-package org
+  (use-package! org
     :defer
     :bind (:map org-mode-map
                 ;; ("C-c C-j" . consult-org-heading)
@@ -6334,7 +6198,7 @@ while using relevant Consult commands, such as =consult-grep=.
 *** code
 #+begin_src emacs-lisp :tangle no
 ;;; Extended minibuffer actions and more (embark.el and prot-embark.el)
-(use-package embark
+(use-package! embark
   :config
   (setq prefix-help-command #'embark-prefix-help-command)
   ;; (setq prefix-help-command #'describe-prefix-bindings) ; the default of the above
@@ -6413,7 +6277,7 @@ the minibuffer-specific setup.
 
 #+begin_src emacs-lisp
 ;;; Minibuffer history (savehist-mode)
-(use-package savehist
+(use-package! savehist
   :config
   (setq savehist-file (locate-user-emacs-file "savehist"))
   (setq history-length 10000)
@@ -6437,7 +6301,7 @@ completion.
 
 #+begin_src emacs-lisp :tangle no
 ;;; CAPE (extra completion-at-point backends)
-(use-package cape
+(use-package! cape
   :config
   (setq cape-dabbrev-min-length 3)
   (dolist (backend '( cape-symbol cape-keyword cape-file cape-dabbrev))
@@ -6485,7 +6349,7 @@ Available functions (positions) for 'ivy-posframe-display-functions-alist'
         (dmenu . 20)
         (t . 10)))
 
-(use-package ivy
+(use-package! ivy
   :diminish
   :bind (("C-s" . isearch-forward)
          :map ivy-minibuffer-map
@@ -6503,12 +6367,12 @@ Available functions (positions) for 'ivy-posframe-display-functions-alist'
   :config
   (ivy-mode 1))
 
-(use-package ivy-rich
+(use-package! ivy-rich
   :after ivy
   :init
   (ivy-rich-mode 1))
 
-(use-package counsel
+(use-package! counsel
   :bind (("s-a" . 'counsel-switch-buffer)
          :map minibuffer-local-map
          :map minibuffer-local-map
@@ -6526,7 +6390,7 @@ Available functions (positions) for 'ivy-posframe-display-functions-alist'
 #+begin_src emacs-lisp :tangle no
 ;;; Auto completion
 ;;;; Ivy-Counsel-Swiper
-(use-package all-the-icons-ivy
+(use-package! all-the-icons-ivy
   :init (add-hook 'after-init-hook 'all-the-icons-ivy-setup)
   :config
   (add-to-list 'all-the-icons-mode-icon-alist
@@ -6548,7 +6412,7 @@ Available functions (positions) for 'ivy-posframe-display-functions-alist'
                  :v-adjust 0.2 :face all-the-icons-purple)))
 
 ;;               ([C-return] . ivy-restrict-to-matches))
-(use-package ivy
+(use-package! ivy
   :diminish
   :bind (("C-s" . isearch-forward)
          :map ivy-minibuffer-map
@@ -6591,7 +6455,7 @@ Available functions (positions) for 'ivy-posframe-display-functions-alist'
   (ivy-use-selectable-prompt t)
   (ivy-re-builders-alist '((t . ivy--regex-ignore-order))))
 
-(use-package ivy-posframe
+(use-package! ivy-posframe
   :config
   (ivy-posframe-mode 1)
   (defun my/ivy-posframe-get-size ()
@@ -6607,10 +6471,10 @@ Available functions (positions) for 'ivy-posframe-display-functions-alist'
                                (t                . 20)))
   (ivy-posframe-size-function 'my/ivy-posframe-get-size))
 
-(use-package all-the-icons-ivy-rich
+(use-package! all-the-icons-ivy-rich
   :init (all-the-icons-ivy-rich-mode 1))
 
-(use-package ivy-rich
+(use-package! ivy-rich
   :after (ivy counsel)
   :config
   (ivy-rich-mode 1)
@@ -6628,13 +6492,13 @@ Available functions (positions) for 'ivy-posframe-display-functions-alist'
    '((ivy-rich-switch-buffer-project (:width 30))
      (ivy-rich-switch-buffer-major-mode (:width 20)))))
 
-(use-package amx
+(use-package! amx
   :after (ivy)
   :custom
   (amx-backend 'ivy)
   (amx-history-length 50))
 
-(use-package counsel
+(use-package! counsel
   ;; :after (helpful)
   :bind (("M-x" . counsel-M-x)
          ("s-a" . counsel-switch-buffer)
@@ -6692,7 +6556,7 @@ modify parts of the directory before switching to it."
   (counsel-yank-pop-separator "\n-------------------\n")
   (counsel-describe-function-function #'helpful-callable)
   (counsel-describe-variable-function #'helpful-variable))
-(use-package swiper
+(use-package! swiper
   :bind (("s-s" . swiper)
          ("s-C-s" . swiper-thing-at-point)))
 
@@ -6728,7 +6592,7 @@ By default, Doom Emacs does not use 'SPC v', so the format I use for these bindi
 ;; To see actions for the selected minibuffer item, use M-o and then press the action's key.
 ;; Super useful: Use C-c C-o to open ivy-occur to open the search results in a separate buffer. From there you can click any item to perform the ivy action.
 
-(use-package ivy
+(use-package! ivy
   :diminish
   :bind (("C-s" . isearch-forward)
          :map ivy-minibuffer-map
@@ -6786,11 +6650,11 @@ By default, Doom Emacs does not use 'SPC v', so the format I use for these bindi
 
   ;; (setf (alist-get '+default/search-emacsd ivy-height-alist) 7)
   ;; (setf (alist-get '+vertico/project-search-from-cwd ivy-height-alist) 7))
-;; (use-package ivy-hydra
+;; (use-package! ivy-hydra
 ;;   :defer t
 ;;   :after hydra)
 
-;; (use-package ivy-rich
+;; (use-package! ivy-rich
 ;;   :init
 ;;   ;; (ivy-rich-mode 1)
 ;;   :after counsel
@@ -6812,7 +6676,7 @@ By default, Doom Emacs does not use 'SPC v', so the format I use for these bindi
 ;;                            (with-current-buffer buffer
 ;;                              (not (derived-mode-p 'exwm-mode)))))))))
 
-(use-package counsel
+(use-package! counsel
   :demand t
   ;; :bind (("M-x" . counsel-M-x)
   ;;        ("C-c a" . counsel-ibuffer)
@@ -6866,18 +6730,18 @@ modify parts of the directory before switching to it."
   (counsel-yank-pop-separator "\n-------------------\n")
   (counsel-describe-function-function #'helpful-callable)
   (counsel-describe-variable-function #'helpful-variable))
-(use-package swiper
+(use-package! swiper
   :bind (("C-s" . isearch-forward)
          ("C-M-s" . swiper-thing-at-point)))
-;; (use-package flx  ;; Improves sorting for fuzzy-matched results
+;; (use-package! flx  ;; Improves sorting for fuzzy-matched results
 ;;   :after ivy
 ;;   :defer t
 ;;   :init
 ;;   (setq ivy-flx-limit 10000))
 
-;; (use-package wgrep)
+;; (use-package! wgrep)
 
-;; (use-package ivy-posframe
+;; (use-package! ivy-posframe
 ;;   ;; :disabled
 ;;   :custom
 ;;   (ivy-posframe-width      115)
@@ -6891,12 +6755,12 @@ modify parts of the directory before switching to it."
 ;;                                   (right-fringe . 8)))
 ;;   (ivy-posframe-mode nil))
 
-;; (use-package prescient
+;; (use-package! prescient
 ;;   :after counsel
 ;;   :config
 ;;   (prescient-persist-mode 1))
 
-;; (use-package ivy-prescient
+;; (use-package! ivy-prescient
 ;;   :after prescient
 ;;   :config
 ;;   (ivy-prescient-mode 1))
@@ -6974,7 +6838,7 @@ Regarding /buffers/, the text you are editing in Emacs resides in an object call
 
 #+begin_src emacs-lisp
 
-(use-package ibuffer
+(use-package! ibuffer
   :config
   (setq ibuffer-expert t)
   (setq ibuffer-display-summary nil)
@@ -7050,7 +6914,7 @@ to clear them out once you're done working with those folders.
 ** Bufler
 
 #+begin_src emacs-lisp
-(use-package bufler
+(use-package! bufler
   ;; :disabled
   :ensure nil
   ;; :straight t
@@ -7164,7 +7028,7 @@ are just some tweaks to make it work the way I prefer.
 #+begin_src emacs-lisp :tangle no
 ;; ¶Workspaces
 
-(use-package perspective
+(use-package! perspective
   :demand t
   :bind (("C-M-k" . persp-switch)
          ("C-M-n" . persp-next)
@@ -7179,7 +7043,7 @@ are just some tweaks to make it work the way I prefer.
 ** DONE Nicer buffer name for buffers with same name uniquify
 CLOSED: [2022-04-02 Sat 23:19]
 #+BEGIN_SRC emacs-lisp
-(use-package uniquify
+(use-package! uniquify
   :defer 5
   :config
   (setq uniquify-buffer-name-style 'forward)
@@ -7213,7 +7077,7 @@ I set splits to default to opening on the right using 'prefer-horizontal-split'.
 ** DONE golden ratio
 CLOSED: [2022-04-02 Sat 23:26]
   #+begin_src emacs-lisp :tangle no
-    (use-package golden-ratio
+    (use-package! golden-ratio
       :ensure t)
     (golden-ratio-mode 1)
 
@@ -7234,7 +7098,7 @@ sounds nice to me.
 ** DONE Pop-win
 CLOSED: [2022-04-02 Sat 23:27]
 #+begin_src emacs-lisp :tangle no
-(use-package popwin
+(use-package! popwin
   ;; :ensure t
   :config
   (popwin-mode 1)
@@ -7346,7 +7210,7 @@ accompany it, watch my [[https://protesilaos.com/codelog/2020-01-07-emacs-displa
 **** code
 #+begin_src emacs-lisp :tangle no
 ;;; Window rules and basic tweaks (window.el)
-(use-package window
+(use-package! window
   :config
   (setq display-buffer-alist
         `(;; no window
@@ -7476,7 +7340,7 @@ Also read: [[#h:6b4f7792-6ccd-45d5-b262-01d200639072][Window history (winner-mod
 
 #+begin_src emacs-lisp :tangle no
 ;;; Directional window motions (windmove)
-(use-package windmove
+(use-package! windmove
   :config
   (setq windmove-create-window nil)     ; Emacs 27.1
   (let ((map global-map))
@@ -7569,7 +7433,7 @@ Here are my settings, followed by the entirety of =prot-tab.el=.
 **** code
 #+begin_src emacs-lisp :tangle no
 ;;; Tabs for window layouts (tab-bar.el and prot-tab.el)
-(use-package tab-bar
+(use-package! tab-bar
   :config
   (setq tab-bar-close-button-show nil)
   (setq tab-bar-close-last-tab-choice nil)
@@ -7588,7 +7452,7 @@ Here are my settings, followed by the entirety of =prot-tab.el=.
   (tab-bar-history-mode 1))
 
 (load "prot-tab")
-(use-package prot-tab
+(use-package! prot-tab
   :config
   (setq prot-tab-tab-select-num-threshold 3)
   (setq tab-bar-format                    ; Emacs 28
@@ -7644,7 +7508,7 @@ have the right settings, you can repeat again just by pressing another =z=
 
 #+begin_src emacs-lisp :tangle no
 ;;; Transposition and rotation of windows
-(use-package transpose-frame
+(use-package! transpose-frame
   :config
   (let ((map global-map))
     (define-key map (kbd "C-x M-r") #'rotate-frame-clockwise)))
@@ -7667,7 +7531,7 @@ Customize awesome-tab-ace-quit-keys to specify keys used to quit from ace jumpin
 
 #+begin_src emacs-lisp :tangle no
 
-(use-package awesome-tab
+(use-package! awesome-tab
   :load-path "~/.emacs.d/site-lisp/awesome-tab"
   :config
   :defer t)
@@ -7966,7 +7830,7 @@ To use tabs in Doom Emacs, be sure to uncomment "tabs" in Doom's init.el.  Displ
 ;; ** TABS!TABS!TABS!
 ;; *** TAB-BAR
 ;;;----------------------------------------------------------------
-(use-package tab-bar
+(use-package! tab-bar
   :if (not (version-list-<
             (version-to-list emacs-version)
             '(27 0 1 0)))
@@ -8053,7 +7917,7 @@ To use tabs in Doom Emacs, be sure to uncomment "tabs" in Doom's init.el.  Displ
 
 ;; Show a list of the tabs in the echo area when switching tabs. Disabled since
 ;; I've taken to showing the tab-bar instead
-(use-package tab-bar-echo-area
+(use-package! tab-bar-echo-area
   :if (version< emacs-version "28.0")
   :ensure
   :after tab-bar
@@ -8071,7 +7935,7 @@ CLOSED: [2022-04-05 Tue 19:20]
 Shackle is an easy way to customise the display rules for windows rather than messing up with display-buffer-alist.
 
 #+begin_src emacs-lisp :tangle no
-(use-package shackle
+(use-package! shackle
   :custom
   ((shackle-rules
     (let ((repls "\\*\\(cider-repl\\|sly-mrepl\\|ielm\\)")
@@ -8120,7 +7984,7 @@ Shackle is an easy way to customise the display rules for windows rather than me
 transpose-frame provides various function to change the window layout in the current frame. Since my memory is pretty limited, an hydra is needed.
 
 #+begin_src emacs-lisp :tangle no
-(use-package transpose-frame
+(use-package! transpose-frame
   :bind ("C-c A" . my/hydra-window/body)
   :commands (transpose-frame flip-frame flop-frame
                              rotate-frame rotate-frame-clockwise
@@ -8283,7 +8147,7 @@ The following functions helps achieve this:
 ;; Wasamasa's Shackle package simplifies Emacs' rather arcane display-buffer
 ;; rules so you don't have to tear your hair out understanding how to configure
 ;; it. Unfortunately I did, see [[*SETUP-WINDOWS][setup-windows]].
-(use-package shackle
+(use-package! shackle
   :disabled t
   :init (shackle-mode))
 
@@ -8293,7 +8157,7 @@ The following functions helps achieve this:
 
 ;; Setup-windows defines window rules for displaying various kinds of buffers.
 (load "setup-windows")
-(use-package setup-windows
+(use-package! setup-windows
   :demand t
   :hook ((help-mode . visual-line-mode)
          (Custom-mode . visual-line-mode)
@@ -8309,7 +8173,7 @@ The following functions helps achieve this:
             :wk-full-keys nil
             "w" '(window-toggle-side-windows :wk "toggle side windows")))
 
-(use-package window
+(use-package! window
   :bind (("H-+" . balance-windows-area)
          ("C-x +" . balance-windows-area)
          ("C-x q" . my/kill-buffer-and-window))
@@ -8330,7 +8194,7 @@ Also kill this window, tab or frame if necessary."
 ;;;----------------------------------------------------------------
 
 ;; Designate buffers to popup status and toggle or cycle through them
-(use-package popper
+(use-package! popper
   :after (setup-windows setup-project)
   :commands popper-mode
   :bind (("C-`" . popper-toggle-latest)
@@ -8384,7 +8248,7 @@ Also kill this window, tab or frame if necessary."
                   ;; "\\*scratch\\*"
                   "[Oo]utput\\*")))
 
-  (use-package popper-echo
+  (use-package! popper-echo
     :config
     (defun popper-message-shorten (name)
       (cond
@@ -8456,7 +8320,7 @@ Also kill this window, tab or frame if necessary."
 ;;----------------------------------------------------------------
 
 ;; Add window numbers and use them to switch windows
-;; (use-package winum
+;; (use-package! winum
 ;;   :ensure
 ;;   :init
 ;;   (defun my/winum-select (num)
@@ -8485,7 +8349,7 @@ Also kill this window, tab or frame if necessary."
 ;; ** Ace-window
 ;;----------------------------------------------------------------
 
-;; (use-package ace-window
+;; (use-package! ace-window
 ;;   :ensure t
 ;;   :bind
 ;;   (("C-x o" . ace-window)
@@ -8519,7 +8383,7 @@ Also kill this window, tab or frame if necessary."
 ;;     (interactive "p")
 ;;     (other-window (if arg (- arg) -1) all-frames)))
 
-;; (use-package emacs
+;; (use-package! emacs
 ;;   :config
 ;;   (defun my/enlarge-window-horizontally (&optional repeat)
 ;;     "Enlarge window horizontally by 8% of the frame width."
@@ -8551,20 +8415,20 @@ Also kill this window, tab or frame if necessary."
 ;; ** Windmove
 ;;----------------------------------------------------------------
 
-(use-package windmove
+(use-package! windmove
   :bind
   (("s-S-<right>" . windmove-swap-states-right)
    ("s-S-<down>" . windmove-swap-states-down)
    ("s-S-<up>" . windmove-swap-states-up)
    ("s-S-<left>" . windmove-swap-states-left)))
   ;; :config
-  ;; (use-package emacs-i3))
+  ;; (use-package! emacs-i3))
 
 ;;----------------------------------------------------------------
 ;; ** Transpose-frame
 ;;----------------------------------------------------------------
 
-(use-package transpose-frame
+(use-package! transpose-frame
   :ensure t
   :bind (("H-\\" . rotate-frame-anticlockwise)
          :map ctl-x-4-map
@@ -8576,7 +8440,7 @@ Also kill this window, tab or frame if necessary."
 ;; ** Auto-revert
 ;;----------------------------------------------------------------
 
-(use-package autorevert
+(use-package! autorevert
   :hook ((prog-mode
           text-mode
           tex-mode
@@ -8586,7 +8450,7 @@ Also kill this window, tab or frame if necessary."
 ;;----------------------------------------------------------------
 ;; ** Re-Builder
 ;;----------------------------------------------------------------
-(use-package re-builder
+(use-package! re-builder
   :bind (("C-M-5" . re-builder)
          ("C-M-%" . re-builder)
          :map reb-mode-map
@@ -8597,7 +8461,7 @@ Also kill this window, tab or frame if necessary."
   :config
   ;; reb-fix modifies reb-update-overlays to restrict matches to region
   (load "reb-fix")
-  (use-package reb-fix)
+  (use-package! reb-fix)
   (defvar my/re-builder-positions nil
     "Store point and region bounds before calling re-builder")
   (advice-add 're-builder
@@ -8643,7 +8507,7 @@ surrounded by word boundaries."
 
 ** Edwina
 #+begin_src emacs-lisp
-(use-package edwina
+(use-package! edwina
   :defer t
   :config
   (setq display-buffer-base-action '(display-buffer-below-selected)))
@@ -8657,7 +8521,7 @@ surrounded by word boundaries."
 ** transient
 #+begin_src emacs-lisp
 
-(use-package transient
+(use-package! transient
   :defines toggle-modes
   :bind (("<f8>"  . toggle-modes))
          ;; ("C-c t" . toggle-modes))
@@ -8769,7 +8633,7 @@ buffer-local.
 
 #+begin_src emacs-lisp :tangle no
 ;;; Fringe mode
-(use-package fringe
+(use-package! fringe
   :config
   (fringe-mode nil)
   (setq-default fringes-outside-margins nil)
@@ -8817,12 +8681,12 @@ To disable the effect, just do =M-x prot-prism-disable=.
 *** code
 #+begin_src emacs-lisp :tangle no
 ;;; Depth-based code colourisation (prism.el)
-(use-package prism
+(use-package! prism
   :config
   (setq prism-comments 't))
 
 (load "prot-prism.el")
-(use-package prot-prism
+(use-package! prot-prism
   :config
   (setq prot-prism-negative-space-sensitive-modes
         '(sh-mode yaml-mode))
@@ -8895,7 +8759,7 @@ to, and navigate therefrom.  It really is an efficient workflow:
 *** code
 #+begin_src emacs-lisp :tangle no
 ;;; Outline mode, outline minor mode, and extras (prot-outline.el)
-(use-package outline
+(use-package! outline
   :config
   (setq outline-minor-mode-highlight 'override) ; emacs28
   (setq outline-minor-mode-cycle t)             ; emacs28
@@ -8911,7 +8775,7 @@ to, and navigate therefrom.  It really is an efficient workflow:
     (define-key map (kbd "C-c C-o") #'outline-hide-other)
     (define-key map (kbd "C-c C-u") #'outline-up-heading))) ;;def
 (load "prot-outline")
-(use-package prot-outline
+(use-package! prot-outline
   :config
   (let ((map outline-minor-mode-map))
     (define-key map (kbd "C-c C-v") #'prot-outline-move-major-heading-down)
@@ -8937,7 +8801,7 @@ is reproduced right after the following package configurations.
 #+begin_src emacs-lisp
 ;;; Cursor appearance and tweaks (prot-cursor.el)
 (load "prot-cursor")
-(use-package prot-cursor
+(use-package! prot-cursor
   :config
   (setq prot-cursor-presets
         '((bar . ( :cursor-type (bar . 2)
@@ -9007,7 +8871,7 @@ mouse, =<mouse-3>= is the right click.  Normally I call that command with
 
 #+begin_src emacs-lisp :tangle no
 ;;; Mouse wheel behaviour
-(use-package mouse
+(use-package! mouse
   ;; In Emacs 27+, use Control + mouse wheel to scale text.
   :config
   (setq mouse-wheel-scroll-amount
@@ -9063,7 +8927,7 @@ effect (see the section on the [[#h:02572210-eb26-4941-8f7c-666a0314877b][mouse 
 
 #+begin_src emacs-lisp :tangle no
 ;;; Delete selection
-(use-package delsel
+(use-package! delsel
   :config
   (add-hook 'after-init-hook #'delete-selection-mode))
 #+end_src
@@ -9087,7 +8951,7 @@ mouse over an actionable item:
 
 #+begin_src emacs-lisp :tangle no
 ;;; Tooltips (tooltip-mode)
-(use-package tooltip
+(use-package! tooltip
   :config
   (setq tooltip-delay 0.5)
   (setq tooltip-short-delay 0.5)
@@ -9121,7 +8985,7 @@ likely to change over the near term.
 ;; available through an ELPA.
 ;;
 ;; `prot-emacs-manual-package' is defined in my init.el
-(use-package rlist
+(use-package! rlist
   :config
   (setq rlist-expert t)
   (setq rlist-verbose t)
@@ -9162,7 +9026,7 @@ stamp upon save, where relevant.  It works seamlessly.
 
 #+begin_src emacs-lisp
 ;;; Automatic time stamps for files (time-stamp.el)
-(use-package time-stamp
+(use-package! time-stamp
   :config
   (add-hook 'before-save-hook #'time-stamp))
 #+end_src
@@ -9178,7 +9042,7 @@ A change can happen externally or by some other tool inside of Emacs
 
 #+begin_src emacs-lisp
 ;;; Auto revert mode
-(use-package autorevert
+(use-package! autorevert
   :config
   (setq auto-revert-verbose t)
   (add-hook 'after-init-hook #'global-auto-revert-mode))
@@ -9218,27 +9082,6 @@ when visiting or saving a buffer of relevance.
 #+RESULTS:
 : visit-save
 
-*** Package lists
-
-With this I just want to enable line highlighting when browsing the list
-of packages.  I generally use =hl-line-mode= on all interfaces where the
-current line is more important than the exact column of the point.
-
-#+begin_src emacs-lisp :tangle no
-;;; Package lists
-(use-package package
-  :config
-  ;; All variables are for Emacs 28+
-  (setq package-name-column-width 40)
-  (setq package-version-column-width 14)
-  (setq package-status-column-width 12)
-  (setq package-archive-column-width 8)
-  (add-hook 'package-menu-mode-hook #'hl-line-mode))
-#+end_src
-
-#+RESULTS:
-: t
-
 * Code & Edit
 ** DONE Bookmarks
 CLOSED: [2022-04-01 Fri 15:36]
@@ -9267,7 +9110,7 @@ CLOSED: [2022-04-01 Fri 15:37]
 Emojify is an Emacs extension to display emojis. It can display github style emojis like :smile: or plain ascii ones like :).
 
 #+begin_src emacs-lisp
-(use-package emojify
+(use-package! emojify
   :hook (after-init . global-emojify-mode))
 #+end_src
 
@@ -9309,30 +9152,11 @@ Happily taken from Pascals configuration: https://github.com/SirPscl/emacs.d#sud
 
 #+RESULTS:
 
-** DONE Automatically remove trailing whitespace (only if I put them there)
-CLOSED: [2022-04-01 Fri 15:38]
-#+BEGIN_SRC emacs-lisp :tangle no
-(use-package ws-butler
-  :hook ((text-mode prog-mode) . ws-butler-mode)
-  :config (setq ws-butler-keep-whitespace-before-point nil))
-(use-package whitespace
-  :config
-  (global-whitespace-mode)
-  :hook
-  (prog-mode . (lambda () (setq show-trailing-whitespace t)))
-  (text-mode . (lambda () (setq show-trailing-whitespace t)))
-  (conf-mode . (lambda () (setq show-trailing-whitespace t)))
-  :custom
-  (whitespace-style '(face trailing tabs empty big-indent))
-  (whitespace-global-modes '(not erc-mode magit-mode)))
-
-
-#+END_SRC
 ** DONE Speed type
 CLOSED: [2022-04-01 Fri 15:39]
 #+begin_src emacs-lisp
 ;; Speed-type: Type a text and measure your speed
-(use-package speed-type
+(use-package! speed-type
   :defer t)
 #+end_src
 ** DONE Selectric
@@ -9404,7 +9228,7 @@ This is how a boxquote looks:
 ╰────
 
 #+begin_src emacs-lisp
-(use-package boxquote
+(use-package! boxquote
 ;;:ensure t
   :defer t
   :config
@@ -9452,7 +9276,7 @@ This is how a boxquote looks:
 #+end_src
 
 #+RESULTS:
-: #s(hash-table size 65 test eql rehash-size 1.5 rehash-threshold 0.8125 data (:use-package (25088 11393 498837 905000) :init (25088 11393 498812 216000) :init-secs (0 0 311 648000) :use-package-secs (0 0 2107 22000)))
+: #s(hash-table size 65 test eql rehash-size 1.5 rehash-threshold 0.8125 data (:use-package! (25088 11393 498837 905000) :init (25088 11393 498812 216000) :init-secs (0 0 311 648000) :use-package-secs (0 0 2107 22000)))
 
 ** DONE Cloc (count lines of code in buffer)
 CLOSED: [2022-04-01 Fri 15:42]
@@ -9460,13 +9284,13 @@ CLOSED: [2022-04-01 Fri 15:42]
 
 ;; cloc count the lines of code in a buffer
 
-(use-package cloc
+(use-package! cloc
   :ensure t
   :commands cloc)
 #+end_src
 
 #+RESULTS:
-: #s(hash-table size 65 test eql rehash-size 1.5 rehash-threshold 0.8125 data (:use-package (25088 11642 749227 346000) :init (25088 11642 749191 846000) :init-secs (0 0 290 986000) :use-package-secs (0 0 1137 828000)))
+: #s(hash-table size 65 test eql rehash-size 1.5 rehash-threshold 0.8125 data (:use-package! (25088 11642 749227 346000) :init (25088 11642 749191 846000) :init-secs (0 0 290 986000) :use-package-secs (0 0 1137 828000)))
 
 ** DONE Very large files
 CLOSED: [2022-04-01 Fri 15:46]
@@ -9547,7 +9371,7 @@ configurations and documentation for [[#h:6c6759c8-3ae3-40b0-8356-05cc0975e12a][
 
 #+begin_src emacs-lisp :tangle no
 ;;; Dabbrev (dynamic word completion)
-(use-package dabbrev
+(use-package! dabbrev
   :config
   (setq dabbrev-abbrev-char-regexp "\\sw\\|\\s_")
   (setq dabbrev-abbrev-skip-leading-regexp "[$*/=~']")
@@ -9573,7 +9397,7 @@ configurations and documentation for [[#h:6c6759c8-3ae3-40b0-8356-05cc0975e12a][
 ;; ** DABBREV Karthiks
 ;;;----------------------------------------------------------------
 
-(use-package dabbrev
+(use-package! dabbrev
   :commands (dabbrev-expand dabbrev-completion)
   :config
   (setq dabbrev-abbrev-char-regexp "\\sw\\|\\s_")
@@ -9708,14 +9532,14 @@ CLOSED: [2022-04-01 Fri 15:50]
 ;; impatient-mode
 ;; Thanks to impatient-mode you can see the effect of your HTML as you type it.
 
-;; (use-package impatient-mode
+;; (use-package! impatient-mode
 ;;   :ensure t)
 #+end_src
 
 ** iedit
 #+begin_src emacs-lisp
 
-(use-package iedit
+(use-package! iedit
   :ensure t
   :bind ("C-M-;" . iedit-mode))
 #+end_src
@@ -9920,7 +9744,7 @@ counterpart on =M-Z= (=M-S-z=).
 ** easy kill
 #+begin_src emacs-lisp
 
-(use-package easy-kill
+(use-package! easy-kill
   :ensure t
   :bind (([remap kill-ring-save] . #'easy-kill)
          ([remap mark-sexp]      . #'easy-mark)
@@ -9937,7 +9761,7 @@ counterpart on =M-Z= (=M-S-z=).
 ** atomic-chrome / GhostText: Edit text area in browser
 You need to install the Firefox extension [[https://github.com/GhostText/GhostText][GhostText]]
 #+BEGIN_SRC emacs-lisp :tangle no
-(use-package atomic-chrome
+(use-package! atomic-chrome
   :if (daemonp)
   :defer 10
   :config
@@ -9958,7 +9782,7 @@ You need to install the Firefox extension [[https://github.com/GhostText/GhostTe
 #+END_SRC
 
 #+RESULTS:
-: #s(hash-table size 65 test eql rehash-size 1.5 rehash-threshold 0.8125 data (:use-package (25098 24336 620398 905000) :use-package-secs (0 0 15 123000)))
+: #s(hash-table size 65 test eql rehash-size 1.5 rehash-threshold 0.8125 data (:use-package! (25098 24336 620398 905000) :use-package-secs (0 0 15 123000)))
 
 ** Emacs as external editor
 #+begin_src emacs-lisp :tangle no
@@ -10077,7 +9901,7 @@ Emacs registers are compartments where you can save text, rectangles and positio
 
 #+begin_src emacs-lisp
 
-(use-package smartparens
+(use-package! smartparens
   :bind (:map smartparens-mode-map
               ("C-M-f" . sp-forward-sexp)
               ("C-M-b" . sp-backward-sexp)
@@ -10236,12 +10060,12 @@ Mainly useful in C and derived, and only when ACTION is insert."
 #+end_src
 
 #+RESULTS:
-: #s(hash-table size 65 test eql rehash-size 1.5 rehash-threshold 0.8125 data (:use-package (25134 3983 706869 375000) :init (25134 3983 706498 821000) :init-secs (0 0 94934 396000) :use-package-secs (0 0 95376 547000) :config (25134 3983 706480 126000) :config-secs (0 0 94860 423000)))
+: #s(hash-table size 65 test eql rehash-size 1.5 rehash-threshold 0.8125 data (:use-package! (25134 3983 706869 375000) :init (25134 3983 706498 821000) :init-secs (0 0 94934 396000) :use-package-secs (0 0 95376 547000) :config (25134 3983 706480 126000) :config-secs (0 0 94860 423000)))
 
 ** undo tree
 #+begin_src emacs-lisp :tangle no
 
-(use-package undo-tree
+(use-package! undo-tree
   :config
   (global-undo-tree-mode 1)
   :custom
@@ -10254,7 +10078,7 @@ Mainly useful in C and derived, and only when ACTION is insert."
 ;;;----------------------------------------------------------------
 ;; ** EXPAND-REGION
 ;;;----------------------------------------------------------------
-(use-package expand-region
+(use-package! expand-region
   :ensure t
   :commands expand-region
   :bind ("M-[" . 'er/expand-region)
@@ -10328,7 +10152,7 @@ For when you want to change the case pattern for a symbol.
 #+end_src
 
 #+RESULTS:
-: #s(hash-table size 65 test eql rehash-size 1.5 rehash-threshold 0.8125 data (:use-package (25089 58776 6422 553000) :init (25089 58776 6410 943000) :init-secs (0 0 1563 35000) :use-package-secs (0 0 1618 168000)))
+: #s(hash-table size 65 test eql rehash-size 1.5 rehash-threshold 0.8125 data (:use-package! (25089 58776 6422 553000) :init (25089 58776 6410 943000) :init-secs (0 0 1563 35000) :use-package-secs (0 0 1618 168000)))
 
 ** Auto insert
 #+begin_src emacs-lisp :tangle no
@@ -10511,7 +10335,7 @@ settings:
 
 #+begin_src emacs-lisp :tangle no
 ;;; Configure 'electric' behaviour
-(use-package electric
+(use-package! electric
   (setq electric-pair-inhibit-predicate 'electric-pair-conservative-inhibit)
   (setq electric-pair-preserve-balance t)
   (setq electric-pair-pairs
@@ -10559,7 +10383,7 @@ Summary of what these do:
 
 #+begin_src emacs-lisp :tangle no
 ;;; Parentheses (show-paren-mode)
-(use-package paren
+(use-package! paren
   :ensure nil
   :config
   (setq show-paren-style 'parenthesis)
@@ -10812,109 +10636,9 @@ It should come to no surprise that Emacs can operate as both a /terminal
 emulator for command line shells/ and /toolkit for terminal emulators/.
 The present section covers only the former category as I never use the
 likes of =ansi-term= or =vterm=.
-*** Eshell and prot-eshell.el
-#+begin_src emacs-lisp :tangle no
-;;; Eshell and prot-eshell.el
-(use-package eshell
-  :config
-  (require 'esh-mode)
-  (require 'esh-module)
-  (setq eshell-modules-list             ; It works but may need review
-        '(eshell-alias
-          eshell-basic
-          eshell-cmpl
-          eshell-dirs
-          eshell-glob
-          eshell-hist
-          eshell-ls
-          eshell-pred
-          eshell-prompt
-          eshell-script
-          eshell-term
-          eshell-tramp
-          eshell-unix))
-  (setenv "PAGER" "cat") ; solves issues, such as with 'git log' and the default 'less'
-  (require 'em-cmpl)
-  (require 'em-dirs)
-  (setq eshell-cd-on-directory t)
-
-  (require 'em-tramp)
-  (setq password-cache t)
-  (setq password-cache-expiry 600)
-
-  (require 'em-hist)
-  (setq eshell-hist-ignoredups t)
-  (setq eshell-save-history-on-exit t))
-#+end_src
-
-#+begin_src emacs-lisp :tangle yes
-
-(require 'em-cmpl)
-(load "prot-eshell.el")
-(use-package prot-eshell
-  :config
-  (setq prot-eshell-output-buffer "*Exported Eshell output*")
-  (setq prot-eshell-output-delimiter "* * *")
-  (let ((map eshell-mode-map))
-    (define-key map (kbd "M-k") #'eshell-kill-input)
-    (define-key map (kbd "C-c a C-f") #'prot-eshell-ffap-find-file)
-    (define-key map (kbd "C-c a C-j") #'prot-eshell-ffap-dired-jump)
-    (define-key map (kbd "C-c a C-w") #'prot-eshell-ffap-kill-save)
-    (define-key map (kbd "C-c a C-r") #'prot-eshell-redirect-to-buffer)
-    (define-key map (kbd "C-c a C-e") #'prot-eshell-export)
-    (define-key map (kbd "C-c a C-r") #'prot-eshell-root-dir))
-  (let ((map eshell-cmpl-mode-map))
-    (define-key map (kbd "C-c a TAB") #'prot-eshell-ffap-insert) ; C-c C-i
-    (define-key map (kbd "C-c a C-h") #'prot-eshell-narrow-output-highlight-regexp))
-  (let ((map eshell-hist-mode-map))
-    (define-key map (kbd "M-s") #'nil) ; I use this prefix for lots of more useful commands
-    ;; (define-key map (kbd "M-r") #'prot-eshell-complete-history)
-    (define-key map (kbd "C-c a C-d") #'prot-eshell-complete-recent-dir)
-    (define-key map (kbd "C-c a C-s") #'prot-eshell-find-subdirectory-recursive)))
-#+end_src
-
-#+RESULTS:
-: t
-
-*** DONE Shell (M-x shell)
-CLOSED: [2022-04-01 Fri 15:58]
-
-NOTE: I normally use Eshell.  Refer to the [[#h:103a8795-c29c-474f-9ddf-ecafaa2f6775][Eshell and prot-eshell.el]]
-section.
-
-This is a shell (Bash, in my case) that runs inside of Emacs.  Unlike
-terminal emulators, this one can use standard Emacs keys and behaves
-much like an ordinary buffer.  It also integrates nicely with the
-built-in completion tools, which makes it particularly nice to work
-with.
-
-The one area where this Shell differs substantially from ordinary
-buffers is with regard to the command prompt: you can re-run a command
-on the scroll-back buffer by just hitting =RET= while point is on its line
-(no need to go back to the end and cycle the command history with =M-p= or
-=M-n=).
-
-Another peculiarity relative to the standard commands in the terminal is
-to search backward through your history with =M-r= (whereas in a terminal
-emulator you use =C-r=).
-
-Run =C-h m= inside of a shell buffer to learn about all the key bindings
-and corresponding functions.
-
-#+begin_src emacs-lisp
-;;; Shell (M-x shell)
-(use-package shell
-  :config
-  (setq shell-command-prompt-show-cwd t) ; Emacs 27.1
-  (setq ansi-color-for-comint-mode t))
-#+end_src
-
-#+RESULTS:
-: t
-
 ** shell-pop
   #+begin_src emacs-lisp
-    (use-package shell-pop
+    (use-package! shell-pop
       :bind (("<f4>" . shell-pop))
       :config
       (setq shell-pop-shell-type (quote ("ansi-term" "*ansi-term*" (lambda nil (ansi-term shell-pop-term-shell)))))
@@ -10923,207 +10647,6 @@ and corresponding functions.
   #+end_src
 
 ** Eshell
-#+begin_src emacs-lisp :tangle no
-(use-package eshell-bookmark
-  :after eshell
-  :config
-  (add-hook 'eshell-mode-hook #'eshell-bookmark-setup))
-
-(use-package eshell
-  :ensure nil
-  :hook
-  (eshell-mode . (lambda ()
-                   (define-key eshell-mode-map (kbd "M-<up>") 'eshell-previous-prompt)
-                   (define-key eshell-mode-map (kbd "M-<down>") 'eshell-next-prompt)
-                   (define-key eshell-mode-map (kbd "C-c C-o") 'my/eshell-kill-ring-save-outputs)
-                   (define-key eshell-mode-map (kbd "C-c o") 'my/eshell-export-last-output)
-                   (define-key eshell-mode-map (kbd "C-c r") 'counsel-esh-history)
-                   (define-key eshell-mode-map (kbd "C-c d") 'counsel-esh-dir-history)
-                   (define-key eshell-mode-map (kbd "C-c l") 'eshell/clear)
-                   (define-key eshell-mode-map (kbd "C-c b") 'op/eshell-narrow-to-output)
-                   (define-key eshell-mode-map (kbd "C-c a") 'op/append-to-buffer)
-                   (define-key eshell-mode-map (kbd "C-<return>") 'my/eshell-send-detached-input)
-                   ;; When calling dabbrev, hippie-expand uses strings
-                   ;; containing words and symbols to:
-                   ;;   1) determine the string to expand
-                   ;;   2) determine what to expand it with
-                   ;; (see hippie-expand-dabbrev-as-symbol)
-                   ;; so for instance if I'm typing "curl foo/bar" on
-                   ;; an eshell buffer, as "/" is a symbol in eshell
-                   ;; mode, it will use "foo/bar" as string to
-                   ;; expand. In some cases this is undesirable, for
-                   ;; instance when completing URLs, as it's more
-                   ;; likely that I'll want to expand the current
-                   ;; component ("bar"), not the whole URL. Moving "/"
-                   ;; to a non-symbol syntax class works around
-                   ;; this. I can't just set
-                   ;; hippie-expand-dabbrev-as-symbol to false because
-                   ;; if I did h-e wouldn't expand FQDNs, i.e. "bar"
-                   ;; would be expanded to "barhost" and not
-                   ;; "barhost.example.org"
-                   (modify-syntax-entry ?/ "|")))
-  :config
-  (defun my/eshell-kill-ring-save-outputs ()
-    "Add to the kill ring CURRENT-PREFIX-ARG outputs, including prompts.
-If no universal argument is passed, assume only one output"
-    (interactive)
-    (save-excursion
-      (let (times)
-        (if (or (null current-prefix-arg) (< current-prefix-arg 1))
-            (setq times 1)
-          (setq times current-prefix-arg))
-        (eshell-previous-prompt times)
-        (forward-line -1) ; Two lines prompt
-        (beginning-of-line)
-        (message (format "Shell output added to the kill ring (%d commands)" times))
-        (kill-ring-save (point) (eshell-end-of-output)))))
-
-  ;; Inspiration from:
-  ;; https://github.com/protesilaos/dotfiles/blob/master/emacs/.emacs.d/prot-lisp/prot-eshell.el
-  (defun my/eshell-export-last-output ()
-    "Produce a buffer with output of the last Eshell command."
-    (interactive)
-    (let ((eshell-output (buffer-substring-no-properties
-                          (eshell-beginning-of-output)
-                          (eshell-end-of-output))))
-      (with-current-buffer (get-buffer-create "*Exported Eshell output*")
-        (erase-buffer)
-        (insert eshell-output)
-        (switch-to-buffer-other-window (current-buffer)))))
-  (defun eshell/tcd (&optional directory)
-    "Change the default directory to DIRECTORY but TRAMP-aware.
-Like `eshell/cd' but taking into account that the current
-directory might be in a remote file system. If that's the case,
-the current TRAMP root is prepended to DIRECTORY."
-    (let ((tramp-root (file-remote-p default-directory)))
-      (if tramp-root
-          (eshell/cd (concat tramp-root (or directory "")))
-        (eshell/cd directory))))
-  (defun my/eshell-send-detached-input (&optional arg)
-    "Send the current Eshell input to a compilation buffer.
-With universal prefix argument bury the compilation buffer and
-send a notification when the process has exited."
-    (interactive "p")
-    (when-let* ((cmd (buffer-substring
-                      eshell-last-output-end (point-max)))
-                (cmd-present-p (not (string-empty-p cmd))))
-      (let* ((hostname (or
-                        (file-remote-p default-directory 'host)
-                        (system-name)))
-             (compile-command nil)
-             (compilation-save-buffers-predicate 'ignore)
-             (compilation-scroll-output nil)
-             (compilation-buffer
-              (compilation-start
-               cmd
-               nil
-               (lambda (major-mode)
-                 (format "D#%x %s" (random (expt 2 16)) cmd)))))
-        (when (equal arg 4)
-          (with-current-buffer compilation-buffer
-            (switch-to-prev-buffer (get-buffer-window (current-buffer)))
-            (setq-local compilation-finish-functions
-                        `((lambda (buffer str)
-                            (notifications-notify
-                             :body (format "%s # %s" ,hostname ,cmd)
-                             :timeout 8000
-                             :category "detached_process"
-                             :actions '("default" "Switch to buffer")
-                             :on-action (lambda (id key) (switch-to-buffer-other-window ,(buffer-name compilation-buffer)))
-                             :title (format "Process %s!" (string-chop-newline str))
-                             :urgency (if (string-prefix-p "finished" str) 'normal 'critical)))))))
-        (eshell-add-input-to-history cmd)
-        (eshell-reset))))
-  (setenv "EDITOR" "emacsclient")
-  (add-to-list 'directory-abbrev-alist '("/home/ibarrien" . "~"))
-  (add-to-list 'directory-abbrev-alist '("/afs/cern.ch/user/i/ibarrien" . "~"))
-  :custom
-  (eshell-banner-message "")
-  (eshell-history-size 20000)
-  (eshell-scroll-to-bottom-on-input 'all)
-  (eshell-scroll-to-bottom-on-output 'all))
-;; (use-package em-hist
-;;   :ensure nil
-;;   :bind (:map eshell-hist-mode-map
-;;               ("<up>" . previous-line)
-;;               ("<down>" . next-line)))
-
-(use-package eshell-prompt-extras
-  :after (eshell)
-  :config
-  (defun my/epe-theme-prompt ()
-    (setq eshell-prompt-regexp "^λ ")
-    (concat
-     (let ((prompt-path (epe-fish-path (tramp-file-local-name (eshell/pwd)))))
-       (format
-        (epe-colorize-with-face "[%s]" 'epe-remote-face)
-        (epe-colorize-with-face
-         (if (string-empty-p prompt-path)
-             "/"
-           prompt-path)
-         'epe-dir-face)))
-     (if (epe-remote-p)
-         (epe-colorize-with-face
-          (concat "@" (epe-remote-host))
-          'epe-remote-face)
-       (epe-colorize-with-face
-        (concat "@" (system-name))
-        'epe-git-face))
-     (if (eshell-exit-success-p)
-         (epe-colorize-with-face "\nλ" 'success)
-       (epe-colorize-with-face "\nλ" 'error))
-     " "))
-  (with-eval-after-load "esh-opt"
-    (setq eshell-highlight-prompt nil
-          eshell-prompt-function 'my/epe-theme-prompt)))
-
-;; Eshell can interact with other Emacs buffers, but the syntax is quite verbose. op/append-to-buffer (bound to C-c C-B) helps with this: it prompts for a buffer and inserts (but not execute) the redirect. This is especially useful when working with the OpenBSD ports tree: I can type cvs -q diff and then C-c C-B to redirect the diff to the mail buffer!
-
-(defun op/append-to-buffer (buf)
-  (interactive "Bbuffer: ")
-  (insert ">>> " "#<" buf ">"))
-;; Being able to narrow to the output of the command at point seems very useful, so here's a quick implementation:
-
-(defun op/eshell-narrow-to-output ()
-  "Narrow to the output of the command at point."
-  (interactive)
-  (save-excursion
-    (let* ((start (progn (eshell-previous-prompt 1)
-                         (forward-line +1)
-                         (point)))
-           (end (progn (eshell-next-prompt 1)
-                       (forward-line -1)
-                       (point))))
-      (narrow-to-region start end))))
-
-;; I like to sync the $PWD with the buffer name, so an eshell in my home has as buffer name *eshell /home/op*.
-
-;; <2021-06-16 Wed> Instead of advice-add I should use the eshell-directory-change-hook hook.
-  (defun op/eshell-bufname (dir)
-    (concat "*doom:eshell " (expand-file-name dir) "*"))
-
-(defun op/eshell-after-cd (&rest _)
-  (rename-buffer (op/eshell-bufname default-directory) t))
-
-(advice-add #'eshell/cd :after #'op/eshell-after-cd)
-;; To define custom commands in eshell (what would be functions or scripts in other shells), say whatever, one can define a eshell/whatever function. These are some aliases I find useful:
-
-(defun eshell/emacs (&rest args)
-  "Open a file in emacs (from the wiki)."
-  (if (null args)
-      (bury-buffer)
-    (mapc #'find-file
-          (mapcar #'expand-file-name
-                  (eshell-flatten-list (nreverse args))))))
-
-(defalias 'eshell/less #'find-file)
-
-(defun eshell/dired ()
-  (dired (eshell/pwd)))
-#+end_src
-
-#+RESULTS:
-: eshell/dired
 
 Settings for the various shells and terminal emulators within Emacs.
 + 'shell-file-name' -- sets the shell to be used in M-x shell, M-x term, M-x ansi-term and M-x vterm.
@@ -11134,8 +10657,8 @@ Settings for the various shells and terminal emulators within Emacs.
       vterm-max-scrollback 5000)
 (setq eshell-rc-script "~/.config/doom/eshell/profile"
       eshell-aliases-file "~/.config/doom/eshell/aliases"
-      eshell-history-size 5000
-      eshell-buffer-maximum-lines 5000
+      eshell-history-size 50000
+      eshell-buffer-maximum-lines 50000
       eshell-hist-ignoredups t
       eshell-scroll-to-bottom-on-input t
       eshell-destroy-buffer-when-process-dies t
@@ -11347,9 +10870,10 @@ ecosystem:
 ** Dired Conf
 #+begin_src emacs-lisp
 ;; C-u s for flags
-;; (use-package all-the-icons-dired)
+;; (use-package! all-the-icons-dired)
 
-(use-package dired
+  ;; (dired-listing-switches "-NGalhv --group-directories-first")
+(use-package! dired
   :ensure nil
   ;; :straight nil
   :defer 1
@@ -11406,7 +10930,7 @@ ecosystem:
                 (all-the-icons-dired-mode 1))
               (hl-line-mode 1))
 
-(use-package dired-aux
+(use-package! dired-aux
   :config
   (setq dired-isearch-filenames 'dwim)
   ;; The following variables were introduced in Emacs 27.1
@@ -11428,7 +10952,7 @@ ecosystem:
 ;;         '("-ls" . "-AGFhlv --group-directories-first --time-style=long-iso"))
 ;;   (setq find-name-arg "-iname"))
 
-(use-package dired-x
+(use-package! dired-x
   :config
   (setq dired-clean-up-buffers-too t)
   (setq dired-clean-confirm-killing-deleted-buffers t)
@@ -11438,7 +10962,7 @@ ecosystem:
   (define-key dired-mode-map (kbd "I") #'dired-info))
 
 (load "prot-dired")
-(use-package prot-dired
+(use-package! prot-dired
   :config
   (setq prot-dired-image-viewers '("feh" "sxiv"))
   (setq prot-dired-media-players '("mpv" "vlc"))
@@ -11462,14 +10986,14 @@ ecosystem:
     ;; (define-key map (kbd "C-c C-p") #'prot-dired-subdirectory-previous)
     (define-key map (kbd "M-s G") #'prot-dired-grep-marked-files))) ; M-s g is `prot-search-grep'
 
-;; (use-package dired-subtree
+;; (use-package! dired-subtree
 ;;   :config
 ;;   (setq dired-subtree-use-backgrounds nil)
 ;;   (let ((map dired-mode-map))
 ;;     (define-key map (kbd "<tab>") #'dired-subtree-toggle)
 ;;     (define-key map (kbd "<backtab>") #'dired-subtree-remove))) ; S-TAB
 
-(use-package dired-subtree
+(use-package! dired-subtree
   :ensure t
   :after dired
   :config
@@ -11479,19 +11003,19 @@ ecosystem:
               ("<s-tab>" . dired-subtree-cycle)
               ("<backtab>" . dired-subtree-remove)
               ))
-(use-package wdired
+(use-package! wdired
   :config
   (setq wdired-allow-to-change-permissions t)
   (setq wdired-create-parent-directories t))
 
-(use-package async
+(use-package! async
   :ensure)
 
-(use-package dired-async
+(use-package! dired-async
   :after (dired async)
 
   :hook (dired-mode . dired-async-mode))
-(use-package image-dired
+(use-package! image-dired
   :config
   (setq image-dired-external-viewer "xdg-open")
   (setq image-dired-thumb-size 80)
@@ -11500,7 +11024,7 @@ ecosystem:
   (setq image-dired-thumbs-per-row 4)
   (define-key image-dired-thumbnail-mode-map
     (kbd "<return>") #'image-dired-thumbnail-display-external))
-  (use-package dired-rainbow
+  (use-package! dired-rainbow
     :defer 2
     :config
     (dired-rainbow-define-chmod directory "#6cb2eb" "d.*")
@@ -11524,16 +11048,16 @@ ecosystem:
     (dired-rainbow-define vc "#0074d9" ("git" "gitignore" "gitattributes" "gitmodules"))
     (dired-rainbow-define-chmod executable-unix "#38c172" "-.*x.*"))
 
-  (use-package dired-single
+  (use-package! dired-single
     :defer t)
 
-  (use-package dired-ranger
+  (use-package! dired-ranger
     :defer t)
 
-  (use-package dired-collapse
+  (use-package! dired-collapse
     :defer t)
 
-(use-package gnus-dired
+(use-package! gnus-dired
   :defer 5
   :after dired)
 
@@ -11581,7 +11105,7 @@ ecosystem:
         :desc "Dired view file" "d v" #'dired-view-file
         :desc "Find name dired " "d N" #'find-name-dired)))
 
-(use-package peep-dired
+(use-package! peep-dired
   :general
   (:states '(normal visual)
            :keymaps 'dired-mode-map
@@ -11651,7 +11175,7 @@ ecosystem:
 (setq delete-by-moving-to-trash t
       trash-directory "~/.local/share/Trash/files/")
 
-(use-package dired-sidebar
+(use-package! dired-sidebar
   :after dired
   :disabled
   :commands (dired-sidebar-toggle-sidebar)
@@ -11687,7 +11211,7 @@ ecosystem:
   (setq dired-sidebar-use-term-integration t)
   (setq dired-sidebar-use-custom-font t))
 
-(use-package ibuffer-sidebar
+(use-package! ibuffer-sidebar
   :disabled
   :commands +ibuffer-sidebar-toggle
   :general
@@ -11707,7 +11231,7 @@ ecosystem:
       (ibuffer-sidebar-toggle-sidebar))
     (dired-sidebar-toggle-sidebar)))
 
-(use-package dired-rsync
+(use-package! dired-rsync
   :ensure t
   :bind (:map dired-mode-map
          ("r" . dired-rsync))
@@ -11715,11 +11239,11 @@ ecosystem:
   :config
   (setq dired-rsync-unmark-on-completion nil))
 
-(use-package dired-filter
+(use-package! dired-filter
   :ensure t
   :after dired)
 
-(use-package diredfl
+(use-package! diredfl
   :ensure t
   :hook (dired-mode . diredfl-mode))
 #+end_src
@@ -11744,7 +11268,7 @@ Basically, its interaction model is as follows:
 
 #+begin_src emacs-lisp
 ;;; dired-like mode for the trash (trashed.el)
-(use-package trashed
+(use-package! trashed
   :config
   (setq trashed-action-confirmer 'y-or-n-p)
   (setq trashed-use-header-line t)
@@ -11756,7 +11280,7 @@ Keybindings to open files that I work with all the time using the find-file comm
 
 | PATH TO FILE                   | DESCRIPTION           | KEYBINDING |
 |--------------------------------+-----------------------+------------|
-| ~/Org/agenda.org               | /Edit agenda file/      | SPC = a    |
+| ~/Org/agenda/agenda.org        | /Edit agenda file/      | SPC = a    |
 | ~/.config/doom/config.org"     | /Edit doom config.org/  | SPC = c    |
 | ~/.config/doom/init.el"        | /Edit doom init.el/     | SPC = i    |
 | ~/.config/doom/packages.el"    | /Edit doom packages.el/ | SPC = p    |
@@ -11766,7 +11290,7 @@ Keybindings to open files that I work with all the time using the find-file comm
 #+BEGIN_SRC emacs-lisp
 (map! :leader
       (:prefix ("=" . "open file")
-       :desc "Edit agenda file" "a" #'(lambda () (interactive) (find-file "~/org/agenda.org"))
+       :desc "Edit agenda file" "a" #'(lambda () (interactive) (find-file "~/org/agenda/agenda.org"))
        :desc "Edit doom config.org" "c" #'(lambda () (interactive) (find-file "~/.config/doom/config.org"))
        :desc "Edit doom init.el" "i" #'(lambda () (interactive) (find-file "~/.config/doom/init.el"))
        :desc "Edit doom packages.el" "p" #'(lambda () (interactive) (find-file "~/.config/doom/packages.el"))))
@@ -11813,7 +11337,7 @@ Keybindings to open files that I work with all the time using the find-file comm
 │
 ** open with
 #+begin_src emacs-lisp
-(use-package openwith
+(use-package! openwith
   :config
   (setq openwith-associations
         (list
@@ -11838,78 +11362,6 @@ Keybindings to open files that I work with all the time using the find-file comm
 
 #+RESULTS:
 : t
-** DONE Very Basic dired
-CLOSED: [2022-03-30 Wed 19:09]
-#+begin_src emacs-lisp :tangle no
-(use-package dired
-  :ensure nil
-  :custom
-  (dired-listing-switches "-NGalhv --group-directories-first")
-  (dired-auto-revert-buffer t)
-  (dired-kill-when-opening-new-dired-buffer t))
-
-(use-package dired-subtree
-  :bind (:map dired-mode-map
-              ([tab] . dired-subtree-toggle)
-              ([C-tab] . dired-subtree-cycle))
-  :custom
-  (dired-subtree-line-prefix "  |-")
-  (dired-subtree-use-backgrounds nil))
-
-(use-package dired-aux
-  :ensure nil
-  :defer t
-  :config
-  (add-to-list 'dired-compress-file-suffixes
-               '("\\.txz\\'" "" "xz -dc %i | tar -xf -")))
-
-
-(map! :leader
-      (:prefix ("d" . "dired")
-       :desc "Open dired" "d" #'dired
-       :desc "Dired jump to current" "j" #'dired-jump)
-      (:after dired
-       (:map dired-mode-map
-        :desc "Peep-dired image previews" "d p" #'peep-dired
-        :desc "Dired view file" "d v" #'dired-view-file
-        :desc "Find name dired " "d N" #'find-name-dired)))
-
-(evil-define-key 'normal dired-mode-map
-  (kbd "M-RET") 'dired-display-file
-  (kbd "h") 'dired-up-directory
-  (kbd "l") 'dired-open-file ; use dired-find-file instead of dired-open.
-  (kbd "m") 'dired-mark
-  (kbd "t") 'dired-toggle-marks
-  (kbd "u") 'dired-unmark
-  (kbd "C") 'dired-do-copy
-  (kbd "D") 'dired-do-delete
-  (kbd "J") 'dired-goto-file
-  (kbd "M") 'dired-do-chmod
-  (kbd "O") 'dired-do-chown
-  (kbd "P") 'dired-do-print
-  (kbd "R") 'dired-do-rename
-  (kbd "T") 'dired-do-touch
-  (kbd "Y") 'dired-copy-filenamecopy-filename-as-kill ; copies filename to kill ring.
-  (kbd "+") 'dired-create-directory
-  (kbd "-") 'dired-up-directory
-  (kbd "% l") 'dired-downcase
-  (kbd "% u") 'dired-upcase
-  (kbd "; d") 'epa-dired-do-decrypt
-  (kbd "; e") 'epa-dired-do-encrypt)
-;; Get file icons in dired
-(add-hook 'dired-mode-hook 'all-the-icons-dired-mode)
-;; With dired-open plugin, you can launch external programs for certain extensions
-;; For example, I set all .png files to open in 'sxiv' and all .mp4 files to open in 'mpv'
-(setq dired-open-extensions '(("gif" . "sxiv")
-                              ("jpg" . "sxiv")
-                              ("png" . "sxiv")
-                              ("mkv" . "mpv")
-                              ("webm" . "mpv")
-                              ("mp4" . "mpv")))
-#+end_src
-
-#+RESULTS:
-: ((gif . sxiv) (jpg . sxiv) (png . sxiv) (mkv . mpv) (webm . mpv) (mp4 . mpv))
 * hydra
 ** Extensions for PDFs (pdf-tools)
 :PROPERTIES:
@@ -11972,7 +11424,7 @@ in the manual of the themes.  If you are using them, evaluate this form:
 
 #+begin_src emacs-lisp
 ;;; Extensions for PDFs (pdf-tools)
-(use-package pdf-tools
+(use-package! pdf-tools
   :config
   (setq pdf-tools-enabled-modes         ; simplified from the defaults
         '(pdf-history-minor-mode
@@ -12011,7 +11463,7 @@ in the manual of the themes.  If you are using them, evaluate this form:
 
 ** Hydra
 #+begin_src emacs-lisp
-(use-package hydra
+(use-package! hydra
   ;; :ensure t
   :defer 0.1
   :init
@@ -12599,7 +12051,7 @@ in the manual of the themes.  If you are using them, evaluate this form:
 
 ** pdf-tool
 #+begin_src emacs-lisp
-(use-package pdf-tools
+(use-package! pdf-tools
   ;; :ensure t
   :config
   (pdf-tools-install)
@@ -12683,7 +12135,7 @@ in the manual of the themes.  If you are using them, evaluate this form:
         ("l" image-forward-hscroll :color red)
         ("h" image-backward-hscroll :color red)))
 
-   (use-package org-pdfview
+   (use-package! org-pdfview
      :ensure t))
 #+end_src
 
@@ -12696,7 +12148,7 @@ in the manual of the themes.  If you are using them, evaluate this form:
 ;;;----------------------------------------------------------------
 ;; ** HYDRAS
 ;;;----------------------------------------------------------------
-(use-package hydra
+(use-package! hydra
   :defer
   :ensure t
   :config
@@ -12809,7 +12261,7 @@ _d_: subtree
 
 ** git-time-machine
 #+begin_src emacs-lisp :tangle no
-(use-package git-timemachine
+(use-package! git-timemachine
   ;; :ensure t
   :commands git-timemachine
   :config
@@ -12878,7 +12330,7 @@ buffer (see [[#h:c110e399-3f43-4555-8427-b1afe44c0779][Minibuffer configurations
 
 #+begin_src emacs-lisp :tangle no
 
-(use-package avy
+(use-package! avy
   :config
   (setq avy-all-windows nil) ; only the current window
   (setq avy-all-windows-alt t) ; all windows with C-u
@@ -12921,7 +12373,7 @@ buffer (see [[#h:c110e399-3f43-4555-8427-b1afe44c0779][Minibuffer configurations
 #+begin_src emacs-lisp
 ;; ** AVY
 ;;;----------------------------------------------------------------
-(use-package avy
+(use-package! avy
   :ensure t
   :commands (avy-goto-word-1 avy-goto-char-2 avy-goto-char-timer)
   :config
@@ -13211,7 +12663,7 @@ CLOSED: [2022-03-30 Wed 09:31]
 #+begin_src emacs-lisp
 ;;; URLs
 (require 'url-util)
-(use-package goto-addr
+(use-package! goto-addr
   :hook ((compilation-mode . goto-address-mode)
           (prog-mode . goto-address-prog-mode)
           (magit-mode . goto-address-mode)
@@ -13226,7 +12678,7 @@ CLOSED: [2022-03-30 Wed 09:31]
 CLOSED: [2022-03-30 Wed 09:32]
 #+BEGIN_SRC emacs-lisp
 ;; wolfram alpha queries (M-x wolfram-alpha)
-(use-package wolfram
+(use-package! wolfram
   :defer t
   :config
   (setq wolfram-alpha-app-id "KTKV36-2LRW2LELV8"))
@@ -13239,10 +12691,10 @@ CLOSED: [2022-03-30 Wed 09:32]
 CLOSED: [2022-04-01 Fri 16:00]
 #+begin_src emacs-lisp
 ;; It's useful to send a buffer, or part of it, to a bin online and then send the corresponding link to someone. The clbin package does that, in a DWIM manner: send the current region (if any) or the whole buffer, and save the corresponding url in the kill-ring.
-;; (use-package clbin
+;; (use-package! clbin
 ;;   ;; :straight nil
 ;;   :bind ("C-c w" . clbin-dwim))
-(use-package webpaste
+(use-package! webpaste
   ;; :ensure t
   :bind (("C-c C-p C-b" . webpaste-paste-buffer)
          ("C-c C-p C-r" . webpaste-paste-region)
@@ -13286,7 +12738,7 @@ CLOSED: [2022-04-01 Fri 16:00]
 ** DONE 0x0
 CLOSED: [2022-04-01 Fri 15:59]
 #+begin_src emacs-lisp
-(use-package 0x0
+(use-package! 0x0
   :ensure
   :commands (0x0-upload 0x0-dwim)
   :bind ("C-x U" . 0x0-dwim))
@@ -13313,7 +12765,7 @@ what we can do with Emacs.  It does so in a way that feels natural and
 actually useful.  Well done, Daniel!
 
 #+begin_src emacs-lisp
-(use-package osm
+(use-package! osm
   :config
 
   (let ((map global-map))
@@ -13377,7 +12829,7 @@ ERC is a built-in Emacs IRC client.
 ** telega
 #+begin_src emacs-lisp :tangle yes
 
-(use-package telega
+(use-package! telega
     :commands (telega)
     :init
         (defun my/telega/olivetti () (setq-local olivetti-body-width 100))
@@ -13415,7 +12867,7 @@ ERC is a built-in Emacs IRC client.
 
 ** Google Translate
 #+begin_src emacs-lisp
-     (use-package google-translate
+     (use-package! google-translate
        :demand t
        :init
             (require 'google-translate)
@@ -13445,7 +12897,7 @@ ERC is a built-in Emacs IRC client.
 ;; python-pycryptodome
 ;; atomicparsley
 ;; mpv
-(use-package youtube-dl
+(use-package! youtube-dl
   :defer t
   :init
   (setq youtube-dl-directory "~/Downloads/")
@@ -13462,7 +12914,7 @@ ERC is a built-in Emacs IRC client.
 ;; Query Google's knowledge graph. This is the answer that shows up before the
 ;; first result in Google searches. For this purpose we use tuxi, an external
 ;; tool that queries Google.
-(use-package emacs
+(use-package! emacs
   :config
   (defvar google-search-history nil
     "List of queries to google-search-string.")
@@ -13517,7 +12969,7 @@ active region use it instead."
 ;; * PATHS
 
 ;; I avoid defining too many custom helpers, =dir-concat= is an exception.
-(use-package emacs
+(use-package! emacs
   :config
   (defun dir-concat (dir file)
     "join path DIR with filename FILE correctly"
@@ -13602,7 +13054,7 @@ EWW is the Emacs Web Wowser, the builtin browser in Emacs.  Below I set urls to 
 ;;        :desc "Eww reload page" "R" #'eww-reload))
 
    ;; :browser 'browse-url-qutebrowser) this can be used to open specific urls with specific brouwser
-(use-package eww
+(use-package! eww
   :ensure nil
   :config
   ;; (setq browse-url-handlers
@@ -13614,7 +13066,7 @@ EWW is the Emacs Web Wowser, the builtin browser in Emacs.  Below I set urls to 
   (eww-use-external-browser-for-content-type
    "\\`\\(video/\\|audio/\\|application/ogg\\|application/pdf\\)"))
 
-(use-package engine-mode
+(use-package! engine-mode
   :config
   (defengine duckduckgo
     "https://duckduckgo.com/html?q=%s"
@@ -13962,12 +13414,12 @@ some of the above.
 **** code
 #+begin_src emacs-lisp
 ;;; Simple HTML Renderer (shr), Emacs Web Wowser (eww), Elpher, and prot-eww.el
-(use-package browse-url
+(use-package! browse-url
   :config
   (setq browse-url-browser-function 'eww-browse-url)
   (setq browse-url-secondary-browser-function 'browse-url-default-browser))
 
-(use-package shr
+(use-package! shr
   :config
   (setq shr-use-colors nil)             ; t is bad for accessibility
   (setq shr-use-fonts nil)              ; t is not for me
@@ -13977,11 +13429,11 @@ some of the above.
   (setq shr-discard-aria-hidden t)
   (setq shr-cookie-policy nil))
 
-(use-package url-cookie
+(use-package! url-cookie
   :config
   (setq url-cookie-untrusted-urls '(".*")))
 
-(use-package eww
+(use-package! eww
   :config
   (setq eww-restore-desktop t)
   (setq eww-desktop-remove-duplicates t)
@@ -14018,10 +13470,10 @@ some of the above.
   (define-key eww-buffers-mode-map (kbd "d") #'eww-buffer-kill)   ; it actually deletes
   (define-key eww-bookmark-mode-map (kbd "d") #'eww-bookmark-kill)) ; same
 
-(use-package elpher)    ; NOTE 2021-07-24: work-in-progress
+(use-package! elpher)    ; NOTE 2021-07-24: work-in-progress
 
 (load "prot-eww")
-(use-package prot-eww
+(use-package! prot-eww
   :config
   (setq prot-eww-save-history-file
         (locate-user-emacs-file "prot-eww-visited-history"))
@@ -14201,7 +13653,7 @@ buffer."
 ;;;----------------------------------------------------------------
 ;; ** BROWSE-URL
 ;;;----------------------------------------------------------------
-(use-package browse-url
+(use-package! browse-url
   :commands (browse-url-at-point-umpv browse-url-umpv)
   :config
   (when IS-LINUX
@@ -14231,273 +13683,7 @@ buffer."
 #+RESULTS:
 : t
 
-** email
-#+begin_src emacs-lisp :tangle no
-
-;; -*- lexical-binding: t -*-
-;;
-;; * SENDMAIL
-;;
-;; We use msmtp. Also of note is automatic selection of the
-;; right from address when replying to email.
-(use-package sendmail
-  :after (message notmuch)
-  :config
-  (setq mail-host-address "gmail.com"
-        send-mail-function 'sendmail-send-it
-        message-send-mail-function 'message-send-mail-with-sendmail
-        sendmail-program "/usr/bin/msmtp"
-        mail-specify-envelope-from t
-        message-sendmail-envelope-from 'header
-        mail-envelope-from 'header)
-
-  ;; Choose account label to feed msmtp -a option based on From header in Message buffer;
-  ;; This function must be added to message-send-mail-hook for on-the-fly change of From address
-  ;; before sending message since message-send-mail-hook is processed right before sending message.
-  (defun cg-feed-msmtp ()
-    (if (message-mail-p)
-        (save-excursion
-          (let* ((from
-                  (save-restriction
-                    (message-narrow-to-headers)
-                    (message-fetch-field "from")))
-                 (account
-                  (cond
-                   ;; I use email address as account label in ~/.msmtprc
-                   ((string-match my-email-address from) my-email-dir)
-                   ((seq-some (lambda (x) (string-match x from))
-                              my-alt-email-addresses)
-                    my-alt-email-dir))))
-            (setq message-sendmail-extra-arguments (list '"-a" account))))))
-  ;; the original form of this script did not have the ' before "a" which causes
-  ;; a very difficult to track bug --frozencemetery
-  (add-hook 'message-send-mail-hook #'cg-feed-msmtp)
-  )
-
-;;* NOTMUCH
-
-(use-package notmuch
-  :commands notmuch
-  :bind (("C-x m" . notmuch-mua-new-mail)
-         ("C-x M-m" . notmuch-jump-search))
-  :hook ((notmuch-message-mode . turn-off-auto-fill)
-         (notmuch-mua-send . notmuch-mua-attachment-check))
-  :config
-  (setq-default notmuch-search-oldest-first nil)
-  (setq notmuch-show-logo nil
-        notmuch-fcc-dirs nil
-        notmuch-column-control 0.6
-        notmuch-message-headers-visible nil
-        notmuch-saved-searches my-notmuch-saved-searches
-        message-kill-buffer-on-exit t
-        ;; notmuch-search-result-format
-        ;; '(("date" . "%12s ")
-        ;;   ("count" . "%-7s ")
-        ;;   ("authors" . "%-30s ")
-        ;;   ("subject" . "%-72s ")
-        ;;   ("tags" . "(%s)"))
-        ;; notmuch-tag-formats
-        ;; '(("unread" (propertize tag 'face 'notmuch-tag-unread)))
-        notmuch-always-prompt-for-sender t
-        notmuch-archive-tags '("-inbox" "-unread")
-        notmuch-hello-sections
-        '(notmuch-hello-insert-saved-searches
-          notmuch-hello-insert-alltags))
-
-  (setq notmuch-search-line-faces '(("flagged"   . (:inherit notmuch-search-flagged-face
-                                                    :foreground "IndianRed"))
-                                    ("ucsb"      . (:foreground "MediumPurple"))
-				    ("important" . (:foreground "CornflowerBlue"))
-                                    ("unread"    . (:inherit notmuch-search-unread-face
-                                                    ;; :background "gray16"
-                                                    ))))
-
-  (defun notmuch-search-make-tagger (&rest tags)
-    (lambda () (interactive)
-      (let ((taglist (mapcar (lambda (tag)
-                               (if (member tag (notmuch-search-get-tags))
-                                   (concat "-" tag)
-                                 (concat "+" tag)))
-                             tags)))
-        (notmuch-search-tag taglist)
-        (message "Tagged: %s" (mapconcat #'identity taglist " "))
-        (notmuch-search-next-thread))))
-
-  (defun notmuch-show-make-tagger (&rest tags)
-    (lambda () (interactive)
-      (let ((taglist (mapcar (lambda (tag)
-                               (if (member tag (notmuch-show-get-tags))
-                                   (concat "-" tag)
-                                 (concat "+" tag)))
-                             tags)))
-        (notmuch-show-tag taglist)
-        (message "Tagged: %s" (mapconcat #'identity taglist " "))
-        (notmuch-show-next-message))))
-
-  (defun notmuch-tree-make-tagger (&rest tags)
-    (lambda (&optional all) (interactive "P")
-      (let ((taglist (mapcar (lambda (tag)
-                               (if (member tag (notmuch-tree-get-tags))
-                                   (concat "-" tag)
-                                 (concat "+" tag)))
-                             tags)))
-        (if all
-            (notmuch-tree-tag-thread taglist)
-          (notmuch-tree-tag taglist))
-        (message "Tagged: %s" (mapconcat #'identity taglist " "))
-        (notmuch-tree-next-thread))))
-
-  (define-key notmuch-search-mode-map (kbd "f") (notmuch-search-make-tagger "flagged"))
-  (define-key notmuch-show-mode-map (kbd "f") (notmuch-show-make-tagger "flagged"))
-  (define-key notmuch-tree-mode-map (kbd "f") (notmuch-tree-make-tagger "flagged"))
-
-  (define-key notmuch-search-mode-map (kbd "d") (notmuch-search-make-tagger "trash" "inbox"))
-  (define-key notmuch-show-mode-map (kbd "d") (notmuch-show-make-tagger "trash" "inbox"))
-  (define-key notmuch-tree-mode-map (kbd "d") (notmuch-tree-make-tagger "trash" "inbox"))
-
-
-  ;;; (define-key notmuch-show-mode-map "`" 'notmuch-show-apply-tag-macro)
-  ;;; (define-key notmuch-search-mode-map "`" 'notmuch-show-apply-tag-macro)
-    ;
-  ;;; (define-prefix-command notmuch-tagger-map)
-  ;;; (let ((map notmuch-tagger-map))
-  ;;;   (define-key map "")
-  ;;;   )
-    ;
-  ;;; (defun notmuch-show-apply-tag-macro (key)
-  ;;;   (interactive "k")
-  ;;;   (let ((macro (assoc key notmuch-show-tag-macro-alist)))
-  ;;;     (apply 'notmuch-show-tag-message (cdr macro))))
-    ;
-  ;;; (defun +disable-C-tab (mode-map)
-  ;;;   "Disable Control-Tab in mode-map"
-  ;;;   (define-key mode-map (kbd "C-TAB") nil)
-  ;;;   (define-key mode-map (kbd "C-<tab>") nil))
-    ;
-  ;;; (dolist (mode '((notmuch-hello-mode-hook . notmuch-hello-mode-map)
-  ;;;                 (notmuch-show-mode-hook . notmuch-show-mode-map)
-  ;;;                 (notmuch-message-mode-hook . notmuch-message-mode-map)
-  ;;;                 (notmuch-tree-mode-hook . notmuch-tree-mode-map)
-  ;;;                 (notmuch-search-mode-hook . notmuch-search-mode-map)))
-  ;;;   (let ((mode-hook (car mode))
-  ;;;         (mode-map (cdr mode)))
-  ;;;     (add-hook mode-hook
-  ;;;               (lambda ()
-  ;;;                 (+disable-C-tab mode-map)))))
-    ;
-    ;
-  ;;; (define-key notmuch-common-keymap (kbd "C-TAB") nil)
-  ;;; (define-key notmuch-common-keymap (kbd "C-<tab>") nil)
-    ;
-    ;
-  ;;; (add-hook 'notmuch-show-hook #'my-next-unread)
-  ;;; (defun my-next-unread ()
-  ;;;   (interactive)
-  ;;;   (let ((init (point)))
-  ;;;     (catch 'break
-  ;;;       (while t
-  ;;;         (when (member "unread" (notmuch-show-get-tags))
-  ;;;           (let ((props (notmuch-show-get-message-properties)))
-  ;;;             (notmuch-show-message-visible props t)
-  ;;;             (notmuch-show-mark-read)
-  ;;;             (throw 'break t)))
-  ;;;         (when (not (notmuch-show-goto-message-next))
-  ;;;           (message "No more unread messages.")
-  ;;;           (goto-char init)
-  ;;;           (throw 'break t))))))
-  )
-
-(use-package notmuch-bookmarks
-:after notmuch
-:config
-(notmuch-bookmarks-mode))
-
-;; * CONSULT-NOTMUCH
-
-;; [[https://melpa.org/#/consult-notmuch][consult-notmuch]] provides consult
-;; commands for live-searching a notmuch database.
-;;
-;; I use a couple of date-oriented custom notmuch search commands instead of the
-;; default, bound to my "search map" (=M-s=) prefix:
-
-(use-package consult-notmuch
-  :load-path "~/.local/share/git/consult-notmuch/"
-  :after consult
-  :bind (("M-s M-m" . consult-notmuch-latest-tree)
-         ("M-s m" . consult-notmuch-latest))
-  :config
-  (defun consult-notmuch-latest (&optional arg)
-    (interactive "P")
-    (let ((consult-async-input-debounce 0.6)
-          (consult-async-input-throttle 0.7))
-      (consult-notmuch
-       (unless arg "tag:inbox date:1d.."))))
-  (defun consult-notmuch-latest-tree (&optional arg)
-    (interactive "P")
-    (let ((consult-async-input-debounce 0.6)
-          (consult-async-input-throttle 0.7))
-      (consult-notmuch-tree
-       (unless arg "tag:inbox date:1d..")))))
-
-;; Add a notmuch buffer-source to =consult-buffer=. This is provided by
-;; consult-notmuch.
-
-(use-package consult
-  :after (notmuch consult-notmuch)
-  :config
-  (add-to-list 'consult-buffer-sources 'consult-notmuch-buffer-source))
-
-;; Embark actions on =consult-notmuch= search results to add/remove tags, and an
-;; Embark exporter that displays search results in a =notmuch-search= buffer.
-;;
-;; This code [[https://codeberg.org/jao/consult-notmuch/pulls/6][will be part of
-;; consult-notmuch]] soon.
-
-(use-package embark
-  :after (notmuch embark)
-  :config
-  (defun embark-notmuch-make-tagger (tags)
-    "Make a function to tag a message with TAGS."
-    (lambda (msg)
-      "Tag a notmuch message using Embark."
-      (when-let ((thread-id (consult-notmuch--thread-id msg)))
-        (notmuch-tag (concat "(" thread-id ")")
-                     (split-string tags)))))
-  (defun embark-export-consult-notmuch (msgs)
-    "Create a notmuch search buffer listing messages."
-    (notmuch-search
-     (concat "("
-             (mapconcat #'consult-notmuch--thread-id msgs " ")
-             ")")))
-
-  (defun embark-notmuch-tag (msg)
-    (when-let* ((thread-id (consult-notmuch--thread-id msg))
-                (tags (get-text-property 0 'tags msg))
-                (tag-changes (notmuch-read-tag-changes
-                              tags "Tags: "
-                             "+")))
-      (notmuch-tag (concat "(" thread-id ")")
-                   tag-changes)))
-
-  (defvar embark-notmuch-map
-    (let ((map (make-sparse-keymap)))
-      (define-key map (kbd "d") (embark-notmuch-make-tagger "+trash -inbox"))
-      (define-key map (kbd "a") (embark-notmuch-make-tagger "-inbox"))
-      (define-key map (kbd "f") (embark-notmuch-make-tagger "+flagged"))
-      (define-key map (kbd "+") 'embark-notmuch-tag)
-      (define-key map (kbd "-") 'embark-notmuch-tag)
-      map)
-    "Keymap for actions on Notmuch entries.")
-  (add-to-list 'embark-keymap-alist '(notmuch-result . embark-notmuch-map))
-  (add-to-list 'embark-exporters-alist '(notmuch-result . embark-export-consult-notmuch)))
-
-(provide 'setup-email)
-#+end_src
-
 ** Email settings
-:PROPERTIES:
-:CUSTOM_ID: h:5ad80664-3163-4d9d-be65-462637d77903
-:END:
 
 Once you delve into the technical details, email is hard as it consists
 of arcane specs and protocols.  Combined with Emacs' open-endedness as
@@ -15778,7 +14964,7 @@ Also see: [[#h:aa64c61e-49b5-41b0-b1fe-10bbe3be661f][Sample configuration for MP
 **** code
 #+begin_src emacs-lisp :tangle no
 ;;; Elfeed feed reader, prot-elfeed.el and prot-elfeed-bongo.el
-(use-package elfeed
+(use-package! elfeed
   :config
   (setq elfeed-use-curl t)
   (setq elfeed-curl-max-connections 10)
@@ -15799,7 +14985,7 @@ Also see: [[#h:aa64c61e-49b5-41b0-b1fe-10bbe3be661f][Sample configuration for MP
   (add-hook 'elfeed-show-mode-hook
             (lambda () (setq-local shr-width (current-fill-column))))
 
-  (use-package prot-elfeed-bongo)
+  (use-package! prot-elfeed-bongo)
 
   (define-key global-map (kbd "C-c e") #'elfeed)
   (let ((map elfeed-search-mode-map))
@@ -15814,7 +15000,7 @@ Also see: [[#h:aa64c61e-49b5-41b0-b1fe-10bbe3be661f][Sample configuration for MP
 
 (with-eval-after-load 'elfeed
   (load "prot-elfeed")
-  (use-package prot-elfeed
+  (use-package! prot-elfeed
     :config
     (setq prot-elfeed-tag-faces t)
     (prot-elfeed-fontify-tags)
@@ -15962,7 +15148,7 @@ This one is a pleasant surprise to have honestly. Having Emacs handle system pac
 #+begin_src emacs-lisp
 
 (require 'system-packages)
-(use-package system-packages
+(use-package! system-packages
   :ensure t
   :defer t
   :init
@@ -16064,13 +15250,13 @@ Other potentially relevant parts of my dotemacs:
 
 #+begin_src emacs-lisp :tangle yes
 ;;; Custom extensions for "focus mode" (logos.el)
-(use-package olivetti
+(use-package! olivetti
   :config
   (setq olivetti-body-width 0.7)
   (setq olivetti-minimum-body-width 80)
   (setq olivetti-recall-visual-line-mode-entry-state t))
 
-(use-package logos
+(use-package! logos
   :config
   (setq logos-outlines-are-pages t)
   (setq logos-outline-regexp-alist
@@ -16113,7 +15299,7 @@ Other potentially relevant parts of my dotemacs:
 #+begin_src emacs-lisp :tangle yes
 
 ;; Misc git functions
-(use-package emacs
+(use-package! emacs
   :config
   ;; From http://xenodium.com/emacs-clone-git-repo-from-clipboard/
   ;; Auto-git-clone url in clipboard
@@ -16170,14 +15356,14 @@ I also use Emacs to play games and do other fun things. Using swiper means I don
 ;; Yahtzee
 ;; Fun dice game. Now I can get mad at Emacs instead of my sister.
 
-(use-package yahtzee
+(use-package! yahtzee
   ;; :ensure t
   :defer t
   :bind ("C-c g y" . yahtzee))
 ;; Sudoku
 ;; I love sudoku puzzles.
 
-(use-package sudoku
+(use-package! sudoku
   ;; :ensure t
   :defer t
   :bind (("C-c g s" . sudoku)
@@ -16214,7 +15400,7 @@ I also use Emacs to play games and do other fun things. Using swiper means I don
 ;; Tetris
 ;; Tetris is my childhood. No way I wouldn’t set it up to be nice and comfy.
 
-(use-package tetris
+(use-package! tetris
   :defer t
   :bind (("C-c g t" . 'tetris)
          :map tetris-mode-map
@@ -16233,14 +15419,14 @@ I also use Emacs to play games and do other fun things. Using swiper means I don
   ;; Chess
   ;; Just for fun. I suck at chess but it’s nice to have.
 
-  (use-package chess
+  (use-package! chess
     ;; :ensure t
     :defer t
     :bind ("C-c g c" . chess))
   ;; 2048
   ;; A simple and fun game. Was a big deal when I was in high school. I still play it from time to time, to pass the time and remember my powers of 2.
 
-  (use-package 2048-game
+  (use-package! 2048-game
     ;; :ensure t
     :defer t
     :bind (("C-c g 2" . 2048-game)
@@ -16251,7 +15437,7 @@ I also use Emacs to play games and do other fun things. Using swiper means I don
     ("l" . 2048-right)))
 
 
-  (use-package pacmacs
+  (use-package! pacmacs
     ;; :ensure t
     :defer t
     :bind (("C-c g p" . pacmacs)
@@ -16310,7 +15496,7 @@ being it has no notion of multiple timers---just the last one.
 #+begin_src emacs-lisp
 ;;; TMR Must Recur (just my generic timer)
 (load "tmr.el")
-(use-package tmr
+(use-package! tmr
 :config
   (setq tmr-sound-file
         "/usr/share/sounds/freedesktop/stereo/alarm-clock-elapsed.oga")
@@ -17241,7 +16427,7 @@ panel.
       calc-symbolic-mode t) ; keeps expressions like \sqrt{2} irrational for as long as possible
 ;; ** CALC
 ;;;----------------------------------------------------------------
-(use-package calc
+(use-package! calc
   :bind (("C-x c" . calc)
          ("H-S-c" . calc)
          ("H-*" . calc-dispatch)
@@ -17355,7 +16541,7 @@ the variable =display-buffer-alist=).
 
 #+begin_src emacs-lisp :tangle no
 ;;; Diff-mode (and prot-diff.el extensions)
-(use-package diff-mode
+(use-package! diff-mode
   :config
   (setq diff-default-read-only t)
   (setq diff-advance-after-apply-hunk t)
@@ -17369,7 +16555,7 @@ the variable =display-buffer-alist=).
 (add-to-list 'load-path "~/.config/doom/lisp/")
 
 (load "prot-diff")
- (use-package prot-diff
+ (use-package! prot-diff
    :config
    ;; (prot-diff-modus-themes-diffs)
    (add-hook 'modus-themes-after-load-theme-hook #'prot-diff-modus-themes-diffs)
@@ -17934,9 +17120,9 @@ Also watch my video of [[https://protesilaos.com/codelog/2020-04-10-emacs-smerge
 
 #+begin_src emacs-lisp :tangle no
 ;;; Smerge and Ediff
-(use-package smerge-mode)
+(use-package! smerge-mode)
 
-(use-package ediff
+(use-package! ediff
   :config
   (setq ediff-keep-variants nil)
   (setq ediff-make-buffers-readonly-at-startup nil)
@@ -18080,7 +17266,7 @@ the subsequent code block.
 #+begin_src emacs-lisp
 ;;; USLS --- Unassuming Sidenotes of Little Significance
 (load "usls.el")
-(use-package usls
+(use-package! usls
   :config
   (setq usls-directory (expand-file-name "~/Documents/notes/"))
   (setq usls-known-categories '("economics" "philosophy" "politics"))
@@ -18118,7 +17304,7 @@ my USLS (see [[#h:787df548-0d95-4512-a61d-27852198f561][USLS --- Unassuming Side
 #+begin_src emacs-lisp :tangle no
 ;;; INVTR (toy inventory and client manager)
 ;; DO NOT USE THIS!!!
-;; (use-package invtr)
+;; (use-package! invtr)
 #+end_src
 
 ** Repeatable key chords (repeat-mode)
@@ -18186,7 +17372,7 @@ sort, consider Emacs' registers or bookmarks.
 
 #+begin_src emacs-lisp
 ;;; Repeatable key chords (repeat-mode)
-(use-package repeat
+(use-package! repeat
   :config
   (setq repeat-on-final-keystroke t)
   (setq set-mark-command-repeat-pop t)
@@ -18282,7 +17468,7 @@ canonical.
 
 #+begin_src emacs-lisp
 ;;; Tools for manual pages (manpages)
-(use-package man
+(use-package! man
    :ensure nil
   :config
   (let ((map Man-mode-map))
@@ -18317,7 +17503,7 @@ CLOSED: [2022-03-30 Wed 10:22]
 (setq which-key-show-prefix 'left)
 
 ;; (setq which-key-show-remaining-keys 't)
-  (use-package which-key
+  (use-package! which-key
     :after which-key
     :config
     ;; (advice-add 'repeat-post-hook :after
@@ -18394,14 +17580,14 @@ One of the media players available for Emacs is emms, which stands for Emacs Mul
        ;; (require 'emms-dbus)
        ;; (emms-dbus-enable)
 
-(use-package versuri
+(use-package! versuri
   :config
   (defun my/versuri-select ()
     (interactive)
     (when-let (match (call-interactively #'versuri-search))
       (apply #'versuri-display match))))
 
-(use-package emms
+(use-package! emms
   :commands (emms)
   :bind ("C-c e" . hydra-emms/body)
   :config
@@ -18616,17 +17802,17 @@ CLOSED: [2022-04-15 Fri 11:42]
 #+begin_src emacs-lisp :tangle no
 
 ;; Don't forget to run M-x eaf-install-dependencies
-(use-package eaf
+(use-package! eaf
   ;; :unless gv/is-termux
   :bind (("C-c W" . gv/bm))
   ;; :demand t
   ;; Set to "/usr/share/emacs/site-lisp/eaf" if installed from AUR
   :load-path "~/.emacs.d/site-lisp/emacs-application-framework/"
   :init
-  (use-package epc      :defer t :ensure t)
-  (use-package ctable   :defer t :ensure t)
-  (use-package deferred :defer t :ensure t)
-  (use-package s        :defer t :ensure t)
+  (use-package! epc      :defer t :ensure t)
+  (use-package! ctable   :defer t :ensure t)
+  (use-package! deferred :defer t :ensure t)
+  (use-package! s        :defer t :ensure t)
   ;; (setq browse-url-browser-function 'eaf-open-browser)
   :config
   (defun slurp (f)
@@ -18678,7 +17864,7 @@ CLOSED: [2022-04-15 Fri 11:42]
 #+begin_src emacs-lisp :tangle no
 
 (add-to-list 'load-path "~/.emacs.d/site-lisp/emacs-application-framework/")
-(use-package eaf
+(use-package! eaf
   :load-path "~/.emacs.d/site-lisp/emacs-application-framework"
   :custom
   (setq eaf-browser-continue-where-left-off t)
@@ -18965,21 +18151,27 @@ Allows you to jump in and out of latex fragments without using `C-c C-x C-l` all
 Custom Highlighting -  so = becomes =red=.
 #+begin_src emacs-lisp :tangle no
 (after! org
-(setq org-emphasis-alist
+  (setq org-emphasis-alist
         '(("*" (bold))
           ("/" italic)
           ("_" underline)
+          ("=" org-verbatim verbatim)
+          ("~" org-code verbatim)
           ("=" redd)
           ("~" code)
-          ("+" (:strike-through t)))))
+          ("+"
+           (:strike-through t)))))
+
 #+end_src
 
 #+RESULTS:
-| * | (bold)              |
-| _ | underline           |
-| = | redd                |
-| ~ | code                |
-| + | (:strike-through t) |
+| * | (bold)              |          |
+| _ | underline           |          |
+| = | org-verbatim        | verbatim |
+| ~ | org-code            | verbatim |
+| = | redd                |          |
+| ~ | code                |          |
+| + | (:strike-through t) |          |
 
 ***** Heading structure
 Speaking of headlines, a nice package for viewing and managing the heading
@@ -19370,7 +18562,7 @@ set up org-capture.
 
   (setq doct-after-conversion-functions '(+doct-iconify-capture-templates))
 
-  (defvar +org-capture-recipies  "~/Desktop/TEC/Organisation/recipies.org")
+  (defvar +org-capture-recipies  "~/org/recipies.org")
 
   (defun set-org-capture-templates ()
     (setq org-capture-templates
@@ -19824,6 +19016,24 @@ with it.
 )
 
 #+end_src
+
+#+RESULTS:
+#+begin_example
+,#+TITLE: ${title}
+,#+ROAM_KEY: cite:${=key=}
+,* TODO Notes
+:PROPERTIES:
+:Custom_ID: ${=key=}
+:NOTER_DOCUMENT: %(orb-process-file-field "${=key=}")
+:AUTHOR: ${author-abbrev}
+:JOURNAL: ${journaltitle}
+:DATE: ${date}
+:YEAR: ${year}
+:DOI: ${doi}
+:URL: ${url}
+:END:
+
+#+end_example
 
 **** Nicer generated heading IDs
 Thanks to alphapapa's [[https://github.com/alphapapa/unpackaged.el#export-to-html-with-useful-anchors][unpackaged.el]].
@@ -20420,12 +19630,12 @@ Mixed pitch is great. As is ~+org-pretty-mode~, let's use them.
 #+end_src
 
 #+RESULTS:
-| doom--customize-themes-h-9 | doom--customize-themes-h-28 | doom--customize-themes-h-29 | doom--customize-themes-h-36 | doom--customize-themes-h-37 |
+| doom--customize-themes-h-9 | doom--customize-themes-h-16 | doom--customize-themes-h-17 |
 
 You can set the Org heading levels to be different font sizes.  So I choose to have level 1 headings to be 140% in height, level 2 to be 130%, etc.  Other interesting things you could play with include adding :foreground color and/or :background color if you want to override the theme colors.
 Let's make headings a bit bigger
 
-#+begin_src emacs-lisp
+#+begin_src emacs-lisp :tangle no
 (after! org
   (custom-set-faces!
     '(org-level-1 :inherit outline-1 :weight extra-bold :height 1.35)
@@ -20497,7 +19707,7 @@ problematic beyond the expected slight delay in some fontification, so until I
 do I'll use the above.
 **** making it look like a word processor
 
-This is a personal proference. On one hand, having Org's indentation and stars is nice for making lists, but I am trying to use emacs as a word processor to get my thoughts down. For this purpose, it makes sense to remove the stars and indentation.
+This is a personal preference. On one hand, having Org's indentation and stars is nice for making lists, but I am trying to use emacs as a word processor to get my thoughts down. For this purpose, it makes sense to remove the stars and indentation.
 ***
 #+begin_src emacs-lisp :tangle no
 (defun org-mode-remove-stars ()
@@ -20763,7 +19973,7 @@ It's also nice to make use of the Unicode characters for check boxes, and other 
 #+end_src
 
 #+begin_src emacs-lisp
-;; (use-package org-pretty-tags
+;; (use-package! org-pretty-tags
 ;; :config
 ;;  (setq org-pretty-tags-surrogate-strings
 ;;        `(("uni"        . ,(all-the-icons-faicon   "graduation-cap" :face 'all-the-icons-purple  :v-adjust 0.01))
@@ -20935,8 +20145,8 @@ We need ox-man for "Org eXporting" to manpage format and ox-gemini for exporting
 =NOTE:= I also enable ox-publish for converting an Org site into an HTML site, but that is done in init.el (org +publish).
 
 #+BEGIN_SRC emacs-lisp
-(use-package ox-man)
-(use-package ox-gemini)
+(use-package! ox-man)
+(use-package! ox-gemini)
 #+END_SRC
 
 By default Org only exports the first three levels of headings as ... headings.
@@ -21218,7 +20428,7 @@ those changes, especially since it is theme-agnostic.
 ;; (add-hook 'org-mode-hook #'org-modern-mode)
 ;; (add-hook 'org-agenda-finalize-hook #'org-modern-agenda)
 
-(use-package org-modern
+(use-package! org-modern
   :config
   (setq org-modern-label-border 1)
   (setq org-modern-variable-pitch nil)
@@ -21375,7 +20585,8 @@ Everything is mapped to SPC-r because doom is not using it and r stands for roam
 ** Window movement
 The default window movement keys are super cumbersome, here are some better defaults.
 
-#+begin_src emacs-lisp :tangle yes
+#+begin_src emacs-lisp :tangle no
+
 (map! "C-w" nil)
 (global-set-key  (kbd "C-<tab>") #'evil-window-next)
  (global-set-key             (kbd "C-<iso-lefttab>") #'evil-window-prev)
@@ -21387,18 +20598,6 @@ The default window movement keys are super cumbersome, here are some better defa
 (map! :nvig "C-<tab>" #'evil-window-next)
 #+end_src
 
-** Selection
-Wow, I wish I knew this was a thing before
-
-#+begin_src emacs-lisp :tangle yes
-(map!  :nvig "C-'" #'er/expand-region)
-#+end_src
-** Ivy
-
-#+begin_src emacs-lisp :tangle yes
-(use-package! all-the-icons-ivy-rich
-  :init (all-the-icons-ivy-rich-mode))
-#+end_src
 ** Markdown
 Add .mdx support
 #+begin_src emacs-lisp :tangle yes

@@ -1,5 +1,5 @@
 ;; Utilities for opening youtube videos with mpv using ytel
-(use-package ytel
+(use-package! ytel
   :ensure t
   :commands ytel
   :bind (:map ytel-mode-map
@@ -77,7 +77,7 @@
 
 ;; ytel-show is useful for digging through video descriptions and, occasionally,
 ;; comments.
-(use-package ytel-show
+(use-package! ytel-show
   :after ytel
   ;; :load-path "~/.local/share/git/ytel-show/"
   :bind (:map ytel-mode-map ("RET" . ytel-show)

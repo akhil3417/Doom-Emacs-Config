@@ -1,6 +1,6 @@
 ;; -*- lexical-binding: t -*-
 ;; Icomplete
-(use-package icomplete
+(use-package! icomplete
   ;; :demand
   :disabled
   :after minibuffer
@@ -87,7 +87,7 @@ require user confirmation."
           (message nil))))))
 
 ;;; Icomplete-vertical
-(use-package icomplete-vertical
+(use-package! icomplete-vertical
   :disabled
   :demand
   :after (minibuffer icomplete)
@@ -98,7 +98,7 @@ require user confirmation."
               ("C-v" . icomplete-vertical-toggle)))
 
 ;; Icomplete vertical mini
-(use-package icomplete-vertical-mini
+(use-package! icomplete-vertical-mini
   :disabled
   :config
 
@@ -233,7 +233,7 @@ the `minibuffer-exit-hook'."
   (setq completion-in-region-function #'contrib/completing-read-in-region))
 
 ;; Icomplete-actions - disabled
-(use-package icomplete-actions
+(use-package! icomplete-actions
   :disabled
   :config
   ;;========================================================

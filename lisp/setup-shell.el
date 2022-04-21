@@ -1,5 +1,5 @@
 ;; -*- lexical-binding: t -*-
-(use-package fish-completion
+(use-package! fish-completion
   :disabled
   :when (executable-find "fish")
   :hook ((eshell-mode shell-mode) . fish-completion-mode)
@@ -73,7 +73,7 @@ Filenames are always matched by eshell."
         (eshell-complete-commands-list)))))
 
 ;; Superceded by pcmpl-args
-(use-package pcomplete
+(use-package! pcomplete
   :disabled
   :config
   (defun pcomplete/xargs ()
@@ -89,7 +89,7 @@ Filenames are always matched by eshell."
     (funcall (or (pcomplete-find-completion-function (pcomplete-arg 1))
 	         pcomplete-default-completion-function))))
 
-(use-package pcmpl-args
+(use-package! pcmpl-args
   :ensure
   :hook ((eshell-mode . my/pcmpl-args-pcomplete-settings)
          (eshell-first-time-mode . my/pcmpl-extras))
@@ -111,9 +111,28 @@ Filenames are always matched by eshell."
                   t))))
 
 ;; ** Eshell built-ins customizations
-(use-package eshell
+(use-package! eshell
   :hook ((eshell-mode . my/eshell-keys-and-modes)
          (eshell-first-time-mode . my/eshell-first-load-settings))
+                   ;; When calling dabbrev, hippie-expand uses strings
+                   ;; containing words and symbols to:
+                   ;;   1) determine the string to expand
+                   ;;   2) determine what to expand it with
+                   ;; (see hippie-expand-dabbrev-as-symbol)
+                   ;; so for instance if I'm typing "curl foo/bar" on
+                   ;; an eshell buffer, as "/" is a symbol in eshell
+                   ;; mode, it will use "foo/bar" as string to
+                   ;; expand. In some cases this is undesirable, for
+                   ;; instance when completing URLs, as it's more
+                   ;; likely that I'll want to expand the current
+                   ;; component ("bar"), not the whole URL. Moving "/"
+                   ;; to a non-symbol syntax class works around
+                   ;; this. I can't just set
+                   ;; hippie-expand-dabbrev-as-symbol to false because
+                   ;; if I did h-e wouldn't expand FQDNs, i.e. "bar"
+                   ;; would be expanded to "barhost" and not
+                   ;; "barhost.example.org"
+                   ;; (modify-syntax-entry ?/ "|"))
   :config
   (defun my/eshell-first-load-settings ()
     (setq eshell-visual-commands (append eshell-visual-commands
@@ -152,7 +171,7 @@ Filenames are always matched by eshell."
 
 ;; ** Better paging
 (load "em-pager")
-(use-package em-pager
+(use-package! em-pager
   :disabled
   :after eshell
   :config
@@ -167,7 +186,7 @@ Filenames are always matched by eshell."
   (add-hook 'eshell-post-command-hook #'eshell-pager-post))
 
 ;; ** Better buffer redirection
-(use-package eshell
+(use-package! eshell
   :defer
   :config
   ;; From https://gist.github.com/minad/19df21c3edbd8232f3a7d5430daa103a
@@ -202,7 +221,7 @@ Filenames are always matched by eshell."
   (add-hook 'eshell-parse-argument-hook #'my/eshell-syntax-buffer-redirect))
 
 ;; ** Better eshell history management
-(use-package eshell
+(use-package! eshell
   :hook ((eshell-mode . my/eshell-hist-use-global-history)
          (eshell-pre-command . eshell-save-some-history)
          (eshell-pre-command . my/eshell-history-remove-duplicates))
@@ -273,7 +292,7 @@ Surrounding spaces are ignored when comparing."
                 'my/eshell-previous-matching-input))))
 
 ;; ** Custom functions for use in eshell
-(use-package eshell
+(use-package! eshell
   :defer
   :config
   (defalias 'eshell/v 'eshell-exec-visual)
@@ -417,8 +436,35 @@ send a notification when the process has exited."
           (when buffer
             (kill-buffer buffer)))))))
 
+  (defun my/eshell-kill-ring-save-outputs ()
+    "Add to the kill ring CURRENT-PREFIX-ARG outputs, including prompts.
+If no universal argument is passed, assume only one output"
+    (interactive)
+    (save-excursion
+      (let (times)
+        (if (or (null current-prefix-arg) (< current-prefix-arg 1))
+            (setq times 1)
+          (setq times current-prefix-arg))
+        (eshell-previous-prompt times)
+        (forward-line -1) ; Two lines prompt
+        (beginning-of-line)
+        (message (format "Shell output added to the kill ring (%d commands)" times))
+        (kill-ring-save (point) (eshell-end-of-output)))))
+
+(defun my/eshell-narrow-to-output ()
+  "Narrow to the output of the command at point."
+  (interactive)
+  (save-excursion
+    (let* ((start (progn (eshell-previous-prompt 1)
+                         (forward-line +1)
+                         (point)))
+           (end (progn (eshell-next-prompt 1)
+                       (forward-line -1)
+                       (point))))
+      (narrow-to-region start end))))
+
 ;; ** Calling and exiting eshell
-(use-package eshell
+(use-package! eshell
   :bind (("s-<return>" . eshell)
          ("s-!" . eshell-here))
   :config
@@ -443,7 +489,7 @@ send a notification when the process has exited."
           (eshell-send-input)))))
 
 ;; ** Eshell appearance and prompt
-(use-package eshell
+(use-package! eshell
   :defer
   :config
   (setq eshell-prompt-regexp "^.* λ "
@@ -493,20 +539,130 @@ send a notification when the process has exited."
     "TODO"
     :group 'eshell))
 
-(use-package eshell-bookmark
-  :disabled
-  :hook (eshell-mode . eshell-bookmark-setup))
+;; (use-package! eshell-bookmark
+;;   :disabled
+;;   :hook (eshell-mode . eshell-bookmark-setup))
 
-(use-package shell
+(use-package! eshell-bookmark
+  :after eshell
+  :config
+  (add-hook 'eshell-mode-hook #'eshell-bookmark-setup))
+
+(use-package! shell
   :defer
   :config
   (setq async-shell-command-buffer 'new-buffer))
 
 ;; capf-autosuggest is a good idea, but it's too slow and laggy in practice.
-(use-package capf-autosuggest
+(use-package! capf-autosuggest
   ;; :ensure t
   :disabled
   :hook ((comint-mode) . capf-autosuggest-mode))
+
+(require 'em-cmpl)
+(load "prot-eshell.el")
+(use-package! prot-eshell
+  :config
+  (setq prot-eshell-output-buffer "*Exported Eshell output*")
+  (setq prot-eshell-output-delimiter "* * *")
+  (let ((map eshell-mode-map))
+    (define-key map (kbd "M-k") #'eshell-kill-input)
+    (define-key map (kbd "C-c a C-f") #'prot-eshell-ffap-find-file)
+    (define-key map (kbd "C-c a C-j") #'prot-eshell-ffap-dired-jump)
+    (define-key map (kbd "C-c a C-w") #'prot-eshell-ffap-kill-save)
+    (define-key map (kbd "C-c a C-r") #'prot-eshell-redirect-to-buffer)
+    (define-key map (kbd "C-c a C-e") #'prot-eshell-export)
+    (define-key map (kbd "C-c a C-r") #'prot-eshell-root-dir))
+  (let ((map eshell-cmpl-mode-map))
+    (define-key map (kbd "C-c a TAB") #'prot-eshell-ffap-insert) ; C-c C-i
+    (define-key map (kbd "C-c a C-h") #'prot-eshell-narrow-output-highlight-regexp))
+  (let ((map eshell-hist-mode-map))
+    (define-key map (kbd "M-s") #'nil) ; I use this prefix for lots of more useful commands
+    ;; (define-key map (kbd "M-r") #'prot-eshell-complete-history)
+    (define-key map (kbd "C-c a C-d") #'prot-eshell-complete-recent-dir)
+    (define-key map (kbd "C-c a C-s") #'prot-eshell-find-subdirectory-recursive)))
+
+;; (use-package! eshell-prompt-extras
+;;   :after (eshell)
+;;   :config
+;;   (defun my/epe-theme-prompt ()
+;;     (setq eshell-prompt-regexp "^λ ")
+;;     (concat
+;;      (let ((prompt-path (epe-fish-path (tramp-file-local-name (eshell/pwd)))))
+;;        (format
+;;         (epe-colorize-with-face "[%s]" 'epe-remote-face)
+;;         (epe-colorize-with-face
+;;          (if (string-empty-p prompt-path)
+;;              "/"
+;;            prompt-path)
+;;          'epe-dir-face)))
+;;      (if (epe-remote-p)
+;;          (epe-colorize-with-face
+;;           (concat "@" (epe-remote-host))
+;;           'epe-remote-face)
+;;        (epe-colorize-with-face
+;;         (concat "@" (system-name))
+;;         'epe-git-face))
+;;      (if (eshell-exit-success-p)
+;;          (epe-colorize-with-face "\nλ" 'success)
+;;        (epe-colorize-with-face "\nλ" 'error))
+;;      " "))
+;;   (with-eval-after-load "esh-opt"
+;;     (setq eshell-highlight-prompt nil
+;;           eshell-prompt-function 'my/epe-theme-prompt)))
+;;
+(require 'em-cmpl)
+(add-to-list 'load-path "~/.config/doom/lisp/")
+(load "prot-eshell.el")
+(use-package! prot-eshell
+  :config
+  (setq prot-eshell-output-buffer "*Exported Eshell output*")
+  (setq prot-eshell-output-delimiter "* * *")
+  (let ((map eshell-mode-map))
+    (define-key map (kbd "M-k") #'eshell-kill-input)
+    (define-key map (kbd "C-c a C-f") #'prot-eshell-ffap-find-file)
+    (define-key map (kbd "C-c a C-j") #'prot-eshell-ffap-dired-jump)
+    (define-key map (kbd "C-c a C-w") #'prot-eshell-ffap-kill-save)
+    (define-key map (kbd "C-c a C-r") #'prot-eshell-redirect-to-buffer)
+    (define-key map (kbd "C-c a C-e") #'prot-eshell-export)
+    (define-key map (kbd "C-c a C-r") #'prot-eshell-root-dir))
+  (let ((map eshell-cmpl-mode-map))
+    (define-key map (kbd "C-c a TAB") #'prot-eshell-ffap-insert) ; C-c C-i
+    (define-key map (kbd "C-c a C-h") #'prot-eshell-narrow-output-highlight-regexp))
+  (let ((map eshell-hist-mode-map))
+    (define-key map (kbd "M-s") #'nil) ; I use this prefix for lots of more useful commands
+    ;; (define-key map (kbd "M-r") #'prot-eshell-complete-history)
+    (define-key map (kbd "C-c a C-d") #'prot-eshell-complete-recent-dir)
+    (define-key map (kbd "C-c a C-s") #'prot-eshell-find-subdirectory-recursive)))
+
+;; I like to sync the $PWD with the buffer name, so an eshell in my home has as buffer name *eshell /home/op*.
+;; <2021-06-16 Wed> Instead of advice-add I should use the eshell-directory-change-hook hook.
+  (defun op/eshell-bufname (dir)
+    (concat "*doom:eshell " (expand-file-name dir) "*"))
+
+(defun op/eshell-after-cd (&rest _)
+  (rename-buffer (op/eshell-bufname default-directory) t))
+
+(advice-add #'eshell/cd :after #'op/eshell-after-cd)
+;; To define custom commands in eshell (what would be functions or scripts in other shells), say whatever, one can define a eshell/whatever function. These are some aliases I find useful:
+
+(defun eshell/emacs (&rest args)
+  "Open a file in emacs (from the wiki)."
+  (if (null args)
+      (bury-buffer)
+    (mapc #'find-file
+          (mapcar #'expand-file-name
+                  (eshell-flatten-list (nreverse args))))))
+
+(defalias 'eshell/less #'find-file)
+
+(defun eshell/dired ()
+  (dired (eshell/pwd)))
+
+(use-package! shell
+  :config
+  (setq shell-command-prompt-show-cwd t) ; Emacs 27.1
+  (setq ansi-color-for-comint-mode t))
 
 (provide 'setup-shell)
 ;; setup eshell:1 ends here

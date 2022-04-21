@@ -1,5 +1,5 @@
 ;; -*- lexical-binding: t -*-
-(use-package orderless
+(use-package! orderless
   :after setup-minibuffer
   :ensure t
   :demand

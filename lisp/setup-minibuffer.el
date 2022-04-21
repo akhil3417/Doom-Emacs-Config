@@ -1,6 +1,6 @@
 ;; -*- lexical-binding: t -*-
 ;; all hail the minibuffer
-(use-package minibuffer
+(use-package! minibuffer
   :config
 ;; Minibuffer completion
   (setq completion-cycle-threshold 2

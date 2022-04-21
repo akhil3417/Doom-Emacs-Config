@@ -1,6 +1,6 @@
 ;; -*- lexical-binding: t -*-
-;;(require 'use-package nil t)
-(use-package dired
+;;(require 'use-package! nil t)
+(use-package! dired
   :commands dired
   :hook ((dired-mode . hl-line-mode)
          (dired-mode . toggle-truncate-lines))
@@ -38,7 +38,7 @@
     (find-file file)))
   )
 
-(use-package dired-aux
+(use-package! dired-aux
   ;; This functionality is superceded by affe-find and affe-grep from the
   ;; affe.el library and is thus disabled.
   :disabled
@@ -88,7 +88,7 @@ This relies on the external 'fd' executable."
   :bind (("M-s M-f" . my/dired-fd-files-and-dirs)
          ("M-s M-d" . my/dired-fd-dirs)))
 
-(use-package dired-x
+(use-package! dired-x
   :after dired
   :bind ("H-d" . dired-jump)
   :config
@@ -121,7 +121,7 @@ This relies on the external 'fd' executable."
             ("\\.html?\\'" ,cmd)
             ("\\.md\\'" ,cmd)))))
 
-(use-package find-dired
+(use-package! find-dired
   :disabled
   :defer
   :after dired
@@ -136,14 +136,14 @@ This relies on the external 'fd' executable."
         ;; '("-ls" . "-AGFhlv --group-directories-first"))
   (setq find-name-arg "-iname"))
 
-(use-package async
+(use-package! async
   :ensure)
 
-(use-package dired-async
+(use-package! dired-async
   :after (dired async)
   :hook (dired-mode . dired-async-mode))
 
-(use-package wdired
+(use-package! wdired
   :after dired
   :commands wdired-change-to-wdired-mode
   :config
@@ -171,7 +171,7 @@ This relies on the external 'fd' executable."
                       (set-window-configuration wnd))))
       (error "no more than 2 files should be marked"))))
 
-(use-package dired-subtree
+(use-package! dired-subtree
   :ensure t
   :after dired
   :config
@@ -182,7 +182,7 @@ This relies on the external 'fd' executable."
               ("<S-iso-lefttab>" . dired-subtree-remove)
               ))
 
-(use-package peep-dired
+(use-package! peep-dired
   :load-path "plugins/peep-dired/"
   :general
   (:states '(normal visual)
@@ -225,17 +225,17 @@ This relies on the external 'fd' executable."
       '("mkv" "iso" "mp4" "pdf" "djvu" "one" "mat"
         "fig" "nb" "slx" "slxc" "r2016b" "onetoc2")))
 
-(use-package image-dired
+(use-package! image-dired
   :commands image-dired
   :config
   (setq image-dired-dir
         (dir-concat user-cache-directory "image-dired/")))
 
-(use-package gnus-dired
+(use-package! gnus-dired
   :defer 5
   :after dired)
 
-(use-package dired-sidebar
+(use-package! dired-sidebar
   :after dired
   :disabled
   :commands (dired-sidebar-toggle-sidebar)
@@ -271,7 +271,7 @@ This relies on the external 'fd' executable."
   (setq dired-sidebar-use-term-integration t)
   (setq dired-sidebar-use-custom-font t))
 
-(use-package ibuffer-sidebar
+(use-package! ibuffer-sidebar
   :disabled
   :commands +ibuffer-sidebar-toggle
   :general
@@ -291,7 +291,7 @@ This relies on the external 'fd' executable."
       (ibuffer-sidebar-toggle-sidebar))
     (dired-sidebar-toggle-sidebar)))
 
-(use-package dired-rsync
+(use-package! dired-rsync
   :ensure t
   :bind (:map dired-mode-map
          ("r" . dired-rsync))
@@ -299,11 +299,11 @@ This relies on the external 'fd' executable."
   :config
   (setq dired-rsync-unmark-on-completion nil))
 
-(use-package dired-filter
+(use-package! dired-filter
   :ensure t
   :after dired)
 
-(use-package diredfl
+(use-package! diredfl
   :ensure t
   :hook (dired-mode . diredfl-mode))
 

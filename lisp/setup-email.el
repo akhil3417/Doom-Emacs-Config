@@ -4,7 +4,7 @@
 ;;
 ;; We use msmtp. Also of note is automatic selection of the
 ;; right from address when replying to email.
-(use-package sendmail
+(use-package! sendmail
   :after (message notmuch)
   :config
   (setq mail-host-address "gmail.com"
@@ -40,7 +40,7 @@
 
 ;;* NOTMUCH
 
-(use-package notmuch
+(use-package! notmuch
   :commands notmuch
   :bind (("C-x m" . notmuch-mua-new-mail)
          ("C-x M-m" . notmuch-jump-search))
@@ -171,7 +171,7 @@
   ;;;           (throw 'break t))))))
   )
 
-(use-package notmuch-bookmarks
+(use-package! notmuch-bookmarks
 :after notmuch
 :config
 (notmuch-bookmarks-mode))
@@ -184,7 +184,7 @@
 ;; I use a couple of date-oriented custom notmuch search commands instead of the
 ;; default, bound to my "search map" (=M-s=) prefix:
 
-(use-package consult-notmuch
+(use-package! consult-notmuch
   :load-path "~/.local/share/git/consult-notmuch/"
   :after consult
   :bind (("M-s M-m" . consult-notmuch-latest-tree)
@@ -206,7 +206,7 @@
 ;; Add a notmuch buffer-source to =consult-buffer=. This is provided by
 ;; consult-notmuch.
 
-(use-package consult
+(use-package! consult
   :after (notmuch consult-notmuch)
   :config
   (add-to-list 'consult-buffer-sources 'consult-notmuch-buffer-source))
@@ -217,7 +217,7 @@
 ;; This code [[https://codeberg.org/jao/consult-notmuch/pulls/6][will be part of
 ;; consult-notmuch]] soon.
 
-(use-package embark
+(use-package! embark
   :after (notmuch embark)
   :config
   (defun embark-notmuch-make-tagger (tags)
