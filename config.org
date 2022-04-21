@@ -144,7 +144,6 @@ To install ~some-package~ from MELPA, ELPA or emacsmirror:
   (package! dired-rsync)
   (package! dired-filter)
   (package! ibuffer-sidebar)
-  (package! golden-ratio)
   (package! easy-kill)
   (package! exotica-theme)
   (package! underwater-theme)
@@ -185,7 +184,6 @@ To install ~some-package~ from MELPA, ELPA or emacsmirror:
   (package! minions)
   ;; (package! pulsar) ;;prots line blinker
   (package! diminish)
-  ;; (package! perspective)
   (package! dired-single)
   (package! dired-collapse)
   (package! dired-ranger)
@@ -6596,25 +6594,9 @@ are just some tweaks to make it work the way I prefer.
   (define-key ctl-x-x-map "h" #'prot-org-ox-html))
 #+end_src
 
-** WAIT Workspaces Pers
-#+begin_src emacs-lisp :tangle no
-;; ¶Workspaces
-
-(use-package! perspective
-  :demand t
-  :bind (("C-M-k" . persp-switch)
-         ("C-M-n" . persp-next)
-         ("C-x k" . persp-kill-buffer*))
-  :custom
-  (persp-initial-frame-name "Main")
-  :config
-  ;; Running `persp-mode' multiple times resets the perspective list...
-  (unless (equal persp-mode t)
-    (persp-mode)))
-#+end_src
 ** DONE Nicer buffer name for buffers with same name uniquify
 CLOSED: [2022-04-02 Sat 23:19]
-#+BEGIN_SRC emacs-lisp
+#+BEGIN_SRC emacs-lisp 
 (use-package! uniquify
   :defer 5
   :config
@@ -6645,18 +6627,6 @@ I set splits to default to opening on the right using 'prefer-horizontal-split'.
 
 #+RESULTS:
 : clone-indirect-buffer-other-window
-
-** DONE golden ratio
-CLOSED: [2022-04-02 Sat 23:26]
-  #+begin_src emacs-lisp :tangle no
-    (use-package! golden-ratio
-      :ensure t)
-    (golden-ratio-mode 1)
-
-  #+end_src
-
-  #+RESULTS:
-  : t
 
 ** DONE Rotate (window management)
 CLOSED: [2022-04-02 Sat 23:26]
