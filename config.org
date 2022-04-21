@@ -481,7 +481,7 @@ my home machine is pretty safe, and my laptop is shutdown a lot.
 
 ;; (load "setup-dired.el")
 ;; (load "setup-email.el")
-(load "setup-elfeed.el")
+;; (load "setup-elfeed.el")
 ;; (load "elfeed-config.el")
 
 
@@ -16963,7 +16963,7 @@ structure has come to my attention.
   :config
   (setq org-ol-tree-ui-window-auto-resize nil
         org-ol-tree-ui-window-max-width 0.3
-        org-ol-tree-ui-window-position 'left))
+        org-ol-tree-ui-window-position 'right))
 (map! :map org-mode-map
       :after org
       :localleader
@@ -17702,6 +17702,7 @@ with it.
 #+end_src
 
 #+begin_src emacs-lisp :tangle yes
+
 (use-package! websocket
   :after org-roam)
 
@@ -17722,6 +17723,7 @@ with it.
 ***** Org-roam-capture templates
 
 #+begin_src emacs-lisp :tangle yes
+
 (after! org-roam
     (setq org-roam-capture-templates
           `(("s" "standard" plain "%?"
@@ -17752,6 +17754,7 @@ with it.
 #+end_src
 ***** Citations
 #+begin_src emacs-lisp :tangle yes
+
 (use-package! org-ref
     ;:after org-roam
     :config
@@ -17792,6 +17795,7 @@ with it.
 #+end_src
 
 #+RESULTS:
+
 #+begin_example
 ,#+TITLE: ${title}
 ,#+ROAM_KEY: cite:${=key=}
@@ -18479,47 +18483,6 @@ responsive.
 Apparently this causes issues with some people, but I haven't noticed anything
 problematic beyond the expected slight delay in some fontification, so until I
 do I'll use the above.
-**** making it look like a word processor
-
-This is a personal preference. On one hand, having Org's indentation and stars is nice for making lists, but I am trying to use emacs as a word processor to get my thoughts down. For this purpose, it makes sense to remove the stars and indentation.
-***
-#+begin_src emacs-lisp :tangle no
-(defun org-mode-remove-stars ()
-  (font-lock-add-keywords
-   nil
-   '(("^\\*+ "
-      (0
-       (prog1 nil
-         (put-text-property (match-beginning 0) (match-end 0)
-                            'invisible t)))))))
-
-(add-hook! 'org-mode-hook #'org-mode-remove-stars)
-#+end_src
-
-#+RESULTS:
-
-#+begin_src emacs-lisp :tangle no
-  ;; hide title / author ... keywords
-
-;;; Ugly org hooks
-(defun nicer-org ()
-  (progn
-  (+org-pretty-mode 1)
-  (mixed-pitch-mode 1)
-  (hl-line-mode -1)
-  (display-line-numbers-mode -1)
-  (olivetti-mode 1)
-  ;(org-num-mode 1)
-  (org-superstar-mode -1)
-  (org-indent-mode -1)
-  ))
-
-(add-hook! 'org-mode-hook  #'nicer-org)
-
-#+end_src
-
-#+RESULTS:
-
 **** Fontifying inline src blocks
 Org does lovely things with =#+begin_src= blocks, like using font-lock for
 language's major-mode behind the scenes and pulling out the lovely colourful
@@ -19104,7 +19067,7 @@ the language identifier, not =ess-jags=.
 The package that allows us to search through bibliography files and take notes on them. Makes Org-Roam work better as a zettlekasten for academic research.
 
 
-#+begin_src emacs-lisp :tangle yes
+#+begin_src emacs-lisp :tangle no
 
 (use-package! org-roam-bibtex
   :after org-roam
@@ -19144,6 +19107,39 @@ The package that allows us to search through bibliography files and take notes o
     (add-hook 'pdf-annot-activate-handler-functions #'org-noter-pdftools-jump-to-note)))
 
 
+#+end_src
+
+*** Org-journal
+#+begin_src emacs-lisp
+(setq org-journal-dir "~/org/journal/"
+      org-journal-date-prefix "* "
+      org-journal-time-prefix "** "
+      org-journal-date-format "%B %d, %Y (%A) "
+      org-journal-file-format "%Y-%m-%d.org")
+#+end_src
+
+*** Org-publish
+#+begin_src emacs-lisp
+(setq org-publish-use-timestamps-flag nil)
+(setq org-export-with-broken-links t)
+(setq org-publish-project-alist
+      '(("distro.tube"
+         :base-directory "~/org/gitlab-repos/mysite/"
+         :base-extension "org"
+         :publishing-directory "~/org/gitlab-repos/mysite/html/"
+         :recursive t
+         :exclude "org-html-themes/.*"
+         :publishing-function org-html-publish-to-html
+         :headline-levels 4             ; Just the default for this project.
+         :auto-preamble t)
+         ("org-static"
+         :base-directory "~/org/website"
+         :base-extension "css\\|js\\|png\\|jpg\\|gif\\|pdf\\|mp3\\|ogg\\|swf"
+         :publishing-directory "~/public_html/"
+         :recursive t
+         :exclude ".*/org-html-themes/.*"
+         :publishing-function org-publish-attachment)
+      ))
 #+end_src
 
 ** org modern
@@ -19259,40 +19255,6 @@ those changes, especially since it is theme-agnostic.
 
 #+RESULTS:
 : t
-
-** general
-*** Org-journal
-#+begin_src emacs-lisp
-(setq org-journal-dir "~/org/journal/"
-      org-journal-date-prefix "* "
-      org-journal-time-prefix "** "
-      org-journal-date-format "%B %d, %Y (%A) "
-      org-journal-file-format "%Y-%m-%d.org")
-#+end_src
-
-*** Org-publish
-#+begin_src emacs-lisp
-(setq org-publish-use-timestamps-flag nil)
-(setq org-export-with-broken-links t)
-(setq org-publish-project-alist
-      '(("distro.tube"
-         :base-directory "~/org/gitlab-repos/mysite/"
-         :base-extension "org"
-         :publishing-directory "~/org/gitlab-repos/mysite/html/"
-         :recursive t
-         :exclude "org-html-themes/.*"
-         :publishing-function org-html-publish-to-html
-         :headline-levels 4             ; Just the default for this project.
-         :auto-preamble t)
-         ("org-static"
-         :base-directory "~/org/website"
-         :base-extension "css\\|js\\|png\\|jpg\\|gif\\|pdf\\|mp3\\|ogg\\|swf"
-         :publishing-directory "~/public_html/"
-         :recursive t
-         :exclude ".*/org-html-themes/.*"
-         :publishing-function org-publish-attachment)
-      ))
-#+end_src
 
 * Keyboard shortcuts
 
