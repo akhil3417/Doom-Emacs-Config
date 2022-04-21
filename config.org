@@ -7020,7 +7020,7 @@ CLOSED: [2022-04-02 Sat 23:19]
 #+RESULTS:
 : t
 
-* window managment
+* Window managment
 ** DONE SPLITS
 CLOSED: [2022-03-30 Wed 13:34]
 I set splits to default to opening on the right using 'prefer-horizontal-split'.  I set a keybinding for 'clone-indirect-buffer-other-window' for when I want to have the same document in two splits.  The text of the indirect buffer is always identical to the text of its base buffer; changes made by editing either one are visible immediately in the other.  But in all other respects, the indirect buffer and its base buffer are completely separate.  For example, I can fold one split but other will be unfolded.
@@ -11274,7 +11274,7 @@ Keybindings to open files that I work with all the time using the find-file comm
 
 #+RESULTS:
 : t
-* hydra
+* Hydra
 ** Extensions for PDFs (pdf-tools)
 :PROPERTIES:
 :CUSTOM_ID: h:02894c1d-a739-48e7-9116-3c27a6505485
@@ -12540,7 +12540,7 @@ buffer (see [[#h:c110e399-3f43-4555-8427-b1afe44c0779][Minibuffer configurations
 
 #+RESULTS:
 : my/avy-isearch
-* internet & services
+* Internet & services
 ** DONE Network Manager
 CLOSED: [2022-03-30 Wed 09:36]
 
@@ -17466,15 +17466,13 @@ CLOSED: [2022-03-30 Wed 09:28]
 ** EMMS
 One of the media players available for Emacs is emms, which stands for Emacs Multimedia System.  By default, Doom Emacs does not use 'SPC a',' so the format I use for these bindings is 'SPC a' plus 'key'.
 
-╭────
-│ | COMMAND               | DESCRIPTION                       | KEYBINDING |
-│ |-----------------------+-----------------------------------+------------|
-│ | emms-playlist-mode-go | /Switch to the playlist buffer/     | SPC a a    |
-│ | emms-pause            | /Pause the track/                   | SPC a x    |
-│ | emms-stop             | /Stop the track/                    | SPC a s    |
-│ | emms-previous         | /Play previous track in playlist/   | SPC a p    |
-│ | emms-next             | /Play next track in playlist/       | SPC a n    |
-╰────
+| COMMAND               | DESCRIPTION                       | KEYBINDING |
+|-----------------------+-----------------------------------+------------|
+| emms-playlist-mode-go | /Switch to the playlist buffer/     | SPC a a    |
+| emms-pause            | /Pause the track/                   | SPC a x    |
+| emms-stop             | /Stop the track/                    | SPC a s    |
+| emms-previous         | /Play previous track in playlist/   | SPC a p    |
+| emms-next             | /Play next track in playlist/       | SPC a n    |
 
 #+begin_src emacs-lisp
        ;; (require 'emms-dbus)
