@@ -197,7 +197,6 @@ To install ~some-package~ from MELPA, ELPA or emacsmirror:
   (package! webpaste)
   (package! shackle)
   (package! versuri)
-  (package! mentor)
   (package! google-translate)
   (package! mw-thesaurus)
   (package! elpher)
@@ -244,7 +243,6 @@ To install ~some-package~ from MELPA, ELPA or emacsmirror:
   ;; (package! define-word)
   ;; (package! impatient-mode)
   (package! pdf-tools)
-  ;; (package! popwin)
   (package! systemd)
   ;; (package! git-timemachine)
   (package! org-pdfview)
@@ -4441,7 +4439,7 @@ Relative line numbers are fantastic for knowing how far away line numbers are,
 then =ESC 12 <UP>= gets you exactly where you think.
 #+BEGIN_SRC emacs-lisp
 ;; (setq display-line-numbers-type 'relative)
-;; (setq display-line-numbers-type nil)
+(setq display-line-numbers-type nil)
 (map! :leader
       :desc "Comment or uncomment lines" "TAB TAB" #'comment-line
       (:prefix ("t" . "toggle")
@@ -4783,41 +4781,6 @@ Thankfully, it isn't to hard to add these to the ~composition-function-table~.
 
 #+RESULTS:
 | [\(?:Th\) 0 font-shape-gstring] |
-
-*** kar fonts
-#+begin_src emacs-lisp :tangle no
-
-;;;################################################################I
-;; * FONTS AND COLORS
-;;;################################################################
-(use-package! cus-face
-  :config
-  (cond (IS-LINUX
-         (set-fontset-font t 'unicode "Symbola" nil 'prepend)
-         (custom-set-faces
-          '(variable-pitch ((t (:family "Ubuntu" :height 110))))
-          ;; '(default ((t (:family "Ubuntu Mono" :foundry "PfEd"
-          ;;                        :slant normal :weight normal
-          ;;                        :height 125 :width normal))))
-          ;; '(default ((t (:family "Iosevka" :foundry "PfEd"
-          ;;                        :slant normal :weight normal
-          ;;                        :height 110 :width normal))))
-          '(default ((t (:family "FantasqueSansMono" :foundry "PfEd"
-                                 :slant normal :weight normal
-                                 :height 120 :width normal))))
-          ))
-        (IS-WINDOWS
-         (custom-set-faces
-          '(default ((t (:family "Consolas" :foundry "outline"
-                                 :slant normal :weight normal
-                                 :height 120 :width normal))))))))
-  ;; (custom-set-faces  '(region ((t (:inverse-video t))))
-  ;;                    '(font-lock-comment-face ((t (:foreground "IndianRed3")))))
-  ;; (add-to-list 'default-frame-alist '(alpha 96 90))
-#+end_src
-
-#+RESULTS:
-: t
 
 ** DONE MODELINE
 CLOSED: [2022-03-31 Thu 19:49]
@@ -7094,60 +7057,6 @@ sounds nice to me.
 #+begin_src emacs-lisp :tangle packages.el
 (package! rotate :pin "4e9ac3ff800880bd9b705794ef0f7c99d72900a6")
 #+end_src
-
-** DONE Pop-win
-CLOSED: [2022-04-02 Sat 23:27]
-#+begin_src emacs-lisp :tangle no
-(use-package! popwin
-  ;; :ensure t
-  :config
-  (popwin-mode 1)
-  (setq popwin:popup-window-height 35
-        popwin:special-display-config
-        '(("*Miniedit Help*" :noselect t)
-          (help-mode :noselect nil)
-          (completion-list-mode :noselect t)
-          (compilation-mode :noselect nil)
-          (grep-mode :noselect t)
-          (occur-mode :noselect t)
-          ("*Pp Macroexpand Output*" :noselect t)
-          ("*Shell Command Output*")
-          ("*Async Shell Command*")
-          ("*vc-diff*")
-          ("*vc-change-log*")
-          (" *undo-tree*" :width 60 :position left)
-          ("^\\*anything.*\\*$" :regexp t)
-          ("*slime-apropos*")
-          ("*slime-macroexpansion*")
-          ("*slime-description*")
-          ("*slime-compilation*" :noselect t)
-          ("*slime-xref*")
-          ("*Flycheck errors*")
-          ("*Warnings*")
-          ("*Error*")
-          ("*Process List*")
-          ("*Smex: Unbound Commands*")
-          ("*Paradox Report*" :noselect nil)
-          ("*Package Commit List*" :noselect nil)
-          ("*Diff*" :noselect nil)
-          ("*Messages*" :noselect nil)
-          ("*Google Maps*" :noselect nil)
-          ("*ag search*" :noselect nil)
-          ("*PDF-Occur*" :noselect nil)
-          ("*PDF-Metadata*" :noselect nil)
-          ("^\\*Outline .*\\.pdf\\*$" :regexp t :noselect nil)
-          ("*MULTI-TERM-DEDICATED*" :noselect nil :stick t)
-          (sldb-mode :stick t)
-          (slime-repl-mode)
-          (slime-connection-list-mode)))
-
-  (add-hook 'popwin:after-popup-hook 'turn-off-evil-mode)
-  (bind-keys :map popwin:window-map
-             ((kbd "<escape>") . popwin:close-popup-window)))
-#+end_src
-
-#+RESULTS:
-: t
 
 ** Window configuration
 
@@ -9899,7 +9808,7 @@ Emacs registers are compartments where you can save text, rectangles and positio
  :actions '(insert))
 #+end_src
 
-#+begin_src emacs-lisp
+#+begin_src emacs-lisp :tangle no
 
 (use-package! smartparens
   :bind (:map smartparens-mode-map
@@ -10422,7 +10331,7 @@ This is a useful function copied from somewhere I don't remember, sorry unknown 
 
 It makes fill-paragraph "toggable": M-q once to fill, M-q again to un-fill!
 
-#+begin_src emacs-lisp
+#+begin_src emacs-lisp :tangle no
 (defun op/fill-or-unfill (fn &optional justify region)
   "Meant to be an adviced :around `fill-paragraph'.
 FN is the original `fill-column'.  If `last-command' is
@@ -10459,7 +10368,10 @@ there’s a noticable lag when typing normally (delay too large)
         key-chord-two-keys-delay 0.05))
 #+end_src
 
-#+begin_src emacs-lisp
+#+RESULTS:
+: t
+
+#+begin_src emacs-lisp :tangle no
 
   (key-chord-define-global ",." 'end-of-buffer)
   ;; FIXME: accidentally triggered too often
@@ -12852,18 +12764,6 @@ ERC is a built-in Emacs IRC client.
 
 #+RESULTS:
 | my/telega/company-backends | my/telega/olivetti | olivetti-mode |
-
-** Mentor (rtorrent)
-#+begin_src emacs-lisp
-(require 'mentor)
-(autoload 'mentor "mentor" nil t)
-;;(setq mentor-rtorrent-external-rpc "~/.rtorrent-rpc.socket")
-(setq mentor-rtorrent-download-directory "~/Downloads")
-(setq mentor-rtorrent-keep-session 'true)
-#+end_src
-
-#+RESULTS:
-: ~/.rtorrent-rpc.socket
 
 ** Google Translate
 #+begin_src emacs-lisp
@@ -20520,16 +20420,6 @@ those changes, especially since it is theme-agnostic.
       ))
 #+end_src
 
-* Some helper macros
-
- There are a few handy macros added by doom, namely
- - ~load!~ for loading external ~.el~ files relative to this one
- - ~use-package!~ for configuring packages
- - ~add-load-path!~ for adding directories to the ~load-path~ where ~Emacs~ looks when
-   you load packages
-Symbol’s function definition is void: delete-window-if-not-single
-exit
-
 * Keyboard shortcuts
 
 Everything is mapped to SPC-r because doom is not using it and r stands for roam.
@@ -20741,3 +20631,13 @@ See `org-capture-templates' for more information."
          (file+olp "/home/cantos/Dropbox/blog/sunny-website/org-content/blog.org" "Posts")
          (function  org-hugo-new-subtree-post-capture-template))))
 #+END_SRC
+
+* Some helper macros
+
+ There are a few handy macros added by doom, namely
+ - ~load!~ for loading external ~.el~ files relative to this one
+ - ~use-package!~ for configuring packages
+ - ~add-load-path!~ for adding directories to the ~load-path~ where ~Emacs~ looks when
+   you load packages
+Symbol’s function definition is void: delete-window-if-not-single
+exit
