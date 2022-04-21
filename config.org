@@ -213,6 +213,7 @@ To install ~some-package~ from MELPA, ELPA or emacsmirror:
   (package! dired-open)
   (package! dmenu)
   (package! elfeed-goodies)
+  (package! elfeed-org)
   ;; (package! emojify)
   (package! evil-tutor)
   (package! ivy-posframe)
@@ -452,6 +453,7 @@ my home machine is pretty safe, and my laptop is shutdown a lot.
 ;; -*- lexical-binding: t -*-
 (add-to-list 'load-path "~/.config/doom/lisp/")
 
+;; (load "emacs-with-nyxt.el")
 ;; (load "prot-common.el")
 (load "setup-ui.el")
 
@@ -479,7 +481,8 @@ my home machine is pretty safe, and my laptop is shutdown a lot.
 
 ;; (load "setup-dired.el")
 ;; (load "setup-email.el")
-;; (load "setup-elfeed.el")
+(load "setup-elfeed.el")
+;; (load "elfeed-config.el")
 
 
 ;; (load "setup-email.el")
@@ -11640,6 +11643,29 @@ CLOSED: [2022-04-14 Thu 17:30]
 ** ERC
 ERC is a built-in Emacs IRC client.
 
+To get started, run =M-x irc= and confirm your choice at the prompts.  The
+defaults for the server and the connection port should be fine.  In my
+case, those steps are skipped because of the values specified in the
+=rcirc-server-alist=.  Note the presence of =prot-mail-auth-get-field=.
+This is a function that queries my =~/.authinfo.gpg= file to retrieve
+encrypted information stored there (see [[#h:8d0bd754-8a31-431b-b112-f541cc0144ac][Sample of authinfo.gpg]]).  I use
+this method to (i) automate the process of logging in while (ii) not
+divulging sensitive data (also see the mega-section on [[#h:5ad80664-3163-4d9d-be65-462637d77903][Email settings]]).
+
+IRC is fairly easy to use: you just type your message at the command
+prompt and everyone in the channel can see it.  Some things I learnt:
+
++ Join a channel like =#emacs= by typing at the prompt =/join #emacs=.
++ Leave a channel with =/leave #vim= 😉.
++ To quit IRC do =/quit=, or optionally =/quit Going for a brisk walk=.
++ You can mention another user in the channel just by including their
+  nick in your message, like =Hello protesilaos=.  When replying to
+  someone, do it like this =protesilaos: My reply here=.
++ Start a private channel with, say, =protesilaos= by running the command
+  =/msg protesilaos My message here=.  Then use the channel like any
+  other.
+
+
 | COMMAND | DESCRIPTION                                 | KEYBINDING |
 |---------+---------------------------------------------+------------|
 | erc-tls | /Launch ERC using more secure TLS connection/ | SPC e E    |
@@ -11866,7 +11892,8 @@ active region use it instead."
 #+RESULTS:
 : consult-eww-source
 
-*** general eww
+*** Engine mode
+
 EWW is the Emacs Web Wowser, the builtin browser in Emacs.  Below I set urls to open in a specific browser (eww) with browse-url-browser-function.  By default, Doom Emacs does not use 'SPC e' for anything, so I choose to use the format 'SPC e' plus 'key' for these (I also use 'SPC e' for 'eval' keybindings).  I chose to use 'SPC s w' for eww-search-words because Doom Emacs uses 'SPC s' for 'search' commands.
 
 #+BEGIN_SRC emacs-lisp
@@ -12345,7 +12372,6 @@ some of the above.
 *** eww toggle  images
 #+begin_src emacs-lisp
 
-
 (with-eval-after-load 'eww
 
 (setq-local endless/display-images t)
@@ -12399,78 +12425,8 @@ buffer."
 
 );end with eveal after load eww
 #+end_src
-*** nyxt
-#+begin_src emacs-lisp :tangle no
-(load "emacs-with-nyxt.el")
-#+end_src
 
 #+RESULTS:
-: t
-
-#+begin_src emacs-lisp :tangle no
-(defun my/start-and-connect-to-nyxt (&optional no-maximize)
-  "Start Nyxt with swank capabilities."
-  (interactive)
-  (async-shell-command (format "nyxt -e \"(nyxt-user::start-swank)\""))
-  (sleep-for my/slime-nyxt-delay)
-  (my/slime-connect "localhost" "4006")
-  (unless no-maximize (my/slime-repl-send-string "(toggle-fullscreen)")))
-#+end_src
-
-#+RESULTS:
-: my/start-and-connect-to-nyxt
-
-#+begin_src emacs-lisp :tangle no
-(defun my/slime-connect (host port)
-  (defun true (&rest args) 't)
-  (advice-add 'slime-check-version :override #'true)
-  (slime-connect host port)
-  (sleep-for my/slime-nyxt-delay)
-  (advice-remove 'slime-check-version #'true))
-
-#+end_src
-
-#+RESULTS:
-: my/slime-connect
-
-#+begin_src emacs-lisp :tangle no
-(defun my/slime-repl-send-string (sexp)
-  (defun true (&rest args) 't)
-  (advice-add 'slime-check-version :override #'true)
-  (if (slime-connected-p)
-      (slime-repl-send-string sexp)
-    (error "Slime is not connected to Nyxt. Run `my/start-and-connect-to-nyxt' first."))
-  (sleep-for my/slime-nyxt-delay)
-  (advice-remove 'slime-check-version #'true))
-#+end_src
-
-#+RESULTS:
-: my/slime-repl-send-string
-
-
-
-#+begin_src emacs-lisp :tangle no
-(defun my/browse-url-nyxt (url &optional buffer-title)
-  (interactive "sURL: ")
-  (my/slime-repl-send-string
-   (format
-    "(buffer-load \"%s\" %s)"
-    url
-    (if buffer-title (format ":buffer (make-buffer :title \"%s\")" buffer-title) ""))))
-#+end_src
-
-#+RESULTS:
-: my/browse-url-nyxt
-
-#+begin_src emacs-lisp :tangle no
-(defun browse-url-nyxt (url &optional new-window)
-  (interactive "sURL: ")
-  (unless (slime-connected-p) (my/start-and-connect-to-nyxt))
-  (my/browse-url-nyxt url url))
-#+end_src
-
-#+RESULTS:
-: browse-url-nyxt
 
 ** browse url
 #+begin_src emacs-lisp
@@ -13810,6 +13766,7 @@ Also see: [[#h:aa64c61e-49b5-41b0-b1fe-10bbe3be661f][Sample configuration for MP
   (add-hook 'elfeed-show-mode-hook
             (lambda () (setq-local shr-width (current-fill-column))))
 
+  (load "prot-elfeed-bongo.el")
   (use-package! prot-elfeed-bongo)
 
   (define-key global-map (kbd "C-c e") #'elfeed)
@@ -13824,7 +13781,7 @@ Also see: [[#h:aa64c61e-49b5-41b0-b1fe-10bbe3be661f][Sample configuration for MP
     (define-key map (kbd "b") #'prot-elfeed-bongo-insert-item)))
 
 (with-eval-after-load 'elfeed
-  (load "prot-elfeed")
+  (load "prot-elfeed.el")
   (use-package! prot-elfeed
     :config
     (setq prot-elfeed-tag-faces t)
@@ -16114,9 +16071,6 @@ the subsequent code block.
 : t
 
 ** INVTR (toy inventory and client manager)
-:PROPERTIES:
-:CUSTOM_ID: h:c66a0f25-840a-49f0-a615-66dfca61890b
-:END:
 
 I am intentionally not documenting this because it is not intended for
 public use.  It is a *highly experimental proof-of-concept* of a nimble
