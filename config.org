@@ -17435,7 +17435,7 @@ set up org-capture.
                                :time-or-todo "%U"
                                :heading "Unreleased"
                                :file +org-capture-project-changelog-file)))
-                  
+
                   ("\tCentralised project templates"
                    :keys "o"
                    :type entry
@@ -17580,6 +17580,7 @@ is selected, only the bare key is returned."
                    (t (error "No entry available")))))))
         (when buffer (kill-buffer buffer))))))
 (advice-add 'org-mks :override #'org-mks-pretty)
+;; (set-face-attribute 'org-headline-done nil :strike-through t)
 #+end_src
 The [[file:~/.emacs.d/bin/org-capture][org-capture bin]] is rather nice, but I'd be nicer with a smaller frame, and
 no modeline.
