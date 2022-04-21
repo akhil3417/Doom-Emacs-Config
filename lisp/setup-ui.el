@@ -77,8 +77,8 @@
 ;;       split-height-threshold 80)
 ;; #+end_src
 ;; or favor vertical splits over horizontal ones?
-(setq split-width-threshold 180
-      split-height-threshold 80)
+;; (setq split-width-threshold 180
+;;       split-height-threshold 80)
 
 ;;; ;;;###package pos-tip
 ;;; (setq pos-tip-internal-border-width 6
