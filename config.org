@@ -19333,25 +19333,26 @@ Add .mdx support
 * EVA
 
 Emacs Virtual assistant
-#+begin_src emacs-lisp :tangle no
+
+#+begin_src emacs-lisp :tangle yes
 
 (use-package! eva
 :init
-(setq ess-history-file "~/Dropbox/self/data/.Rhistory")
+(setq ess-history-file "~/self/data/.Rhistory")
 (setq ess-ask-for-ess-directory nil)
   (setq eva-ai-name "HAL"
-        eva-user-name "Sunny"
-        eva-user-birthday "2021-09-07"
+        eva-user-name "Akhil"
+        eva-user-birthday "1999-01-02"
         eva-user-short-title "Dude"
         eva-fallback-to-emacs-idle t)
       (setq eva--idle-secs-fn #'eva--idle-secs-gnome)
-  (setq eva-idle-log-path         "~/Dropbox/self/data/idle.tsv")
-  (setq eva-buffer-focus-log-path "~/Dropbox/self/data/buffer-focus.tsv")
-  (setq eva-buffer-info-path      "~/Dropbox/self/data/buffer-info.tsv")
-  (setq eva-main-ledger-path      "~/Dropbox/self/data/l.ledger")
-  (setq eva-main-datetree-path    "~/Dropbox/Org/references/notes/diary.org")
+  (setq eva-idle-log-path         "~/self/data/idle.tsv")
+  (setq eva-buffer-focus-log-path "~/self/data/buffer-focus.tsv")
+  (setq eva-buffer-info-path      "~/self/data/buffer-info.tsv")
+  (setq eva-main-ledger-path      "~/self/data/l.ledger")
+  (setq eva-main-datetree-path    "~/org/notes/diary.org")
   :config
-  (setq org-journal-dir "~/Dropbox/Org/Daily")
+  (setq org-journal-dir "~/org/journal/")
     (setq org-journal-date-prefix "#+TITLE: "
         org-journal-file-format "%Y-%m-%d.org"
         org-journal-date-format "%A, %d %B %Y")
@@ -19365,25 +19366,25 @@ Emacs Virtual assistant
                           :min-hours-wait 1)
 
          (eva-item-create :fn #'eva-query-mood
-                          :dataset "~/Dropbox/self/data/mood.tsv"
+                          :dataset "~/self/data/mood.tsv"
                           :min-hours-wait 1)
 
          (eva-item-create :fn #'eva-query-activity
-                          :dataset "~/Dropbox/self/data/activities.tsv"
+                          :dataset "~/self/data/activities.tsv"
                           :min-hours-wait 1)
 
          (eva-item-create :fn #'eva-present-diary
                           :max-successes-per-day 1)
 
          (eva-item-create :fn #'eva-query-weight
-                          :dataset "~/Dropbox/self/data/weight.tsv"
+                          :dataset "~/self/data/weight.tsv"
                           :max-entries-per-day 1)
 
          (eva-item-create :fn #'eva-plot-weight
                           :max-entries-per-day 1)
 
          (eva-item-create :fn #'eva-query-sleep
-                          :dataset "~/Dropbox/self/data/sleep.tsv"
+                          :dataset "~/self/data/sleep.tsv"
                           :min-hours-wait 5
                           :lookup-posted-time t)
 
@@ -19392,11 +19393,11 @@ Emacs Virtual assistant
          (eva-item-create :fn #'eva-present-org-agenda)
 
          (eva-item-create :fn #'eva-query-ingredients
-                          :dataset "~/Dropbox/self/data/ingredients.tsv"
+                          :dataset "~/self/data/ingredients.tsv"
                           :min-hours-wait 5)
 
          (eva-item-create :fn #'eva-query-cold-shower
-                          :dataset "~/Dropbox/self/data/cold.tsv"
+                          :dataset "~/self/data/cold.tsv"
                           :max-entries-per-day 1)
 
          ;; you can inline define the functions too
