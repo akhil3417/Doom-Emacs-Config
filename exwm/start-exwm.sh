@@ -83,9 +83,9 @@ export _JAVA_AWT_WM_NONREPARENTING=1
 # usr/local/bin/emacs --daemon --eval "(require 'exwm)" -f exwm-enable
 # emacs --daemon --eval "(require 'exwm)" -f exwm-enable
  # exec dbus-launch --exit-with-session emacs -mm --debug-init -l ~/.emacs.d/desktop.el
-exec dbus-launch --exit-with-session emacs -mm #--debug-init
+# exec dbus-launch --exit-with-session emacs -mm #--debug-init
 # exec emacs
 # exec emacs --daemon && emacsclient -c --eval "(exwm-enable)"
-# exec dbus-launch --exit-with-session emacs --eval "(exwm-enable)"
+exec dbus-launch --exit-with-session emacs --eval "(exwm-enable)"
 # exec emacsclient -c
 # launcher script v2:1 ends here
