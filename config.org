@@ -313,9 +313,9 @@ a ~:recipe~. You'll find documentation on what ~:recipe~ accepts [[https://githu
     :recipe (:host github :repo "magit/git-modes"
        :files ("gitignore-mode.el")))
 
-(package! cape
-    :recipe (:host github :repo "minad/cape"
-       :files ("cape.el")))
+;; (package! cape
+;;     :recipe (:host github :repo "minad/cape"
+;;        :files ("cape.el")))
 
 (package! pulsar
     :recipe (:host github :repo "protesilaos/pulsar"
@@ -4661,7 +4661,7 @@ files.
 From the =:ui zen= module.
 #+end_quote
 
-#+begin_src emacs-lisp :tangle yes
+#+begin_src emacs-lisp :tangle no
 
 (use-package! mixed-pitch
   :hook (org-mode . mixed-pitch-mode)
@@ -4769,8 +4769,22 @@ Setting the theme to doom-vibrant.  To try out new themes, I set a keybinding fo
 
 #+end_src
 
+~doom-one~ is nice and all, but I find the ~vibrant~ variant nicer. Oh, and with the
+nice selection doom provides there's no reason for me to want the defaults.
+
+#+begin_src emacs-lisp
+(setq doom-theme 'doom-vibrant)
+(remove-hook 'window-setup-hook #'doom-init-theme-h)
+(add-hook 'after-init-hook #'doom-init-theme-h 'append)
+(delq! t custom-theme-load-path)
+#+end_src
+
 However, by default ~red~ text is used in the ~modeline~, so let's make that orange
 so I don't feel like something's gone /wrong/ when editing files.
+
+
+#+RESULTS:
+| custom-theme-directory | /home/shiva/.emacs.d/.local/straight/build-28.1/modus-themes/ | /home/shiva/.emacs.d/.local/straight/build-28.1/underwater-theme/ | /home/shiva/.emacs.d/.local/straight/build-28.1/exotica-theme/ | /home/shiva/.emacs.d/.local/straight/build-28.1/smart-mode-line/ | /home/shiva/.emacs.d/.local/straight/build-28.1/doom-themes/ |
 
 #+begin_src emacs-lisp
 (custom-set-faces!
@@ -4792,7 +4806,7 @@ thus not worth noting in the modeline. So, let's conditionally hide it.
                            (not (memq (coding-system-eol-type buffer-file-coding-system) '(1 2))))
                 t)))
 
-;; (add-hook 'after-change-major-mode-hook #'doom-modeline-conditional-buffer-encoding)
+(add-hook 'after-change-major-mode-hook #'doom-modeline-conditional-buffer-encoding)
 #+end_src
 
 #+RESULTS:
@@ -5059,19 +5073,15 @@ icon. Then we'll redefine two functions used to generate the modeline.
 #+RESULTS:
 | global-evil-surround-mode-enable-in-buffers | better-jumper-mode-enable-in-buffers | global-company-mode-enable-in-buffers | evil-snipe-override-mode-enable-in-buffers | evil-snipe-mode-enable-in-buffers | yas-global-mode-enable-in-buffers | global-hl-line-mode-enable-in-buffers | smartparens-global-mode-enable-in-buffers | doom-disable-smartparens-navigate-skip-match-h | ws-butler-global-mode-enable-in-buffers | global-undo-fu-session-mode-enable-in-buffers | global-flycheck-mode-enable-in-buffers | persp-after-change-major-mode-h | doom-modeline-update-buffer-file-icon | global-emojify-mode-enable-in-buffers | global-rainbow-mode-enable-in-buffers | global-undo-tree-mode-enable-in-buffers | clean-mode-line | solaire-global-mode-enable-in-buffers | global-subword-mode-enable-in-buffers | git-commit-setup-font-lock-in-buffer | evil-mode-enable-in-buffers | doom--setq-evil-shift-width-for-after-change-major-mode-h | global-eldoc-mode-enable-in-buffers | global-font-lock-mode-enable-in-buffers | doom-highlight-non-default-indentation-h | +company-init-backends-h | doom-run-local-var-hooks-maybe-h |
 
-** DONE Writeroom
-CLOSED: [2022-03-31 Thu 21:00]
+** Writeroom
 #+begin_quote
 From the =:ui zen= module.
 #+end_quote
 
 For starters, I think Doom is a bit over-zealous when zooming in
-#+begin_src emacs-lisp :tangle yes
+#+begin_src emacs-lisp
 (setq +zen-text-scale 0.8)
 #+end_src
-
-#+RESULTS:
-: 0.8
 
 Then, when using Org it would be nice to make a number of other aesthetic
 tweaks. Namely:
@@ -5083,7 +5093,7 @@ tweaks. Namely:
 + Centring the text
 + Turning on ~org-pretty-table-mode~
 
-#+begin_src emacs-lisp :tangle yes
+#+begin_src emacs-lisp
 (defvar +zen-serif-p t
   "Whether to use a serifed font with `mixed-pitch-mode'.")
 (after! writeroom-mode
@@ -5131,9 +5141,6 @@ tweaks. Namely:
                 ;; (unless +zen--original-org-pretty-table-mode-p (org-pretty-table-mode -1))
                 ))))
 #+end_src
-
-#+RESULTS:
-| +zen-nonprose-org-h |
 
 ** WINNER MODE
 Winner mode has been included with GNU Emacs since version 20.  This is a global minor mode and, when activated, it allows you to “undo” (and “redo”) changes in the window configuration with the key commands 'SCP w <left>' and 'SPC w <right>'.
@@ -7020,6 +7027,16 @@ The =prot-tab.el= code, which is in [[https://gitlab.com/protesilaos/dotfiles][m
 *** CENTAUR-TABS
 To use tabs in Doom Emacs, be sure to uncomment "tabs" in Doom's init.el.  Displays tabs at the top of the window similar to tabbed web browsers such as Firefox.  I don't actually use tabs in Emacs.  I placed this in my config to help others who may want tabs.  In the default configuration of Doom Emacs, 'SPC t' is used for "toggle" keybindings, so I choose 'SPC t c' to toggle centaur-tabs.  The "g" prefix for keybindings is used for a bunch of evil keybindings in Doom, but "g" plus the arrow keys were not used, so I thought I would bind those for tab navigation.  But I did leave the default "g t" and "g T" intact if you prefer to use those for centaur-tabs-forward/backward.
 
+We want to make the tabs a nice, comfy size (~24~), with icons. The modifier
+marker is nice, but the particular default Unicode one causes a lag spike, so
+let's just switch to an ~o~, which still looks decent but doesn't cause any
+issues.
+An 'active-bar' is nice, so let's have one of those. If we have it ~under~ needs us to
+turn on ~x-underline-at-decent~ though. For some reason this didn't seem to work
+inside the src_elisp{(after! ... )} block ¯\_(ツ)_/¯.
+Then let's change the font to a sans serif, but the default one doesn't fit too
+well somehow, so let's switch to 'P22 Underground Book'; it looks much nicer.
+
 | COMMAND                     | DESCRIPTION               | KEYBINDING       |
 |-----------------------------+---------------------------+------------------|
 | centaur-tabs-mode           | /Toggle tabs globally/      | SPC t c          |
@@ -7030,13 +7047,19 @@ To use tabs in Doom Emacs, be sure to uncomment "tabs" in Doom's init.el.  Displ
 | centaur-tabs-backward-group | /Previous tab group/        | g <up>           |
 
 #+BEGIN_SRC emacs-lisp
+(after! centaur-tabs
+  (centaur-tabs-mode -1)
 (setq centaur-tabs-set-bar 'over
       centaur-tabs-set-icons t
       centaur-tabs-gray-out-icons 'buffer
       centaur-tabs-height 24
       centaur-tabs-set-modified-marker t
+        ;; centaur-tabs-modified-marker "o"
+        centaur-tabs-close-button "×"
       centaur-tabs-style "bar"
+        centaur-tabs-set-bar 'above
       centaur-tabs-modified-marker "•")
+  (centaur-tabs-change-fonts "P22 Underground Book" 160))
 (map! :leader
       :desc "Toggle tabs globally" "t c" #'centaur-tabs-mode
       :desc "Toggle tabs local display" "t C" #'centaur-tabs-local-mode)
@@ -7046,6 +7069,7 @@ To use tabs in Doom Emacs, be sure to uncomment "tabs" in Doom's init.el.  Displ
                                                (kbd "g <up>")    'centaur-tabs-backward-group)
 (after! centaur-tabs
   (setq centaur-tabs-style "wave"))
+
 #+END_SRC
 
 #+RESULTS:
@@ -15364,7 +15388,6 @@ something through Emacs?
 
 Then, to actually read the ebooks we use =nov=.
 
-
 #+begin_src emacs-lisp
 (use-package! nov
   :mode ("\\.epub\\'" . nov-mode)
@@ -15432,6 +15455,7 @@ Then, to actually read the ebooks we use =nov=.
 
   (add-hook 'nov-mode-hook #'+nov-mode-setup))
 #+end_src
+
 
 #+RESULTS:
 : ((\.odc\' . archive-mode) (\.odf\' . archive-mode) (\.odi\' . archive-mode) (\.otp\' . archive-mode) (\.odp\' . archive-mode) (\.otg\' . archive-mode) (\.odg\' . archive-mode) (\.ots\' . archive-mode) (\.ods\' . archive-mode) (\.odm\' . archive-mode) (\.ott\' . archive-mode) (\.odt\' . archive-mode) (\.epub\' . nov-mode) (\.[pP][dD][fF]\' . pdf-view-mode) (authinfo.gpg\' . authinfo-color-mode) (/bspwmrc\' . sh-mode) (\.\(?:zunit\|env\)\' . sh-mode) (\.bats\' . sh-mode) (/README\(?:\.md\)?\' . gfm-mode) (\.Cask\' . emacs-lisp-mode) (\.pdf\' . pdf-view-mode) (\(?:\(?:\.\(?:b\(?:\(?:abel\|ower\)rc\)\|json\(?:ld\)?\)\|composer\.lock\)\'\) . json-mode) (\.kbd\' . kbd-mode) (\.pgn\' . chess-pgn-mode) (/systemd/[^z-a]+?\.d/[^/]+?\.conf\' . systemd-mode) (\.#\(?:[.0-9@-Z\_a-z-]+?\.\(?:automount\|busname\|link\|mount\|net\(?:dev\|work\)\|s\(?:ervice\|lice\|ocket\|wap\)\|t\(?:arget\|imer\)\)\|override\.conf\)[[:xdigit:]]\{16\}\' . systemd-mode) ([.0-9@-Z\_a-z-]+?\.\(?:automount\|busname\|link\|mount\|net\(?:dev\|work\)\|s\(?:ervice\|lice\|ocket\|wap\)\|t\(?:arget\|imer\)\)\' . systemd-mode) (\.nspawn\' . systemd-mode) (\.\(?:md\|markdown\|mkd\|mdown\|mkdn\|mdwn\)\' . markdown-mode) (\.hsc\' . haskell-mode) (\.l[gh]s\' . haskell-literate-mode) (\.hsig\' . haskell-mode) (\.[gh]s\' . haskell-mode) (\.cabal\'\|/cabal\.project\|/\.cabal/config\' . haskell-cabal-mode) (\.chs\' . haskell-c2hs-mode) (\.ghci\' . ghci-script-mode) (\.dump-simpl\' . ghc-core-mode) (\.hcr\' . ghc-core-mode) (/git-rebase-todo\' . git-rebase-mode) (\.dockerfile\' . dockerfile-mode) (/Dockerfile\(?:\.[^/\]*\)?\' . dockerfile-mode) (/git/ignore\' . gitignore-mode) (/info/exclude\' . gitignore-mode) (/\.gitignore\' . gitignore-mode) (/etc/gitconfig\' . gitconfig-mode) (/\.gitmodules\' . gitconfig-mode) (/git/config\' . gitconfig-mode) (/modules/.*/config\' . gitconfig-mode) (/\.git/config\' . gitconfig-mode) (/\.gitconfig\' . gitconfig-mode) (/git/attributes\' . gitattributes-mode) (/info/attributes\' . gitattributes-mode) (/\.gitattributes\' . gitattributes-mode) (\.gpg\(~\|\.~[0-9]+~\)?\' nil epa-file) (\.elc\' . elisp-byte-code-mode) (\.vr[hi]?\' . vera-mode) (\(?:\.\(?:rbw?\|ru\|rake\|thor\|jbuilder\|rabl\|gemspec\|podspec\)\|/\(?:Gem\|Rake\|Cap\|Thor\|Puppet\|Berks\|Brew\|Vagrant\|Guard\|Pod\)file\)\' . ruby-mode) (\.re?st\' . rst-mode) (\.py[iw]?\' . python-mode) (\.m\' . octave-maybe-mode) (\.less\' . less-css-mode) (\.scss\' . scss-mode) (\.awk\' . awk-mode) (\.\(u?lpc\|pike\|pmod\(\.in\)?\)\' . pike-mode) (\.idl\' . idl-mode) (\.java\' . java-mode) (\.m\' . objc-mode) (\.ii\' . c++-mode) (\.i\' . c-mode) (\.lex\' . c-mode) (\.y\(acc\)?\' . c-mode) (\.h\' . c-or-c++-mode) (\.c\' . c-mode) (\.\(CC?\|HH?\)\' . c++-mode) (\.[ch]\(pp\|xx\|\+\+\)\' . c++-mode) (\.\(cc\|hh\)\' . c++-mode) (\.\(bat\|cmd\)\' . bat-mode) (\.[sx]?html?\(\.[a-zA-Z_]+\)?\' . mhtml-mode) (\.svgz?\' . image-mode) (\.svgz?\' . xml-mode) (\.x[bp]m\' . image-mode) (\.x[bp]m\' . c-mode) (\.p[bpgn]m\' . image-mode) (\.tiff?\' . image-mode) (\.gif\' . image-mode) (\.png\' . image-mode) (\.jpe?g\' . image-mode) (\.te?xt\' . text-mode) (\.[tT]e[xX]\' . tex-mode) (\.ins\' . tex-mode) (\.ltx\' . latex-mode) (\.dtx\' . doctex-mode) (\.org\' . org-mode) (\.dir-locals\(?:-2\)?\.el\' . lisp-data-mode) (eww-bookmarks\' . lisp-data-mode) (tramp\' . lisp-data-mode) (/archive-contents\' . lisp-data-mode) (places\' . lisp-data-mode) (\.emacs-places\' . lisp-data-mode) (\.el\' . emacs-lisp-mode) (Project\.ede\' . emacs-lisp-mode) (\.\(scm\|stk\|ss\|sch\)\' . scheme-mode) (\.l\' . lisp-mode) (\.li?sp\' . lisp-mode) (\.[fF]\' . fortran-mode) (\.for\' . fortran-mode) (\.p\' . pascal-mode) (\.pas\' . pascal-mode) (\.\(dpr\|DPR\)\' . delphi-mode) (\.\([pP]\([Llm]\|erl\|od\)\|al\)\' . perl-mode) (Imakefile\' . makefile-imake-mode) (Makeppfile\(?:\.mk\)?\' . makefile-makepp-mode) (\.makepp\' . makefile-makepp-mode) (\.mk\' . makefile-gmake-mode) (\.make\' . makefile-gmake-mode) ([Mm]akefile\' . makefile-gmake-mode) (\.am\' . makefile-automake-mode) (\.texinfo\' . texinfo-mode) (\.te?xi\' . texinfo-mode) (\.[sS]\' . asm-mode) (\.asm\' . asm-mode) (\.css\' . css-mode) (\.mixal\' . mixal-mode) (\.gcov\' . compilation-mode) (/\.[a-z0-9-]*gdbinit . gdb-script-mode) (-gdb\.gdb . gdb-script-mode) ([cC]hange\.?[lL]og?\' . change-log-mode) ([cC]hange[lL]og[-.][0-9]+\' . change-log-mode) (\$CHANGE_LOG\$\.TXT . change-log-mode) (\.scm\.[0-9]*\' . scheme-mode) (\.[ckz]?sh\'\|\.shar\'\|/\.z?profile\' . sh-mode) (\.bash\' . sh-mode) (/PKGBUILD\' . sh-mode) (\(/\|\`\)\.\(bash_\(profile\|history\|log\(in\|out\)\)\|z?log\(in\|out\)\)\' . sh-mode) (\(/\|\`\)\.\(shrc\|zshrc\|m?kshrc\|bashrc\|t?cshrc\|esrc\)\' . sh-mode) (\(/\|\`\)\.\([kz]shenv\|xinitrc\|startxrc\|xsession\)\' . sh-mode) (\.m?spec\' . sh-mode) (\.m[mes]\' . nroff-mode) (\.man\' . nroff-mode) (\.sty\' . latex-mode) (\.cl[so]\' . latex-mode) (\.bbl\' . latex-mode) (\.bib\' . bibtex-mode) (\.bst\' . bibtex-style-mode) (\.sql\' . sql-mode) (\(acinclude\|aclocal\|acsite\)\.m4\' . autoconf-mode) (\.m[4c]\' . m4-mode) (\.mf\' . metafont-mode) (\.mp\' . metapost-mode) (\.vhdl?\' . vhdl-mode) (\.article\' . text-mode) (\.letter\' . text-mode) (\.i?tcl\' . tcl-mode) (\.exp\' . tcl-mode) (\.itk\' . tcl-mode) (\.icn\' . icon-mode) (\.sim\' . simula-mode) (\.mss\' . scribe-mode) (\.f9[05]\' . f90-mode) (\.f0[38]\' . f90-mode) (\.indent\.pro\' . fundamental-mode) (\.\(pro\|PRO\)\' . idlwave-mode) (\.srt\' . srecode-template-mode) (\.prolog\' . prolog-mode) (\.tar\' . tar-mode) (\.\(arc\|zip\|lzh\|lha\|zoo\|[jew]ar\|xpi\|rar\|cbr\|7z\|squashfs\|ARC\|ZIP\|LZH\|LHA\|ZOO\|[JEW]AR\|XPI\|RAR\|CBR\|7Z\|SQUASHFS\)\' . archive-mode) (\.oxt\' . archive-mode) (\.\(deb\|[oi]pk\)\' . archive-mode) (\`/tmp/Re . text-mode) (/Message[0-9]*\' . text-mode) (\`/tmp/fol/ . text-mode) (\.oak\' . scheme-mode) (\.sgml?\' . sgml-mode) (\.x[ms]l\' . xml-mode) (\.dbk\' . xml-mode) (\.dtd\' . sgml-mode) (\.ds\(ss\)?l\' . dsssl-mode) (\.js[mx]?\' . javascript-mode) (\.har\' . javascript-mode) (\.json\' . javascript-mode) (\.[ds]?va?h?\' . verilog-mode) (\.by\' . bovine-grammar-mode) (\.wy\' . wisent-grammar-mode) ([:/\]\..*\(emacs\|gnus\|viper\)\' . emacs-lisp-mode) (\`\..*emacs\' . emacs-lisp-mode) ([:/]_emacs\' . emacs-lisp-mode) (/crontab\.X*[0-9]+\' . shell-script-mode) (\.ml\' . lisp-mode) (\.ld[si]?\' . ld-script-mode) (ld\.?script\' . ld-script-mode) (\.xs\' . c-mode) (\.x[abdsru]?[cnw]?\' . ld-script-mode) (\.zone\' . dns-mode) (\.soa\' . dns-mode) (\.asd\' . lisp-mode) (\.\(asn\|mib\|smi\)\' . snmp-mode) (\.\(as\|mi\|sm\)2\' . snmpv2-mode) (\.\(diffs?\|patch\|rej\)\' . diff-mode) (\.\(dif\|pat\)\' . diff-mode) (\.[eE]?[pP][sS]\' . ps-mode) (\.\(?:PDF\|DVI\|OD[FGPST]\|DOCX\|XLSX?\|PPTX?\|pdf\|djvu\|dvi\|od[fgpst]\|docx\|xlsx?\|pptx?\)\' . doc-view-mode-maybe) (configure\.\(ac\|in\)\' . autoconf-mode) (\.s\(v\|iv\|ieve\)\' . sieve-mode) (BROWSE\' . ebrowse-tree-mode) (\.ebrowse\' . ebrowse-tree-mode) (#\*mail\* . mail-mode) (\.g\' . antlr-mode) (\.mod\' . m2-mode) (\.ses\' . ses-mode) (\.docbook\' . sgml-mode) (\.com\' . dcl-mode) (/config\.\(?:bat\|log\)\' . fundamental-mode) (/\.\(authinfo\|netrc\)\' . authinfo-mode) (\.\(?:[iI][nN][iI]\|[lL][sS][tT]\|[rR][eE][gG]\|[sS][yY][sS]\)\' . conf-mode) (\.la\' . conf-unix-mode) (\.ppd\' . conf-ppd-mode) (java.+\.conf\' . conf-javaprop-mode) (\.properties\(?:\.[a-zA-Z0-9._-]+\)?\' . conf-javaprop-mode) (\.toml\' . conf-toml-mode) (\.desktop\' . conf-desktop-mode) (/\.redshift\.conf\' . conf-windows-mode) (\`/etc/\(?:DIR_COLORS\|ethers\|.?fstab\|.*hosts\|lesskey\|login\.?de\(?:fs\|vperm\)\|magic\|mtab\|pam\.d/.*\|permissions\(?:\.d/.+\)?\|protocols\|rpc\|services\)\' . conf-space-mode) (\`/etc/\(?:acpid?/.+\|aliases\(?:\.d/.+\)?\|default/.+\|group-?\|hosts\..+\|inittab\|ksysguarddrc\|opera6rc\|passwd-?\|shadow-?\|sysconfig/.+\)\' . conf-mode) ([cC]hange[lL]og[-.][-0-9a-z]+\' . change-log-mode) (/\.?\(?:gitconfig\|gnokiirc\|hgrc\|kde.*rc\|mime\.types\|wgetrc\)\' . conf-mode) (/\.\(?:asound\|enigma\|fetchmail\|gltron\|gtk\|hxplayer\|mairix\|mbsync\|msmtp\|net\|neverball\|nvidia-settings-\|offlineimap\|qt/.+\|realplayer\|reportbug\|rtorrent\.\|screen\|scummvm\|sversion\|sylpheed/.+\|xmp\)rc\' . conf-mode) (/\.\(?:gdbtkinit\|grip\|mpdconf\|notmuch-config\|orbital/.+txt\|rhosts\|tuxracer/options\)\' . conf-mode) (/\.?X\(?:default\|resource\|re\)s\> . conf-xdefaults-mode) (/X11.+app-defaults/\|\.ad\' . conf-xdefaults-mode) (/X11.+locale/.+/Compose\' . conf-colon-mode) (/X11.+locale/compose\.dir\' . conf-javaprop-mode) (\.~?[0-9]+\.[0-9][-.0-9]*~?\' nil t) (\.\(?:orig\|in\|[bB][aA][kK]\)\' nil t) ([/.]c\(?:on\)?f\(?:i?g\)?\(?:\.[a-zA-Z0-9._-]+\)?\' . conf-mode-maybe) (\.[1-9]\' . nroff-mode) (\.art\' . image-mode) (\.avs\' . image-mode) (\.bmp\' . image-mode) (\.cmyk\' . image-mode) (\.cmyka\' . image-mode) (\.crw\' . image-mode) (\.dcr\' . image-mode) (\.dcx\' . image-mode) (\.dng\' . image-mode) (\.dpx\' . image-mode) (\.fax\' . image-mode) (\.hrz\' . image-mode) (\.icb\' . image-mode) (\.icc\' . image-mode) (\.icm\' . image-mode) (\.ico\' . image-mode) (\.icon\' . image-mode) (\.jbg\' . image-mode) (\.jbig\' . image-mode) (\.jng\' . image-mode) (\.jnx\' . image-mode) (\.miff\' . image-mode) (\.mng\' . image-mode) (\.mvg\' . image-mode) (\.otb\' . image-mode) (\.p7\' . image-mode) (\.pcx\' . image-mode) (\.pdb\' . image-mode) (\.pfa\' . image-mode) (\.pfb\' . image-mode) (\.picon\' . image-mode) (\.pict\' . image-mode) (\.rgb\' . image-mode) (\.rgba\' . image-mode) (\.tga\' . image-mode) (\.wbmp\' . image-mode) (\.webp\' . image-mode) (\.wmf\' . image-mode) (\.wpg\' . image-mode) (\.xcf\' . image-mode) (\.xmp\' . image-mode) (\.xwd\' . image-mode) (\.yuv\' . image-mode) (/LICENSE\' . text-mode) (\.log\' . text-mode) (rc\' . conf-mode) (\.\(?:hex\|nes\)\' . hexl-mode))
@@ -17184,6 +17208,13 @@ stored in
 #+end_src
 * ORG MODE
 ** Org
+Finally, because this section is fairly expensive to initialise, we'll wrap it
+in an src_elisp{(after! ...)} block.
+#+begin_src emacs-lisp :noweb no-export :tangle yes :noweb-ref nil
+(after! org
+  <<org-conf>>
+)
+#+end_src
 *** DONE System config
 CLOSED: [2022-04-01 Fri 19:27]
 **** Mime types
@@ -17515,6 +17546,54 @@ functionality as in LaTeX. Let's try viewing possible output files with this.
 (defvar org-view-external-file-extensions '("html")
   "File formats that should be opened externally.")
 #+end_src
+***** Importing with Pandoc
+
+Sometimes I'm given non-org files, that's very sad. Luckily Pandoc offers a way
+to make that right again, and this package makes that even easier to do.
+#+begin_src emacs-lisp :tangle packages.el
+(package! org-pandoc-import :recipe
+  (:host github :repo "tecosaur/org-pandoc-import" :files ("*.el" "filters" "preprocessors")))
+#+end_src
+
+#+begin_src emacs-lisp :tangle yes
+(use-package! org-pandoc-import
+  :after org)
+#+end_src
+
+***** Document comparison
+It's quite nice to compare Org files, and the richest way to compare content is
+probably =latexdiff=. There are a few annoying steps involved here, and so I've
+written a package to streamline the process.
+
+#+begin_src emacs-lisp :tangle packages.el
+(package! orgdiff :recipe (:host github :repo "tecosaur/orgdiff"))
+#+end_src
+
+The only little annoyance is the fact that =latexdiff= uses ~#FF0000~ and ~#0000FF~ as
+the red/blue change indication colours. We can make this a bit nicer by
+post-processing the =latexdiff= result.
+
+#+begin_src emacs-lisp :tangle yes
+(use-package! orgdiff
+  :defer t
+  :config
+  (defun +orgdiff-nicer-change-colours ()
+    (goto-char (point-min))
+    ;; Set red/blue based on whether chameleon is being used
+    (if (search-forward "%% make document follow Emacs theme" nil t)
+        (setq red  (substring (doom-blend 'red 'fg 0.8) 1)
+              blue (substring (doom-blend 'blue 'teal 0.6) 1))
+      (setq red  "c82829"
+            blue "00618a"))
+    (when (and (search-forward "%DIF PREAMBLE EXTENSION ADDED BY LATEXDIFF" nil t)
+               (search-forward "\\RequirePackage{color}" nil t))
+      (when (re-search-forward "definecolor{red}{rgb}{1,0,0}" (cdr (bounds-of-thing-at-point 'line)) t)
+        (replace-match (format "definecolor{red}{HTML}{%s}" red)))
+      (when (re-search-forward "definecolor{blue}{rgb}{0,0,1}" (cdr (bounds-of-thing-at-point 'line)) t)
+        (replace-match (format "definecolor{blue}{HTML}{%s}" blue)))))
+  (add-to-list 'orgdiff-latexdiff-postprocess-hooks #'+orgdiff-nicer-change-colours))
+#+end_src
+
 **** getting things done
 
    Getting things done package to make my life work.
@@ -17578,6 +17657,7 @@ The agenda is nice, but a souped up version is nicer.
       org-agenda-skip-deadline-if-done t
       org-agenda-include-deadlines t
       org-agenda-block-separator nil
+        org-log-done 'time ;; can be note as well or both
       org-agenda-tags-column 100 ;; from testing this seems to be a good value
       org-agenda-compact-blocks t)
 
@@ -18106,7 +18186,7 @@ with it.
 
 #+end_src
 ***** Citations
-#+begin_src emacs-lisp :tangle yes
+#+begin_src emacs-lisp :tangle no
 
 (use-package! org-ref
     ;:after org-roam
@@ -18726,6 +18806,110 @@ cause issues. Let's make their failure less eventful.
 
 #+RESULTS:
 
+**** Flycheck with org-lint
+
+Org may be simple, but that doesn't mean there's no such thing as malformed Org.
+Thankfully, malformed Org is a much less annoying affair than malformed zipped
+XML (looks at DOCX/ODT...), particularly because there's a rather helpful little
+tool called ~org-lint~ bundled with Org that can tell you about your mistakes.
+
+[[xkcd:2109]]
+
+Flycheck doesn't currently support Org, and there's aren't any packages to do so
+☹. However, in an issue on ~org-lint~ there is [[https://github.com/flycheck/flycheck/issues/1757#issuecomment-759546940][some code]] which apparently works.
+Surely this is what the clipboard was invented for? With that said, let's
+regurgitate the code, cross our fingers, and hope it works.
+
+#+begin_src emacs-lisp :tangle yes
+(defconst flycheck-org-lint-form
+  (flycheck-prepare-emacs-lisp-form
+    (require 'org)
+    (require 'org-attach)
+    (let ((source (car command-line-args-left))
+          (process-default-directory default-directory))
+      (with-temp-buffer
+        (insert-file-contents source 'visit)
+        (setq buffer-file-name source)
+        (setq default-directory process-default-directory)
+        (delay-mode-hooks (org-mode))
+        (setq delayed-mode-hooks nil)
+        (dolist (err (org-lint))
+          (let ((inf (cl-second err)))
+            (princ (elt inf 0))
+            (princ ": ")
+            (princ (elt inf 2))
+            (terpri)))))))
+
+(defconst flycheck-org-lint-variables
+  '(org-directory
+    org-id-locations
+    org-id-locations-file
+    org-attach-id-dir
+    org-attach-use-inheritance
+    org-attach-id-to-path-function-list
+    org-link-parameters)
+  "Variables inherited by the org-lint subprocess.")
+
+(defun flycheck-org-lint-variables-form ()
+  (require 'org-attach)  ; Needed to make variables available
+  `(progn
+     ,@(seq-map (lambda (opt) `(setq-default ,opt ',(symbol-value opt)))
+                (seq-filter #'boundp flycheck-org-lint-variables))))
+
+(flycheck-define-checker org-lint
+  "Org buffer checker using `org-lint'."
+  :command ("emacs" (eval flycheck-emacs-args)
+            "--eval" (eval (concat "(add-to-list 'load-path \""
+                                   (file-name-directory (locate-library "org"))
+                                   "\")"))
+            "--eval" (eval (flycheck-sexp-to-string
+                            (flycheck-org-lint-variables-form)))
+            "--eval" (eval (flycheck-sexp-to-string
+                            (flycheck-org-lint-customisations-form)))
+            "--eval" (eval flycheck-org-lint-form)
+            "--" source)
+  :error-patterns
+  ((error line-start line ": " (message) line-end))
+  :modes org-mode)
+#+end_src
+
+#+RESULTS:
+
+Turns out it almost works. Running =M-x flycheck-verify-setup= after running that
+snippet produces the following:
+#+begin_example
+The following syntax checkers are not registered:
+  - org-lint
+Try adding these syntax checkers to `flycheck-checkers'.
+#+end_example
+
+Well that's very nice and helpful. We'll just do that 🙂.
+#+begin_src emacs-lisp :tangle yes
+(add-to-list 'flycheck-checkers 'org-lint)
+#+end_src
+
+#+RESULTS:
+| org-lint | ada-gnat | asciidoctor | asciidoc | awk-gawk | bazel-buildifier | c/c++-clang | c/c++-gcc | c/c++-cppcheck | cfengine | chef-foodcritic | coffee | coffee-coffeelint | coq | css-csslint | css-stylelint | cuda-nvcc | cwl | d-dmd | dockerfile-hadolint | elixir-credo | emacs-lisp | emacs-lisp-checkdoc | ember-template | erlang-rebar3 | erlang | eruby-erubis | eruby-ruumba | fortran-gfortran | go-gofmt | go-golint | go-vet | go-build | go-test | go-errcheck | go-unconvert | go-staticcheck | groovy | haml | handlebars | haskell-stack-ghc | haskell-ghc | haskell-hlint | html-tidy | javascript-eslint | javascript-jshint | javascript-standard | json-jsonlint | json-python-json | json-jq | jsonnet | less | less-stylelint | llvm-llc | lua-luacheck | lua | markdown-markdownlint-cli | markdown-mdl | nix | nix-linter | opam | perl | perl-perlcritic | php | php-phpmd | php-phpcs | processing | proselint | protobuf-protoc | protobuf-prototool | pug | puppet-parser | puppet-lint | python-flake8 | python-pylint | python-pycompile | python-pyright | python-mypy | r-lintr | racket | rpm-rpmlint | rst-sphinx | rst | ruby-rubocop | ruby-standard | ruby-reek | ruby-rubylint | ruby | ruby-jruby | rust-cargo | rust | rust-clippy | scala | scala-scalastyle | scheme-chicken | scss-lint | scss-stylelint | sass/scss-sass-lint | sass | scss | sh-bash | sh-posix-dash | sh-posix-bash | sh-zsh | sh-shellcheck | slim | slim-lint | sql-sqlint | systemd-analyze | tcl-nagelfar | terraform | terraform-tflint | tex-chktex | tex-lacheck | texinfo | textlint | typescript-tslint | verilog-verilator | vhdl-ghdl | xml-xmlstarlet | xml-xmllint | yaml-jsyaml | yaml-ruby | yaml-yamllint | emacs-lisp-package |
+
+It was missing custom link types, but that's easily fixed just by adding
+~org-link-parameters~ to ~flycheck-org-lint-variables~.
+
+One remaining little annoyance is that it reports extra =#+options= that I've
+added to Org as errors. So we need to tell ~org-lint~ about them without having it
+load my whole config. Code duplication isn't great, but at least this isn't
+much.
+
+#+name: org-syntax-modifications
+#+begin_src emacs-lisp :tangle no
+(defun flycheck-org-lint-customisations-form ()
+  `(progn
+     (require 'ox)
+     (cl-pushnew '(:latex-cover-page nil "coverpage" nil)
+                 (org-export-backend-options (org-export-get-backend 'latex)))
+     (cl-pushnew '(:latex-font-set nil "fontset" nil)
+                 (org-export-backend-options (org-export-get-backend 'latex)))))
+#+end_src
+
 *** DONE Visuals
 CLOSED: [2022-04-01 Fri 18:12]
 
@@ -18766,8 +18950,8 @@ Mixed pitch is great. As is ~+org-pretty-mode~, let's use them.
 You can set the Org heading levels to be different font sizes.  So I choose to have level 1 headings to be 140% in height, level 2 to be 130%, etc.  Other interesting things you could play with include adding :foreground color and/or :background color if you want to override the theme colors.
 Let's make headings a bit bigger
 
-#+begin_src emacs-lisp :tangle no
-(after! org
+#+begin_src emacs-lisp :tangle yes
+;; (after! org
   (custom-set-faces!
     '(org-level-1 :inherit outline-1 :weight extra-bold :height 1.35)
     '(org-level-2 :inherit outline-2 :weight bold :height 1.25)
@@ -18785,11 +18969,12 @@ Let's make headings a bit bigger
     '(org-verbatim nil :inherit '(shadow fixed-pitch))
     '(org-special-keyword nil :inherit '(font-lock-comment-face fixed-pitch))
     '(org-meta-line nil :inherit '(font-lock-comment-face fixed-pitch))
-    '(org-checkbox nil :inherit 'fixed-pitch)))
+    '(org-checkbox nil :inherit 'fixed-pitch))
 #+end_src
 
 #+RESULTS:
-| doom--customize-themes-h-9 | doom--customize-themes-h-28 | doom--customize-themes-h-29 | doom--customize-themes-h-36 | doom--customize-themes-h-37 | doom--customize-themes-h-38 |
+| doom--customize-themes-h-9 | doom--customize-themes-h-10 | doom--customize-themes-h-35 |
+
 
 And the same with the title.
 #+begin_src emacs-lisp
@@ -18859,84 +19044,7 @@ If you have any idea what's going on or how to fix this /please/ get in touch.
 #+end_warning
 
 #+begin_src emacs-lisp
-(defvar org-prettify-inline-results t
-  "Whether to use (ab)use prettify-symbols-mode on {{{results(...)}}}.
-Either t or a cons cell of strings which are used as substitutions
-for the start and end of inline results, respectively.")
-
-(defvar org-fontify-inline-src-blocks-max-length 200
-  "Maximum content length of an inline src block that will be fontified.")
-
-(defun org-fontify-inline-src-blocks (limit)
-  "Try to apply `org-fontify-inline-src-blocks-1'."
-  (condition-case nil
-      (org-fontify-inline-src-blocks-1 limit)
-    (error (message "Org mode fontification error in %S at %d"
-                    (current-buffer)
-                    (line-number-at-pos)))))
-
-(defun org-fontify-inline-src-blocks-1 (limit)
-  "Fontify inline src_LANG blocks, from `point' up to LIMIT."
-  (let ((case-fold-search t)
-        (initial-point (point)))
-    (while (re-search-forward "\\_<src_\\([^ \t\n[{]+\\)[{[]?" limit t) ; stolen from `org-element-inline-src-block-parser'
-      (let ((beg (match-beginning 0))
-            pt
-            (lang-beg (match-beginning 1))
-            (lang-end (match-end 1)))
-        (remove-text-properties beg lang-end '(face nil))
-        (font-lock-append-text-property lang-beg lang-end 'face 'org-meta-line)
-        (font-lock-append-text-property beg lang-beg 'face 'shadow)
-        (font-lock-append-text-property beg lang-end 'face 'org-block)
-        (setq pt (goto-char lang-end))
-        ;; `org-element--parse-paired-brackets' doesn't take a limit, so to
-        ;; prevent it searching the entire rest of the buffer we temporarily
-        ;; narrow the active region.
-        (save-restriction
-          (narrow-to-region beg (min (point-max) limit (+ lang-end org-fontify-inline-src-blocks-max-length)))
-          (when (ignore-errors (org-element--parse-paired-brackets ?\[))
-            (remove-text-properties pt (point) '(face nil))
-            (font-lock-append-text-property pt (point) 'face 'org-block)
-            (setq pt (point)))
-          (when (ignore-errors (org-element--parse-paired-brackets ?\{))
-            (remove-text-properties pt (point) '(face nil))
-            (font-lock-append-text-property pt (1+ pt) 'face '(org-block shadow))
-            (unless (= (1+ pt) (1- (point)))
-              (if org-src-fontify-natively
-                  (org-src-font-lock-fontify-block (buffer-substring-no-properties lang-beg lang-end) (1+ pt) (1- (point)))
-                (font-lock-append-text-property (1+ pt) (1- (point)) 'face 'org-block)))
-            (font-lock-append-text-property (1- (point)) (point) 'face '(org-block shadow))
-            (setq pt (point))))
-        (when (and org-prettify-inline-results (re-search-forward "\\= {{{results(" limit t))
-          (font-lock-append-text-property pt (1+ pt) 'face 'org-block)
-          (goto-char pt))))
-    (when org-prettify-inline-results
-      (goto-char initial-point)
-      (org-fontify-inline-src-results limit))))
-
-(defun org-fontify-inline-src-results (limit)
-  (while (re-search-forward "{{{results(\\(.+?\\))}}}" limit t)
-    (remove-list-of-text-properties (match-beginning 0) (point)
-                                    '(composition
-                                      prettify-symbols-start
-                                      prettify-symbols-end))
-    (font-lock-append-text-property (match-beginning 0) (match-end 0) 'face 'org-block)
-    (let ((start (match-beginning 0)) (end (match-beginning 1)))
-      (with-silent-modifications
-        (compose-region start end (if (eq org-prettify-inline-results t) "⟨" (car org-prettify-inline-results)))
-        (add-text-properties start end `(prettify-symbols-start ,start prettify-symbols-end ,end))))
-    (let ((start (match-end 1)) (end (point)))
-      (with-silent-modifications
-        (compose-region start end (if (eq org-prettify-inline-results t) "⟩" (cdr org-prettify-inline-results)))
-        (add-text-properties start end `(prettify-symbols-start ,start prettify-symbols-end ,end))))))
-
-(defun org-fontify-inline-src-blocks-enable ()
-  "Add inline src fontification to font-lock in Org.
-Must be run as part of `org-font-lock-set-keywords-hook'."
-  (setq org-font-lock-extra-keywords
-        (append org-font-lock-extra-keywords '((org-fontify-inline-src-blocks)))))
-
-(add-hook 'org-font-lock-set-keywords-hook #'org-fontify-inline-src-blocks-enable)
+(setq org-inline-src-prettify-results '("⟨" . "⟩"))
 #+end_src
 
 Doom theme's extra fontification is more problematic than helpful.
@@ -19421,6 +19529,154 @@ the language identifier, not =ess-jags=.
 #+RESULTS:
 : ((jags . ess-jags) (c . C) (cpp . C) (C++ . C) (D . C) (elisp . emacs-lisp) (sh . shell) (bash . shell) (matlab . octave) (rust . rustic-babel) (amm . ammonite))
 
+*** ASCII export
+
+To start with, why settle for ASCII when UTF-8 exists?
+#+begin_src emacs-lisp
+(setq org-ascii-charset 'utf-8)
+#+end_src
+
+The ASCII export is generally fairly nice. I think the main aspect that could
+benefit from improvement is the appearance of LaTeX fragments. There's a nice
+utility we can use to create unicode representation, which are much nicer.
+It's called ~latex2text~, and it's part of the =pylatexenc= package, and it's [[https://repology.org/project/python:pylatexenc/versions][not
+really packaged]]. So, we'll resort to installing it with =pip=.
+
+#+begin_src shell :tangle (if (executable-find "latex2text") "no" "setup.sh")
+sudo python3 -m pip install pylatexenc
+#+end_src
+
+With that installed, we can override the src_elisp{(org-ascii-latex-fragment)} and
+src_elisp{(org-ascii-latex-environment)} functions, which are conveniently very
+slim --- just extracting the content, and indenting. We'll only do something
+different when =utf-8= is set.
+
+#+begin_src emacs-lisp :noweb-ref none :tangle (if (executable-find "latex2text") "yes" "no")
+(after! ox-ascii
+  (defvar org-ascii-convert-latex t
+    "Use latex2text to convert LaTeX elements to unicode.")
+
+  (defadvice! org-ascii-latex-environment-unicode-a (latex-environment _contents info)
+    "Transcode a LATEX-ENVIRONMENT element from Org to ASCII, converting to unicode.
+CONTENTS is nil.  INFO is a plist holding contextual
+information."
+    :override #'org-ascii-latex-environment
+    (when (plist-get info :with-latex)
+      (org-ascii--justify-element
+       (org-remove-indentation
+        (let* ((latex (org-element-property :value latex-environment))
+               (unicode (and (eq (plist-get info :ascii-charset) 'utf-8)
+                             org-ascii-convert-latex
+                             (doom-call-process "latex2text" "-q" "--code" latex))))
+          (if (= (car unicode) 0) ; utf-8 set, and sucessfully ran latex2text
+              (cdr unicode) latex)))
+       latex-environment info)))
+
+  (defadvice! org-ascii-latex-fragment-unicode-a (latex-fragment _contents info)
+    "Transcode a LATEX-FRAGMENT object from Org to ASCII, converting to unicode.
+CONTENTS is nil.  INFO is a plist holding contextual
+information."
+    :override #'org-ascii-latex-fragment
+    (when (plist-get info :with-latex)
+      (let* ((latex (org-element-property :value latex-fragment))
+             (unicode (and (eq (plist-get info :ascii-charset) 'utf-8)
+                           org-ascii-convert-latex
+                             (doom-call-process "latex2text" "-q" "--code" latex))))
+        (if (and unicode (= (car unicode) 0)) ; utf-8 set, and sucessfully ran latex2text
+            (cdr unicode) latex)))))
+#+end_src
+
+*** Markdown Export
+**** GFM
+
+Because of the /[[https://github.com/commonmark/commonmark-spec/wiki/markdown-flavors][lovely variety in markdown implementations]]/ there isn't actually
+such a thing a standard table spec ... or standard anything really. Because
+~org-md~ is a goody-two-shoes, it just uses HTML for all these non-standardised
+elements (a lot of them). So ~ox-gfm~ is handy for exporting markdown with all the
+features that GitHub has.
+
+#+begin_src emacs-lisp :noweb-ref none :tangle packages.el
+(package! ox-gfm :pin "99f93011b069e02b37c9660b8fcb45dab086a07f")
+#+end_src
+
+#+begin_src emacs-lisp :noweb-ref none :tangle yes
+(use-package! ox-gfm
+  :after ox)
+#+end_src
+
+**** Character substitutions
+
+When I want to paste exported markdown somewhere (for example when using [[Emacs Everywhere][Emacs
+Everywhere]]), it can be preferable to have unicode characters for =---= etc. instead
+of =&#x2014;=.
+
+To accomplish this, we just need to locally rebind the alist which provides
+these substitution.
+
+#+begin_src emacs-lisp
+(defadvice! org-md-plain-text-unicode-a (orig-fn text info)
+  "Locally rebind `org-html-special-string-regexps'"
+  :around #'org-md-plain-text
+  (let ((org-html-special-string-regexps
+         '(("\\\\-" . "-")
+           ("---\\([^-]\\|$\\)" . "—\\1")
+           ("--\\([^-]\\|$\\)" . "–\\1")
+           ("\\.\\.\\." . "…")
+           ("->" . "→")
+           ("<-" . "←"))))
+    (funcall orig-fn text (plist-put info :with-smart-quotes nil))))
+#+end_src
+
+In the future, I may want to check =info= to only have this active when =ox-gfm= is
+being used.
+
+Another worthwhile consideration is LaTeX formatting. It seems most Markdown
+parsers are fixated on TeX-style syntax (=$= and =$$=). As unfortunate as this is,
+it's probably best to accommodate them, for the sake of decent rendering.
+
+=ox-md= doesn't provide any transcoders for this, so we'll have to whip up our own
+and push them onto the =md= transcoders alist.
+
+#+begin_src emacs-lisp
+(after! ox-md
+  (defun org-md-latex-fragment (latex-fragment _contents info)
+    "Transcode a LATEX-FRAGMENT object from Org to Markdown."
+    (let ((frag (org-element-property :value latex-fragment)))
+      (cond
+       ((string-match-p "^\\\\(" frag)
+        (concat "$" (substring frag 2 -2) "$"))
+       ((string-match-p "^\\\\\\[" frag)
+        (concat "$$" (substring frag 2 -2) "$$"))
+       (t (message "unrecognised fragment: %s" frag)
+          frag))))
+
+  (defun org-md-latex-environment (latex-environment contents info)
+    "Transcode a LATEX-ENVIRONMENT object from Org to Markdown."
+    (concat "$$\n"
+            (org-html-latex-environment latex-environment contents info)
+            "$$\n"))
+
+  (defun org-utf8-entity (entity _contents _info)
+    "Transcode an ENTITY object from Org to utf-8.
+CONTENTS are the definition itself.  INFO is a plist holding
+contextual information."
+    (org-element-property :utf-8 entity))
+
+  ;; We can't let this be immediately parsed and evaluated,
+  ;; because eager macro-expansion tries to call as-of-yet
+  ;; undefined functions.
+  ;; NOTE in the near future this shouldn't be required
+  (eval
+   '(dolist (extra-transcoder
+             '((latex-fragment . org-md-latex-fragment)
+               (latex-environment . org-md-latex-environment)
+               (entity . org-utf8-entity)))
+      (unless (member extra-transcoder (org-export-backend-transcoders
+                                        (org-export-get-backend 'md)))
+        (push extra-transcoder (org-export-backend-transcoders
+                                (org-export-get-backend 'md)))))))
+#+end_src
+
 *** ORB - Org-Roam Bibtex
 
 The package that allows us to search through bibliography files and take notes on them. Makes Org-Roam work better as a zettlekasten for academic research.
@@ -19439,6 +19695,9 @@ The package that allows us to search through bibliography files and take notes o
 #+end_src
 
 *** Taking notes on PDFs
+:PROPERTIES:
+:NOTER_DOCUMENT: ../../org/notes/notes.org
+:END:
 
 #+begin_src emacs-lisp :tangle yes
    (use-package! org-noter
@@ -19501,6 +19760,178 @@ The package that allows us to search through bibliography files and take notes o
       ))
 #+end_src
 
+*** lang
+**** Python
+Since I'm using =mypyls=, as suggested in [[file:~/.emacs.d/modules/lang/python/README.org::*Language Server Protocol Support][:lang python LSP support]] I'll tweak the
+priority of =mypyls=
+#+begin_src emacs-lisp
+(after! lsp-python-ms
+  (set-lsp-priority! 'mspyls 1))
+#+end_src
+**** PDF
+***** MuPDF
+
+=pdf-tools= is nice, but a =mupdf=-based solution is nicer.
+
+#+begin_src emacs-lisp :tangle no
+(package! paper :recipe (:host github :repo "ymarco/paper-mode"
+                         :files ("*.el" ".so")
+                         :pre-build ("make")))
+#+end_src
+
+#+begin_src emacs-lisp :tangle yes
+;; (use-package paper
+;;   ;; :mode ("\\.pdf\\'"  . paper-mode)
+;;   ;; :mode ("\\.epub\\'"  . paper-mode)
+;;   :config
+;;   (require 'evil-collection-paper)
+;;   (evil-collection-paper-setup))
+#+end_src
+
+***** Terminal viewing
+
+Sometimes I'm in a terminal and I still want to see the content. Additionally,
+sometimes I'd like to act on the textual content and so would like a plaintext version.
+Thanks to src_shell{pdftotext} we have a convenient way of performing this conversion.
+I've integrated this into a little package, =pdftotext.el=.
+#+begin_src emacs-lisp :tangle packages.el
+(package! pdftotext :recipe (:host github :repo "tecosaur/pdftotext.el"))
+#+end_src
+
+The output can be slightly nicer without spelling errors, and with prettier page
+feeds (=^L= by default).
+
+#+begin_src emacs-lisp
+#+end_src
+
+This is very nice, now we just need to associate it with =.pdf= files, and make
+sure =pdf-tools= doesn't take priority.
+
+Lastly, whenever Emacs is non-graphical (i.e. a TUI), we want to use this by default.
+
+#+begin_src emacs-lisp :tangle (if (executable-find "pdftotext") "yes" "no")
+(use-package! pdftotext
+  :init
+  (unless (display-graphic-p)
+    (add-to-list 'auto-mode-alist '("\\.[pP][dD][fF]\\'" . pdftotext-mode))
+    (add-to-list 'magic-mode-alist '("%PDF" . pdftotext-mode)))
+  :config
+  (unless (display-graphic-p) (after! pdf-tools (pdftotext-install)))
+  ;; For prettyness
+  (add-hook 'pdftotext-mode-hook #'spell-fu-mode-disable)
+  (add-hook 'pdftotext-mode-hook (lambda () (page-break-lines-mode 1)))
+  ;; I have no idea why this is needed
+  (map! :map pdftotext-mode-map
+        "<mouse-4>" (cmd! (scroll-down mouse-wheel-scroll-amount-horizontal))
+        "<mouse-5>" (cmd! (scroll-up mouse-wheel-scroll-amount-horizontal))))
+
+#+end_src
+
+**** Graphviz
+
+Graphviz is a nice method of visualising simple graphs, based on plaintext
+=.dot= / =.gv= files.
+#+begin_src emacs-lisp :tangle packages.el
+(package! graphviz-dot-mode :pin "a1b7d66f5c20404a1e59c2ee5e841022622535b8")
+#+end_src
+
+#+begin_src emacs-lisp
+(use-package! graphviz-dot-mode
+  :commands graphviz-dot-mode
+  :mode ("\\.dot\\'" "\\.gz\\'")
+  :init
+  (after! org
+    (setcdr (assoc "dot" org-src-lang-modes)
+            'graphviz-dot)))
+
+(use-package! company-graphviz-dot
+  :after graphviz-dot-mode)
+#+end_src
+**** Markdown
+
+Most of the time when I write markdown, it's going into some app/website which
+will do it's own line wrapping, hence we /only/ want to use visual line wrapping. No hard stuff.
+#+begin_src emacs-lisp
+(add-hook! (gfm-mode markdown-mode) #'visual-line-mode #'turn-off-auto-fill)
+#+end_src
+
+Since markdown is often seen as rendered HTML, let's try to somewhat mirror the
+style or markdown renderers.
+
+Most markdown renders seem to make the first three headings levels larger than
+normal text, the first two much so. Then the fourth level tends to be the same
+as body text, while the fifth and sixth are (increasingly) smaller, with the
+sixth greyed out. Since the sixth level is so small, I'll turn up the boldness a notch.
+#+begin_src emacs-lisp
+(custom-set-faces!
+  '(markdown-header-face-1 :height 1.25 :weight extra-bold :inherit markdown-header-face)
+  '(markdown-header-face-2 :height 1.15 :weight bold       :inherit markdown-header-face)
+  '(markdown-header-face-3 :height 1.08 :weight bold       :inherit markdown-header-face)
+  '(markdown-header-face-4 :height 1.00 :weight bold       :inherit markdown-header-face)
+  '(markdown-header-face-5 :height 0.90 :weight bold       :inherit markdown-header-face)
+  '(markdown-header-face-6 :height 0.75 :weight extra-bold :inherit markdown-header-face))
+#+end_src
+**** Beancount
+There are a number of rather compelling advantages to [[https://plaintextaccounting.org/][plain text accounting]],
+with [[https://www.ledger-cli.org/][ledger]] being the most obvious example. However, [[https://github.com/beancount/beancount][beancount]], a more recent
+implementation of the idea is ledger-compatible (meaning I can switch easily if
+I change my mind) and has a gorgeous front-end --- [[https://beancount.github.io/fava/][fava]].
+
+Of course, there's an Emacs mode for this.
+
+#+begin_src emacs-lisp :tangle packages.el
+(package! beancount :recipe (:host github :repo "beancount/beancount-mode")
+  :pin "ea8257881b7e276e8d170d724e3b2e179f25cb77")
+#+end_src
+
+#+begin_src emacs-lisp
+(use-package! beancount
+  :mode ("\\.beancount\\'" . beancount-mode)
+  :init
+  (after! all-the-icons
+    (add-to-list 'all-the-icons-icon-alist
+                 '("\\.beancount\\'" all-the-icons-material "attach_money" :face all-the-icons-lblue))
+    (add-to-list 'all-the-icons-mode-icon-alist
+                 '(beancount-mode all-the-icons-material "attach_money" :face all-the-icons-lblue)))
+  :config
+  (setq beancount-electric-currency t)
+  (defun beancount-bal ()
+    "Run bean-report bal."
+    (interactive)
+    (let ((compilation-read-command nil))
+      (beancount--run "bean-report"
+                      (file-relative-name buffer-file-name) "bal")))
+  (map! :map beancount-mode-map
+        :n "TAB" #'beancount-align-to-previous-number
+        :i "RET" (cmd! (newline-and-indent) (beancount-align-to-previous-number))))
+#+end_src
+**** R
+***** Editor Visuals
+#+begin_src emacs-lisp
+(after! ess-r-mode
+  (appendq! +ligatures-extra-symbols
+            '(:assign "⟵"
+              :multiply "×"))
+  (set-ligatures! 'ess-r-mode
+    ;; Functional
+    :def "function"
+    ;; Types
+    :null "NULL"
+    :true "TRUE"
+    :false "FALSE"
+    :int "int"
+    :floar "float"
+    :bool "bool"
+    ;; Flow
+    :not "!"
+    :and "&&" :or "||"
+    :for "for"
+    :in "%in%"
+    :return "return"
+    ;; Other
+    :assign "<-"
+    :multiply "%*%"))
+#+end_src
 ** org modern
 This is yet another high-quality package by Daniel Mendler which handles
 the prettification of Org buffers in a performant way.  Rathen than
@@ -19837,3 +20268,5 @@ See `org-capture-templates' for more information."
    you load packages
 Symbol’s function definition is void: delete-window-if-not-single
 exit
+
+
