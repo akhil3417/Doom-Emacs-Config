@@ -212,8 +212,8 @@ To install ~some-package~ from MELPA, ELPA or emacsmirror:
   (package! dashboard)
   (package! dired-open)
   (package! dmenu)
-  (package! elfeed-goodies)
-  (package! elfeed-org)
+  ;; (package! elfeed-goodies)
+  ;; (package! elfeed-org)
   ;; (package! emojify)
   (package! evil-tutor)
   (package! ivy-posframe)
@@ -426,7 +426,7 @@ Speaking of ~GPG~, I want to use =~/.authinfo.gpg= instead of the default in
 make a difference, and I don't want to accidentally purge this file I have done
 src_shell{rm -rf~/.emac.d~ before}. I also want to cache as much as possible, as
 my home machine is pretty safe, and my laptop is shutdown a lot.
-#+begin_src emacs-lisp :tangle no
+#+begin_src emacs-lisp :tangle yes
 (setq auth-sources '("~/.authinfo.gpg")
       auth-source-cache-expiry nil)
  ; default is 7200 (2h)
@@ -3043,21 +3043,14 @@ We use the [[https://github.com/DamienCassou/desktop-environment][desktop-enviro
 #+begin_src emacs-lisp
 (use-package! desktop-environment
   :after (exwm)
-  :config
-  (exwm-input-set-key (kbd "s-<up>") #'desktop-environment-volume-increment)
-  (exwm-input-set-key (kbd "s-<down>") #'desktop-environment-volume-decrement)
-  (exwm-input-set-key (kbd "s-m") #'desktop-environment-toggle-mute)
-  (exwm-input-set-key (kbd "s-l") #'desktop-environment-lock-screen)
-  (exwm-input-set-key (kbd "<XF86AudioPlay>") #'desktop-environment-toggle-music)
-  (exwm-input-set-key (kbd "<XF86AudioPause>") #'desktop-environment-toggle-music)
-  (exwm-input-set-key (kbd "<XF86AudioNext>") #'desktop-environment-music-next)
-  ;; (exwm-input-set-key (kbd "s-s") #'desktop-environment-screenshot-part)
   :custom
   (desktop-environment-brightness-small-increment "2%+")
   (desktop-environment-brightness-small-decrement "2%-")
   (desktop-environment-brightness-normal-increment "5%+")
   (desktop-environment-brightness-normal-decrement "5%-")
   (desktop-environment-volume-get-command "pamixer --get-volume")
+   ;; (desktop-environment-volume-get-command
+   ;; "LC_ALL=C pacmd list-sinks|grep -A 15 '* index'| awk '/volume: front/{ print $5 }' | sed 's/,//g'")
   (desktop-environment-volume-set-command "pamixer %s")
   (desktop-environment-volume-get-regexp "\\([0-9]+\\)")
   (desktop-environment-volume-normal-increment "-i 5 --allow-boost")
@@ -3065,7 +3058,42 @@ We use the [[https://github.com/DamienCassou/desktop-environment][desktop-enviro
   (desktop-environment-volume-toggle-command "pamixer -t")
   (desktop-environment-screenshot-directory "~")
   (desktop-environment-screenshot-partial-command "import png:- | xclip -selection c -t image/png -verbose")
-  (desktop-environment-screenlock-command "xscreensaver-command -lock"))
+  (desktop-environment-screenlock-command "xscreensaver-command -lock")
+
+  :config
+(desktop-environment-mode)
+  (exwm-input-set-key (kbd "s-<up>") #'desktop-environment-volume-increment)
+  (exwm-input-set-key (kbd "s-<down>") #'desktop-environment-volume-decrement)
+  (exwm-input-set-key (kbd "s-m") #'desktop-environment-toggle-mute)
+  (exwm-input-set-key (kbd "s-l") #'desktop-environment-lock-screen)
+  (exwm-input-set-key (kbd "<XF86AudioPlay>") #'desktop-environment-toggle-music)
+  (exwm-input-set-key (kbd "<XF86AudioPause>") #'desktop-environment-toggle-music)
+  (exwm-input-set-key (kbd "<XF86AudioNext>") #'desktop-environment-music-next))
+  ;; (exwm-input-set-key (kbd "s-s") #'desktop-environment-screenshot-part)
+
+(define-minor-mode display-volume-mode
+  "Toggle display of volume in mode lines.
+
+Depends on desktop-environment.
+
+When Display Time mode is enabled, it queries the volume from
+your system on every displaying using
+desktop-environment-volume-get (which you can customize)."
+  :global t :group 'desktop-environment
+  (or global-mode-string (setq global-mode-string '("")))
+  (setq display-volume-keymap (make-sparse-keymap))
+  (define-key display-volume-keymap (kbd "<mode-line> <mouse-4>") 'desktop-environment-volume-increment-slowly)
+  (define-key display-volume-keymap (kbd "<mode-line> <mouse-5>") 'desktop-environment-volume-decrement-slowly)
+  (setq display-volume-modeline-entry
+        '(:eval (propertize (format " V:%s%% "(desktop-environment-volume-get))
+                            'keymap display-volume-keymap)))
+  (if display-volume-mode
+      (progn
+        (or (memq display-volume-modeline-entry global-mode-string)
+            (setq global-mode-string
+                  (append global-mode-string (list display-volume-modeline-entry)))))))
+
+(display-volume-mode)
 
 #+end_src
 
@@ -3192,12 +3220,11 @@ For editing systemd unit files
 (use-package! systemd
   :defer t)
 #+end_src
-** DONE Systemd daemon
-CLOSED: [2022-03-31 Thu 20:06]
+*** Systemd daemon
 For running a systemd service for a Emacs server I have the following
 #+name: emacsclient service
 #+begin_src systemd :tangle no
-# ~/.config/systemd/user/emacs.service :mkdirp yes
+##+begin_src systemd :tangle ~/.config/systemd/user/default.target.wants/emacs.service :mkdirp yes
 [Unit]
 Description=Emacs server daemon
 Documentation=info:emacs man:emacs(1) https://gnu.org/software/emacs/
@@ -3214,7 +3241,6 @@ WantedBy=default.target
 
 which is then enabled by
 #+begin_src shell :tangle (if (string= "enabled\n" (shell-command-to-string "systemctl --user is-enabled emacs.service")) "no" "setup.sh")
- # shell :tangle (if (string= "enabled\n" (shell-command-to-string "systemctl --user is-enabled emacs.service")) "no" "setup.sh")
 systemctl --user enable emacs.service
 #+end_src
 
@@ -3251,9 +3277,9 @@ issues when started in a non-graphical session.
 Lastly, while I'm not sure quite why it happens, but after a bit it seems that
 new Emacsclient frames start on the =*scratch*= buffer instead of the dashboard.
 I prefer the dashboard, so let's ensure that's always switched to in new frames.
- daemon initialisation
 
-#+begin_src emacs-lisp :tangle no
+#+name: daemon initialisation
+#+begin_src emacs-lisp
 (defun greedily-do-daemon-setup ()
   (require 'org)
   (when (require 'mu4e nil t)
@@ -3272,6 +3298,136 @@ I prefer the dashboard, so let's ensure that's always switched to in new frames.
     (unless (string-match-p "\\*draft\\|\\*stdin\\|emacs-everywhere" (buffer-name))
       (switch-to-buffer +doom-dashboard-name))))
 #+end_src
+*** Emacs client wrapper
+I frequently want to make use of Emacs while in a terminal emulator. To make
+this easier, I can construct a few handy aliases.
+
+However, a little convenience script in =~/.local/bin= can have the same effect,
+be available beyond the specific shell I plop the alias in, then also allow me
+to add a few bells and whistles --- namely:
++ Accepting stdin by putting it in a temporary file and immediately opening it.
++ Guessing that the =tty= is a good idea when ~$DISPLAY~ is unset (relevant with SSH
+  sessions, among other things).
++ With a whiff of 24-bit color support, sets ~TERM~ variable to a =terminfo= that
+  (probably) announces 24-bit color support.
++ Changes GUI =emacsclient= instances to be non-blocking by default (~--no-wait~),
+  and instead take a flag to suppress this behaviour (~-w~).
+
+I would use =sh=, but using arrays for argument manipulation is just too
+convenient, so I'll raise the requirement to =bash=. Since arrays are the only
+'extra' compared to =sh=, other shells like =ksh= etc. should work too.
+
+#+name: e
+#+begin_src shell :tangle ~/.local/bin/e :mkdirp yes :tangle-mode (identity #o755) :comments no
+#!/usr/bin/env bash
+force_tty=false
+force_wait=false
+stdin_mode=""
+
+args=()
+
+while :; do
+    case "$1" in
+        -t | -nw | --tty)
+            force_tty=true
+            shift ;;
+        -w | --wait)
+            force_wait=true
+            shift ;;
+        -m | --mode)
+            stdin_mode=" ($2-mode)"
+            shift 2 ;;
+        -h | --help)
+            echo -e "\033[1mUsage: e [-t] [-m MODE] [OPTIONS] FILE [-]\033[0m
+
+Emacs client convenience wrapper.
+
+\033[1mOptions:\033[0m
+\033[0;34m-h, --help\033[0m            Show this message
+\033[0;34m-t, -nw, --tty\033[0m        Force terminal mode
+\033[0;34m-w, --wait\033[0m            Don't supply \033[0;34m--no-wait\033[0m to graphical emacsclient
+\033[0;34m-\033[0m                     Take \033[0;33mstdin\033[0m (when last argument)
+\033[0;34m-m MODE, --mode MODE\033[0m  Mode to open \033[0;33mstdin\033[0m with
+
+Run \033[0;32memacsclient --help\033[0m to see help for the emacsclient."
+            exit 0 ;;
+        --*=*)
+            set -- "$@" "${1%%=*}" "${1#*=}"
+            shift ;;
+        ,*)
+            if [ "$#" = 0 ]; then
+                break; fi
+            args+=("$1")
+            shift ;;
+    esac
+done
+
+if [ ! "${#args[*]}" = 0 ] && [ "${args[-1]}" = "-" ]; then
+    unset 'args[-1]'
+    TMP="$(mktemp /tmp/emacsstdin-XXX)"
+    cat > "$TMP"
+    args+=(--eval "(let ((b (generate-new-buffer \"*stdin*\"))) (switch-to-buffer b) (insert-file-contents \"$TMP\") (delete-file \"$TMP\")${stdin_mode})")
+fi
+
+if [ -z "$DISPLAY" ] || $force_tty; then
+    # detect terminals with sneaky 24-bit support
+    if { [ "$COLORTERM" = truecolor ] || [ "$COLORTERM" = 24bit ]; } \
+        && [ "$(tput colors 2>/dev/null)" -lt 257 ]; then
+        if echo "$TERM" | grep -q "^\w\+-[0-9]"; then
+            termstub="${TERM%%-*}"; else
+            termstub="${TERM#*-}"; fi
+        if infocmp "$termstub-direct" >/dev/null 2>&1; then
+            TERM="$termstub-direct"; else
+            TERM="xterm-direct"; fi # should be fairly safe
+    fi
+    emacsclient --tty -create-frame --alternate-editor="$ALTERNATE_EDITOR" "${args[@]}"
+else
+    if ! $force_wait; then
+        args+=(--no-wait); fi
+    emacsclient -create-frame --alternate-editor="$ALTERNATE_EDITOR" "${args[@]}"
+fi
+#+end_src
+
+Now, to set an alias to use =e= with magit, and then for maximum laziness we can
+set aliases for the terminal-forced variants.
+#+begin_src shell :tangle no
+alias m='e --eval "(progn (magit-status) (delete-other-windows))"'
+alias mt="m -t"
+alias et="e -t"
+#+end_src
+*** Prompt to run setup script
+
+At various points in this config, content is conditionally tangled to
+=./setup.sh=. It's no good just putting content there if it isn't run though.
+To help remind me to run it when needed, let's add a little prompt when there's
+anything to be run.
+
+#+name: run-setup
+#+begin_src emacs-lisp :tangle no
+(if (file-exists-p "setup.sh")
+    (if (string-empty-p (string-trim (with-temp-buffer (insert-file-contents "setup.sh") (buffer-string)) "#!/usr/bin/env bash"))
+        (message ";; Setup script is empty")
+      (message ";; Detected content in the setup script")
+      (pp-to-string
+       `(unless noninteractive
+          (defun +config-run-setup ()
+            (when (yes-or-no-p (format "%s The setup script has content. Check and run the script?"
+                                       (propertize "Warning!" 'face '(bold warning))))
+              (find-file (expand-file-name "setup.sh" doom-private-dir))
+              (when (yes-or-no-p "Would you like to run this script?")
+                (async-shell-command "./setup.sh"))))
+          (add-hook! 'doom-init-ui-hook
+            (run-at-time nil nil #'+config-run-setup)))))
+  (message ";; setup.sh did not exist during tangle. Tangle again.")
+  (pp-to-string
+   `(unless noninteractive
+      (add-hook! 'doom-init-ui-hook #'+literate-tangle-async-h))))
+#+end_src
+
+#+begin_src emacs-lisp :noweb no-export :tangle no
+<<run-setup()>>
+#+end_src
+
 ** DONE =server-shutdown=
 CLOSED: [2022-03-31 Thu 20:06]
 Thi s is the converse function to the built-in =server-start=.
@@ -3746,7 +3902,7 @@ CLOSED: [2022-03-30 Wed 11:36]
 
 ** Modus themes (prot's highly accessible themes)
 
-#+begin_src emacs-lisp
+#+begin_src emacs-lisp :tangle yes
 ;;; Modus themes (my highly accessible themes)
 (use-package! modus-themes
   ;; Add all your customizations prior to loading the themes
@@ -4414,7 +4570,7 @@ CLOSED: [2022-03-31 Thu 20:52]
 Emacs Dashboard is an extensible startup screen showing you recent files, bookmarks, agenda items and an Emacs banner.
 
 *** Configuring Dashboard
-#+begin_src emacs-lisp
+#+begin_src emacs-lisp :tangle yes
 (use-package! dashboard
   :init      ;; tweak dashboard config before loading it
   (setq dashboard-set-heading-icons t)
@@ -4434,10 +4590,12 @@ List of keybindings (SPC h b b)")
                           (bookmarks . 5)
                           (projects . 5)
                           (registers . 5)))
+
   :config
   (dashboard-setup-startup-hook)
   (dashboard-modify-heading-icons '((recents . "file-text")
                                     (bookmarks . "book"))))
+
 #+end_src
 
 #+RESULTS:
@@ -5158,15 +5316,15 @@ Winner mode has been included with GNU Emacs since version 20.  This is a global
 ;; Winner mode is disabled in favor of =tab-bar-history-mode=, which does the
 ;; same but with a separate window configuration history for each tab. This is
 ;; usually what I want.
-(use-package! winner
-  ;; :disabled
-  :commands winner-undo
-  :bind (("C-c <left>" . winner-undo)
-         ("C-x C-/" . winner-undo)
-         ("H-/" . winner-undo)
-         ("s-u" . winner-undo))
-  :config
-  (winner-mode +1))
+;; (use-package! winner
+;;   ;; :disabled
+;;   :commands winner-undo
+;;   :bind (("C-c <left>" . winner-undo)
+;;          ("C-x C-/" . winner-undo)
+;;          ("H-/" . winner-undo)
+;;          ("s-u" . winner-undo))
+;;   :config
+;;   (winner-mode +1))
 #+END_SRC
 
 #+RESULTS:
@@ -8421,7 +8579,9 @@ Nested snippets are good, so let's enable that.
 CLOSED: [2022-04-01 Fri 15:43]
 Rainbox mode displays the actual color for any hex value color.  It's such a nice feature that I wanted it turned on all the time, regardless of what mode I am in.  The following creates a global minor mode for rainbow-mode and enables it.
 
-#+begin_src emacs-lisp
+fuck this snippet , wanna know why? well try using this and see your org agenda
+
+#+begin_src emacs-lisp :tangle no
 (define-globalized-minor-mode global-rainbow-mode rainbow-mode
   (lambda () (rainbow-mode 1)))
 (global-rainbow-mode 1 )
@@ -8779,6 +8939,15 @@ CLOSED: [2022-04-01 Fri 15:50]
 
 #+RESULTS:
 | elfeed-show-mode | elfeed-search-mode | forge-pullreq-list-mode | forge-topic-list-mode | dired-mode | tide-references-mode | image-dired-mode | image-dired-thumbnail-mode | ytel-mode | eww-mode |
+
+#+BEGIN_SRC emacs-lisp :tangle no
+  (mapc (lambda (mode)
+          (evil-set-initial-state mode 'emacs)) '(osm-mode
+                                                  prot-eww-history-mode))
+#+END_SRC
+
+#+RESULTS:
+| osm-mode | prot-eww-history-mode |
 
 Turning off evil when working in =cider--debug= minor mode:
 
@@ -12272,7 +12441,7 @@ active region use it instead."
 
 EWW is the Emacs Web Wowser, the builtin browser in Emacs.  Below I set urls to open in a specific browser (eww) with browse-url-browser-function.  By default, Doom Emacs does not use 'SPC e' for anything, so I choose to use the format 'SPC e' plus 'key' for these (I also use 'SPC e' for 'eval' keybindings).  I chose to use 'SPC s w' for eww-search-words because Doom Emacs uses 'SPC s' for 'search' commands.
 
-#+BEGIN_SRC emacs-lisp
+#+BEGIN_SRC emacs-lisp :tangle yes
 ;; (setq browse-url-browser-function 'eww-browse-url)
 ;; (map! :leader
 ;;       :desc "Search web for text between BEG/END"
@@ -12645,8 +12814,11 @@ some of the above.
 (use-package! browse-url
   :config
   (setq browse-url-browser-function 'eww-browse-url)
-  (setq browse-url-secondary-browser-function 'browse-url-default-browser))
+  ;; (setq browse-url-secondary-browser-function 'browse-url-default-browser))
 
+
+  (setq browse-url-secondary-browser-function 'browse-url-generic
+      browse-url-generic-program "qutebrowser"))
 (use-package! shr
   :config
   (setq shr-use-colors nil)             ; t is bad for accessibility
@@ -12717,33 +12889,39 @@ some of the above.
     (define-key map (kbd "B") #'prot-eww-visit-bookmark)
     (define-key map (kbd "e") #'prot-eww-browse-dwim)
     (define-key map (kbd "s") #'prot-eww-search-engine)
-    (define-key map (kbd "m") #'prot-eww-bookmark-page)
-    (define-key map (kbd "d") #'prot-eww-download-html)
-    (define-key map (kbd "F") #'prot-eww-find-feed)
-    (define-key map (kbd "h") #'prot-eww-list-history) ;key fine
-    (define-key map (kbd "e") #'prot-eww-browse-dwim)
-    (define-key map (kbd "o") #'prot-eww-open-in-other-window)
-    (define-key map (kbd "f") #'prot-eww-visit-url-on-page)
-    (define-key map (kbd "j") #'prot-eww-jump-to-url-on-page)
-    (define-key map (kbd "a") #'eaf-open-browser-with-history)
-    (define-key map (kbd "A") #'eaf-open-browser-other-window)
-    (define-key map (kbd "r") #'prot-eww-readable))
-  (let ((map eww-mode-map))
-    (define-key map (kbd "b") #'prot-eww-bookmark-page)
-    (define-key map (kbd "C-d") #'prot-eww-download-html)
-    (define-key map (kbd "C-f") #'prot-eww-find-feed)
-    (define-key map (kbd "C-H") #'prot-eww-list-history) ;key fine
-    (define-key map (kbd "C-B") #'prot-eww-visit-bookmark)
-    (define-key map (kbd "C-e") #'prot-eww-browse-dwim)
-    (define-key map (kbd "C-o") #'prot-eww-open-in-other-window)
-    (define-key map (kbd "C-e") #'prot-eww-visit-url-on-page)
-    (define-key map (kbd "C-j") #'prot-eww-jump-to-url-on-page)
-    (define-key map (kbd "C-r") #'prot-eww-readable)
-    (define-key map (kbd "C-q") #'prot-eww-quit)))
+    (define-key map (kbd "h") #'prot-eww-list-history)))
+;;keybinding are almost same to qutebrowser for consistency
+(map! :leader
+      :desc "Eww" "@ " #'prot-eww-map)
+(evil-define-key 'normal eww-mode-map  (kbd "m") #'prot-eww-bookmark-page
+                                               (kbd "D") #'prot-eww-download-html
+                                               (kbd "C-F") #'prot-eww-find-feed
+                                              (kbd ".") #'prot-eww-list-history ;key fine
+                                              (kbd "H") #'eww-back-url ;key fine
+                                              (kbd "L") #'eww-forward-url ;key fine
+                                               (kbd "O") #'prot-eww-visit-bookmark
+                                               (kbd "o") #'eww-search-words
+                                               (kbd "r") #'eww-reload
+                                               (kbd "g t") #'eww-switch-to-buffer
+                                               (kbd "g T") #'eww-list-buffer
+                                               (kbd "t") #'prot-eww-search-engine
+                                               (kbd "C-E") #'eww-browse-with-external-browser
+                                               (kbd "M") #'browse-url-at-point-umpv
+                                               (kbd "C-e") #'prot-eww-browse-dwim
+                                               (kbd "C-f") #'prot-eww-visit-url-on-page
+                                               (kbd "f") #'prot-eww-jump-to-url-on-page;;visible
+                                               (kbd "C-r") #'prot-eww-readable
+                                               (kbd "C-Y") #'link-hint-copy-link-at-point
+                                               (kbd "y l") #'link-hint-copy-link-at-point
+                                               (kbd "y p") #'eww-copy-page-url
+                                               (kbd "Q") #'prot-eww-quit)
+
+
+(evil-define-key 'normal prot-eww-history-mode-map  (kbd "RET") #'prot-eww-history-browse
+                                               (kbd "o") #'prot-eww-open-in-other-window)
 #+end_src
 
 #+RESULTS:
-: t
 
 *** eww toggle  images
 #+begin_src emacs-lisp
@@ -13946,12 +14124,23 @@ every variable is clear on what it is supposed to do.
 ** ELFEED
 *** Elfeed goodies
 An RSS newsfeed reader for Emacs.
+Elfeed enables the nicest podcast integration I know: Treat podcast entries as regular RSS entries, but hit A to enqueue them in emms.
 
-#+BEGIN_SRC emacs-lisp :tangle no
+Usage:
 
-(use-package! elfeed-goodies)
-(elfeed-goodies/setup)
-(setq elfeed-goodies/entry-pane-size 0.5)
++  Prepare emms with M-x emms-playlist-mode-go
++  Update your feeds with M-x elfeed-update
++  Read your feeds with M-x elfeed; hit enter to open an entry, then n and p to switch between them quickly (that’s the speed I wish to have everywhere).
++  Hit A to enqueue the file in emms.
++  Start listening to media with M-x emms-start.
++  Keep queueing up further interesting entries from elfeed.
++  Do something else while listening :-)
++  Pause emms with M-x emms-pause when needed.
+
+ #+BEGIN_SRC emacs-lisp :tangle yes
+;; (use-package! elfeed-goodies)
+;; (elfeed-goodies/setup)
+;; (setq elfeed-goodies/entry-pane-size 0.5)
 (add-hook 'elfeed-show-mode-hook 'visual-line-mode)
 (evil-define-key 'normal elfeed-show-mode-map
   (kbd "J") 'elfeed-goodies/split-show-next
@@ -13985,33 +14174,14 @@ An RSS newsfeed reader for Emacs.
           ("http://www.howardism.org/index.xml" emacs)
           ("http://www.masteringemacs.org/feed/" emacs))))
 
+(require 'emms-setup)
+(emms-all)
+(emms-default-players)
+(setq emms-source-file-default-directory "~/Music/")
 #+END_SRC
 
 #+RESULTS:
-| https://www.reddit.com/r/linux.rss                       | reddit        | linux       |
-| https://www.reddit.com/r/commandline.rss                 | reddit        | commandline |
-| https://www.reddit.com/r/distrotube.rss                  | reddit        | distrotube  |
-| https://www.reddit.com/r/emacs.rss                       | reddit        | emacs       |
-| https://www.gamingonlinux.com/article_rss.php            | gaming        | linux       |
-| https://hackaday.com/blog/feed/                          | hackaday      | linux       |
-| https://opensource.com/feed                              | opensource    | linux       |
-| https://linux.softpedia.com/backend.xml                  | softpedia     | linux       |
-| https://itsfoss.com/feed/                                | itsfoss       | linux       |
-| https://www.zdnet.com/topic/linux/rss.xml                | zdnet         | linux       |
-| https://www.phoronix.com/rss.php                         | phoronix      | linux       |
-| http://feeds.feedburner.com/d0od                         | omgubuntu     | linux       |
-| https://www.computerworld.com/index.rss                  | computerworld | linux       |
-| https://www.networkworld.com/category/linux/index.rss    | networkworld  | linux       |
-| https://www.techrepublic.com/rssfeeds/topic/open-source/ | techrepublic  | linux       |
-| https://betanews.com/feed                                | betanews      | linux       |
-| http://lxer.com/module/newswire/headlines.rss            | lxer          | linux       |
-| http://endlessparentheses.com/atom.xml                   | emacs         |             |
-| http://planet.emacsen.org/atom.xml                       | emacs         |             |
-| https://www.reddit.com/r/emacs/.rss                      | emacs         |             |
-| https://www.reddit.com/r/orgmode/.rss                    | emacs         |             |
-| http://www.blackhats.es/wordpress/?feed=rss2             | emacs         |             |
-| http://www.howardism.org/index.xml                       | emacs         |             |
-| http://www.masteringemacs.org/feed/                      | emacs         |             |
+: ~/Music/
 
 *** Elfeed feed reader, prot-elfeed.el and prot-elfeed-bongo.el
 **** desc
@@ -14193,6 +14363,7 @@ aspect of my computing inside of Emacs.
 
 (defvar qbs/*qbs-db* "~/qb-session.org")
 (defvar qbs/*qbs-source* "~/.local/share/qutebrowser/sessions/default.yml")
+;; (defvar qbs/*qbs-source* "~/.local/share/qutebrowser/sessions/_autosave.yml")
 
 (defun qbs/file<-string (s file)
   (with-temp-buffer
@@ -17479,7 +17650,7 @@ I think it makes sense to have list bullets change with depth
 #+end_src
 ***** Spellcheck
 My spelling is atrocious, so let's get flycheck going.
-#+begin_src emacs-lisp
+#+begin_src emacs-lisp :tangle no
 (add-hook 'org-mode-hook 'turn-on-flyspell)
 #+end_src
 ***** LSP support in ~src~ blocks
@@ -17623,121 +17794,19 @@ post-processing the =latexdiff= result.
   :init
   (bind-key "C-c c" 'org-gtd-clarify-finalize)) ;; the keybinding to hit when you're done editing an item in the processing phase
 #+end_src
-**** Super agenda
-
-The agenda is nice, but a souped up version is nicer.
-#+begin_src emacs-lisp :tangle packages.el
-(package! org-super-agenda :pin "fb5e2ef277bc811a3b061106c99e4c47b6b86f80")
-#+end_src
-
-#+begin_src emacs-lisp
-(use-package! org-super-agenda
-  :commands org-super-agenda-mode)
-
-(after! org
-  (setq org-agenda-files '("~/org/agenda/daily"
-                           "~/org/agenda/incubate.org"
-                           "~/org/agenda/openquestions.org"
-                           "~/org/agenda/agenda.org"))
- (setq org-default-notes-file "~/org/notes/notes.org"))
-(setq org-noter-notes-search-path '("~/org/notes/"))
-;; (setq org-agenda-files '("~/Dropbox/Org/Daily"
-;;                          "~/Dropbox/Org/references/notes/agenda.org" "~/Dropbox/Org/references/notes/incubate.org"
-;;                          "~/Dropbox/Org/references/notes/openquestions.org"))
-#+end_src
-
-#+RESULTS:
-| ~/org/notes/ |
-
-#+begin_src emacs-lisp
-(after! org-agenda
-  (org-super-agenda-mode))
-
-(setq org-agenda-skip-scheduled-if-done t
-      org-agenda-skip-deadline-if-done t
-      org-agenda-include-deadlines t
-      org-agenda-block-separator nil
-        org-log-done 'time ;; can be note as well or both
-      org-agenda-tags-column 100 ;; from testing this seems to be a good value
-      org-agenda-compact-blocks t)
-
-(setq org-agenda-custom-commands
-      '(("o" "Overview"
-         ((agenda "" ((org-agenda-span 'day)
-                      (org-super-agenda-groups
-                       '((:name "Today"
-                          :time-grid t
-                          :date today
-                          :todo "TODAY"
-                          :scheduled today
-                          :order 1)))))
-          (alltodo "" ((org-agenda-overriding-header "")
-                       (org-super-agenda-groups
-                        '((:name "Next to do"
-                           :todo "NEXT"
-                           :order 1)
-                          (:name "Important"
-                           :tag "Important"
-                           :priority "A"
-                           :order 6)
-                          (:name "Due Today"
-                           :deadline today
-                           :order 2)
-                          (:name "Due Soon"
-                           :deadline future
-                           :order 8)
-                          (:name "Overdue"
-                           :deadline past
-                           :face error
-                           :order 7)
-                          (:name "Assignments"
-                           :tag "Assignment"
-                           :order 10)
-                          (:name "Issues"
-                           :tag "Issue"
-                           :order 12)
-                          (:name "Emacs"
-                           :tag "Emacs"
-                           :order 13)
-                          (:name "Projects"
-                           :tag "Project"
-                           :order 14)
-                          (:name "Research"
-                           :tag "Research"
-                           :order 15)
-                          (:name "To read"
-                           :tag "Read"
-                           :order 30)
-                          (:name "Waiting"
-                           :todo "WAITING"
-                           :order 20)
-                          (:name "University"
-                           :tag "uni"
-                           :order 32)
-                          (:name "Trivial"
-                           :priority<= "E"
-                           :tag ("Trivial" "Unimportant")
-                           :todo ("SOMEDAY" )
-                           :order 90)
-                          (:discard (:tag ("Chore" "Routine" "Daily")))))))))))
-#+end_src
-
-#+RESULTS:
-| o | Overview | ((agenda  ((org-agenda-span 'day) (org-super-agenda-groups '((:name Today :time-grid t :date today :todo TODAY :scheduled today :order 1))))) (alltodo  ((org-agenda-overriding-header ) (org-super-agenda-groups '((:name Next to do :todo NEXT :order 1) (:name Important :tag Important :priority A :order 6) (:name Due Today :deadline today :order 2) (:name Due Soon :deadline future :order 8) (:name Overdue :deadline past :face error :order 7) (:name Assignments :tag Assignment :order 10) (:name Issues :tag Issue :order 12) (:name Emacs :tag Emacs :order 13) (:name Projects :tag Project :order 14) (:name Research :tag Research :order 15) (:name To read :tag Read :order 30) (:name Waiting :todo WAITING :order 20) (:name University :tag uni :order 32) (:name Trivial :priority<= E :tag (Trivial Unimportant) :todo (SOMEDAY) :order 90) (:discard (:tag (Chore Routine Daily)))))))) |
-
 **** Capture
 Let's setup some org-capture templates, and make them visually nice to access.
 
 
 ~doct~ (Declarative Org Capture Templates) seems to be a nicer way to
 set up org-capture.
-#+begin_src emacs-lisp :tangle packages.el
+#+begin_src emacs-lisp :noweb-ref none :tangle packages.el
 (package! doct
   :recipe (:host github :repo "progfolio/doct")
   :pin "9ed9b8c7f7e2ea2d2fb739d65ae4626a1cf16b9f")
 #+end_src
 
-#+begin_src emacs-lisp  :tangle yes
+#+begin_src emacs-lisp :noweb-ref none :tangle yes
 (use-package! doct
   :commands doct)
 #+end_src
@@ -17768,7 +17837,7 @@ set up org-capture.
 
   (setq doct-after-conversion-functions '(+doct-iconify-capture-templates))
 
-  (defvar +org-capture-recipies  "~/org/recipies.org")
+  (defvar +org-capture-recipies  "~/Desktop/TEC/Organisation/recipies.org")
 
   (defun set-org-capture-templates ()
     (setq org-capture-templates
@@ -17867,7 +17936,6 @@ set up org-capture.
                                :time-or-todo "%U"
                                :heading "Unreleased"
                                :file +org-capture-project-changelog-file)))
-
                   ("\tCentralised project templates"
                    :keys "o"
                    :type entry
@@ -17901,6 +17969,9 @@ set up org-capture.
                   (remove-hook 'server-after-make-frame-hook
                                #'org-capture-reinitialise-hook))))))
 #+end_src
+
+#+RESULTS:
+
 It would also be nice to improve how the capture dialogue looks
 #+name: prettify-capture
 #+begin_src emacs-lisp :noweb-ref none
@@ -18012,8 +18083,10 @@ is selected, only the bare key is returned."
                    (t (error "No entry available")))))))
         (when buffer (kill-buffer buffer))))))
 (advice-add 'org-mks :override #'org-mks-pretty)
-;; (set-face-attribute 'org-headline-done nil :strike-through t)
 #+end_src
+
+#+RESULTS: prettify-capture
+
 The [[file:~/.emacs.d/bin/org-capture][org-capture bin]] is rather nice, but I'd be nicer with a smaller frame, and
 no modeline.
 #+begin_src emacs-lisp
@@ -18025,6 +18098,132 @@ no modeline.
         (set-window-parameter nil 'mode-line-format 'none)
         (org-capture)))
 #+end_src
+
+#+RESULTS:
+| lambda | nil | (interactive) | (set-window-parameter nil 'mode-line-format 'none) | (org-capture) |
+
+**** Super agenda
+
+The agenda is nice, but a souped up version is nicer.
+#+begin_src emacs-lisp :tangle packages.el
+(package! org-super-agenda :pin "fb5e2ef277bc811a3b061106c99e4c47b6b86f80")
+#+end_src
+
+#+begin_src emacs-lisp
+(use-package! org-super-agenda
+  :commands org-super-agenda-mode)
+
+(after! org
+  (setq org-agenda-files '("~/org/agenda/daily"
+                           "~/org/agenda/incubate.org"
+                           "~/org/agenda/openquestions.org"
+                           "~/org/agenda/agenda.org"))
+ (setq org-default-notes-file "~/org/notes/notes.org"))
+(setq org-noter-notes-search-path '("~/org/notes/"))
+;; (setq org-agenda-files '("~/Dropbox/Org/Daily"
+;;                          "~/Dropbox/Org/references/notes/agenda.org" "~/Dropbox/Org/references/notes/incubate.org"
+;;                          "~/Dropbox/Org/references/notes/openquestions.org"))
+#+end_src
+
+#+RESULTS:
+| ~/org/notes/ |
+
+#+begin_src emacs-lisp :tangle no
+
+(setq org-super-agenda-groups
+      '((:name "Next Items"
+               :time-grid t
+               :tag ("NEXT" "outbox"))
+        (:name "Important"
+               :priority "A")
+        (:name "Quick Picks"
+               :effort< "0:30")
+        (:priority<= "B"
+                     :scheduled future
+                     :order 1)))
+#+end_src
+
+
+
+#+begin_src emacs-lisp :tangle yes
+(after! org-agenda
+  (org-super-agenda-mode))
+
+(setq org-agenda-skip-scheduled-if-done t
+      org-agenda-time-grid '((daily today require-timed) "----------------------" nil)
+      org-agenda-skip-deadline-if-done t
+      org-agenda-include-deadlines t
+      org-agenda-block-separator nil
+      org-agenda-tags-column 100 ;; from testing this seems to be a good value
+      org-agenda-compact-blocks t
+      org-agenda-include-diary t
+      org-agenda-compact-blocks t
+      org-agenda-start-with-log-mode t)
+
+(setq org-agenda-custom-commands
+      '(("o" "Overview"
+         ((agenda "" ((org-agenda-span 'day)
+                      (org-super-agenda-groups
+                       '((:name "Today"
+                          :time-grid t
+                          :date today
+                          :todo "TODAY"
+                          :scheduled today
+                          :order 1)))))
+          (alltodo "" ((org-agenda-overriding-header "")
+                       (org-super-agenda-groups
+                        '((:name "Next to do"
+                           :todo "NEXT"
+                           :order 1)
+                          (:name "Important"
+                           :tag "Important"
+                           :priority "A"
+                           :order 6)
+                          (:name "Due Today"
+                           :deadline today
+                           :order 2)
+                          (:name "Due Soon"
+                           :deadline future
+                           :order 8)
+                          (:name "Overdue"
+                           :deadline past
+                           :face error
+                           :order 7)
+                          (:name "Assignments"
+                           :tag "Assignment"
+                           :order 10)
+                          (:name "Issues"
+                           :tag "Issue"
+                           :order 12)
+                          (:name "Emacs"
+                           :tag "Emacs"
+                           :order 13)
+                          (:name "Projects"
+                           :tag "Project"
+                           :order 14)
+                          (:name "Research"
+                           :tag "Research"
+                           :order 15)
+                          (:name "To read"
+                           :tag "Read"
+                           :order 30)
+                          (:name "Waiting"
+                           :todo "WAITING"
+                           :order 20)
+                          (:name "University"
+                           :tag "uni"
+                           :order 32)
+                          (:name "Trivial"
+                           :priority<= "E"
+                           :tag ("Trivial" "Unimportant")
+                           :todo ("SOMEDAY" )
+                           :order 90)
+                          (:discard (:tag ("Chore" "Routine" "Daily")))))))))))
+#+end_src
+
+#+RESULTS:
+| o | Overview | ((agenda  ((org-agenda-span 'day) (org-super-agenda-groups '((:name Today :time-grid t :date today :todo TODAY :scheduled today :order 1))))) (alltodo  ((org-agenda-overriding-header ) (org-super-agenda-groups '((:name Next to do :todo NEXT :order 1) (:name Important :tag Important :priority A :order 6) (:name Due Today :deadline today :order 2) (:name Due Soon :deadline future :order 8) (:name Overdue :deadline past :face error :order 7) (:name Assignments :tag Assignment :order 10) (:name Issues :tag Issue :order 12) (:name Emacs :tag Emacs :order 13) (:name Projects :tag Project :order 14) (:name Research :tag Research :order 15) (:name To read :tag Read :order 30) (:name Waiting :todo WAITING :order 20) (:name University :tag uni :order 32) (:name Trivial :priority<= E :tag (Trivial Unimportant) :todo (SOMEDAY) :order 90) (:discard (:tag (Chore Routine Daily)))))))) |
+
 **** org capture acedemics
 
 Set some capture templates, to work with GTD.
@@ -18805,110 +19004,6 @@ cause issues. Let's make their failure less eventful.
 #+end_src
 
 #+RESULTS:
-
-**** Flycheck with org-lint
-
-Org may be simple, but that doesn't mean there's no such thing as malformed Org.
-Thankfully, malformed Org is a much less annoying affair than malformed zipped
-XML (looks at DOCX/ODT...), particularly because there's a rather helpful little
-tool called ~org-lint~ bundled with Org that can tell you about your mistakes.
-
-[[xkcd:2109]]
-
-Flycheck doesn't currently support Org, and there's aren't any packages to do so
-☹. However, in an issue on ~org-lint~ there is [[https://github.com/flycheck/flycheck/issues/1757#issuecomment-759546940][some code]] which apparently works.
-Surely this is what the clipboard was invented for? With that said, let's
-regurgitate the code, cross our fingers, and hope it works.
-
-#+begin_src emacs-lisp :tangle yes
-(defconst flycheck-org-lint-form
-  (flycheck-prepare-emacs-lisp-form
-    (require 'org)
-    (require 'org-attach)
-    (let ((source (car command-line-args-left))
-          (process-default-directory default-directory))
-      (with-temp-buffer
-        (insert-file-contents source 'visit)
-        (setq buffer-file-name source)
-        (setq default-directory process-default-directory)
-        (delay-mode-hooks (org-mode))
-        (setq delayed-mode-hooks nil)
-        (dolist (err (org-lint))
-          (let ((inf (cl-second err)))
-            (princ (elt inf 0))
-            (princ ": ")
-            (princ (elt inf 2))
-            (terpri)))))))
-
-(defconst flycheck-org-lint-variables
-  '(org-directory
-    org-id-locations
-    org-id-locations-file
-    org-attach-id-dir
-    org-attach-use-inheritance
-    org-attach-id-to-path-function-list
-    org-link-parameters)
-  "Variables inherited by the org-lint subprocess.")
-
-(defun flycheck-org-lint-variables-form ()
-  (require 'org-attach)  ; Needed to make variables available
-  `(progn
-     ,@(seq-map (lambda (opt) `(setq-default ,opt ',(symbol-value opt)))
-                (seq-filter #'boundp flycheck-org-lint-variables))))
-
-(flycheck-define-checker org-lint
-  "Org buffer checker using `org-lint'."
-  :command ("emacs" (eval flycheck-emacs-args)
-            "--eval" (eval (concat "(add-to-list 'load-path \""
-                                   (file-name-directory (locate-library "org"))
-                                   "\")"))
-            "--eval" (eval (flycheck-sexp-to-string
-                            (flycheck-org-lint-variables-form)))
-            "--eval" (eval (flycheck-sexp-to-string
-                            (flycheck-org-lint-customisations-form)))
-            "--eval" (eval flycheck-org-lint-form)
-            "--" source)
-  :error-patterns
-  ((error line-start line ": " (message) line-end))
-  :modes org-mode)
-#+end_src
-
-#+RESULTS:
-
-Turns out it almost works. Running =M-x flycheck-verify-setup= after running that
-snippet produces the following:
-#+begin_example
-The following syntax checkers are not registered:
-  - org-lint
-Try adding these syntax checkers to `flycheck-checkers'.
-#+end_example
-
-Well that's very nice and helpful. We'll just do that 🙂.
-#+begin_src emacs-lisp :tangle yes
-(add-to-list 'flycheck-checkers 'org-lint)
-#+end_src
-
-#+RESULTS:
-| org-lint | ada-gnat | asciidoctor | asciidoc | awk-gawk | bazel-buildifier | c/c++-clang | c/c++-gcc | c/c++-cppcheck | cfengine | chef-foodcritic | coffee | coffee-coffeelint | coq | css-csslint | css-stylelint | cuda-nvcc | cwl | d-dmd | dockerfile-hadolint | elixir-credo | emacs-lisp | emacs-lisp-checkdoc | ember-template | erlang-rebar3 | erlang | eruby-erubis | eruby-ruumba | fortran-gfortran | go-gofmt | go-golint | go-vet | go-build | go-test | go-errcheck | go-unconvert | go-staticcheck | groovy | haml | handlebars | haskell-stack-ghc | haskell-ghc | haskell-hlint | html-tidy | javascript-eslint | javascript-jshint | javascript-standard | json-jsonlint | json-python-json | json-jq | jsonnet | less | less-stylelint | llvm-llc | lua-luacheck | lua | markdown-markdownlint-cli | markdown-mdl | nix | nix-linter | opam | perl | perl-perlcritic | php | php-phpmd | php-phpcs | processing | proselint | protobuf-protoc | protobuf-prototool | pug | puppet-parser | puppet-lint | python-flake8 | python-pylint | python-pycompile | python-pyright | python-mypy | r-lintr | racket | rpm-rpmlint | rst-sphinx | rst | ruby-rubocop | ruby-standard | ruby-reek | ruby-rubylint | ruby | ruby-jruby | rust-cargo | rust | rust-clippy | scala | scala-scalastyle | scheme-chicken | scss-lint | scss-stylelint | sass/scss-sass-lint | sass | scss | sh-bash | sh-posix-dash | sh-posix-bash | sh-zsh | sh-shellcheck | slim | slim-lint | sql-sqlint | systemd-analyze | tcl-nagelfar | terraform | terraform-tflint | tex-chktex | tex-lacheck | texinfo | textlint | typescript-tslint | verilog-verilator | vhdl-ghdl | xml-xmlstarlet | xml-xmllint | yaml-jsyaml | yaml-ruby | yaml-yamllint | emacs-lisp-package |
-
-It was missing custom link types, but that's easily fixed just by adding
-~org-link-parameters~ to ~flycheck-org-lint-variables~.
-
-One remaining little annoyance is that it reports extra =#+options= that I've
-added to Org as errors. So we need to tell ~org-lint~ about them without having it
-load my whole config. Code duplication isn't great, but at least this isn't
-much.
-
-#+name: org-syntax-modifications
-#+begin_src emacs-lisp :tangle no
-(defun flycheck-org-lint-customisations-form ()
-  `(progn
-     (require 'ox)
-     (cl-pushnew '(:latex-cover-page nil "coverpage" nil)
-                 (org-export-backend-options (org-export-get-backend 'latex)))
-     (cl-pushnew '(:latex-font-set nil "fontset" nil)
-                 (org-export-backend-options (org-export-get-backend 'latex)))))
-#+end_src
 
 *** DONE Visuals
 CLOSED: [2022-04-01 Fri 18:12]
@@ -20268,5 +20363,6 @@ See `org-capture-templates' for more information."
    you load packages
 Symbol’s function definition is void: delete-window-if-not-single
 exit
+
 
 

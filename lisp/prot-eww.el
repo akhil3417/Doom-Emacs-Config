@@ -476,11 +476,151 @@ consider whole buffer."
     (wikipedia . (wikipedia
                   "https://en.m.wikipedia.org/w/index.php?search="
                   hist-var prot-eww--wikipedia-hist))
+
     (archwiki . (archwiki
                  "https://wiki.archlinux.org/index.php?search="
                  hist-var prot-eww--archwiki-hist))
+
     (aur . (aur "https://aur.archlinux.org/packages/?K="
-                hist-var prot-eww--aur-hist)))
+                hist-var prot-eww--aur-hist))
+
+    (duckduckgo . (duckduckgo
+                   "https://duckduckgo.com/html?q="
+                   hist-var prot-eww--duckduckgo-hist))
+
+    (github . (github
+               "https://github.com/search?ref=simplesearch&q="
+               hist-var prot-eww--github-hist))
+
+    (gitlab . (gitlab
+               "https://gitlab.cern.ch/search?search="
+               hist-var prot-eww--gitlab-hist))
+
+    (google . (google
+               "http://www.google.com/search?hl=en&ie=utf-8&oe=utf-8&q="
+               hist-var prot-eww--google-hist))
+
+    (duckduckgo . (duckduckgo
+                   "https://duckduckgo.com/html?q=\\"
+                   hist-var prot-eww--duckduckgo-hist))
+
+    (google . (google
+               "https://www.google.com/maps/search//"
+               hist-var prot-eww--google-hist))
+
+    (openstreetmap . (openstreetmap
+                      "https://www.openstreetmap.org/search?query="
+                      hist-var prot-eww--openstreetmap-hist))
+
+    (wordreference . (wordreference
+                      "https://www.wordreference.com/es/translation.asp?tranword="
+                      hist-var prot-eww--wordreference-hist))
+
+    (wikipedia . (wikipedia
+                  "http://www.wikipedia.org/search-redirect.php?language=en&go=Go&search="
+                  hist-var prot-eww--wikipedia-hist))
+
+    (youtube . (youtube
+                "http://www.youtube.com/results?aq=f&oq=&search_query="
+                hist-var prot-eww--youtube-hist))
+
+    (invidious . (invidious
+                  "https://vid.puffyan.us/search?q="
+                  hist-var prot-eww--invidious-hist))
+
+
+    (bing . (bing
+             "https://www.bing.com/search?q="
+             hist-var prot-eww--bing-hist))
+
+    (news . (news
+             "https://news.google.com/search?q="
+             hist-var prot-eww--news-hist))
+
+    (wiktionary . (wiktionary
+                   "https://en.wiktionary.org/w/index.php?search="
+                   hist-var prot-eww--wiktionary-hist))
+
+    (reddit . (reddit
+               "https://www.reddit.com/search/?q="
+               hist-var prot-eww--reddit-hist))
+
+    (amazon . (amazon
+               "https://www.amazon.in/s?k="
+               hist-var prot-eww--amazon-hist))
+
+    (ebay . (ebay
+             "https://www.ebay.com/sch/i.html?&_nkw="
+             hist-var prot-eww--ebay-hist))
+
+    (aur . (aur
+            "https://aur.archlinux.org/packages/?O=0&K="
+            hist-var prot-eww--aur-hist))
+
+    (archlinux . (archlinux
+                  "https://archlinux.org/packages/?sort=&q="
+                  hist-var prot-eww--archlinux-hist))
+
+    (wiki . (wiki
+             "https://wiki.archlinux.org/index.php?search="
+             hist-var prot-eww--wiki-hist))
+
+    (gitlab . (gitlab
+               "https://gitlab.com/search?search="
+               hist-var prot-eww--gitlab-hist))
+
+    (opensource . (opensource
+                   "https://opensource.google/projects/search?q="
+                   hist-var prot-eww--opensource-hist))
+
+    (sourceforge . (sourceforge
+                    "https://sourceforge.net/directory/?q="
+                    hist-var prot-eww--sourceforge-hist))
+
+    (stackoverflow . (stackoverflow
+                      "https://stackoverflow.com/search?q="
+                      hist-var prot-eww--stackoverflow-hist))
+
+    (craigslist . (craigslist
+                   "https://www.craigslist.org/search/sss?query="
+                   hist-var prot-eww--craigslist-hist))
+
+    (gumtree . (gumtree
+                "https://www.gumtree.com/search?search_category=all&q="
+                hist-var prot-eww--gumtree-hist))
+
+    (packages . (packages
+                 "https://packages.debian.org/search?suite=default&section=all&arch=any&searchon=names&keywords="
+                 hist-var prot-eww--packages-hist))
+
+    (brave . (brave
+              "https://search.brave.com/search?q="
+              hist-var prot-eww--search-hist))
+
+    (gemini . (gemini
+               "https://portal.mozz.us/gemini/geminispace.info/search%3F"
+               hist-var prot-eww--gemini-hist))
+
+    (qwant . (qwant
+              "https://www.qwant.com/?q="
+              hist-var prot-eww--qwant-hist))
+
+    (swisscows . (swisscows
+                  "https://swisscows.com/web?query="
+                  hist-var prot-eww--swisscows-hist))
+
+    (yandex . (yandex
+                "https://yandex.com/search/?text="
+                hist-var prot-eww--yandex-hist))
+
+    (bbc . (bbc
+            "https://www.bbc.co.uk/search?q="
+            hist-var prot-eww--bbc-hist))
+
+    (cnn . (cnn
+            "https://www.cnn.com/search?q="
+            hist-var prot-eww--cnn-hist)))
+
   "Alist of Plist of web search engines related data.
 From now on refer to this type of data as APLIST.  Each element
 of APLIST is (KEY . VALUE) pair.  KEY is a symbol specifying
@@ -586,6 +726,29 @@ result in a new buffer."
   (interactive)
   (other-window-prefix)       ; For emacs28 -- it's a hack, but why not?
   (eww-open-in-new-buffer))
+
+(defun default-browser-eww()
+  (interactive)
+  (setq browse-url-browser-function 'eww-browse-url
+        browse-url-secondary-browser-function 'browse-url-generic))
+
+(defun default-browser-qutebrowser()
+  (interactive)
+  (setq browse-url-browser-function 'browse-url-generic))
+
+;;;###autoload
+(defun eww-search-in-other-window ()
+  "Use `eww-open-in-new-buffer' in another window."
+  (interactive)
+  (other-window-prefix)       ; For emacs28 -- it's a hack, but why not?
+  (eww-search-words))
+
+;;;###autoload
+(defun eww-search-engine-in-other-window ()
+  "Use `eww-open-in-new-buffer' in another window."
+  (interactive)
+  (other-window-prefix)       ; For emacs28 -- it's a hack, but why not?
+  (eww-search-words))
 
 ;;;###autoload
 (defun prot-eww-readable ()
