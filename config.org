@@ -4690,8 +4690,8 @@ Fira Code is amazing, and so is Roboto.
 
 
 #+begin_src emacs-lisp :tangle no
-(setq doom-font (font-spec :family "FiraCode" :size 12 :weight 'light)
-       doom-variable-pitch-font (font-spec :family "Roboto" :style "Regular" :size 9 :weight 'regular))
+(setq doom-font (font-spec :family "FiraCode" :size 15 :weight 'light)
+       doom-variable-pitch-font (font-spec :family "Roboto" :style "Regular" :size 12 :weight 'regular))
 
 ;; There are two ways to load a theme. Both assume the theme is installed and
 ;; available. You an either set `doom-theme' or manually load a theme with the
@@ -4728,7 +4728,7 @@ Fira Code is amazing, and so is Roboto.
       doom-variable-pitch-font (font-spec :family "Overpass" :size 12)
       doom-unicode-font (font-spec :family "JuliaMono")
       doom-serif-font (font-spec :family "IBM Plex Mono" :weight 'light))
-;;; Add to ~/.doom.d/config.el
+
 ;; (setq doom-font (font-spec :family "Input Mono Narrow" :size 15 :weight 'semi-light)
 ;;       doom-variable-pitch-font (font-spec :family "Fira Sans") ; inherits `doom-font''s :size
 ;;       doom-unicode-font (font-spec :family "Input Mono Narrow" :size 15)
@@ -4834,7 +4834,7 @@ runs after UI initialisation and both
 + conditionally enables =mixed-pitch-mode=
 + sets up the mixed pitch hooks
 
-#+begin_src emacs-lisp :tangle yes
+#+begin_src emacs-lisp :tangle no
 (defvar mixed-pitch-modes '(org-mode LaTeX-mode markdown-mode gfm-mode Info-mode)
   "Modes that `mixed-pitch-mode' should be enabled in, but only after UI initialisation.")
 (defun init-mixed-pitch-h ()
@@ -4854,7 +4854,7 @@ As mixed pitch uses the variable =mixed-pitch-face=, we can create a new functio
 to apply mixed pitch with a serif face instead of the default. This was created
 for writeroom mode.
 
-#+begin_src emacs-lisp :tangle yes
+#+begin_src emacs-lisp :tangle no
 (autoload #'mixed-pitch-serif-mode "mixed-pitch"
   "Change the default face of the current buffer to a serifed variable pitch, while keeping some faces fixed pitch." t)
 
@@ -4884,7 +4884,7 @@ Th /Th/
 #+end_center
 
 Thankfully, it isn't to hard to add these to the ~composition-function-table~.
-#+begin_src emacs-lisp :tangle yes
+#+begin_src emacs-lisp :tangle no
 (set-char-table-range composition-function-table ?f '(["\\(?:ff?[fijlt]\\)" 0 font-shape-gstring]))
 (set-char-table-range composition-function-table ?T '(["\\(?:Th\\)" 0 font-shape-gstring]))
 #+end_src
@@ -5499,6 +5499,21 @@ Neotree is a file tree viewer.  When you open neotree, it jumps to the current f
       :desc "Toggle neotree file viewer" "t n" #'neotree-toggle
       :desc "Open directory in neotree" "d n" #'neotree-dir)
 #+END_SRC
+** pulsing cursor
+#+begin_src emacs-lisp :tangle packages.el
+
+(package! pulsing-cursor
+    :recipe (:host github :repo "jasonjckn/pulsing-cursor"))
+#+end_src
+
+#+begin_src emacs-lisp :tangle yes
+
+(use-package pulsing-cursor
+    :config (pulsing-cursor-mode +1))
+#+end_src
+
+#+RESULTS:
+: t
 
 * Completions framework
 ** Company
@@ -20366,3 +20381,17 @@ exit
 
 
 
+
+
+#+begin_src emacs-lisp :tangle no
+
+    (setq prettify-symbols-alist '(("lambda" . ?λ)
+                                    ("->" . ?→)
+                                    ("->>" . ?↠)
+                                    ("=>" . ?⇒)
+                                    ("/=" . ?≠)
+                                    ("!=" . ?≠)
+                                    ("==" . ?≡)
+                                    ("<=" . ?≤)
+                                    (">=" . ?≥)))
+#+end_src
