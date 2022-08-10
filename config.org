@@ -541,7 +541,7 @@ setting, and load it if it exists.
 
 * Exwm Config
 ** Defvar exwm
-#+begin_src emacs-lisp :tangle yes
+#+begin_src emacs-lisp :tangle no
 
      ;; (exwm :variables
      ;;       exwm-enable-systray t
@@ -596,7 +596,7 @@ setting, and load it if it exists.
   outside of current frame." )
 #+end_src
 ** misc
-#+begin_src emacs-lisp
+#+begin_src emacs-lisp :tangle no
 
 (defun exwm/init-framemove ()
   (use-package framemove
@@ -673,7 +673,7 @@ setting, and load it if it exists.
     ))
 #+end_src
 ** funcs
-#+begin_src emacs-lisp :tangle yes
+#+begin_src emacs-lisp :tangle no
 
 (defun exwm//persp-mode-inhibit-p (frame)
   (frame-parameter frame 'unsplittable))
@@ -980,7 +980,7 @@ I’ve always been mixed on this behavior but it seems like a good idea.
   (push ?\C-\\ exwm-input-prefix-keys)   ;; use Ctrl + \ to switch input method
 #+END_SRC
 
-#+begin_src emacs-lisp
+#+begin_src emacs-lisp :tangle yes
 
 (setq-default tab-width 2)
 (setq-default evil-shift-width tab-width);; Window manager
@@ -1710,6 +1710,198 @@ and adapted to use simulations keys to have a common yank keystroke."
 #+RESULTS:
 : t
 
+** EXWM Configuration
+
+We use the excellent [[https://github.com/ch11ng/exwm][EXWM]] module as the basis for our Emacs Desktop Environment.  The [[https://github.com/ch11ng/exwm/wiki][EXWM Wiki]] is a great place to find tips about how to configure everything!
+
+*NOTE:* Make sure you've installed =nm-applet=, =pasystray= and =blueman= for the system tray apps to work!
+
+#+begin_src emacs-lisp :tangle no
+
+  (defun efs/run-in-background (command)
+    (let ((command-parts (split-string command "[ ]+")))
+      (apply #'call-process `(,(car command-parts) nil 0 nil ,@(cdr command-parts)))))
+
+   (defun efs/set-wallpaper ()
+     (interactive)
+     ;; NOTE: You will need to update this to a valid background path!
+     (start-process-shell-command
+         "feh" nil  "feh --bg-scale /usr/share/backgrounds/matt-mcnulty-nyc-2nd-ave.jpg"))
+
+  (defun efs/exwm-init-hook ()
+    ;; Make workspace 1 be the one where we land at startup
+    (exwm-workspace-switch-create 1)
+
+    ;; Open eshell by default
+    ;;(eshell)
+
+    ;; NOTE: The next two are disabled because we now use Polybar!
+
+    ;; Show battery status in the mode line
+    ;;(display-battery-mode 1)
+
+    ;; Show the time and date in modeline
+    ;;(setq display-time-day-and-date t)
+    ;;(display-time-mode 1)
+    ;; Also take a look at display-time-format and format-time-string
+
+    ;; Start the Polybar panel
+    (efs/start-panel)
+
+    ;; Launch apps that will run in the background
+    (efs/run-in-background "dunst")
+    (efs/run-in-background "nm-applet")
+    (efs/run-in-background "pasystray")
+    (efs/run-in-background "blueman-applet"))
+
+  (defun efs/exwm-update-class ()
+    (exwm-workspace-rename-buffer exwm-class-name))
+
+  (defun efs/exwm-update-title ()
+    (pcase exwm-class-name
+      ("Firefox" (exwm-workspace-rename-buffer (format "Firefox: %s" exwm-title)))))
+
+  ;; This function isn't currently used, only serves as an example how to
+  ;; position a window
+  (defun efs/position-window ()
+    (let* ((pos (frame-position))
+           (pos-x (car pos))
+            (pos-y (cdr pos)))
+
+      (exwm-floating-move (- pos-x) (- pos-y))))
+
+  (defun efs/configure-window-by-class ()
+    (interactive)
+    (pcase exwm-class-name
+      ("Firefox" (exwm-workspace-move-window 2))
+      ("Sol" (exwm-workspace-move-window 3))
+      ("mpv" (exwm-floating-toggle-floating)
+             (exwm-layout-toggle-mode-line))))
+
+  ;; This function should be used only after configuring autorandr!
+  (defun efs/update-displays ()
+    (efs/run-in-background "autorandr --change --force")
+    (efs/set-wallpaper)
+    (message "Display config: %s"
+             (string-trim (shell-command-to-string "autorandr --current"))))
+
+  (use-package exwm
+    :config
+    ;; Set the default number of workspaces
+    (setq exwm-workspace-number 5)
+
+    ;; When window "class" updates, use it to set the buffer name
+    (add-hook 'exwm-update-class-hook #'efs/exwm-update-class)
+
+    ;; When window title updates, use it to set the buffer name
+    (add-hook 'exwm-update-title-hook #'efs/exwm-update-title)
+
+    ;; Configure windows as they're created
+    (add-hook 'exwm-manage-finish-hook #'efs/configure-window-by-class)
+
+    ;; When EXWM starts up, do some extra confifuration
+    (add-hook 'exwm-init-hook #'efs/exwm-init-hook)
+
+    ;; Rebind CapsLock to Ctrl
+    (start-process-shell-command "xmodmap" nil "xmodmap ~/.emacs.d/exwm/Xmodmap")
+
+    ;; NOTE: Uncomment the following two options if you want window buffers
+    ;;       to be available on all workspaces!
+
+    ;; Automatically move EXWM buffer to current workspace when selected
+    ;; (setq exwm-layout-show-all-buffers t)
+
+    ;; Display all EXWM buffers in every workspace buffer list
+    ;; (setq exwm-workspace-show-all-buffers t)
+
+    ;; NOTE: Uncomment this option if you want to detach the minibuffer!
+    ;; Detach the minibuffer (show it with exwm-workspace-toggle-minibuffer)
+    ;;(setq exwm-workspace-minibuffer-position 'top)
+
+    ;; Set the screen resolution (update this to be the correct resolution for your screen!)
+    (require 'exwm-randr)
+    (exwm-randr-enable)
+    (start-process-shell-command "xrandr" nil "xrandr --output Virtual-1 --primary --mode 2048x1152 --pos 0x0 --rotate normal")
+
+    ;; This will need to be updated to the name of a display!  You can find
+    ;; the names of your displays by looking at arandr or the output of xrandr
+    (setq exwm-randr-workspace-monitor-plist '(2 "Virtual-2" 3 "Virtual-2"))
+
+    ;; NOTE: Uncomment these lines after setting up autorandr!
+    ;; React to display connectivity changes, do initial display update
+    ;; (add-hook 'exwm-randr-screen-change-hook #'efs/update-displays)
+    ;; (efs/update-displays)
+
+    ;; Set the wallpaper after changing the resolution
+    (efs/set-wallpaper)
+
+    ;; NOTE: This is disabled because we now use Polybar!
+    ;; Load the system tray before exwm-init
+    ;; (require 'exwm-systemtray)
+    ;; (setq exwm-systemtray-height 32)
+    ;; (exwm-systemtray-enable)
+
+    ;; Automatically send the mouse cursor to the selected workspace's display
+    (setq exwm-workspace-warp-cursor t)
+
+    ;; Window focus should follow the mouse pointer
+    (setq mouse-autoselect-window t
+          focus-follows-mouse t)
+
+    ;; These keys should always pass through to Emacs
+    (setq exwm-input-prefix-keys
+      '(?\C-x
+        ?\C-u
+        ?\C-h
+        ?\M-x
+        ?\M-`
+        ?\M-&
+        ?\M-:
+        ?\C-\M-j  ;; Buffer list
+        ?\C-\ ))  ;; Ctrl+Space
+
+    ;; Ctrl+Q will enable the next key to be sent directly
+    (define-key exwm-mode-map [?\C-q] 'exwm-input-send-next-key)
+
+    ;; Set up global key bindings.  These always work, no matter the input state!
+    ;; Keep in mind that changing this list after EXWM initializes has no effect.
+    (setq exwm-input-global-keys
+          `(
+            ;; Reset to line-mode (C-c C-k switches to char-mode via exwm-input-release-keyboard)
+            ([?\s-r] . exwm-reset)
+
+            ;; Move between windows
+            ([s-left] . windmove-left)
+            ([s-right] . windmove-right)
+            ([s-up] . windmove-up)
+            ([s-down] . windmove-down)
+
+            ;; Launch applications via shell command
+            ([?\s-&] . (lambda (command)
+                         (interactive (list (read-shell-command "$ ")))
+                         (start-process-shell-command command nil command)))
+
+            ;; Switch workspace
+            ([?\s-w] . exwm-workspace-switch)
+            ([?\s-`] . (lambda () (interactive) (exwm-workspace-switch-create 0)))
+
+            ;; 's-N': Switch to certain workspace with Super (Win) plus a number key (0 - 9)
+            ,@(mapcar (lambda (i)
+                        `(,(kbd (format "s-%d" i)) .
+                          (lambda ()
+                            (interactive)
+                            (exwm-workspace-switch-create ,i))))
+                      (number-sequence 0 9))))
+
+    (exwm-input-set-key (kbd "s-SPC") 'counsel-linux-app)
+
+    (exwm-enable))
+
+#+end_src
+
+#+RESULTS:
+: t
+
 ** Desktop File
 
 This file is used by your "login manager" (GDM, LightDM, etc) to display EXWM as a desktop environment option when you log in.
@@ -1753,7 +1945,7 @@ xhost +SI:localuser:$USER
 ## you might need to append the TTY you are working on
 # xinit
 
-wmname LG3D
+# wmname LG3D
 
 # ## Run site init scripts. Usually not necessary.
 # if [ -d /etc/X11/xinit/xinitrc.d ] ; then
@@ -1779,7 +1971,7 @@ wmname LG3D
 # xsetroot -cursor_name left_ptr
 
 # Hide the mouse pointer if unused for a duration
-/usr/bin/unclutter &
+# /usr/bin/unclutter &
 
 # unclutter --jitter 3 --ignore-scrolling &
 # One can also start processes unrelated to X11, just ensure that they will exit when this process exits.
@@ -4540,8 +4732,8 @@ This is the code for =pulsar.el=:
 ** general line
 I set comment-line to 'SPC TAB TAB' which is a rather comfortable keybinding for me on my ZSA Moonlander keyboard.  The standard Emacs keybinding for comment-line is 'C-x C-;'.  The other keybindings are for commands that toggle on/off various line-related settings.  Doom Emacs uses 'SPC t' for "toggle" commands, so I choose 'SPC t' plus 'key' for those bindings.
 
-| COMMAND                  | DESCRIPTION                               | KEYBINDING  |
-|--------------------------+-------------------------------------------+-------------|
+| COMMAND                  | DESCRIPTION                                 | KEYBINDING  |
+|--------------------------+---------------------------------------------+-------------|
 | comment-line             | /Comment or uncomment lines/                | SPC TAB TAB |
 | hl-line-mode             | /Toggle line highlighting in current frame/ | SPC t h     |
 | global-hl-line-mode      | /Toggle line highlighting globally/         | SPC t H     |
@@ -4723,9 +4915,9 @@ Fira Code is amazing, and so is Roboto.
 ;;       doom-unicode-font (font-spec :family "DejaVu Sans Mono")
 ;;       doom-big-font (font-spec :family "Fira Mono" :size 19))
 
-(setq doom-font (font-spec :family "JetBrains Mono" :size 12)
-      doom-big-font (font-spec :family "JetBrains Mono" :size 18)
-      doom-variable-pitch-font (font-spec :family "Overpass" :size 12)
+(setq doom-font (font-spec :family "JetBrains Mono" :size 15)
+      doom-big-font (font-spec :family "JetBrains Mono" :size 24)
+      doom-variable-pitch-font (font-spec :family "Overpass" :size 16)
       doom-unicode-font (font-spec :family "JuliaMono")
       doom-serif-font (font-spec :family "IBM Plex Mono" :weight 'light))
 
@@ -5484,8 +5676,8 @@ Now, we just identify the files in question.
 ** NEOTREE
 Neotree is a file tree viewer.  When you open neotree, it jumps to the current file thanks to neo-smart-open.  The neo-window-fixed-size setting makes the neotree width be adjustable.  Doom Emacs had no keybindings set for neotree.  Since Doom Emacs uses 'SPC t' for 'toggle' keybindings, I used 'SPC t n' for toggle-neotree.
 
-| COMMAND        | DESCRIPTION               | KEYBINDING |
-|----------------+---------------------------+------------|
+| COMMAND        | DESCRIPTION                 | KEYBINDING |
+|----------------+-----------------------------+------------|
 | neotree-toggle | /Toggle neotree/            | SPC t n    |
 | neotree- dir   | /Open directory in neotree/ | SPC d n    |
 
@@ -6814,7 +7006,7 @@ Perspective provides multiple named workspaces (or "perspectives") in Emacs, sim
 | persp-prev                 | Switch to previous perspective      | SPC [      |
 | persp-add-buffer           | Add a buffer to current perspective | SPC +      |
 | persp-remove-by-name       | Remove perspective by name          | SPC -      |
-| +workspace/switch-to-{0-9} | Switch to workspace /n/               | SPC 0-9    |
+| +workspace/switch-to-{0-9} | Switch to workspace /n/             | SPC 0-9    |
 
 #+begin_src emacs-lisp
 (map! :leader
@@ -7210,8 +7402,8 @@ inside the src_elisp{(after! ... )} block ¯\_(ツ)_/¯.
 Then let's change the font to a sans serif, but the default one doesn't fit too
 well somehow, so let's switch to 'P22 Underground Book'; it looks much nicer.
 
-| COMMAND                     | DESCRIPTION               | KEYBINDING       |
-|-----------------------------+---------------------------+------------------|
+| COMMAND                     | DESCRIPTION                 | KEYBINDING       |
+|-----------------------------+-----------------------------+------------------|
 | centaur-tabs-mode           | /Toggle tabs globally/      | SPC t c          |
 | centaur-tabs-local-mode     | /Toggle tabs local display/ | SPC t C          |
 | centaur-tabs-forward        | /Next tab/                  | g <right> or g t |
@@ -9235,8 +9427,8 @@ Some custom functions to insert the date.  The function 'insert-todays-date' can
 ** REGISTERS
 Emacs registers are compartments where you can save text, rectangles and positions for later use. Once you save text or a rectangle in a register, you can copy it into the buffer once or many times; once you save a position in a register, you can jump back to that position once or many times.  The default GNU Emacs keybindings for these commands (with the exception of counsel-register) involves 'C-x r' followed by one or more other keys.  I wanted to make this a little more user friendly, and since I am using Doom Emacs, I choose to replace the 'C-x r' part of the key chords with 'SPC r'.
 
-| COMMAND                          | DESCRIPTION                      | KEYBINDING |
-|----------------------------------+----------------------------------+------------|
+| COMMAND                          | DESCRIPTION                        | KEYBINDING |
+|----------------------------------+------------------------------------+------------|
 | copy-to-register                 | /Copy to register/                 | SPC r c    |
 | frameset-to-register             | /Frameset to register/             | SPC r f    |
 | insert-register                  | /Insert contents of register/      | SPC r i    |
@@ -9796,8 +9988,8 @@ Summary of what these do:
 ** EVALUATE ELISP EXPRESSIONS
 Changing some keybindings from their defaults to better fit with Doom Emacs, and to avoid conflicts with my window managers which sometimes use the control key in their keybindings.  By default, Doom Emacs does not use 'SPC e' for anything, so I choose to use the format 'SPC e' plus 'key' for these (I also use 'SPC e' for 'eww' keybindings).
 
-| COMMAND         | DESCRIPTION                                  | KEYBINDING |
-|-----------------+----------------------------------------------+------------|
+| COMMAND         | DESCRIPTION                                    | KEYBINDING |
+|-----------------+------------------------------------------------+------------|
 | eval-buffer     | /Evaluate elisp in buffer/                     | SPC e b    |
 | eval-defun      | /Evaluate the defun containing or after point/ | SPC e d    |
 | eval-expression | /Evaluate an elisp expression/                 | SPC e e    |
@@ -10678,8 +10870,8 @@ Basically, its interaction model is as follows:
 ** OPEN SPECIFIC FILES
 Keybindings to open files that I work with all the time using the find-file command, which is the interactive file search that opens with 'C-x C-f' in GNU Emacs or 'SPC f f' in Doom Emacs.  These keybindings use find-file non-interactively since we specify exactly what file to open.  The format I use for these bindings is 'SPC =' plus 'key' since Doom Emacs does not use 'SPC ='.
 
-| PATH TO FILE                   | DESCRIPTION           | KEYBINDING |
-|--------------------------------+-----------------------+------------|
+| PATH TO FILE                   | DESCRIPTION             | KEYBINDING |
+|--------------------------------+-------------------------+------------|
 | ~/Org/agenda/agenda.org        | /Edit agenda file/      | SPC = a    |
 | ~/.config/doom/config.org"     | /Edit doom config.org/  | SPC = c    |
 | ~/.config/doom/init.el"        | /Edit doom init.el/     | SPC = i    |
@@ -10701,36 +10893,36 @@ Keybindings to open files that I work with all the time using the find-file comm
 #+END_SRC
 ** dired General commands and keybindings(read c)
  Keybindings To Open Dired
-| COMMAND    | DESCRIPTION                        | KEYBINDING |
-|------------+------------------------------------+------------|
+| COMMAND    | DESCRIPTION                          | KEYBINDING |
+|------------+--------------------------------------+------------|
 | dired      | /Open dired file manager/            | SPC d d    |
 | dired-jump | /Jump to current directory in dired/ | SPC d j    |
 │
 *│ │ Basic dired commands*
-| COMMAND                | DESCRIPTION                                 | KEYBINDING |
-|------------------------+---------------------------------------------+------------|
+| COMMAND                | DESCRIPTION                                   | KEYBINDING |
+|------------------------+-----------------------------------------------+------------|
 | dired-view-file        | /View file in dired/                          | SPC d v    |
 | dired-up-directory     | /Go up in directory tree/                     | h          |
 | dired-find-file        | /Go down in directory tree (or open if file)/ | l          |
-| dired-next-line        | Move down to next line                      | j          |
-| dired-previous-line    | Move up to previous line                    | k          |
-| dired-mark             | Mark file at point                          | m          |
-| dired-unmark           | Unmark file at point                        | u          |
-| dired-do-copy          | Copy current file or marked files           | C          |
-| dired-do-rename        | Rename current file or marked files         | R          |
-| dired-hide-details     | Toggle detailed listings on/off             | (          |
-| dired-git-info-mode    | Toggle git information on/off               | )          |
-| dired-create-directory | Create new empty directory                  | +          |
-| dired-diff             | Compare file at point with another          | =          |
-| dired-subtree-toggle   | Toggle viewing subtree at point             | TAB        |
-|                        |                                             |            |
+| dired-next-line        | Move down to next line                        | j          |
+| dired-previous-line    | Move up to previous line                      | k          |
+| dired-mark             | Mark file at point                            | m          |
+| dired-unmark           | Unmark file at point                          | u          |
+| dired-do-copy          | Copy current file or marked files             | C          |
+| dired-do-rename        | Rename current file or marked files           | R          |
+| dired-hide-details     | Toggle detailed listings on/off               | (          |
+| dired-git-info-mode    | Toggle git information on/off                 | )          |
+| dired-create-directory | Create new empty directory                    | +          |
+| dired-diff             | Compare file at point with another            | =          |
+| dired-subtree-toggle   | Toggle viewing subtree at point               | TAB        |
+|                        |                                               |            |
 │
 │
 *│ │ Keybindings Within Dired With Peep-Dired-Mode Enabled*
 *│ │ If peep-dired is enabled, you will get image previews as you go up/down with 'j' and 'k'*
 │
-| COMMAND              | DESCRIPTION                              | KEYBINDING |
-|----------------------+------------------------------------------+------------|
+| COMMAND              | DESCRIPTION                                | KEYBINDING |
+|----------------------+--------------------------------------------+------------|
 | peep-dired           | /Toggle previews within dired/             | SPC d p    |
 | peep-dired-next-file | /Move to next file in peep-dired-mode/     | j          |
 | peep-dired-prev-file | /Move to previous file in peep-dired-mode/ | k          |
@@ -12226,8 +12418,8 @@ prompt and everyone in the channel can see it.  Some things I learnt:
   other.
 
 
-| COMMAND | DESCRIPTION                                 | KEYBINDING |
-|---------+---------------------------------------------+------------|
+| COMMAND | DESCRIPTION                                   | KEYBINDING |
+|---------+-----------------------------------------------+------------|
 | erc-tls | /Launch ERC using more secure TLS connection/ | SPC e E    |
 
 #+begin_src emacs-lisp
@@ -14471,8 +14663,8 @@ os.system(command)
 ** CLIPPY
 Gives us a popup box with "Clippy, the paper clip". You can make him say various things by calling 'clippy-say' function.  But the more useful functions of clippy are the two describe functions provided: 'clippy-describe-function' and 'clippy-describe-variable'.  Hit the appropriate keybinding while the point is over a function/variable to call it.  A popup with helpful clippy will appear, telling you about the function/variable (using describe-function and describe-variable respectively).
 
-| COMMAND                  | DESCRIPTION                           | KEYBINDING |
-|--------------------------+---------------------------------------+------------|
+| COMMAND                  | DESCRIPTION                             | KEYBINDING |
+|--------------------------+-----------------------------------------+------------|
 | clippy-describe-function | /Clippy describes function under point/ | SPC c h f  |
 | clippy-describe-variable | /Clippy describes variable under point/ | SPC c h v  |
 
@@ -16904,8 +17096,8 @@ CLOSED: [2022-03-30 Wed 09:28]
 ** EMMS
 One of the media players available for Emacs is emms, which stands for Emacs Multimedia System.  By default, Doom Emacs does not use 'SPC a',' so the format I use for these bindings is 'SPC a' plus 'key'.
 
-| COMMAND               | DESCRIPTION                     | KEYBINDING |
-|-----------------------+---------------------------------+------------|
+| COMMAND               | DESCRIPTION                       | KEYBINDING |
+|-----------------------+-----------------------------------+------------|
 | emms-playlist-mode-go | /Switch to the playlist buffer/   | SPC a a    |
 | emms-pause            | /Pause the track/                 | SPC a x    |
 | emms-stop             | /Stop the track/                  | SPC a s    |
