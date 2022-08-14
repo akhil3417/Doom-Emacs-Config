@@ -541,7 +541,7 @@ setting, and load it if it exists.
 
 * Exwm Config
 ** Defvar exwm
-#+begin_src emacs-lisp :tangle no
+#+begin_src emacs-lisp :tangle yes
 
      ;; (exwm :variables
      ;;       exwm-enable-systray t
@@ -596,7 +596,7 @@ setting, and load it if it exists.
   outside of current frame." )
 #+end_src
 ** misc
-#+begin_src emacs-lisp :tangle no
+#+begin_src emacs-lisp :tangle yes
 
 (defun exwm/init-framemove ()
   (use-package framemove
@@ -673,7 +673,7 @@ setting, and load it if it exists.
     ))
 #+end_src
 ** funcs
-#+begin_src emacs-lisp :tangle no
+#+begin_src emacs-lisp :tangle yes
 
 (defun exwm//persp-mode-inhibit-p (frame)
   (frame-parameter frame 'unsplittable))
@@ -4931,7 +4931,7 @@ Setting the theme to doom-vibrant.  To try out new themes, I set a keybinding fo
 nice selection doom provides there's no reason for me to want the defaults.
 
 #+begin_src emacs-lisp
-(setq doom-theme 'doom-vibrant)
+(setq doom-theme 'modus-vivendi)
 (remove-hook 'window-setup-hook #'doom-init-theme-h)
 (add-hook 'after-init-hook #'doom-init-theme-h 'append)
 (delq! t custom-theme-load-path)
@@ -16933,7 +16933,7 @@ One of the media players available for Emacs is emms, which stands for Emacs Mul
         emms-browser-covers 'emms-browser-cache-thumbnail-async
         emms-player-list '(emms-player-mpv)
         emms-player-mpv-environment '("PULSE_PROP_media.role=music")
-        ;; emms-player-mpv-parameters '("--quiet" "--really-quiet" "--no-audio-display" "--force-window=no" "--vo=null")
+        emms-player-mpv-parameters '("--quiet" "--really-quiet" "--no-audio-display" "--force-window=no" "--vo=null")
         emms-browser-thumbnail-small-size 64
         emms-browser-thumbnail-medium-size 128)
        (emms-browser-make-filter "all" #'ignore)
@@ -17077,6 +17077,7 @@ _v_: vol     _a_: seek bw     _#_: shuffle            _s_elect
 : hydra-emms/body
 
 #+BEGIN_SRC emacs-lisp :tangle no
+;; just in case above config breaks
 (emms-all)
 (emms-default-players)
 (emms-mode-line 1)
