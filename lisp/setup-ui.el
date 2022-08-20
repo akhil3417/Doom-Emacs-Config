@@ -14,9 +14,9 @@
 (setq x-stretch-cursor nil)
 
 ;; Turn off the menu, tool bars and the scroll bar
-(menu-bar-mode 0)
-(tool-bar-mode 0)
-(scroll-bar-mode 0)
+;;(menu-bar-mode 0)
+;;(tool-bar-mode 0)
+;;(scroll-bar-mode 0)
 ;; Turn on image viewing
 (auto-image-file-mode t)
 

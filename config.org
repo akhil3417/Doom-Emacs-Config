@@ -1101,9 +1101,9 @@ I’ve always been mixed on this behavior but it seems like a good idea.
     (efs/start-panel)
     ;; Launch apps that will run in the background
     (exwm/run-in-background "dunst")
-    (exwm/run-in-background "nm-applet")
+    ;; (exwm/run-in-background "nm-applet")
     (exwm/run-in-background "pasystray")
-    (exwm/run-in-background "volumeicon")
+    ;; (exwm/run-in-background "volumeicon")
     (exwm/run-in-background "blueman-applet"))
 
 ;; When EXWM starts up, do some extra confifuration
@@ -1141,6 +1141,13 @@ I’ve always been mixed on this behavior but it seems like a good idea.
            (pos-y (cdr pos)))
 
       (exwm-floating-move (- pos-x) (- pos-y)))))
+
+  ;; This function should be used only after configuring autorandr!
+  (defun efs/update-displays ()
+    (efs/run-in-background "autorandr --change --force")
+    (efs/set-wallpaper)
+    (message "Display config: %s"
+             (string-trim (shell-command-to-string "autorandr --current"))))
 ;; Manipulate windows as they're created
 (add-hook 'exwm-manage-finish-hook
           (lambda ()
@@ -1151,6 +1158,16 @@ I’ve always been mixed on this behavior but it seems like a good idea.
 (add-hook 'exwm-floating-setup-hook
           (lambda ()
             (exwm-layout-hide-mode-line)))
+
+    ;; Set the screen resolution (update this to be the correct resolution for your screen!)
+    (require 'exwm-randr)
+    (exwm-randr-enable)
+    (start-process-shell-command "xrandr" nil "xrandr --output DP-1 --primary --mode 1920x1080 --pos 0x0 --rotate normal")
+
+    ;; This will need to be updated to the name of a display!  You can find
+    ;; the names of your displays by looking at arandr or the output of xrandr
+    (setq exwm-randr-workspace-monitor-plist '(2 "Virtual-2" 3 "Virtual-2"))
+
 
 (defun efs/set-wallpaper ()
   (interactive)
@@ -1709,6 +1726,195 @@ and adapted to use simulations keys to have a common yank keystroke."
 
 #+RESULTS:
 : t
+
+** EXWM Configuration
+
+We use the excellent [[https://github.com/ch11ng/exwm][EXWM]] module as the basis for our Emacs Desktop Environment.  The [[https://github.com/ch11ng/exwm/wiki][EXWM Wiki]] is a great place to find tips about how to configure everything!
+
+*NOTE:* Make sure you've installed =nm-applet=, =pasystray= and =blueman= for the system tray apps to work!
+
+#+begin_src emacs-lisp :tangle no
+
+  (defun efs/run-in-background (command)
+    (let ((command-parts (split-string command "[ ]+")))
+      (apply #'call-process `(,(car command-parts) nil 0 nil ,@(cdr command-parts)))))
+
+  (defun efs/set-wallpaper ()
+    (interactive)
+    ;; NOTE: You will need to update this to a valid background path!
+    (start-process-shell-command
+        "feh" nil  "feh --bg-scale /usr/share/backgrounds/matt-mcnulty-nyc-2nd-ave.jpg"))
+
+  (defun efs/exwm-init-hook ()
+    ;; Make workspace 1 be the one where we land at startup
+    (exwm-workspace-switch-create 1)
+
+    ;; Open eshell by default
+    ;;(eshell)
+
+    ;; NOTE: The next two are disabled because we now use Polybar!
+
+    ;; Show battery status in the mode line
+    ;;(display-battery-mode 1)
+
+    ;; Show the time and date in modeline
+    ;;(setq display-time-day-and-date t)
+    ;;(display-time-mode 1)
+    ;; Also take a look at display-time-format and format-time-string
+
+    ;; Start the Polybar panel
+    (efs/start-panel)
+
+    ;; Launch apps that will run in the background
+    (efs/run-in-background "dunst")
+    (efs/run-in-background "nm-applet")
+    (efs/run-in-background "pasystray")
+    (efs/run-in-background "blueman-applet"))
+
+  (defun efs/exwm-update-class ()
+    (exwm-workspace-rename-buffer exwm-class-name))
+
+  (defun efs/exwm-update-title ()
+    (pcase exwm-class-name
+      ("Firefox" (exwm-workspace-rename-buffer (format "Firefox: %s" exwm-title)))))
+
+  ;; This function isn't currently used, only serves as an example how to
+  ;; position a window
+  (defun efs/position-window ()
+    (let* ((pos (frame-position))
+           (pos-x (car pos))
+            (pos-y (cdr pos)))
+
+      (exwm-floating-move (- pos-x) (- pos-y))))
+
+  (defun efs/configure-window-by-class ()
+    (interactive)
+    (pcase exwm-class-name
+      ("Firefox" (exwm-workspace-move-window 2))
+      ("Sol" (exwm-workspace-move-window 3))
+      ("mpv" (exwm-floating-toggle-floating)
+             (exwm-layout-toggle-mode-line))))
+
+  ;; This function should be used only after configuring autorandr!
+  (defun efs/update-displays ()
+    (efs/run-in-background "autorandr --change --force")
+    (efs/set-wallpaper)
+    (message "Display config: %s"
+             (string-trim (shell-command-to-string "autorandr --current"))))
+
+  (use-package exwm
+    :config
+    ;; Set the default number of workspaces
+    (setq exwm-workspace-number 5)
+
+    ;; When window "class" updates, use it to set the buffer name
+    (add-hook 'exwm-update-class-hook #'efs/exwm-update-class)
+
+    ;; When window title updates, use it to set the buffer name
+    (add-hook 'exwm-update-title-hook #'efs/exwm-update-title)
+
+    ;; Configure windows as they're created
+    (add-hook 'exwm-manage-finish-hook #'efs/configure-window-by-class)
+
+    ;; When EXWM starts up, do some extra confifuration
+    (add-hook 'exwm-init-hook #'efs/exwm-init-hook)
+
+    ;; Rebind CapsLock to Ctrl
+    (start-process-shell-command "xmodmap" nil "xmodmap ~/.emacs.d/exwm/Xmodmap")
+
+    ;; NOTE: Uncomment the following two options if you want window buffers
+    ;;       to be available on all workspaces!
+
+    ;; Automatically move EXWM buffer to current workspace when selected
+    ;; (setq exwm-layout-show-all-buffers t)
+
+    ;; Display all EXWM buffers in every workspace buffer list
+    ;; (setq exwm-workspace-show-all-buffers t)
+
+    ;; NOTE: Uncomment this option if you want to detach the minibuffer!
+    ;; Detach the minibuffer (show it with exwm-workspace-toggle-minibuffer)
+    ;;(setq exwm-workspace-minibuffer-position 'top)
+
+    ;; Set the screen resolution (update this to be the correct resolution for your screen!)
+    (require 'exwm-randr)
+    (exwm-randr-enable)
+    (start-process-shell-command "xrandr" nil "xrandr --output Virtual-1 --primary --mode 2048x1152 --pos 0x0 --rotate normal")
+
+    ;; This will need to be updated to the name of a display!  You can find
+    ;; the names of your displays by looking at arandr or the output of xrandr
+    (setq exwm-randr-workspace-monitor-plist '(2 "Virtual-2" 3 "Virtual-2"))
+
+    ;; NOTE: Uncomment these lines after setting up autorandr!
+    ;; React to display connectivity changes, do initial display update
+    ;; (add-hook 'exwm-randr-screen-change-hook #'efs/update-displays)
+    ;; (efs/update-displays)
+
+    ;; Set the wallpaper after changing the resolution
+    (efs/set-wallpaper)
+
+    ;; NOTE: This is disabled because we now use Polybar!
+    ;; Load the system tray before exwm-init
+    ;; (require 'exwm-systemtray)
+    ;; (setq exwm-systemtray-height 32)
+    ;; (exwm-systemtray-enable)
+
+    ;; Automatically send the mouse cursor to the selected workspace's display
+    (setq exwm-workspace-warp-cursor t)
+
+    ;; Window focus should follow the mouse pointer
+    (setq mouse-autoselect-window t
+          focus-follows-mouse t)
+
+    ;; These keys should always pass through to Emacs
+    (setq exwm-input-prefix-keys
+      '(?\C-x
+        ?\C-u
+        ?\C-h
+        ?\M-x
+        ?\M-`
+        ?\M-&
+        ?\M-:
+        ?\C-\M-j  ;; Buffer list
+        ?\C-\ ))  ;; Ctrl+Space
+
+    ;; Ctrl+Q will enable the next key to be sent directly
+    (define-key exwm-mode-map [?\C-q] 'exwm-input-send-next-key)
+
+    ;; Set up global key bindings.  These always work, no matter the input state!
+    ;; Keep in mind that changing this list after EXWM initializes has no effect.
+    (setq exwm-input-global-keys
+          `(
+            ;; Reset to line-mode (C-c C-k switches to char-mode via exwm-input-release-keyboard)
+            ([?\s-r] . exwm-reset)
+
+            ;; Move between windows
+            ([s-left] . windmove-left)
+            ([s-right] . windmove-right)
+            ([s-up] . windmove-up)
+            ([s-down] . windmove-down)
+
+            ;; Launch applications via shell command
+            ([?\s-&] . (lambda (command)
+                         (interactive (list (read-shell-command "$ ")))
+                         (start-process-shell-command command nil command)))
+
+            ;; Switch workspace
+            ([?\s-w] . exwm-workspace-switch)
+            ([?\s-`] . (lambda () (interactive) (exwm-workspace-switch-create 0)))
+
+            ;; 's-N': Switch to certain workspace with Super (Win) plus a number key (0 - 9)
+            ,@(mapcar (lambda (i)
+                        `(,(kbd (format "s-%d" i)) .
+                          (lambda ()
+                            (interactive)
+                            (exwm-workspace-switch-create ,i))))
+                      (number-sequence 0 9))))
+
+    (exwm-input-set-key (kbd "s-SPC") 'counsel-linux-app)
+
+    (exwm-enable))
+
+#+end_src
 
 ** Desktop File
 
@@ -4723,12 +4929,12 @@ Fira Code is amazing, and so is Roboto.
 ;;       doom-unicode-font (font-spec :family "DejaVu Sans Mono")
 ;;       doom-big-font (font-spec :family "Fira Mono" :size 19))
 
-(setq doom-font (font-spec :family "JetBrains Mono" :size 15)
-      doom-big-font (font-spec :family "JetBrains Mono" :size 24)
-      doom-variable-pitch-font (font-spec :family "Overpass" :size 16)
-      doom-unicode-font (font-spec :family "JuliaMono")
-      doom-serif-font (font-spec :family "IBM Plex Mono" :weight 'light))
-
+;;(setq doom-font (font-spec :family "JetBrains Mono" :size 15)
+;;     doom-big-font (font-spec :family "JetBrains Mono" :size 24)
+;;     doom-variable-pitch-font (font-spec :family "Overpass" :size 16)
+;;     doom-unicode-font (font-spec :family "JuliaMono")
+;;     doom-serif-font (font-spec :family "IBM Plex Mono" :weight 'light))
+;;
 ;; (setq doom-font (font-spec :family "Input Mono Narrow" :size 15 :weight 'semi-light)
 ;;       doom-variable-pitch-font (font-spec :family "Fira Sans") ; inherits `doom-font''s :size
 ;;       doom-unicode-font (font-spec :family "Input Mono Narrow" :size 15)
@@ -4743,9 +4949,9 @@ Fira Code is amazing, and so is Roboto.
 (set-face-background 'vertical-border "grey")
 (set-face-foreground 'vertical-border (face-background 'vertical-border))
 
-;; (setq doom-font (font-spec :family "Source Code Pro" :size 15)
-;;       doom-variable-pitch-font (font-spec :family "Ubuntu" :size 15)
-;;       doom-big-font (font-spec :family "Source Code Pro" :size 24))
+ (setq doom-font (font-spec :family "Source Code Pro" :size 15)
+       doom-variable-pitch-font (font-spec :family "Ubuntu" :size 15)
+       doom-big-font (font-spec :family "Source Code Pro" :size 24))
 (after! doom-themes
   (setq doom-themes-enable-bold t
         doom-themes-enable-italic t))
@@ -4763,7 +4969,7 @@ files.
 
 *** detect fonts
 #+name: detect-missing-fonts
-#+begin_src emacs-lisp
+#+begin_src emacs-lisp :tangle no
 (defvar required-fonts '("JetBrainsMono.*" "Overpass" "JuliaMono" "IBM Plex Mono" "Merriweather" "Alegreya"))
 
 (defvar available-fonts
@@ -9471,7 +9677,7 @@ Mainly useful in C and derived, and only when ACTION is insert."
   (undo-tree-visualizer-relative-timestamps t))
 #+end_src
 ** expand region
-#+begin_src emacs-lisp
+#+begin_src emacs-lisp :tangle no
 ;;;----------------------------------------------------------------
 ;; ** EXPAND-REGION
 ;;;----------------------------------------------------------------
@@ -14592,7 +14798,7 @@ Other potentially relevant parts of my dotemacs:
 + [[#h:1ae84fae-efc1-4bcc-9542-55b4ab8391a3][Paragraphs and fill-mode (prot-fill.el)]]
 + [[#h:e03b6415-a18f-4058-b9b0-5721d38c6c50][Font configurations (prot-fonts.el)]]
 
-#+begin_src emacs-lisp :tangle yes
+#+begin_src emacs-lisp :tangle no
 ;;; Custom extensions for "focus mode" (logos.el)
 (use-package! olivetti
   :config
@@ -19280,7 +19486,7 @@ It's also nice to make use of the Unicode characters for check boxes, and other 
 #+end_src
 
 #+RESULTS:
-| :name | ⁍ | :src_block | » | :src_block_end | « | :quote | “ | :quote_end | ” | :lambda | λ | :def | ƒ | :composition | ∘ | :map | ↦ | :null | ∅ | :true | 𝕋 | :false | 𝔽 | :int | ℤ | :float | ℝ | :str | 𝕊 | :bool | 𝔹 | :list | 𝕃 | :not | ￢ | :in | ∈ | :not-in | ∉ | :and | ∧ | :or | ∨ | :for | ∀ | :some | ∃ | :return | ⟼ | :yield | ⟻ | :union | ⋃ | :intersect | ∩ | :diff | ∖ | :tuple | ⨂ | :pipe |  | :dot | • | :checkbox | ☐ | :pending | ◼ | :checkedbox | ☑ | :list_property | ∷ | :em_dash | — | :ellipses | … | :arrow_right | → | :arrow_left | ← | :title | 𝙏 | :subtitle | 𝙩 | :author | 𝘼 | :date | 𝘿 | :property | ☸ | :options | ⌥ | :startup | ⏻ | :macro | 𝓜 | :html_head | 🅷 | :html | 🅗 | :latex_class | 🄻 | :latex_header | 🅻 | :beamer_header | 🅑 | :latex | 🅛 | :attr_latex | 🄛 | :attr_html | 🄗 | :attr_org | ⒪ | :begin_quote | ❝ | :end_quote | ❞ | :caption | ☰ | :header | › | :results | 🠶 | :begin_export | ⏩ | :end_export | ⏪ | :properties | ⚙ | :end | ∎ | :priority_a | ⚑ | :priority_b | ⬆ | :priority_c | ■ | :priority_d | ⬇ | :priority_e | ❓ | :checkbox | ☐ | :pending | ◼ | :checkedbox | ☑ | :list_property | ∷ | :em_dash | — | :ellipses | … | :arrow_right | → | :arrow_left | ← | :title | 𝙏 | :subtitle | 𝙩 | :author | 𝘼 | :date | 𝘿 | :property | ☸ | :options | ⌥ | :startup | ⏻ | :macro | 𝓜 | :html_head | 🅷 | :html | 🅗 | :latex_class | 🄻 | :latex_header | 🅻 | :beamer_header | 🅑 | :latex | 🅛 | :attr_latex | 🄛 | :attr_html | 🄗 | :attr_org | ⒪ | :begin_quote | ❝ | :end_quote | ❞ | :caption | ☰ | :header | › | :results | 🠶 | :begin_export | ⏩ | :end_export | ⏪ | :properties | ⚙ | :end | ∎ | :priority_a | ⚑ | :priority_b | ⬆ | :priority_c | ■ | :priority_d | ⬇ | :priority_e | ❓ |
+| :name | ⁍ | :src_block | » | :src_block_end | « | :quote | “ | :quote_end | ” | :lambda | λ | :def | ƒ | :composition | ∘ | :map | ↦ | :null | ∅ | :true | 𝕋  | :false | 𝔽  | :int | ℤ  | :float | ℝ  | :str | 𝕊  | :bool | 𝔹  | :list | 𝕃  | :not | ￢ | :in | ∈ | :not-in | ∉ | :and | ∧ | :or | ∨ | :for | ∀ | :some | ∃ | :return | ⟼ | :yield | ⟻ | :union | ⋃ | :intersect | ∩ | :diff | ∖ | :tuple | ⨂  | :pipe |  | :dot | • | :checkbox | ☐ | :pending | ◼ | :checkedbox | ☑ | :list_property | ∷ | :em_dash | — | :ellipses | … | :arrow_right | → | :arrow_left | ← | :title | 𝙏  | :subtitle | 𝙩  | :author | 𝘼  | :date | 𝘿  | :property | ☸ | :options | ⌥ | :startup | ⏻  | :macro | 𝓜 | :html_head | 🅷 | :html | 🅗 | :latex_class | 🄻 | :latex_header | 🅻 | :beamer_header | 🅑 | :latex | 🅛 | :attr_latex | 🄛 | :attr_html | 🄗 | :attr_org | ⒪ | :begin_quote | ❝ | :end_quote | ❞ | :caption | ☰ | :header | › | :results | 🠶 | :begin_export | ⏩  | :end_export | ⏪  | :properties | ⚙  | :end | ∎ | :priority_a | ⚑  | :priority_b | ⬆ | :priority_c | ■ | :priority_d | ⬇ | :priority_e | ❓ | :checkbox | ☐ | :pending | ◼ | :checkedbox | ☑ | :list_property | ∷ | :em_dash | — | :ellipses | … | :arrow_right | → | :arrow_left | ← | :title | 𝙏  | :subtitle | 𝙩  | :author | 𝘼  | :date | 𝘿  | :property | ☸ | :options | ⌥ | :startup | ⏻  | :macro | 𝓜 | :html_head | 🅷 | :html | 🅗 | :latex_class | 🄻 | :latex_header | 🅻 | :beamer_header | 🅑 | :latex | 🅛 | :attr_latex | 🄛 | :attr_html | 🄗 | :attr_org | ⒪ | :begin_quote | ❝ | :end_quote | ❞ | :caption | ☰ | :header | › | :results | 🠶 | :begin_export | ⏩  | :end_export | ⏪  | :properties | ⚙  | :end | ∎ | :priority_a | ⚑  | :priority_b | ⬆ | :priority_c | ■ | :priority_d | ⬇ | :priority_e | ❓ |
 
 ~org-superstar-mode~ is great. While we're at it we may as well make tags prettier as well 🙂
 #+begin_src emacs-lisp :tangle packages.el
