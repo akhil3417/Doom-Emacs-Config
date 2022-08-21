@@ -4929,11 +4929,11 @@ Fira Code is amazing, and so is Roboto.
 ;;       doom-unicode-font (font-spec :family "DejaVu Sans Mono")
 ;;       doom-big-font (font-spec :family "Fira Mono" :size 19))
 
-;;(setq doom-font (font-spec :family "JetBrains Mono" :size 15)
-;;     doom-big-font (font-spec :family "JetBrains Mono" :size 24)
-;;     doom-variable-pitch-font (font-spec :family "Overpass" :size 16)
-;;     doom-unicode-font (font-spec :family "JuliaMono")
-;;     doom-serif-font (font-spec :family "IBM Plex Mono" :weight 'light))
+(setq doom-font (font-spec :family "JetBrains Mono" :size 15)
+    doom-big-font (font-spec :family "JetBrains Mono" :size 24)
+    doom-variable-pitch-font (font-spec :family "Overpass" :size 16)
+    doom-unicode-font (font-spec :family "JuliaMono")
+    doom-serif-font (font-spec :family "IBM Plex Mono" :weight 'light))
 ;;
 ;; (setq doom-font (font-spec :family "Input Mono Narrow" :size 15 :weight 'semi-light)
 ;;       doom-variable-pitch-font (font-spec :family "Fira Sans") ; inherits `doom-font''s :size
@@ -4949,9 +4949,9 @@ Fira Code is amazing, and so is Roboto.
 (set-face-background 'vertical-border "grey")
 (set-face-foreground 'vertical-border (face-background 'vertical-border))
 
- (setq doom-font (font-spec :family "Source Code Pro" :size 15)
-       doom-variable-pitch-font (font-spec :family "Ubuntu" :size 15)
-       doom-big-font (font-spec :family "Source Code Pro" :size 24))
+ ;; (setq doom-font (font-spec :family "Source Code Pro" :size 15)
+ ;;       doom-variable-pitch-font (font-spec :family "Ubuntu" :size 15)
+ ;;       doom-big-font (font-spec :family "Source Code Pro" :size 24))
 (after! doom-themes
   (setq doom-themes-enable-bold t
         doom-themes-enable-italic t))
@@ -4961,7 +4961,7 @@ Fira Code is amazing, and so is Roboto.
 #+END_SRC
 
 #+RESULTS:
-| doom--customize-themes-h-52 |
+| doom--customize-themes-h-10 | doom--customize-themes-h-11 | doom--customize-themes-h-32 | doom--customize-themes-h-33 | doom--customize-themes-h-34 | doom--customize-themes-h-89 |
 
 In addition to these fonts, Merriweather is used with =nov.el=, and Alegreya as a
 serifed proportional font used by =mixed-pitch-mode= for =writeroom-mode= with Org
