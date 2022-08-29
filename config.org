@@ -103,6 +103,7 @@ To install ~some-package~ from MELPA, ELPA or emacsmirror:
   ;; (package! slime)
   ;; (package! sly)
 
+  (package! cape)
 (package! org-ref)
 ;; (package! org-fragtog)
 (package! org-appear :recipe (:host github :repo "awth13/org-appear"))
@@ -252,7 +253,6 @@ To install ~some-package~ from MELPA, ELPA or emacsmirror:
   (package! yahtzee)
   (package! sudoku)
   (package! 2048-game)
-  (package! auth-source)
   (package! chess)
 
   (package! gitconfig-mode
@@ -337,6 +337,14 @@ a ~:recipe~. You'll find documentation on what ~:recipe~ accepts [[https://githu
     :recipe (:host github :repo "protesilaos/logos"
        :files ("logos.el")))
 
+(package! bon-app-launcher
+    :recipe (:host github :repo "slamko/bon-app-launcher"
+       :files ("bon-app-launcher.el")))
+
+
+(package! exwm-module-for-doom-emacs
+  :recipe (:host github
+           :repo "LemonBreezes/exwm-module-for-doom-emacs"))
 ;; (package! another-package
 ;;   :recipe (:host github :repo "username/repo"))
 #+end_src
@@ -452,6 +460,8 @@ my home machine is pretty safe, and my laptop is shutdown a lot.
 #+begin_src emacs-lisp
 ;; -*- lexical-binding: t -*-
 (add-to-list 'load-path "~/.config/doom/lisp/")
+(add-to-list 'load-path "~/.config/doom/lisp/bon-app-launcher")
+
 
 ;; (load "emacs-with-nyxt.el")
 ;; (load "prot-common.el")
@@ -487,11 +497,23 @@ my home machine is pretty safe, and my laptop is shutdown a lot.
 
 ;; (load "setup-email.el")
 
+(load "exwm-paste.el")
+(load "lock-screen.el")
+;; (load "chromium")
+(load "correct-previous-word-and-create-abbrev")
+;; (load "dunst")
+(load "lookup-on-github")
+(load "show-diffs-before-killing-buffers")
+(load "switch-window-patches")
 
 
 
 
 #+end_src
+
+#+RESULTS:
+: t
+
 ** Auto-customisations
 
 By default changes made via a customisation interface are added to =init.el=.
@@ -553,7 +575,7 @@ setting, and load it if it exists.
      ;;                          (exwm/autostart-process "Dunst OSD" "dunst")
      ;;                          (exwm/autostart-process "KWallet Daemon" "kwalletd5")))
 
-(defvar exwm-locking-command "i3lock -n"
+(defvar exwm-locking-command "i3lock-fancy"
   "Command to run when locking session")
 
 (defvar exwm-install-logind-lock-handler t
@@ -982,6 +1004,7 @@ I’ve always been mixed on this behavior but it seems like a good idea.
 
 #+begin_src emacs-lisp :tangle yes
 
+(require 'bon-app-launcher)
 (setq-default tab-width 2)
 (setq-default evil-shift-width tab-width);; Window manager
 (setq-default indent-tabs-mode nil)
@@ -1726,195 +1749,6 @@ and adapted to use simulations keys to have a common yank keystroke."
 
 #+RESULTS:
 : t
-
-** EXWM Configuration
-
-We use the excellent [[https://github.com/ch11ng/exwm][EXWM]] module as the basis for our Emacs Desktop Environment.  The [[https://github.com/ch11ng/exwm/wiki][EXWM Wiki]] is a great place to find tips about how to configure everything!
-
-*NOTE:* Make sure you've installed =nm-applet=, =pasystray= and =blueman= for the system tray apps to work!
-
-#+begin_src emacs-lisp :tangle no
-
-  (defun efs/run-in-background (command)
-    (let ((command-parts (split-string command "[ ]+")))
-      (apply #'call-process `(,(car command-parts) nil 0 nil ,@(cdr command-parts)))))
-
-  (defun efs/set-wallpaper ()
-    (interactive)
-    ;; NOTE: You will need to update this to a valid background path!
-    (start-process-shell-command
-        "feh" nil  "feh --bg-scale /usr/share/backgrounds/matt-mcnulty-nyc-2nd-ave.jpg"))
-
-  (defun efs/exwm-init-hook ()
-    ;; Make workspace 1 be the one where we land at startup
-    (exwm-workspace-switch-create 1)
-
-    ;; Open eshell by default
-    ;;(eshell)
-
-    ;; NOTE: The next two are disabled because we now use Polybar!
-
-    ;; Show battery status in the mode line
-    ;;(display-battery-mode 1)
-
-    ;; Show the time and date in modeline
-    ;;(setq display-time-day-and-date t)
-    ;;(display-time-mode 1)
-    ;; Also take a look at display-time-format and format-time-string
-
-    ;; Start the Polybar panel
-    (efs/start-panel)
-
-    ;; Launch apps that will run in the background
-    (efs/run-in-background "dunst")
-    (efs/run-in-background "nm-applet")
-    (efs/run-in-background "pasystray")
-    (efs/run-in-background "blueman-applet"))
-
-  (defun efs/exwm-update-class ()
-    (exwm-workspace-rename-buffer exwm-class-name))
-
-  (defun efs/exwm-update-title ()
-    (pcase exwm-class-name
-      ("Firefox" (exwm-workspace-rename-buffer (format "Firefox: %s" exwm-title)))))
-
-  ;; This function isn't currently used, only serves as an example how to
-  ;; position a window
-  (defun efs/position-window ()
-    (let* ((pos (frame-position))
-           (pos-x (car pos))
-            (pos-y (cdr pos)))
-
-      (exwm-floating-move (- pos-x) (- pos-y))))
-
-  (defun efs/configure-window-by-class ()
-    (interactive)
-    (pcase exwm-class-name
-      ("Firefox" (exwm-workspace-move-window 2))
-      ("Sol" (exwm-workspace-move-window 3))
-      ("mpv" (exwm-floating-toggle-floating)
-             (exwm-layout-toggle-mode-line))))
-
-  ;; This function should be used only after configuring autorandr!
-  (defun efs/update-displays ()
-    (efs/run-in-background "autorandr --change --force")
-    (efs/set-wallpaper)
-    (message "Display config: %s"
-             (string-trim (shell-command-to-string "autorandr --current"))))
-
-  (use-package exwm
-    :config
-    ;; Set the default number of workspaces
-    (setq exwm-workspace-number 5)
-
-    ;; When window "class" updates, use it to set the buffer name
-    (add-hook 'exwm-update-class-hook #'efs/exwm-update-class)
-
-    ;; When window title updates, use it to set the buffer name
-    (add-hook 'exwm-update-title-hook #'efs/exwm-update-title)
-
-    ;; Configure windows as they're created
-    (add-hook 'exwm-manage-finish-hook #'efs/configure-window-by-class)
-
-    ;; When EXWM starts up, do some extra confifuration
-    (add-hook 'exwm-init-hook #'efs/exwm-init-hook)
-
-    ;; Rebind CapsLock to Ctrl
-    (start-process-shell-command "xmodmap" nil "xmodmap ~/.emacs.d/exwm/Xmodmap")
-
-    ;; NOTE: Uncomment the following two options if you want window buffers
-    ;;       to be available on all workspaces!
-
-    ;; Automatically move EXWM buffer to current workspace when selected
-    ;; (setq exwm-layout-show-all-buffers t)
-
-    ;; Display all EXWM buffers in every workspace buffer list
-    ;; (setq exwm-workspace-show-all-buffers t)
-
-    ;; NOTE: Uncomment this option if you want to detach the minibuffer!
-    ;; Detach the minibuffer (show it with exwm-workspace-toggle-minibuffer)
-    ;;(setq exwm-workspace-minibuffer-position 'top)
-
-    ;; Set the screen resolution (update this to be the correct resolution for your screen!)
-    (require 'exwm-randr)
-    (exwm-randr-enable)
-    (start-process-shell-command "xrandr" nil "xrandr --output Virtual-1 --primary --mode 2048x1152 --pos 0x0 --rotate normal")
-
-    ;; This will need to be updated to the name of a display!  You can find
-    ;; the names of your displays by looking at arandr or the output of xrandr
-    (setq exwm-randr-workspace-monitor-plist '(2 "Virtual-2" 3 "Virtual-2"))
-
-    ;; NOTE: Uncomment these lines after setting up autorandr!
-    ;; React to display connectivity changes, do initial display update
-    ;; (add-hook 'exwm-randr-screen-change-hook #'efs/update-displays)
-    ;; (efs/update-displays)
-
-    ;; Set the wallpaper after changing the resolution
-    (efs/set-wallpaper)
-
-    ;; NOTE: This is disabled because we now use Polybar!
-    ;; Load the system tray before exwm-init
-    ;; (require 'exwm-systemtray)
-    ;; (setq exwm-systemtray-height 32)
-    ;; (exwm-systemtray-enable)
-
-    ;; Automatically send the mouse cursor to the selected workspace's display
-    (setq exwm-workspace-warp-cursor t)
-
-    ;; Window focus should follow the mouse pointer
-    (setq mouse-autoselect-window t
-          focus-follows-mouse t)
-
-    ;; These keys should always pass through to Emacs
-    (setq exwm-input-prefix-keys
-      '(?\C-x
-        ?\C-u
-        ?\C-h
-        ?\M-x
-        ?\M-`
-        ?\M-&
-        ?\M-:
-        ?\C-\M-j  ;; Buffer list
-        ?\C-\ ))  ;; Ctrl+Space
-
-    ;; Ctrl+Q will enable the next key to be sent directly
-    (define-key exwm-mode-map [?\C-q] 'exwm-input-send-next-key)
-
-    ;; Set up global key bindings.  These always work, no matter the input state!
-    ;; Keep in mind that changing this list after EXWM initializes has no effect.
-    (setq exwm-input-global-keys
-          `(
-            ;; Reset to line-mode (C-c C-k switches to char-mode via exwm-input-release-keyboard)
-            ([?\s-r] . exwm-reset)
-
-            ;; Move between windows
-            ([s-left] . windmove-left)
-            ([s-right] . windmove-right)
-            ([s-up] . windmove-up)
-            ([s-down] . windmove-down)
-
-            ;; Launch applications via shell command
-            ([?\s-&] . (lambda (command)
-                         (interactive (list (read-shell-command "$ ")))
-                         (start-process-shell-command command nil command)))
-
-            ;; Switch workspace
-            ([?\s-w] . exwm-workspace-switch)
-            ([?\s-`] . (lambda () (interactive) (exwm-workspace-switch-create 0)))
-
-            ;; 's-N': Switch to certain workspace with Super (Win) plus a number key (0 - 9)
-            ,@(mapcar (lambda (i)
-                        `(,(kbd (format "s-%d" i)) .
-                          (lambda ()
-                            (interactive)
-                            (exwm-workspace-switch-create ,i))))
-                      (number-sequence 0 9))))
-
-    (exwm-input-set-key (kbd "s-SPC") 'counsel-linux-app)
-
-    (exwm-enable))
-
-#+end_src
 
 ** Desktop File
 
@@ -3361,7 +3195,12 @@ to keep track of the information on display.
 
 ** DONE Aur
 CLOSED: [2022-03-31 Thu 20:05]
-#+begin_src emacs-lisp
+
+#+begin_src emacs-lisp :tangle no
+(package! aurel)
+#+end_src
+
+#+begin_src emacs-lisp :tangle no
 ;; Aurel: Search, vote for and download AUR packages
 (use-package! aurel
   :defer t
@@ -3375,6 +3214,11 @@ CLOSED: [2022-03-31 Thu 20:05]
 
 ** DONE Auth Sources
 CLOSED: [2022-03-31 Thu 20:05]
+
+#+begin_src emacs-lisp :tangle no
+(package! auth-source)
+#+end_src
+
 #+begin_src emacs-lisp :tangle no
 
 ;;; Auth Source
@@ -3418,11 +3262,11 @@ Now we just need to load it appropriately.
 ** DONE Systemd
 CLOSED: [2022-03-31 Thu 20:05]
 For editing systemd unit files
-#+begin_src emacs-lisp :tangle packages.el
+#+begin_src emacs-lisp :tangle no
 (package! systemd :pin "b6ae63a236605b1c5e1069f7d3afe06ae32a7bae")
 #+end_src
 
-#+begin_src emacs-lisp
+#+begin_src emacs-lisp :tangle no
 (use-package! systemd
   :defer t)
 #+end_src
@@ -6345,6 +6189,7 @@ completion.
   (setq cape-dabbrev-min-length 3)
   (dolist (backend '( cape-symbol cape-keyword cape-file cape-dabbrev))
     (add-to-list 'completion-at-point-functions backend)))
+
 #+end_src
 
 #+RESULTS:
@@ -10654,6 +10499,43 @@ ecosystem:
     (dired-rainbow-define vc "#0074d9" ("git" "gitignore" "gitattributes" "gitmodules"))
     (dired-rainbow-define-chmod executable-unix "#38c172" "-.*x.*"))
 
+
+  ;; Use parallel versions of comression programs.
+  (setq dired-compress-file-alist
+        '(("\\.gz\\'" . "pigz -9f %i")
+          ("\\.bz2\\'" . "pbzip2 -9f %i")
+          ("\\.xz\\'" . "pixz -9f %i")
+          ("\\.zst\\'" . "zstd -qf -19 --rm -o %o %i"))
+        dired-compress-files-alist
+        '(("\\.tar\\.gz\\'" . "tar -cf - %i | pigz -c9 > %o")
+          ("\\.tar\\.bz2\\'" . "tar -cf - %i | pbzip2 -c9 > %o")
+          ("\\.tar\\.xz\\'" . "tar -cf - %i | pixz -c9 > %o")
+          ("\\.tar\\.zst\\'" . "tar -cf - %i | zstd -19 -o %o")
+          ("\\.tar\\.lz\\'" . "tar -cf - %i | plzip -c9 > %o")
+          ("\\.tar\\.lzo\\'" . "tar -cf - %i | lzop -c9 > %o")
+          ("\\.zip\\'" . "zip %o -r --filesync %i")
+          ("\\.pax\\'" . "pax -wf %o %i"))
+        dired-compress-file-suffixes
+        '(("\\.tar\\.gz\\'" "" "pigz -dc %i | tar -xf -")
+          ("\\.tar\\.xz\\'" "" "pixz -dc %i | tar -xf -")
+          ("\\.tgz\\'" "" "pigz -dc %i | tar -xf -")
+          ("\\.gz\\'" "" "pigz -d") ; For some reason using `pigz' here does not
+                                        ; work properly.
+          ("\\.lz\\'" "" "plzip -d")
+          ("\\.Z\\'" "" "uncompress")
+          ("\\.z\\'" "" "pigz -d")
+          ("\\.dz\\'" "" "dictunzip")
+          ("\\.tbz\\'" ".tar" "pbunzip2")
+          ("\\.bz2\\'" "" "pbunzip2")
+          ("\\.xz\\'" "" "pixz -d")
+          ("\\.zip\\'" "" "unzip -o -d %o %i")
+          ("\\.tar\\.zst\\'" "" "unzstd -c %i | tar -xf -")
+          ("\\.tzst\\'" "" "unzstd -c %i | tar -xf -")
+          ("\\.zst\\'" "" "unzstd --rm")
+          ("\\.7z\\'" "" "7z x -aoa -o%o %i")
+          ("\\.tar\\'" ".tgz" nil)))
+
+
   (use-package! dired-single
     :defer t)
 
@@ -10692,6 +10574,7 @@ ecosystem:
   (kbd "-") 'dired-up-directory
   (kbd "% l") 'dired-downcase
   (kbd "% u") 'dired-upcase
+  (kbd "@") 'emms-play-dired
   (kbd "; d") 'epa-dired-do-decrypt
   (kbd "; e") 'epa-dired-do-encrypt))
   ;; (evil-collection-define-key 'normal 'dired-mode-map
@@ -10854,6 +10737,9 @@ ecosystem:
   :hook (dired-mode . diredfl-mode))
 #+end_src
 
+#+RESULTS:
+| doom-modeline-set-project-modeline | usls-mode-activate | pdf-occur-dired-minor-mode | dired-async-mode | prot-dired-setup-imenu | dired-extra-startup | toggle-truncate-lines | hl-line-mode | dired-hide-details-mode | +dired-disable-gnu-ls-flags-maybe-h | sml/set-buffer-identification | beginend-dired-mode | doom--recentf-add-dired-directory-h | dired-omit-mode | all-the-icons-dired-mode | diredfl-mode | ranger-set-dired-key | (lambda nil (interactive) (dired-hide-details-mode 1) (all-the-icons-dired-mode 1)) |
+
 ** dired-like mode for the trash (trashed.el)
 :PROPERTIES:
 :CUSTOM_ID: h:954adfb4-8f2c-4665-bb5b-e098926341b0
@@ -10872,7 +10758,7 @@ Basically, its interaction model is as follows:
 - =r= to mark for restoration.
 - =x= to execute these special marks.
 
-#+begin_src emacs-lisp
+#+begin_src emacs-lisp :tangle no
 ;;; dired-like mode for the trash (trashed.el)
 (use-package! trashed
   :config
@@ -12370,7 +12256,7 @@ What I like the most about =osm= is that it pushes the boundaries of
 what we can do with Emacs.  It does so in a way that feels natural and
 actually useful.  Well done, Daniel!
 
-#+begin_src emacs-lisp
+#+begin_src emacs-lisp :tangle no
 (use-package! osm
   :config
 
@@ -12456,7 +12342,7 @@ prompt and everyone in the channel can see it.  Some things I learnt:
 
 #+end_src
 ** telega
-#+begin_src emacs-lisp :tangle yes
+#+begin_src emacs-lisp :tangle no
 
 (use-package! telega
     :commands (telega)
@@ -12477,10 +12363,353 @@ prompt and everyone in the channel can see it.  Some things I learnt:
             (telega-chat-bidi-display-reordering 'right-to-left)
             (telega-sticker-size '(10 . 24))
             (telega-emoji-use-images nil))
+
+(setq telega-tdlib-max-version "1.8.5")
+#+end_src
+
+
+#+RESULTS:
+: 1.8.5
+** telega new
+
+#+begin_src emacs-lisp :tangle yes
+;;; telegram/config.el -*- lexical-binding: t; -*-
+
+(use-package! telega
+  :config
+  ;; clear all bindings (he willl introduce many conflicting bindings again :/)
+  (setf (cdr telega-chat-mode-map) nil)
+  (setf (cdr telega-msg-button-map) nil)
+  ;; (setf (cdr telega-root-mode-map) nil)
+  ;; (setq telega-root-mode-map nil)
+  ;;Easy closing
+  (map! :map telega-root-mode-map
+        :n "q" 'bury-buffer)
+  (map! :map telega-chat-mode-map
+        :n "q" 'bury-buffer)
+  ;;Open Telega
+  (map! :leader
+        :prefix "o"
+        :desc "Telega" "g" #'telega)
+  ;; :desc "Telega" "g" #'=telegram)
+  (map! :after telega
+        :mode telega-root-mode
+        "C-j" 'telega-button-forward
+        "C-k" 'telega-button-backward
+
+        "C-/" 'telega-filter-undo
+        "C-_" 'telega-filter-undo
+        "C-x C-/" 'telega-filter-redo
+        "C-x C-_" 'telega-filter-redo
+
+        [?\t] 'telega-button-forward
+        "\e\t" 'telega-button-backward
+        [backtab] 'telega-button-backward
+
+        ;; "M-g u" 'telega-root-next-unread
+        ;; "M-g i" 'telega-root-next-important
+        ;; "M-g m" 'telega-root-next-mention
+        ;; "M-g @" 'telega-root-next-mention
+
+        (:localleader
+         ;; "q" 'bury-buffer
+         ;; "Q" 'telega-kill
+         "J" 'telega-chat-join-by-link
+         "N" 'telega-chat-create
+
+         ;; NOTE: Deleting all chats is very-very-very dangerous, so
+         ;; disabled, use M-x telega-chats-filtered-delete RET if you know
+         ;; what you are doing
+         ;; (define-key map (kbd "D") 'telega-chats-filtered-delete)
+
+         "K" 'telega-chats-filtered-kill-chatbuf
+         "R" 'telega-chats-filtered-toggle-read
+
+         :desc "sort" "\\" telega-sort-map
+
+         :desc "filter" "/" telega-filter-map
+
+         (:prefix ("?" . "describe")
+          "w" 'telega-describe-connected-websites
+          "s" 'telega-describe-active-sessions
+          "n" 'telega-describe-network
+          "y" 'telega-describe-notifications
+          "N" 'telega-describe-notifications
+          "p" 'telega-describe-privacy-settings)
+
+         (:prefix ("F" . "folder")
+          "+" 'telega-folder-create
+          "-" 'telega-folder-delete
+          "=" 'telega-folders-reorder
+          "R" 'telega-folder-rename
+          "a" 'telega-chat-add-to-folder
+          "d" 'telega-chat-remove-from-folder)
+
+         (:prefix ("c". "call")
+          "a" 'telega-voip-accept
+          "d" 'telega-voip-discard
+          "b" 'telega-voip-buffer-show
+          "l" 'telega-voip-list-calls)
+
+         (:prefix ("v" . "View")
+          "s" 'telega-view-search
+          "s" 'telega-view-search
+          "n" 'telega-view-nearby
+          "v" 'telega-view-reset
+          "0" 'telega-view-compact
+          "1" 'telega-view-one-line
+          "2" 'telega-view-two-lines
+          "t" 'telega-view-topics
+          "T" 'telega-view-top
+          "S" 'telega-view-settings
+          "c" 'telega-view-contacts
+          "C" 'telega-view-calls
+          "l" 'telega-view-last-messages
+          "f" 'telega-view-folders
+          "^" 'telega-view-pinned-messages
+          "p" 'telega-view-pinned-messages
+          "d" 'telega-view-deleted-chats)))
+
+  (map! :mode telega-chat-mode
+        :map telega-chat-mode-map
+        "C-l" 'telega-chatbuf-recenter-1
+
+        ;; ;; C-M-[ - cancels edit/reply
+        "\e\e" 'telega-chatbuf-cancel-aux
+        "C-c C-k" 'telega-chatbuf-cancel-aux
+        "C-M-c" 'telega-chatbuf-cancel-aux
+        "C-M-a" 'telega-chatbuf-beginning-of-thing
+
+        "C-c ?" 'telega-describe-chat
+
+        "RET" 'telega-chatbuf-newline-or-input-send
+        "M-p" 'telega-chatbuf-edit-prev
+        "M-n" 'telega-chatbuf-edit-next
+        "M-r" 'telega-chatbuf-input-search
+
+        ;; ;;; ellit-org: chatbuf-attach-bindings
+        ;; ;; - {{{where-is(telega-chatbuf-attach,telega-chat-mode-map)}}} ::
+        ;; ;;   {{{fundoc(telega-chatbuf-attach,2)}}}
+        ;; (define-key map (kbd "C-c C-a") 'telega-chatbuf-attach)
+        ;; ;;; ellit-org: chatbuf-attach-bindings
+        ;; ;; - {{{where-is(telega-chatbuf-attach-media,telega-chat-mode-map)}}} ::
+        ;; ;;   {{{fundoc(telega-chatbuf-attach-media,2)}}}
+        ;; (define-key map (kbd "C-c C-f") 'telega-chatbuf-attach-media)
+        ;; ;;; ellit-org: chatbuf-attach-bindings
+        ;; ;; - {{{where-is(telega-chatbuf-attach-clipboard,telega-chat-mode-map)}}} ::
+        ;; ;;   {{{fundoc(telega-chatbuf-attach-clipboard,2)}}}
+        ;; (define-key map (kbd "C-c C-v") 'telega-chatbuf-attach-clipboard)
+
+        ;; ;;; ellit-org: chatbuf-filtering-bindings
+        ;; ;; - {{{where-is(telega-chatbuf-filter,telega-chat-mode-map)}}} ::
+        ;; ;;   {{{fundoc(telega-chatbuf-filter,2)}}}
+        ;; (define-key map (kbd "C-c /") 'telega-chatbuf-filter)
+        ;; ;;; ellit-org: chatbuf-filtering-bindings
+        ;; ;; - {{{where-is(telega-chatbuf-filter-cancel,telega-chat-mode-map)}}} ::
+        ;; ;;   {{{fundoc(telega-chatbuf-filter-cancel, 2)}}}
+        ;; (define-key map (kbd "C-c C-c") 'telega-chatbuf-filter-cancel)
+        ;; ;;; ellit-org: chatbuf-filtering-bindings
+        ;; ;; - {{{where-is(telega-chatbuf-filter-search,telega-chat-mode-map)}}} ::
+        ;; ;;   {{{fundoc(telega-chatbuf-filter-search, 2)}}}
+        ;; (define-key map (kbd "C-c C-s") 'telega-chatbuf-filter-search)
+        ;; (define-key map (kbd "C-c C-r") 'telega-chatbuf-filter-search)
+
+        ;; ;; jumping around links
+        "TAB" 'telega-chatbuf-complete-or-next-link
+        "<backtab>" 'telega-chatbuf-prev-link
+
+        ;; Additional prefix keymaps
+        "M-g" telega-chatbuf-fastnav-map
+        (:localleader
+         ;; "i" 'telega-describe-chat
+         ;; "h" 'telega-describe-chat
+         ;; "a" 'telega-chat-add-member
+         ;; "o" 'telega-chat-set-custom-order
+         ;; "r" 'telega-chat-toggle-read
+         ;; "d" 'telega-chat-delete
+         ;; "P" 'telega-chat-toggle-pin
+         ;; "^" 'telega-chat-toggle-pin
+         ;; "C" 'telega-chat-call
+         ;; "DEL" 'telega-chat-delete
+
+         :desc "Filter" "/" #'telega-chatbuf-filter
+         :desc "Describe" "?" #'telega-chatbuf-describe
+         :desc "Attach from clipboard" "p" #'telega-chatbuf-attach-clipboard
+         :desc "Attach" "a" #'telega-chatbuf-attach
+         :desc "Attach File" "f" #'telega-chatbuf-attach-fille
+         :desc "Filter cancel" "c" #'telega-chatbuf-filter-cancel
+         :desc "Cancel aux" "k" #'telega-chatbuf-cancel-aux
+         :desc "Filter search" "s" #'telega-chatbuf-filter-search
+         :desc "My search" "S" #'+hydra/telega-search/body
+         ))
+
+  (map! :map telega-msg-button-map
+        "r" #'telega-msg-reply
+        "c" 'telega-msg-copy-text
+        "n" #'evil-ex-search-next
+        "C-j" #'telega-button-forward
+        "C-k" #'telega-button-backward
+        "c" #'telega-msg-edit
+        (:localleader
+         "k" #'telega-chatbuf-cancel-aux
+         ;; ;; ffplay media controls for some media messages
+         "," 'telega-msg--vvnote-rewind-10-backward
+         "<" 'telega-msg--vvnote-rewind-10-backward
+         "." 'telega-msg--vvnote-rewind-10-forward
+         ">" 'telega-msg--vvnote-rewind-10-forward
+         "x" 'telega-msg--vvnote-play-speed-toggle
+
+         "0" 'telega-msg--vvnote-stop
+         "1" 'telega-msg--vvnote-rewind-part
+         "2" 'telega-msg--vvnote-rewind-part
+         "3" 'telega-msg--vvnote-rewind-part
+         "4" 'telega-msg--vvnote-rewind-part
+         "5" 'telega-msg--vvnote-rewind-part
+         "6" 'telega-msg--vvnote-rewind-part
+         "7" 'telega-msg--vvnote-rewind-part
+         "8" 'telega-msg--vvnote-rewind-part
+         "9" 'telega-msg--vvnote-rewind-part
+         "B" 'telega-msg-ban-sender
+         "F" 'telega-msg-forward-marked-or-at-point-to-multiple-chats
+         "L" 'telega-msg-redisplay
+         "U" 'telega-chatbuf-msg-marks-toggle
+         ;; ;; Menu for right mouse on a message
+         ;; (define-key map [down-mouse-3] telega-msg-button-menu-map)
+         ;; (define-key map [mouse-3] #'ignore)
+         "DEL" 'telega-msg-delete-marked-or-at-point
+         "*" 'telega-msg-favorite-toggle
+         "m" #'telega-msg-mark-toggle
+         "U" #'telega-chatbuf-unmark-all
+         "i" #'telega-describe-message
+         "e" #'telega-msg-edit
+         "f" #'telega-msg-forward-marked-or-at-point
+         "d" #'telega-msg-delete-marked-or-at-point
+         ;; "k" #'telega-msg-delete-marked-or-at-point
+         "l" #'telega-msg-redisplay
+         "T" #'telega-msg-open-thread
+         "=" #'telega-msg-diff-edits
+         "y" #'telega-msg-copy-text
+         "Y" #'telega-chatbuf-copy-link
+         "j" #'+hydra/telega-search/body/body
+         "R" #'telega-msg-resend
+         "S" #'telega-msg-save
+         "P" #'telega-msg-pin-toggle
+         "^" #'telega-msg-pin-toggle))
+
+  ;; (map! :leader "G" telega-prefix-map)
+  (map! :leader "y" telega-prefix-map)
+  (map! :map telega-prefix-map
+        :leader
+        :prefix "y"
+        :desc "View folders" "F" #'telega-view-folders
+        :desc "Kill telega" "k" #'telega-kill)
+
+  (setq telega-chat-input-markups '("markdown1" nil "markdown2"))
+
+  ;; (setq telega-completing-read-function 'ivy-completing-read)
+  (setq telega-completing-read-function 'completing-read)
+
+  ;;FIXME the path is in nix store!
+  ;;;;;;;Contributed packages
+  (add-load-path! (concat doom-emacs-dir ".local/straight/repos/telega.el/contrib"))
+  (require 'telega-mnz) ;;;syntax highlight for code blocks
+  (add-hook! 'telega-root-mode-hook 'global-telega-mnz-mode)
+  (require 'telega-url-shorten) ;;;Url shortening with small svg icons
+  (add-hook! 'telega-root-mode-hook 'global-telega-url-shorten-mode)
+  (require 'telega-dired-dwim) ;;; select multiple files from dired
+  ;; (require 'telega-transient)
+  ;; (telega-transient-mode 1)
+
+  ;; font some icons
+  (set-fontset-font t 'unicode "Symbola" nil 'append)
+
+  (setq telega-notifications-mode 1)
+
+  (after! doom-modeline
+    ;; (setq telega-mode-line--logo-image-cache
+    ;;       (doom-modeline-icon 'fileicon "telegram" "✈️" "#"
+    ;;                           :face
+    ;;                           'all-the-icons-blue
+    ;;                           'mode-line-inactive))
+    (defun telega-mode-line-logo-image()
+      (doom-modeline-icon 'fileicon "telegram" "✈️" "#"
+                          :face
+                          (if (telega-user-online-p (telega-user-me))
+                              'all-the-icons-blue
+                            'all-the-icons-red
+                            )
+                          'mode-line-inactive))
+    (setq telega-mode-line-string-format
+          '(" "
+            (:eval
+             (telega-mode-line-icon))
+            (:eval
+             (when telega-use-tracking-for
+               (telega-mode-line-tracking)))
+            (:eval
+             (telega-mode-line-unread-unmuted))
+            (:eval
+             (telega-mode-line-mentions 'messages))))
+    (telega-mode-line-mode))
+
+  ;; '(image :type svg
+  ;;         :file "/home/striker/.config/emacs/.local/straight/build-28.0.50/telega/etc/telega-logo.svg"
+  ;;         :ascent center :background "#191729" :height 18))
+
+  (add-to-list 'display-buffer-alist
+               '((lambda (bufname _action)
+                   (with-current-buffer bufname
+                     (eq major-mode 'telega-image-mode)))
+                 (display-buffer-in-side-window)
+                 (reusable-frames     . visible)
+                 (side                . right)
+                 ;; (window-height       . 0.33)
+                 (window-width        . 0.45)
+                 ))
+
+  ;; fallback buffer
+  ;; (add-hook! 'telega-image-mode-hook #'doom-mark-buffer-as-real-h)
+  ;; (add-hook! 'telega-chat-mode-hook #'doom-mark-buffer-as-real-h)
+  ;; (doom-set-buffer-real (get-buffer "*Telega Root*") t)
+
+  ;; (add-to-list 'display-buffer-alist
+  ;;              '("^\\*Image\\*$"
+  ;;                (reusable-frames     . visible)
+  ;;                (side                . right)
+  ;;                (window-height       . 0.33)
+  ;;                )))
+
+  ;; Found %count messages with %query
+  (after! hydra
+    (defhydra +hydra/telega-search
+      (:hint nil)
+      "
+     Found %(plist-get telega-chatbuf--msg-filter 'total-count) messages with
+     [_g_] First    [_l_] Show list
+     [_k_] Previous [_s_] seach in another chat     ╭─────────────────────
+     [_j_] Next     [_c_] change query              │[_q_] quit
+     [_G_] Last                                   │[_q_] Quit and go back"
+      ;; ("j" (progn (git-gutter:next-hunk 1) (recenter)))
+      ("j" (progn (telega-chatbuf--input-search-next) (recenter)))
+      ("k" (progn (telega-chatbuf--input-search-next) (recenter)))
+      ("g" (progn (goto-char (point-min)) (git-gutter:next-hunk 1)))
+      ("G" (progn (goto-char (point-min)) (git-gutter:previous-hunk 1)))
+      ("l" git-gutter:popup-hunk)
+      ("s" telega-chatbuf-filter)
+      ("c" telega-chatbuf-filter-search)
+      ("q"
+       telega-chatbuf-filter-cancel
+       ;; (when (get-buffer git-gutter:popup-buffer)
+       ;;   (kill-buffer (get-buffer git-gutter:popup-buffer)))
+       nil
+       :color blue)
+      )))
+
+;; Movement     Actions     +%-4s(car (git-gutter:statistic))/ -%-4s(cdr (git-gutter:statistic))
 #+end_src
 
 #+RESULTS:
-| my/telega/company-backends | my/telega/olivetti | olivetti-mode |
+: t
 
 ** Google Translate
 #+begin_src emacs-lisp
@@ -16956,21 +17185,6 @@ could be slightly nicer though.
 #+RESULTS:
 : ⟹
 
-** DONE keyboard
-CLOSED: [2022-03-30 Wed 15:08]
-Sets caps to control and sets a snappy key repeat / delay.
-xset r rate <delay> <rate>
-#+begin_src emacs-lisp :tangle no
-(defun kmonad-keyboard ()
-  (interactive)
-  ;; (shell-command "setxkbmap -option 'ctrl:nocaps'")
-  (shell-command "kmonad /home/shiva/test.kbd")
-  (shell-command "xset r rate 160 100"))
-#+end_src
-
-#+RESULTS:
-: kmonad-keyboard
-
 ** DONE Tools for manual pages (manpages)
 CLOSED: [2022-03-30 Wed 15:08]
 :PROPERTIES:
@@ -17309,8 +17523,11 @@ _v_: vol     _a_: seek bw     _#_: shuffle            _s_elect
 
 (defun my/get-volume ()
   (* my/volume-step (round (string-to-number
-                                (shell-command-to-string "awk -F\"[][]\" '/dB/ { print $2 }' <(amixer sget Master)"))
+                                ;; (shell-command-to-string "awk -F\"[][]\" '/dB/ { print $2 }' <(amixer sget Master)"))
+                                ;; (shell-command-to-string "awk -F\"[][]\" '/dB/ { print $2 }' <(pamixer --get-volume)"))
+                                (shell-command-to-string "pamixer --get-volume"))
                                my/volume-step)))
+
 
 (defun my/set-volume (level)
   (interactive "nVolume level: ")
@@ -17320,7 +17537,20 @@ _v_: vol     _a_: seek bw     _#_: shuffle            _s_elect
                (t level))))
     (save-window-excursion
       (shell-command
-       (format "amixer set Master %s%% &" clipped-level) nil nil))))
+       ;; (format "amixer set Master %s%% &" clipped-level) nil nil))))
+       (format "pamixer --set-volume %s &" clipped-level) nil nil))))
+
+(defun my/volume-mute()
+  (interactive)
+    (save-window-excursion
+      (shell-command
+       (format "pamixer --mute &" ))))
+
+(defun my/volume-unmute()
+  (interactive)
+    (save-window-excursion
+      (shell-command
+       (format "pamixer --unmute &" ))))
 
 (defun my/volume-step-change (delta)
   (my/set-volume (+ delta (my/get-volume))))
@@ -17339,6 +17569,26 @@ _v_: vol     _a_: seek bw     _#_: shuffle            _s_elect
 
 #+RESULTS:
 : my/volume-decrease
+** brightness (xradr)
+#+begin_src emacs-lisp
+
+(setq my/brightness-min .3)
+(setq my/brightness-max 1)
+
+(defun my/brightness (level)
+  (interactive "nBrightness level: ")
+  (let ((clipped-level
+         (cond ((< level my/brightness-min) my/brightness-min)
+               ((> level my/brightness-max) my/brightness-max)
+               (t level))))
+    (save-window-excursion
+      (shell-command
+       (format "xrandr --output DP-1 --brightness %s &" clipped-level) nil nil))))
+#+end_src
+
+#+RESULTS:
+: my/brightness
+
 * DONE Eaf  Core
 CLOSED: [2022-04-15 Fri 11:42]
 ** eaf confv2
@@ -19486,7 +19736,7 @@ It's also nice to make use of the Unicode characters for check boxes, and other 
 #+end_src
 
 #+RESULTS:
-| :name | ⁍ | :src_block | » | :src_block_end | « | :quote | “ | :quote_end | ” | :lambda | λ | :def | ƒ | :composition | ∘ | :map | ↦ | :null | ∅ | :true | 𝕋  | :false | 𝔽  | :int | ℤ  | :float | ℝ  | :str | 𝕊  | :bool | 𝔹  | :list | 𝕃  | :not | ￢ | :in | ∈ | :not-in | ∉ | :and | ∧ | :or | ∨ | :for | ∀ | :some | ∃ | :return | ⟼ | :yield | ⟻ | :union | ⋃ | :intersect | ∩ | :diff | ∖ | :tuple | ⨂  | :pipe |  | :dot | • | :checkbox | ☐ | :pending | ◼ | :checkedbox | ☑ | :list_property | ∷ | :em_dash | — | :ellipses | … | :arrow_right | → | :arrow_left | ← | :title | 𝙏  | :subtitle | 𝙩  | :author | 𝘼  | :date | 𝘿  | :property | ☸ | :options | ⌥ | :startup | ⏻  | :macro | 𝓜 | :html_head | 🅷 | :html | 🅗 | :latex_class | 🄻 | :latex_header | 🅻 | :beamer_header | 🅑 | :latex | 🅛 | :attr_latex | 🄛 | :attr_html | 🄗 | :attr_org | ⒪ | :begin_quote | ❝ | :end_quote | ❞ | :caption | ☰ | :header | › | :results | 🠶 | :begin_export | ⏩  | :end_export | ⏪  | :properties | ⚙  | :end | ∎ | :priority_a | ⚑  | :priority_b | ⬆ | :priority_c | ■ | :priority_d | ⬇ | :priority_e | ❓ | :checkbox | ☐ | :pending | ◼ | :checkedbox | ☑ | :list_property | ∷ | :em_dash | — | :ellipses | … | :arrow_right | → | :arrow_left | ← | :title | 𝙏  | :subtitle | 𝙩  | :author | 𝘼  | :date | 𝘿  | :property | ☸ | :options | ⌥ | :startup | ⏻  | :macro | 𝓜 | :html_head | 🅷 | :html | 🅗 | :latex_class | 🄻 | :latex_header | 🅻 | :beamer_header | 🅑 | :latex | 🅛 | :attr_latex | 🄛 | :attr_html | 🄗 | :attr_org | ⒪ | :begin_quote | ❝ | :end_quote | ❞ | :caption | ☰ | :header | › | :results | 🠶 | :begin_export | ⏩  | :end_export | ⏪  | :properties | ⚙  | :end | ∎ | :priority_a | ⚑  | :priority_b | ⬆ | :priority_c | ■ | :priority_d | ⬇ | :priority_e | ❓ |
+| :name | ⁍  | :src_block | » | :src_block_end | « | :quote | “ | :quote_end | ” | :lambda | λ | :def | ƒ | :composition | ∘ | :map | ↦ | :null | ∅ | :true | 𝕋 | :false | 𝔽  | :int | ℤ | :float | ℝ  | :str | 𝕊  | :bool | 𝔹 | :list | 𝕃 | :not | ￢ | :in | ∈ | :not-in | ∉ | :and | ∧ | :or | ∨ | :for | ∀ | :some | ∃ | :return | ⟼ | :yield | ⟻ | :union | ⋃  | :intersect | ∩ | :diff | ∖  | :tuple | ⨂  | :pipe |  | :dot | • | :checkbox | ☐  | :pending | ◼  | :checkedbox | ☑  | :list_property | ∷ | :em_dash | — | :ellipses | … | :arrow_right | → | :arrow_left | ← | :title | 𝙏 | :subtitle | 𝙩 | :author | 𝘼 | :date | 𝘿 | :property | ☸ | :options | ⌥ | :startup | ⏻ | :macro | 𝓜 | :html_head | 🅷 | :html | 🅗 | :latex_class | 🄻 | :latex_header | 🅻 | :beamer_header | 🅑 | :latex | 🅛 | :attr_latex | 🄛 | :attr_html | 🄗 | :attr_org | ⒪ | :begin_quote | ❝ | :end_quote | ❞ | :caption | ☰ | :header | › | :results | 🠶 | :begin_export | ⏩  | :end_export | ⏪  | :properties | ⚙  | :end | ∎ | :priority_a | ⚑  | :priority_b | ⬆  | :priority_c | ■ | :priority_d | ⬇  | :priority_e | ❓ | :checkbox | ☐  | :pending | ◼  | :checkedbox | ☑  | :list_property | ∷ | :em_dash | — | :ellipses | … | :arrow_right | → | :arrow_left | ← | :title | 𝙏 | :subtitle | 𝙩 | :author | 𝘼 | :date | 𝘿 | :property | ☸ | :options | ⌥ | :startup | ⏻ | :macro | 𝓜 | :html_head | 🅷 | :html | 🅗 | :latex_class | 🄻 | :latex_header | 🅻 | :beamer_header | 🅑 | :latex | 🅛 | :attr_latex | 🄛 | :attr_html | 🄗 | :attr_org | ⒪ | :begin_quote | ❝ | :end_quote | ❞ | :caption | ☰ | :header | › | :results | 🠶 | :begin_export | ⏩  | :end_export | ⏪  | :properties | ⚙  | :end | ∎ | :priority_a | ⚑  | :priority_b | ⬆  | :priority_c | ■ | :priority_d | ⬇  | :priority_e | ❓ |
 
 ~org-superstar-mode~ is great. While we're at it we may as well make tags prettier as well 🙂
 #+begin_src emacs-lisp :tangle packages.el
