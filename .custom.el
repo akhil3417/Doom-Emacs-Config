@@ -4,16 +4,28 @@
  ;; Your init file should contain only one such instance.
  ;; If there is more than one, they won't work right.
  '(custom-safe-themes
-   '("7397cc72938446348521d8061d3f2e288165f65a2dbb6366bb666224de2629bb" "e2c926ced58e48afc87f4415af9b7f7b58e62ec792659fcb626e8cba674d2065" "9f1d0627e756e58e0263fe3f00b16d8f7b2aca0882faacdc20ddd56a95acb7c2" default))
+   '("046e442b73846ae114d575a51be9edb081a1ef29c05ae5e237d5769ecfd70c2e" "7397cc72938446348521d8061d3f2e288165f65a2dbb6366bb666224de2629bb" "e2c926ced58e48afc87f4415af9b7f7b58e62ec792659fcb626e8cba674d2065" "9f1d0627e756e58e0263fe3f00b16d8f7b2aca0882faacdc20ddd56a95acb7c2" default))
  '(hacker-typer-remove-comments t)
  '(hacker-typer-type-rate 1)
- '(package-selected-packages '(exwm)))
+ '(ignored-local-variable-values
+   '((eval progn
+           (setq-local dired-omit-files "\\`[.]?#\\|\\`[.][.]?\\'"))
+     (eval progn
+           (when
+               (and
+                (derived-mode-p 'emacs-lisp-mode)
+                (fboundp '+compile-this-elisp-file))
+             (add-hook 'after-save-hook #'+compile-this-elisp-file nil t))
+           (when
+               (require 'git-auto-commit-mode nil t)
+             (git-auto-commit-mode 1)
+             (setq-local gac-automatically-push-p t)))))
+ '(package-selected-packages '(gameoflife cape exwm)))
 (custom-set-faces
  ;; custom-set-faces was added by Custom.
  ;; If you edit it by hand, you could mess it up, so be careful.
  ;; Your init file should contain only one such instance.
  ;; If there is more than one, they won't work right.
- '(cursor ((((class color) (min-colors 89)) :background "#ff62d4")))
  '(doom-modeline-buffer-modified ((t (:foreground "orange"))))
  '(font-lock-comment-face ((t (:slant italic))))
  '(font-lock-keyword-face ((t (:slant italic))))

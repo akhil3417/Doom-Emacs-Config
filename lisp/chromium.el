@@ -56,7 +56,7 @@
   (+workspace-switch-to-exwm-buffer-maybe))
 
 (map! :leader
-      :prefix +startup-prefix
+      ;; :prefix +startup-prefix
       (:prefix ("c" . "Chromium")
        :desc "Restart Chromium" "r" #'startup/restart-chromium
        :desc "Select Chromium" "s" #'startup/select-chromium

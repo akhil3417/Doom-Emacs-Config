@@ -9,11 +9,12 @@
   (save-excursion
     (set-process-sentinel
      (start-process "xtrlock" nil "xtrlock")
+     ;; (start-process "i3lock-fancy" nil "i3lock-fancy")
      (lambda (process event)
        (zone-leave-me-alone)))
     (run-with-idle-timer 1 nil #'zone-nyan-preview)))
 
-(map! :leader
-      :prefix +startup-prefix
-      :desc "Lock screen" "l" #'startup/lock-screen)
-(map! "s-l" #'startup/lock-screen)
+;; (map! :leader
+;;       ;; :prefix +startup-prefix
+;;       :desc "Lock screen" "l" #'startup/lock-screen)
+;; (map! "s-L" #'startup/lock-screen)

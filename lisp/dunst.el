@@ -31,7 +31,7 @@
 (add-hook 'circadian-after-load-theme-hook #'startup/restart-dunst)
 
 (map! :leader
-      :prefix +startup-prefix
+      ;; :prefix +startup-prefix
       (:prefix ("n" . "Dunst")
        :desc "Restart Dunst" "r" #'startup/restart-dunst
        :desc "Kill Dunst" "x" #'startup/kill-dunst
