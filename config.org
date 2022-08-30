@@ -237,7 +237,7 @@ To install ~some-package~ from MELPA, ELPA or emacsmirror:
   ;; (package! define-word)
   ;; (package! impatient-mode)
   (package! pdf-tools)
-  (package! systemd)
+  ;; (package! systemd)
   ;; (package! git-timemachine)
   (package! org-pdfview)
   (package! xelb)
@@ -254,6 +254,9 @@ To install ~some-package~ from MELPA, ELPA or emacsmirror:
   (package! sudoku)
   (package! 2048-game)
   (package! chess)
+  (package! smart-compile)
+
+  (package! pulseaudio-control)
 
   (package! gitconfig-mode
 	    :recipe (:host github :repo "magit/git-modes"
@@ -342,9 +345,9 @@ a ~:recipe~. You'll find documentation on what ~:recipe~ accepts [[https://githu
        :files ("bon-app-launcher.el")))
 
 
-(package! exwm-module-for-doom-emacs
-  :recipe (:host github
-           :repo "LemonBreezes/exwm-module-for-doom-emacs"))
+;; (package! exwm-module-for-doom-emacs
+;;   :recipe (:host github
+;;            :repo "LemonBreezes/exwm-module-for-doom-emacs"))
 ;; (package! another-package
 ;;   :recipe (:host github :repo "username/repo"))
 #+end_src
@@ -506,6 +509,7 @@ my home machine is pretty safe, and my laptop is shutdown a lot.
 (load "show-diffs-before-killing-buffers")
 (load "switch-window-patches")
 
+(load "pulseaudio.el")
 
 
 
@@ -1151,8 +1155,8 @@ I’ve always been mixed on this behavior but it seems like a good idea.
                (exwm-workspace-toggle-minibuffer)
                  (exwm-layout-toggle-mode-line))
     ("qjackctl" (exwm-floating-toggle-floating))
-    ("mpv" (exwm-floating-toggle-floating)
-     (exwm/position-window))
+    ;; ("mpv" (exwm-floating-toggle-floating)
+    ("mpv" (exwm/position-window))
     ("mpv" (exwm-workspace-move-window 4)
      (exwm-layout-toggle-mode-line))
     ("gsi" (exwm-input-toggle-keyboard)))
@@ -1196,7 +1200,8 @@ I’ve always been mixed on this behavior but it seems like a good idea.
   (interactive)
   ;; NOTE: You will need to update this to a valid background path!
   (start-process-shell-command
-   "feh" nil  "feh --bg-scale /usr/share/backgrounds/dtos-backgrounds/3JWY37f.jpg"))
+   ;; "feh" nil  "feh --bg-scale /usr/share/backgrounds/my-backgrounds/3JWY37f.jpg"))
+   "feh" nil  "xargs xwallpaper --stretch < ~/.cache/wall"))
 (efs/set-wallpaper)
 
 (setq-default my/exwm--do-not-mass-kill nil)
@@ -1420,7 +1425,8 @@ configured to use @ (at symbol) as separator."
 
 (exwm-input-set-key (kbd "C-c x") #'exwm/escape)
 (exwm-input-set-key (kbd "C-c X") #'exwm/enter-insert-state)
-(exwm-input-set-key (kbd "s-d") 'counsel-linux-app)
+;; (exwm-input-set-key (kbd "s-d") 'counsel-linux-app)
+(exwm-input-set-key (kbd "s-d") 'bon-app-launcher-usr-bin)
 
 ;; Autorandr
 ;; ;; Ctrl+Q will enable the next key to be sent directly
@@ -1431,7 +1437,10 @@ configured to use @ (at symbol) as separator."
 ;; Keep in mind that changing this list after EXWM initializes has no effect.
 ;; Workspace switching
 (exwm-input-set-key (kbd "C-?") #'execute-extended-command)
+(exwm-input-set-key (kbd "C-.") #'execute-extended-command)
 (global-set-key (kbd "C-?") #'execute-extended-command)
+(define-key evil-normal-state-map (kbd "C-.") nil)
+(global-set-key (kbd "C-.") #'execute-extended-command)
 ;; (setq exwm-input-simulation-keys
 ;;       '(
 ;;         ([?\C-y] . [?\C-v])))
@@ -1656,7 +1665,8 @@ and adapted to use simulations keys to have a common yank keystroke."
         ([?\s-d] .
          (lambda ()
            (interactive)
-           (counsel-linux-app)))
+           (bon-app-launcher-usr-bin)))
+           ;; (counsel-linux-app)))
 
         ;; go to scratch
         ([s-escape] . (lambda ()
@@ -1998,8 +2008,10 @@ margin-bottom = 0
 
 [colors]
 background = #f0232635
+; background = #aa2F343F
 background-alt = #576075
 foreground = #A6Accd
+; foreground = #f3f4f5
 foreground-alt = #555
 primary = #ffb52a
 secondary = #e60053
@@ -2045,7 +2057,7 @@ font-3 = "Fira Mono:size=6;-3"
 modules-left = exwm exwm-path exwm-workspace
 modules-center = spotify
 ; modules-left = exwm-workspace
-modules-right =  wireless-network networkspeedup networkspeeddown  cpu memory uptime arch-aur-updates battery temperature date
+modules-right =  wireless-network networkspeedup networkspeeddown weather cpu memory uptime arch-aur-updates battery temperature date pulseaudio volume pavolume
 
 ; exwm-workspace exwm exwm-path spotify mu4e telegram xkeyboard cpu cpu1 date battery1 battery temperture temperature1 xbacklight wireless-network wired-network
 ; weathe volume uptime filesystem pulseaudio memory wlan eth network networkspeedup networkspeeddown networkspeedup1 networkspeeddown1 arch-aur-updates aur-updates
@@ -2119,6 +2131,7 @@ interval = 2
 format = <label> <ramp-coreload>
 format-foreground = ${colors.draculacpu}
 format-underline = ${colors.draculacpu}
+click-right = exec htop
 click-left = emacsclient -e "(proced)"
 label = %percentage:2%%
 label-foreground = ${colors.draculacpu}
@@ -2374,7 +2387,7 @@ format-background = ${colors.background}
 [module/wireless-network]
 ;https://github.com/jaagr/polybar/wiki/Module:-network
 type = internal/network
-interface = wlp2s0
+interface = wlp0s20f0u4
 interval = 3.0
 label-connected = %essid%
 
@@ -2411,7 +2424,7 @@ ramp-signal-foreground = #7e52c6
 [module/wired-network]
 ;https://github.com/jaagr/polybar/wiki/Module:-network
 type = internal/network
-interface = enp4s0
+interface = enp2s0
 ;interface = enp14s0
 interval = 3.0
 
@@ -2481,6 +2494,7 @@ format-muted-prefix = "  "
 format-muted-prefix-foreground = "#ff0000"
 format-muted-foreground = ${colors.foreground}
 format-muted-background = ${colors.background}
+
 [module/uptime]
 ;https://github.com/jaagr/polybar/wiki/User-contributed-modules#uptime
 type = custom/script
@@ -2493,6 +2507,7 @@ format-background = ${colors.background}
 format-prefix = " "
 format-prefix-foreground = #98be65
 format-underline = #98be65
+
 [module/filesystem]
 type = internal/fs
 interval = 25
@@ -2518,6 +2533,7 @@ label-volume-underline = ${colors.underline-1}
 
 label-muted = muted
 label-muted-foreground = ${colors.foreground}
+
 [module/memory]
 type = internal/memory
 interval = 2
@@ -2557,7 +2573,7 @@ label-connected-background = #FF0000
 
 [module/networkspeedup]
 type = internal/network
-interface = wlp2s0
+interface = wlp0s20f0u4
 label-connected = "%upspeed:7%"
 format-connected = <label-connected>
 format-connected-underline = ${colors.underline-1}
@@ -2570,7 +2586,7 @@ format-connected-foreground = ${colors.draculanet}
 
 [module/networkspeeddown]
 type = internal/network
-interface = wlp2s0
+interface = wlp0s20f0u4
 label-connected = "%downspeed:7%"
 format-connected = <label-connected>
 format-connected-underline = ${colors.underline-1}
@@ -6182,7 +6198,7 @@ completion in more scenaria and with relevant candidates.
 A package such as Daniel's own Corfu is used to visualise in-buffer
 completion.
 
-#+begin_src emacs-lisp :tangle no
+#+begin_src emacs-lisp :tangle yes
 ;;; CAPE (extra completion-at-point backends)
 (use-package! cape
   :config
@@ -12374,7 +12390,7 @@ prompt and everyone in the channel can see it.  Some things I learnt:
 
 #+begin_src emacs-lisp :tangle yes
 ;;; telegram/config.el -*- lexical-binding: t; -*-
-
+(setq telega-tdlib-max-version "1.8.6")
 (use-package! telega
   :config
   ;; clear all bindings (he willl introduce many conflicting bindings again :/)
@@ -14503,9 +14519,6 @@ lots of options and commands: make sure to read its official manual.
 #+end_src
 
 ** Rcirc (IRC client)
-:PROPERTIES:
-:CUSTOM_ID: h:4d2f596a-6fc5-4179-a361-c29f77a5ba11
-:END:
 
 The first time I used IRC in earnest was at EmacsConf 2021.  The event
 lasted two days (I also delivered [[https://emacsconf.org/2021/talks/freedom][a presentation]]).  For the first day I
@@ -14924,8 +14937,7 @@ CLOSED: [2022-04-15 Fri 11:43]
 
 This one is a pleasant surprise to have honestly. Having Emacs handle system packages as well as its own makes life a million times easier. Since I use yay on Arch, I configure an entry for it and use it if it’s installed.
 
-#+begin_src emacs-lisp
-
+#+begin_src emacs-lisp :tangle no
 (require 'system-packages)
 (use-package! system-packages
   :ensure t
@@ -14977,6 +14989,51 @@ This one is a pleasant surprise to have honestly. Having Emacs handle system pac
 
 #+RESULTS:
 : yay
+
+** DONE System Package Managment void
+CLOSED: [2022-04-15 Fri 11:43]
+
+This one is a pleasant surprise to have honestly. Having Emacs handle system packages as well as its own makes life a million times easier. Since I use yay on Arch, I configure an entry for it and use it if it’s installed.
+
+#+begin_src emacs-lisp
+(require 'system-packages)
+(use-package! system-packages
+  :ensure t
+  :defer t
+  :init
+  (when (executable-find "xbps-install")
+    (add-to-list 'system-packages-supported-package-managers
+                 '(xbps .
+                       ((default-sudo . nil)
+                        (install . "xbps-install -S")
+                        (search . "xbps-query -Rs")
+                        (uninstall . "xbps-remove -R")
+                        (update . "xbps-install -S")
+                        (upgrade . "xbps-install -Su")
+                        (clean-cache . "xbps-remove -Ov")
+                        (log . "car /var/log/pacman.log")
+                        (remove-orphaned . "xbps-remove -ov")
+                        (list-installed-packages . "xbps-query -l | awk '{ print $2 }' | xargs -n1 xbps-uhelper getpkgname >>/home/shiva/myvoidpkgs.txt"))))
+
+    (setq system-packages-use-sudo nil
+          system-packages-package-manager 'xbps))
+  :custom (system-packages-noconfirm nil)
+  :bind (("C-c P i" . system-packages-install)
+         ("C-c P u" . system-packages-update)
+         ("C-c P r" . system-packages-uninstall)
+         ("C-c P o" . system-packages-remove-orphaned)
+         ("C-c P c" . system-packages-clean-cache)
+         ("C-c P l" . system-packages-log)
+         ("C-c P s" . system-packages-search)
+         ("C-c P p" . system-packages-list-installed-packages)))
+
+(setq system-packages-use-sudo t)
+;; (setq system-packages-package-manager 'pacaur)
+;; (setq system-packages-package-manager 'yay)
+#+end_src
+
+#+RESULTS:
+: t
 
 ** Custom extensions for "focus mode" (logos.el)
 
@@ -17588,6 +17645,25 @@ _v_: vol     _a_: seek bw     _#_: shuffle            _s_elect
 
 #+RESULTS:
 : my/brightness
+** pipewire start
+#+begin_src emacs-lisp
+
+(defun my/pipewire-start()
+  (interactive)
+    (save-window-excursion
+      (shell-command
+       (format "pipewire & pipewire-pulse &" ))))
+
+
+(defun my/pipewire-kill()
+  (interactive)
+    (save-window-excursion
+      (shell-command
+       (format "killall pipewire & killall pipewire-pulse  &" ))))
+#+end_src
+
+#+RESULTS:
+: my/pipewire-restart
 
 * DONE Eaf  Core
 CLOSED: [2022-04-15 Fri 11:42]
