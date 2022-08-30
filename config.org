@@ -4,7 +4,6 @@
 #+STARTUP: fold
 #+PROPERTY: header-args:emacs-lisp :tangle config.el
 
-
 ABOUT THIS CONFIG →
 
 This is my personal Doom Emacs config.  Doom Emacs is a distribution of Emacs that uses the "evil" keybindings (Vim keybindings) and includes a number of nice extensions and a bit of configuration out of the box.  I am maintaining this config not just for myself, but also for those that want to explore some of what is possible with Emacs.  I will add a lot of examples of plugins and settings, some of them I may not even use personally.  I am doing this so that others can save their time and so that people can use ready snippets without errors.
@@ -538,7 +537,6 @@ setting, and load it if it exists.
 (global-set-key (kbd "<C-wheel-up>") 'text-scale-increase)
 (global-set-key (kbd "<C-wheel-down>") 'text-scale-decrease)
 
-
 (defhydra hydra-text-scale (:timeout 4) ; Change the size of text
   "scale text"
   ("j" text-scale-increase "inc")
@@ -551,14 +549,6 @@ setting, and load it if it exists.
   ("k" previous-buffer "prev")
   ("SPC" kill-current-buffer "kill")
   ("q" nil "quit" :exit t))
-
-;; (global-set-key (kbd "<M-tab>") 'evil-window-next)
-;; (global-set-key (kbd "<s-right>") 'evil-window-right)
-;; (global-set-key (kbd "<s-up>") 'evil-window-up)
-;; (global-set-key (kbd "<s-down>") 'evil-window-down)
-;; (global-set-key (kbd "<s-left>") 'evil-window-left)
-;; This hydra function allows for control of volume
-
 
 #+end_src
 
@@ -3595,40 +3585,6 @@ it (for example a browser):
     (interactive)
     (find-file (concat org-directory "vault/primary.org.gpg")))
 #+END_SRC
-*** Pass interface (password-store)
-
-The external =pass= program, aka "password-store", is a password manager
-that uses GPG and standard UNIX tools to handle passwords.  Encrypted
-files are stored in a plain directory structure.  Very simple, very
-nice: now all data is available with a variety of interfaces, such as
-standard CLI, a =dmenu= interface, a graphical front-end like =qtpass=, etc.
-
-The package below provides an Emacs interface to some of the most common
-actions, in the form of a list of candidates that can be narrowed down
-using completion methods (study [[#h:98d3abcc-f34e-4029-aabc-740f0b6421f8][Completion framework and extras]]).  I use
-it to quickly store a password to the kill ring.
-
-#+begin_src emacs-lisp :tangle no
-;;; Pass interface (password-store)
-(use-package! password-store
-  :config
-  (setq password-store-time-before-clipboard-restore 30)
-  ;; Mnemonic is the root of the "code" word (κώδικας).  But also to add
-  ;; the password to the kill-ring.  Other options are already taken.
-  (define-key global-map (kbd "C-c k") #'password-store-copy))
-#+end_src
-
-#+RESULTS:
-: t
-
-And this one adds a major mode for browsing the =pass= keychain.  Call
-it with =M-x pass=.  There is a helpful section at the top with key
-bindings and their functions.
-
-#+begin_src emacs-lisp :tangle no
-(use-package! pass)
-#+end_src
-
 * DONE UI
 CLOSED: [2022-04-02 Sat 23:43]
 ** DONE Windows
@@ -5572,7 +5528,7 @@ Neotree is a file tree viewer.  When you open neotree, it jumps to the current f
     :recipe (:host github :repo "jasonjckn/pulsing-cursor"))
 #+end_src
 
-#+begin_src emacs-lisp :tangle yes
+#+begin_src emacs-lisp :tangle no
 
 (use-package pulsing-cursor
     :config (pulsing-cursor-mode +1))
@@ -8824,7 +8780,7 @@ based on that input.
 To check what I have on regular expressions, see further below my
 configurations and documentation for [[#h:6c6759c8-3ae3-40b0-8356-05cc0975e12a][re-builder (regexp-builder)]].
 
-#+begin_src emacs-lisp :tangle no
+#+begin_src emacs-lisp :tangle yes
 ;;; Dabbrev (dynamic word completion)
 (use-package! dabbrev
   :config
@@ -8846,7 +8802,7 @@ configurations and documentation for [[#h:6c6759c8-3ae3-40b0-8356-05cc0975e12a][
 #+RESULTS:
 : t
 
-#+begin_src emacs-lisp :tangle no
+#+begin_src emacs-lisp :tangle yes
 
 ;;;----------------------------------------------------------------
 ;; ** DABBREV Karthiks
@@ -8865,6 +8821,10 @@ configurations and documentation for [[#h:6c6759c8-3ae3-40b0-8356-05cc0975e12a][
   (setq dabbrev-eliminate-newlines nil)
   (setq dabbrev-upcase-means-case-search t))
 #+end_src
+
+#+RESULTS:
+: t
+
 ** Abberviation
 #+begin_src emacs-lisp :tangle no
 ;; Where I store the abbreviation I need.
@@ -9342,7 +9302,6 @@ Emacs registers are compartments where you can save text, rectangles and positio
 (use-package! smartparens
   :init
   (map! :map smartparens-mode-map
-        "C-M-f" #'sp-forward-sexp
         "C-M-b" #'sp-backward-sexp
         "C-M-u" #'sp-backward-up-sexp
         "C-M-d" #'sp-down-sexp
@@ -9905,7 +9864,7 @@ REGION are passed to `fill-paragraph'."
 #+RESULTS:
 
 ** keychord
-If I  don’t use Evil (Vim emulation), which would add an extra layer of complexity to everything. Instead, I heavily leverage key-chord.el, which enables binding simultaneous key presses (chords) to commands.
+In case  I  don’t use Evil (Vim emulation), which would add an extra layer of complexity to everything. Instead, I heavily leverage key-chord.el, which enables binding simultaneous key presses (chords) to commands.
 
 I have some custom code to bind chords to Doom’s leaders. Many commonly used commands are bound in these “key chord maps”.
 
@@ -10757,9 +10716,6 @@ ecosystem:
 | doom-modeline-set-project-modeline | usls-mode-activate | pdf-occur-dired-minor-mode | dired-async-mode | prot-dired-setup-imenu | dired-extra-startup | toggle-truncate-lines | hl-line-mode | dired-hide-details-mode | +dired-disable-gnu-ls-flags-maybe-h | sml/set-buffer-identification | beginend-dired-mode | doom--recentf-add-dired-directory-h | dired-omit-mode | all-the-icons-dired-mode | diredfl-mode | ranger-set-dired-key | (lambda nil (interactive) (dired-hide-details-mode 1) (all-the-icons-dired-mode 1)) |
 
 ** dired-like mode for the trash (trashed.el)
-:PROPERTIES:
-:CUSTOM_ID: h:954adfb4-8f2c-4665-bb5b-e098926341b0
-:END:
 
 =trashed= applies the principles of =dired= to the management of the user's
 filesystem trash.  Use =C-h m= to see the docs and keybindings for its
@@ -10872,9 +10828,6 @@ Keybindings to open files that I work with all the time using the find-file comm
 : t
 * Hydra
 ** Extensions for PDFs (pdf-tools)
-:PROPERTIES:
-:CUSTOM_ID: h:02894c1d-a739-48e7-9116-3c27a6505485
-:END:
 
 The =pdf-tools= package builds on top of the external libraries, =poppler=
 and =imagemagick= (if Emacs is compiled with support for it) to deliver a
@@ -15027,13 +14980,10 @@ This one is a pleasant surprise to have honestly. Having Emacs handle system pac
          ("C-c P s" . system-packages-search)
          ("C-c P p" . system-packages-list-installed-packages)))
 
-(setq system-packages-use-sudo t)
-;; (setq system-packages-package-manager 'pacaur)
-;; (setq system-packages-package-manager 'yay)
 #+end_src
 
 #+RESULTS:
-: t
+: system-packages-list-installed-packages
 
 ** Custom extensions for "focus mode" (logos.el)
 
@@ -15287,9 +15237,6 @@ I also use Emacs to play games and do other fun things. Using swiper means I don
 #+RESULTS:
 
 ** tmr.el (TMR Must Recur)
-:PROPERTIES:
-:CUSTOM_ID: h:c90ba6fa-ebec-42a2-98a6-3ff9027b1ffa
-:END:
 
 Sometimes I need to set off a timer with a notification.  I used to rely
 on a homegrown shell script for such a task, but where is the fun in
@@ -15476,9 +15423,6 @@ Let's also play around with calfw.
 : calfw-org
 
 ** Calendar and Diary (and prot-diary.el)
-:PROPERTIES:
-:CUSTOM_ID: h:b4040bc0-7a2a-4f17-824d-42de621bd1b9
-:END:
 
 Relevant information for what you are about to read in this section
 (the list will be updated accordingly):
@@ -16407,9 +16351,6 @@ the variable =display-buffer-alist=).
 : t
 
 *** Version control framework (vc.el and prot-vc.el)
-:PROPERTIES:
-:CUSTOM_ID: h:31deeff4-dfae-48d9-a906-1f3272f29bc9
-:END:
 
 VC consists of set of libraries that provide the means for working with
 several version control systems, else "backends".  It is built into
@@ -16855,9 +16796,6 @@ to see it getting more widespread adoption.
 #+end_src
 
 *** Smerge and Ediff
-:PROPERTIES:
-:CUSTOM_ID: h:fb9e0507-5ab1-4ebd-8870-8c32cfe742c1
-:END:
 
 *Read this section, because it matters more than the code below it.*
 
@@ -17102,7 +17040,7 @@ the subsequent code block.
 (use-package! usls
   :config
   (setq usls-directory (expand-file-name "~/Documents/notes/"))
-  (setq usls-known-categories '("economics" "philosophy" "politics"))
+  (setq usls-known-categories '("economics" "philosophy" "politics" "technical" "void" "linux" "shell" "emacs"))
   (setq usls-file-type-extension ".txt") ; {.txt,.org,.md}
   (setq usls-subdir-support nil)
   (setq usls-file-region-separator 'line) ; {'line,'heading, OR string of your choice}
@@ -17123,19 +17061,6 @@ the subsequent code block.
 
 #+RESULTS:
 : t
-
-** INVTR (toy inventory and client manager)
-
-I am intentionally not documenting this because it is not intended for
-public use.  It is a *highly experimental proof-of-concept* of a nimble
-inventory and client manager that extends the file-naming methodology of
-my USLS (see [[#h:787df548-0d95-4512-a61d-27852198f561][USLS --- Unassuming Sidenotes of Little Significance]]).
-
-#+begin_src emacs-lisp :tangle no
-;;; INVTR (toy inventory and client manager)
-;; DO NOT USE THIS!!!
-;; (use-package! invtr)
-#+end_src
 
 ** Repeatable key chords (repeat-mode)
 
