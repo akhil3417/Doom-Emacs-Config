@@ -113,6 +113,7 @@ To install ~some-package~ from MELPA, ELPA or emacsmirror:
 (package! org-gtd)
 (package! org-noter)
 
+(package! org-notify)
 (package! visual-regexp)
 (package! visual-regexp-steroids)
 
@@ -3020,6 +3021,7 @@ We can also set up some functions for enabling and disabling notifications at an
 
 #+begin_src emacs-lisp
 
+
   (defun efs/disable-desktop-notifications ()
     (interactive)
     (start-process-shell-command "notify-send" nil "notify-send \"DUNST_COMMAND_PAUSE\""))
@@ -3034,8 +3036,16 @@ We can also set up some functions for enabling and disabling notifications at an
 
 #+end_src
 
+#+begin_src emacs-lisp
+
+(defun efs/dunstctl (command)
+  (start-process-shell-command "dunstctl" nil (concat "dunstctl " command)))
+
+(exwm-input-set-key (kbd "s-n") (lambda () (interactive) (efs/dunstctl "history-pop")))
+(exwm-input-set-key (kbd "s-N") (lambda () (interactive) (efs/dunstctl "close-all")))
+#+end_src
 #+RESULTS:
-: efs/toggle-desktop-notifications
+: efs/dunstctl
 ** movement and window switching
 #+begin_src emacs-lisp
 
@@ -4553,9 +4563,7 @@ Also watch my [[https://protesilaos.com/codelog/2022-03-14-emacs-pulsar-demo/][d
 #+RESULTS:
 : t
 
-This is the code for =pulsar.el=:
 
-#+include: prot-lisp/pulsar.el src emacs-lisp :tangle no
 
 ** general line
 I set comment-line to 'SPC TAB TAB' which is a rather comfortable keybinding for me on my ZSA Moonlander keyboard.  The standard Emacs keybinding for comment-line is 'C-x C-;'.  The other keybindings are for commands that toggle on/off various line-related settings.  Doom Emacs uses 'SPC t' for "toggle" commands, so I choose 'SPC t' plus 'key' for those bindings.
@@ -20321,11 +20329,17 @@ The package that allows us to search through bibliography files and take notes o
 (setq org-export-with-broken-links t)
 (setq org-publish-project-alist
       '(("my.site"
-         :base-directory "~/org/gitlab-repos/mysite/"
+         :base-directory "~/org/mysite/"
          :base-extension "org"
-         :publishing-directory "~/org/gitlab-repos/mysite/html/"
+         :publishing-directory "~/org/mysite/html/"
          :recursive t
          :exclude "org-html-themes/.*"
+         :with-author nil           ;; Don't include author name
+         :with-author nil           ;; Don't include author name
+         :with-creator t            ;; Include Emacs and Org versions in footer
+         :with-toc t                ;; Include a table of contents
+         :section-numbers nil       ;; Don't include section numbers
+         :time-stamp-file nil   ;; Don't include time stamp in file
          :publishing-function org-html-publish-to-html
          :headline-levels 4             ; Just the default for this project.
          :auto-preamble t)
@@ -20337,7 +20351,18 @@ The package that allows us to search through bibliography files and take notes o
          :exclude ".*/org-html-themes/.*"
          :publishing-function org-publish-attachment)
       ))
+;; Generate the site output
+;; (org-publish-all t)
+
+;; (message "Build complete!")
+
+
+
 #+end_src
+
+#+RESULTS:
+: Build complete!
+
 *** improving the output-file
 
 At this point have a decent basic output for our website, but what if we want to make it look a little bit nicer?
@@ -20353,6 +20378,9 @@ By setting a few more variables, we can use a nice stylesheet to give our site a
       org-html-head "<link rel=\"stylesheet\" href=\"https://cdn.simplecss.org/simple.min.css\" />")
 
 #+end_src
+
+#+RESULTS:
+: <link rel="stylesheet" href="https://cdn.simplecss.org/simple.min.css" />
 
 This will remove the default JavaScript and CSS code that gets injected into the HTML output by default and replace it with the link to a nice stylesheet called Simple.css (or a CSS file of your own!).
 
