@@ -351,9 +351,6 @@ a ~:recipe~. You'll find documentation on what ~:recipe~ accepts [[https://githu
 ;;   :recipe (:host github :repo "username/repo"))
 #+end_src
 
-#+RESULTS:
-| vertico | :modules | ((:private . config) (:private . modules)) | :recipe | (:host github :repo minad/vertico) |
-
 If the package you are trying to install does not contain a ~PACKAGENAME.el~
 file, or is located in a subdirectory of the repo, you'll need to specify
 ~:files~ in the ~:recipe~:
@@ -510,6 +507,7 @@ my home machine is pretty safe, and my laptop is shutdown a lot.
 
 (load "pulseaudio.el")
 
+(load "auto-scroll.el")
 
 
 #+end_src
