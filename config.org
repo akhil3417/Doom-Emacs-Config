@@ -14764,6 +14764,19 @@ Also see: [[#h:aa64c61e-49b5-41b0-b1fe-10bbe3be661f][Sample configuration for MP
 
 #+RESULTS:
 : t
+** simple httpd
+#+begin_src emacs-lisp :tangle yes
+(use-package simple-httpd
+  :ensure t)
+#+end_src
+
+#+RESULTS:
+: simple-httpd
+
+Now you can run M-x httpd-serve-directory. It will prompt you for a directory to serve from within Emacs.
+Select the path of your public/ directory and then open your browser to http://localhost:8080 to see the preview of your site! Set httpd-port to change the default port if necessary.
+Any time you regenerate the site files, you can just reload the page to see the result of changes you made!
+
 * Applications and utilities
 
 This section includes configurations for programs like email clients,
@@ -20325,6 +20338,23 @@ The package that allows us to search through bibliography files and take notes o
          :publishing-function org-publish-attachment)
       ))
 #+end_src
+*** improving the output-file
+
+At this point have a decent basic output for our website, but what if we want to make it look a little bit nicer?
+By setting a few more variables, we can use a nice stylesheet to give our site a more polished look:
+
+#+begin_src emacs-lisp
+
+
+;; Customize the HTML output
+(setq org-html-validation-link nil            ;; Don't show validation link
+      org-html-head-include-scripts nil       ;; Use our own scripts
+      org-html-head-include-default-style nil ;; Use our own styles
+      org-html-head "<link rel=\"stylesheet\" href=\"https://cdn.simplecss.org/simple.min.css\" />")
+
+#+end_src
+
+This will remove the default JavaScript and CSS code that gets injected into the HTML output by default and replace it with the link to a nice stylesheet called Simple.css (or a CSS file of your own!).
 
 *** lang
 **** Python
