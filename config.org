@@ -4727,11 +4727,11 @@ Fira Code is amazing, and so is Roboto.
 ;;           doom-variable-pitch-font (font-spec :family "Roboto" :size 16)
 ;;           doom-serif-font (font-spec :family "Libre Baskerville"))
 
-(setq doom-font (font-spec :family "JetBrains Mono" :size 24)
-      doom-big-font (font-spec :family "JetBrains Mono" :size 36)
-      doom-variable-pitch-font (font-spec :family "Overpass" :size 26)
+(setq doom-font (font-spec :family "JetBrains Mono" :size 18)
+      doom-big-font (font-spec :family "JetBrains Mono" :size 27)
+      doom-variable-pitch-font (font-spec :family "Overpass" :size 20)
       doom-unicode-font (font-spec :family "JuliaMono")
-      doom-serif-font (font-spec :family "IBM Plex Mono" :size 22 :weight 'light))
+      doom-serif-font (font-spec :family "IBM Plex Mono" :size 16 :weight 'light))
 
 ;; (setq doom-font (font-spec :family "Fira Mono" :size 12)
 ;;       doom-variable-pitch-font (font-spec :family "Fira Sans")
