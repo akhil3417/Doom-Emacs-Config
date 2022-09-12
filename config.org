@@ -510,6 +510,7 @@ my home machine is pretty safe, and my laptop is shutdown a lot.
 
 (load "auto-scroll.el")
 
+;;(load "dunst.el")
 
 #+end_src
 
@@ -1812,13 +1813,13 @@ xhost +SI:localuser:$USER
 # Try to control screen blanking
 # xset s off dpms 1200 1400 1600
 # Set keyboard repeat rate. Default is 660 25 ("xset q")
-# xset r rate 200 30
+xset r rate 200 30
 
 # Set default cursor.
 # xsetroot -cursor_name left_ptr
 
 # Hide the mouse pointer if unused for a duration
-# /usr/bin/unclutter &
+/usr/bin/unclutter &
 
 # unclutter --jitter 3 --ignore-scrolling &
 # One can also start processes unrelated to X11, just ensure that they will exit when this process exits.
@@ -1864,7 +1865,8 @@ export _JAVA_AWT_WM_NONREPARENTING=1
 # exec dbus-launch --exit-with-session emacs -mm #--debug-init
 # exec emacs
 # exec emacs --daemon && emacsclient -c --eval "(exwm-enable)"
-exec dbus-launch --exit-with-session emacs --eval "(exwm-enable)"
+# exec dbus-launch --exit-with-session emacs --eval "(exwm-enable)"
+exec dbus-run-session emacs --eval "(exwm-enable)"
 # exec emacsclient -c
 #+end_src
 ** Keyboard Configuration
@@ -2379,6 +2381,7 @@ type = internal/network
 interface = wlp0s20f0u4
 interval = 3.0
 label-connected = %essid%
+click-right = exec nm-applet
 
 format-connected = <label-connected>
 ;format-connected = <ramp-signal> <label-connected>
@@ -3251,27 +3254,6 @@ CLOSED: [2022-03-31 Thu 20:05]
 
 #+RESULTS:
 : auth-source
-
-** DONE Authinfo
-CLOSED: [2022-03-31 Thu 20:05]
-
-My patch giving my patch giving =authinfo-mode= syntax highlighting is only
-available in Emacs28+. For older versions, I've got a package I can use.
-#+begin_src emacs-lisp :tangle packages.el
-(package! authinfo-color-mode :recipe (:host github :repo"tecosaur/authinfo-color-mode" :files ("*.el" "filters" "preprocessors")))
-#+end_src
-
-#+RESULTS:
-| authinfo-color-mode | :modules | ((:os . arch) (:private . modules) (:private . config) (:private . modules)) | :recipe | (:host github :repo tecosaur/authinfo-color-mode :files (*.el filters preprocessors)) |
-
-Now we just need to load it appropriately.
-#+begin_src emacs-lisp
-(use-package! authinfo-color-mode
-  :mode ("authinfo.gpg\\'" . authinfo-color-mode)
-  :init (advice-add 'authinfo-mode :override #'authinfo-color-mode))
-#+end_src
-
-#+RESULTS:
 
 ** DONE Systemd
 CLOSED: [2022-03-31 Thu 20:05]
@@ -17467,9 +17449,14 @@ _v_: vol     _a_: seek bw     _#_: shuffle            _s_elect
 ^ ^        _SPC_: play/pause                        _l_yrics
 ^ ^        _DEL_: restart                           _L_yrics select
   "
-    ("d" emms-volume-raise)
-    ("o" emms-volume-lower)
-    ("v" sndio-win-open :exit t)
+    ;; ("v" sndio-win-open :exit t)
+    ;; ("d" emms-volume-raise)
+    ;; ("o" emms-volume-lower)
+    ("d" my/volume-increase)
+    ("o" my/volume-decrease)
+    ("m" my/volume-mute)
+    ("M" my/volume-unmute)
+    ("v" my/set-volume)
     ("n" emms-next)
     ("c" emms-previous) ;;blame my keyboard layout for not beign mnemonic
     ("a" emms-seek-backward)
@@ -18329,7 +18316,7 @@ set up org-capture.
 
   (setq doct-after-conversion-functions '(+doct-iconify-capture-templates))
 
-  (defvar +org-capture-recipies  "~/Desktop/TEC/Organisation/recipies.org")
+  (defvar +org-capture-recipies  "~/org/recipies.org")
 
   (defun set-org-capture-templates ()
     (setq org-capture-templates

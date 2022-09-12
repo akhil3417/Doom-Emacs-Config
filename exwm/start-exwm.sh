@@ -33,13 +33,13 @@ xhost +SI:localuser:$USER
 # Try to control screen blanking
 # xset s off dpms 1200 1400 1600
 # Set keyboard repeat rate. Default is 660 25 ("xset q")
-# xset r rate 200 30
+xset r rate 200 30
 
 # Set default cursor.
 # xsetroot -cursor_name left_ptr
 
 # Hide the mouse pointer if unused for a duration
-# /usr/bin/unclutter &
+/usr/bin/unclutter &
 
 # unclutter --jitter 3 --ignore-scrolling &
 # One can also start processes unrelated to X11, just ensure that they will exit when this process exits.
@@ -85,5 +85,6 @@ export _JAVA_AWT_WM_NONREPARENTING=1
 # exec dbus-launch --exit-with-session emacs -mm #--debug-init
 # exec emacs
 # exec emacs --daemon && emacsclient -c --eval "(exwm-enable)"
-exec dbus-launch --exit-with-session emacs --eval "(exwm-enable)"
+# exec dbus-launch --exit-with-session emacs --eval "(exwm-enable)"
+exec dbus-run-session emacs --eval "(exwm-enable)"
 # exec emacsclient -c

@@ -15,8 +15,7 @@
                         (cond ((eq (modus-themes--current-theme) 'modus-operandi)
                                "dunstrc-light")
                               ((eq (modus-themes--current-theme) 'modus-vivendi)
-                               "dunstrc-dark"))
-                        +startup-config-dir))))
+                               "dunstrc-dark"))))))
 
 (defun startup/kill-dunst ()
   (interactive)
