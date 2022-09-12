@@ -4727,17 +4727,22 @@ Fira Code is amazing, and so is Roboto.
 ;;           doom-variable-pitch-font (font-spec :family "Roboto" :size 16)
 ;;           doom-serif-font (font-spec :family "Libre Baskerville"))
 
+(setq doom-font (font-spec :family "JetBrains Mono" :size 24)
+      doom-big-font (font-spec :family "JetBrains Mono" :size 36)
+      doom-variable-pitch-font (font-spec :family "Overpass" :size 26)
+      doom-unicode-font (font-spec :family "JuliaMono")
+      doom-serif-font (font-spec :family "IBM Plex Mono" :size 22 :weight 'light))
 
 ;; (setq doom-font (font-spec :family "Fira Mono" :size 12)
 ;;       doom-variable-pitch-font (font-spec :family "Fira Sans")
 ;;       doom-unicode-font (font-spec :family "DejaVu Sans Mono")
 ;;       doom-big-font (font-spec :family "Fira Mono" :size 19))
 
-(setq doom-font (font-spec :family "JetBrains Mono" :size 15)
-    doom-big-font (font-spec :family "JetBrains Mono" :size 24)
-    doom-variable-pitch-font (font-spec :family "Overpass" :size 16)
-    doom-unicode-font (font-spec :family "JuliaMono")
-    doom-serif-font (font-spec :family "IBM Plex Mono" :weight 'light))
+;; (setq doom-font (font-spec :family "JetBrains Mono" :size 15)
+;;     doom-big-font (font-spec :family "JetBrains Mono" :size 24)
+;;     doom-variable-pitch-font (font-spec :family "Overpass" :size 16)
+;;     doom-unicode-font (font-spec :family "JuliaMono")
+;;     doom-serif-font (font-spec :family "IBM Plex Mono" :weight 'light))
 ;;
 ;; (setq doom-font (font-spec :family "Input Mono Narrow" :size 15 :weight 'semi-light)
 ;;       doom-variable-pitch-font (font-spec :family "Fira Sans") ; inherits `doom-font''s :size
@@ -4756,16 +4761,15 @@ Fira Code is amazing, and so is Roboto.
  ;; (setq doom-font (font-spec :family "Source Code Pro" :size 15)
  ;;       doom-variable-pitch-font (font-spec :family "Ubuntu" :size 15)
  ;;       doom-big-font (font-spec :family "Source Code Pro" :size 24))
-(after! doom-themes
-  (setq doom-themes-enable-bold t
-        doom-themes-enable-italic t))
-(custom-set-faces!
-  '(font-lock-comment-face :slant italic)
-  '(font-lock-keyword-face :slant italic))
+;; (after! doom-themes
+;;   (setq doom-themes-enable-bold t
+;;         doom-themes-enable-italic t))
+;; (custom-set-faces!
+;;   '(font-lock-comment-face :slant italic)
+;;   '(font-lock-keyword-face :slant italic))
 #+END_SRC
 
 #+RESULTS:
-| doom--customize-themes-h-10 | doom--customize-themes-h-11 | doom--customize-themes-h-32 | doom--customize-themes-h-33 | doom--customize-themes-h-34 | doom--customize-themes-h-89 |
 
 In addition to these fonts, Merriweather is used with =nov.el=, and Alegreya as a
 serifed proportional font used by =mixed-pitch-mode= for =writeroom-mode= with Org
@@ -17990,13 +17994,15 @@ structure has come to my attention.
 
 #+begin_src emacs-lisp :tangle yes
 (use-package! org-ol-tree
-  :after org
   :commands org-ol-tree
-  :hook (org-ol-tree-mode . visual-line-mode)
   :config
-  (setq org-ol-tree-ui-window-auto-resize nil
-        org-ol-tree-ui-window-max-width 0.3
-        org-ol-tree-ui-window-position 'right))
+  (setq org-ol-tree-ui-icon-set
+        (if (and (display-graphic-p)
+                 (fboundp 'all-the-icons-material))
+            'all-the-icons
+          'unicode))
+  (org-ol-tree-ui--update-icon-set))
+
 (map! :map org-mode-map
       :after org
       :localleader
@@ -20656,6 +20662,102 @@ those changes, especially since it is theme-agnostic.
 
 #+RESULTS:
 : t
+
+** Org Modern
+
+Fontifying =org-mode= buffers to be as pretty as possible is of paramount importance,
+and Minad's lovely =org-modern= goes a long way in this regard.
+
+#+begin_src emacs-lisp :tangle packages.el
+(package! org-modern :pin "537e6b75e38bc0eff083c390c257098c9fc9ab49")
+#+end_src
+
+...with a touch of configuration...
+
+#+begin_src emacs-lisp :tangle yes
+(use-package! org-modern
+  :hook (org-mode . org-modern-mode)
+  :config
+  (setq org-modern-star '("◉" "○" "✸" "✿" "✤" "✜" "◆" "▶")
+        org-modern-table-vertical 1
+        org-modern-table-horizontal 0.2
+        org-modern-list '((43 . "➤")
+                          (45 . "–")
+                          (42 . "•"))
+        org-modern-todo-faces
+        '(("TODO" :inverse-video t :inherit org-todo)
+          ("PROJ" :inverse-video t :inherit +org-todo-project)
+          ("STRT" :inverse-video t :inherit +org-todo-active)
+          ("[-]"  :inverse-video t :inherit +org-todo-active)
+          ("HOLD" :inverse-video t :inherit +org-todo-onhold)
+          ("WAIT" :inverse-video t :inherit +org-todo-onhold)
+          ("[?]"  :inverse-video t :inherit +org-todo-onhold)
+          ("KILL" :inverse-video t :inherit +org-todo-cancel)
+          ("NO"   :inverse-video t :inherit +org-todo-cancel))
+        org-modern-footnote
+        (cons nil (cadr org-script-display))
+        org-modern-block-fringe nil
+        org-modern-block-name
+        '((t . t)
+          ("src" "»" "«")
+          ("example" "»–" "–«")
+          ("quote" "❝" "❞")
+          ("export" "⏩" "⏪"))
+        org-modern-progress nil
+        org-modern-priority nil
+        org-modern-horizontal-rule (make-string 36 ?─)
+        org-modern-keyword
+        '((t . t)
+          ("title" . "𝙏")
+          ("subtitle" . "𝙩")
+          ("author" . "𝘼")
+          ("email" . #("" 0 1 (display (raise -0.14))))
+          ("date" . "𝘿")
+          ("property" . "☸")
+          ("options" . "⌥")
+          ("startup" . "⏻")
+          ("macro" . "𝓜")
+          ("bind" . #("" 0 1 (display (raise -0.1))))
+          ("bibliography" . "")
+          ("print_bibliography" . #("" 0 1 (display (raise -0.1))))
+          ("cite_export" . "⮭")
+          ("print_glossary" . #("ᴬᶻ" 0 1 (display (raise -0.1))))
+          ("glossary_sources" . #("" 0 1 (display (raise -0.14))))
+          ("include" . "⇤")
+          ("setupfile" . "⇚")
+          ("html_head" . "🅷")
+          ("html" . "🅗")
+          ("latex_class" . "🄻")
+          ("latex_class_options" . #("🄻" 1 2 (display (raise -0.14))))
+          ("latex_header" . "🅻")
+          ("latex_header_extra" . "🅻⁺")
+          ("latex" . "🅛")
+          ("beamer_theme" . "🄱")
+          ("beamer_color_theme" . #("🄱" 1 2 (display (raise -0.12))))
+          ("beamer_font_theme" . "🄱𝐀")
+          ("beamer_header" . "🅱")
+          ("beamer" . "🅑")
+          ("attr_latex" . "🄛")
+          ("attr_html" . "🄗")
+          ("attr_org" . "⒪")
+          ("call" . #("" 0 1 (display (raise -0.15))))
+          ("name" . "⁍")
+          ("header" . "›")
+          ("caption" . "☰")
+          ("RESULTS" . "🠶")))
+  (custom-set-faces! '(org-modern-statistics :inherit org-checkbox-statistics-todo)))
+#+end_src
+
+#+RESULTS:
+| org-modern-mode | locally-defer-font-lock | +org-pretty-mode | org-ref-org-menu | er/add-org-mode-expansions | org-appear-mode | elpher-org-mode-integration | +lookup--init-org-mode-handlers-h | (closure ((hook . org-mode-hook) (--dolist-tail--) t) (&rest _) (add-hook 'before-save-hook 'org-encrypt-entries nil t)) | #[0 \300\301\302\303\304$\207 [add-hook change-major-mode-hook org-fold-show-all append local] 5] | #[0 \300\301\302\303\304$\207 [add-hook change-major-mode-hook org-babel-show-result-all append local] 5] | org-babel-result-hide-spec | org-babel-hide-all-hashes | #[0 \301\211\207 [imenu-create-index-function org-imenu-get-tree] 2] | beginend-org-mode | doom-disable-show-paren-mode-h | doom-disable-show-trailing-whitespace-h | +org-enable-auto-reformat-tables-h | +org-enable-auto-update-cookies-h | +org-make-last-point-visible-h | org-fancy-priorities-mode | org-superstar-mode | evil-org-mode | toc-org-enable | embrace-org-mode-hook | org-eldoc-load | +literate-enable-recompile-h |
+
+Since =org-modern='s tag face supplants Org's tag face, we need to adjust the
+spell-check face ignore list
+
+#+begin_src emacs-lisp
+(after! spell-fu
+  (cl-pushnew 'org-modern-tag (alist-get 'org-mode +spell-excluded-faces-alist)))
+#+end_src
 
 * Keyboard shortcuts
 
