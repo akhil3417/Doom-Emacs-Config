@@ -1430,7 +1430,10 @@ configured to use @ (at symbol) as separator."
 (exwm-input-set-key (kbd "C-.") #'execute-extended-command)
 (global-set-key (kbd "C-?") #'execute-extended-command)
 (define-key evil-normal-state-map (kbd "C-.") nil)
+(define-key evil-normal-state-map (kbd "C-n") nil)
 (global-set-key (kbd "C-.") #'execute-extended-command)
+(global-set-key (kbd "C-n") #'my/ivy-switch-buffer-firefox)
+(global-set-key (kbd "C-N") #'my/ivy-switch-buffer-urxvt)
 ;; (setq exwm-input-simulation-keys
 ;;       '(
 ;;         ([?\C-y] . [?\C-v])))
@@ -2000,23 +2003,38 @@ screenchange-reload = true
 margin-top = 0
 margin-bottom = 0
 
+; [colors]
+; background = #f0232635
+; ; background = #aa2F343F
+; background-alt = #576075
+; foreground = #A6Accd
+; ; foreground = #f3f4f5
+; foreground-alt = #555
+; primary = #ffb52a
+; secondary = #e60053
+; alert = #bd2c40
+; underline-1 = #c792ea
+; draculamem = #ff5555
+; draculabat = #ff6e67
+; draculanet = #bd93f9
+; draculacpu = #f1fa8c
+; draculagreen = #5af78e
+; draculapink = #ff79c6
+
+; for pywal
+
 [colors]
-background = #f0232635
-; background = #aa2F343F
-background-alt = #576075
-foreground = #A6Accd
-; foreground = #f3f4f5
-foreground-alt = #555
-primary = #ffb52a
-secondary = #e60053
-alert = #bd2c40
-underline-1 = #c792ea
-draculamem = #ff5555
-draculabat = #ff6e67
-draculanet = #bd93f9
-draculacpu = #f1fa8c
-draculagreen = #5af78e
-draculapink = #ff79c6
+background = ${xrdb:color0:#222}
+foreground = ${xrdb:color7:#222}
+foreground-alt = ${xrdb:color7:#222}
+primary = ${xrdb:color1:#222}
+secondary = ${xrdb:color2:#222}
+alert = ${xrdb:color3:#222}
+
+; [bar/bar]
+; ; ...
+; background = ${colors.background}
+; foreground = ${colors.foreground}
 
 
 [bar/panel]
@@ -6875,7 +6893,7 @@ are just some tweaks to make it work the way I prefer.
 
 ** DONE Nicer buffer name for buffers with same name uniquify
 CLOSED: [2022-04-02 Sat 23:19]
-#+BEGIN_SRC emacs-lisp 
+#+BEGIN_SRC emacs-lisp
 (use-package! uniquify
   :defer 5
   :config
@@ -12406,7 +12424,7 @@ prompt and everyone in the channel can see it.  Some things I learnt:
 
 #+end_src
 ** telega
-#+begin_src emacs-lisp :tangle no
+#+begin_src emacs-lisp :tangle yes
 
 (use-package! telega
     :commands (telega)
@@ -13357,7 +13375,8 @@ some of the above.
   (setq eww-suggest-uris
         '(eww-links-at-point
           thing-at-point-url-at-point))
-  (setq eww-bookmarks-directory (locate-user-emacs-file "eww-bookmarks/"))
+  ;; (setq eww-bookmarks-directory (locate-user-emacs-file "eww-bookmarks/"))
+  (setq eww-bookmarks-directory (expand-file-name "~/.config/eww-bookmarks/"))
   (setq eww-history-limit 150)
   (setq eww-use-external-browser-for-content-type
         "\\`\\(video/\\|audio\\)") ; On GNU/Linux check your mimeapps.list
@@ -17511,7 +17530,11 @@ One of the media players available for Emacs is emms, which stands for Emacs Mul
 #+begin_src emacs-lisp
        ;; (require 'emms-dbus)
        ;; (emms-dbus-enable)
-
+(require 'emms-mode-line)
+(emms-mode-line 1)
+(require 'emms-playing-time)
+(emms-playing-time 1)
+;; (require emms-mode-line-icon)
 (use-package! versuri
   :config
   (defun my/versuri-select ()
@@ -17523,13 +17546,14 @@ One of the media players available for Emacs is emms, which stands for Emacs Mul
   :commands (emms)
   :bind ("C-c e" . hydra-emms/body)
   :config
-  (setq emms-source-file-default-directory "~/Music/"
-        emms-mode-line-format "「%s」"
+  ;; (setq emms-source-file-default-directory "~/Music/"
+     (setq emms-mode-line-format "「%s」"
+        emms-source-file-default-directory "~/Downloads/vids/"
         emms-show-format "NP: %s"
         emms-browser-covers 'emms-browser-cache-thumbnail-async
-        emms-player-list '(emms-player-mpv)
-        emms-player-mpv-environment '("PULSE_PROP_media.role=music")
-        emms-player-mpv-parameters '("--quiet" "--really-quiet" "--no-audio-display" "--force-window=no" "--vo=null")
+        emms-player-list '(emms-player-mpv) ;; currently using mpd
+        ;; emms-player-mpv-environment '("PULSE_PROP_media.role=music")
+        ;; emms-player-mpv-parameters '("--quiet" "--really-quiet" "--no-audio-display" "--force-window=no" "--vo=null")
         emms-browser-thumbnail-small-size 64
         emms-browser-thumbnail-medium-size 128)
        (emms-browser-make-filter "all" #'ignore)
@@ -17542,10 +17566,12 @@ One of the media players available for Emacs is emms, which stands for Emacs Mul
        ;; libre-fm
        ;; (emms-librefm-scrobbler-enable)
 
+;;Adding ‘emms-player-mpd’ to your Emms player list is accomplished by invoking:
+(add-to-list 'emms-player-list 'emms-player-mpd)
   (require 'emms-setup)
   (emms-all)
   (emms-default-players)
-  (emms-playing-time-disable-display)
+  ;; (emms-playing-time-disable-display)
 
   (add-to-list 'emms-player-base-format-list "opus")
   ;; re-compute the regxp for mpv
@@ -17553,19 +17579,148 @@ One of the media players available for Emacs is emms, which stands for Emacs Mul
                    (apply #'emms-player-simple-regexp emms-player-base-format-list))
 
   ;; save on quit and recover on startup
-  (require 'emms-history)
-  (emms-history-load)
+  ;; (require 'emms-history)
+  ;; (emms-history-load)
 
   ;; use libtag to extract tracks info.
   ;;
   ;; XXX: this needs to be compiled from sources
   ;; (~/.emacs.d/straight/repos/emms/) and cp emms-print-metadata
   ;; ~/bin.
-  (require 'emms-info)
-  (require 'emms-info-libtag)
-  (setq emms-info-functions '(emms-info-libtag))
-  (setq emms-info-libtag-known-extensions
-        (regexp-opt '("opus" "mp3" "mp4" "m4a" "ogg" "flac" "spx" "wma")))
+  (require 'emms-info-tinytag)
+  ;; (require 'emms-info)
+  ;; (require 'emms-info-libtag)
+  ;; (setq emms-info-functions '(emms-info-libtag))
+  ;; Choose one of these
+  (setq emms-info-functions '(emms-info-tinytag))  ;; When using Tinytag pip install tinytag ,,you can check by python -m tinytag songlocation/songname
+  ;; (setq emms-info-functions '(emms-info-exiftool)) When using Exiftool
+
+;;To get track information from MusicPD, invoke the following:
+
+(add-to-list 'emms-info-functions 'emms-info-mpd)
+
+
+  ;; (setq emms-info-libtag-known-extensions
+  ;;       (regexp-opt '("opus" "mp3" "mp4" "m4a" "ogg" "flac" "spx" "wma")))
+
+ ;; emms mark -- some dired like stuff
+ ;; (require 'emms-mark)
+ ;; (setq emms-playlist-default-major-mode 'emms-mark-mode)
+
+;; emms filters
+;; Show everything:
+
+(emms-browser-make-filter "all" 'ignore)
+
+;; Set "all" as the default filter:
+
+(emms-browser-set-filter (assoc "all" emms-browser-filters))
+
+;; Show all files (no streamlists, etc):
+
+(emms-browser-make-filter
+ "all-files" (emms-browser-filter-only-type 'file))
+
+;; Show only tracks in one folder:
+
+(emms-browser-make-filter
+ "80s" (emms-browser-filter-only-dir "~/Mp3s/80s"))
+
+;; Show all tracks played in the last month:
+
+(emms-browser-make-filter
+ "last-month" (emms-browser-filter-only-recent 30))
+
+;; After executing the above commands, you can use M-x emms-browser-show-all, emms-browser-show-80s, etc to toggle between different collections. Alternatively you can use ’<’ and ’>’ to cycle through the available filters.
+;; The second argument to make-filter is a function which returns t if a single track should be filtered. You can write your own filter functions to check the type of a file, etc.
+;; Show only tracks not played in the last year:
+
+(emms-browser-make-filter "not-played"
+ (lambda (track)
+  (not (funcall (emms-browser-filter-only-recent 365) track))))
+
+;; Show all files that are not in the pending directory:
+
+
+(emms-browser-make-filter
+ "all"
+ (lambda (track)
+   (or
+    (funcall (emms-browser-filter-only-type 'file) track)
+    (not (funcall
+          (emms-browser-filter-only-dir "~/Media/pending") track)))))
+
+;To show a ’no cover’ image for albums which don’t have a cover, add the following code to your .emacs:
+ ;; Suggested sizes are 100x100 for small, and 200x200 for medium.
+(setq emms-browser-default-covers
+  (list "/path/to/cover_small.jpg" nil nil))
+; Customize emms-browser-covers to configure how EMMS should retrieve the covers.
+;; Changing Looks
+;; The Browser’s look can be customised. You can change the way the tree structure looks, the display format and display faces.
+;; Changing Tree Structure
+;; You can change the way the tree is displayed by modifying the function emms-browser-next-mapping-type.
+;; The following code displays artist->track instead of artist->album->track when you switch to the ’singles’ filter:
+
+(defadvice emms-browser-next-mapping-type
+                                (after no-album (current-mapping))
+  (when (eq ad-return-value 'info-album)
+    (setq ad-return-value 'info-title)))
+
+(defun toggle-album-display ()
+  (if (string= emms-browser-current-filter-name "singles")
+      (ad-activate 'emms-browser-next-mapping-type)
+    (ad-deactivate 'emms-browser-next-mapping-type)))
+
+(add-hook 'emms-browser-filter-changed-hook 'toggle-album-display)
+;; Furthermore, you can customize emms-browser-get-track-field-function to choose which the metadata fields used for the different tree nodes ('info-artist, info-year, etc.). For instance, you can choose whether to organize the tree by artist, album artist or performer.
+
+;; Changing Display Format
+
+;; Format strings govern the way items are displayed in the browser and playlist. You can customize these if you wish.
+;; emms-browser-default-format controls the format to use when no other format has been explicitly defined. By default, only track and albums deviate from the default.
+;; To customise the format of a particular type, find the name of the field you want to use (eg ‘info-artist’, ‘info-title’, etc), and insert that into emms-browser-<type>-format or emms-browser-playlist-<type>-format. For example, if you wanted to remove track numbers from tracks in both the browser and playlist, you could do:
+
+(defvar emms-browser-info-title-format "%i%n")
+(defvar emms-browser-playlist-info-title-format
+  emms-browser-info-title-format)
+
+;; The format specifiers available include:
+
+    ;; %i indent relative to the current level
+    ;; %n the value of the item - eg -info-artist might be “pink floyd”
+    ;; %y the album year
+    ;; %A the album name
+    ;; %a the artist name of the track
+    ;; %t the title of the track
+    ;; %T the track number
+    ;; %cS a small album cover
+    ;; %cM a medium album cover
+    ;; %cL a big album cover
+
+;; Note that if you use track-related items like %t, it will take the data from the first track.
+;; Changing Display Faces
+;; The faces used to display the various fields are also customizable. They are in the format emms-browser-<type>-face, where type is one of "year/genre", "artist", "album" or "track". Note that faces lack the initial "info-" part. For example, to change the artist face, type M-x customize-face emms-browser-artist-face.
+
+;; Normally emms-history only restores playlists. If you want it to start playback afterwards, you can tweak this variable.
+;; User Option: emms-history-start-playing
+    ;; If non-nil emms starts playing the current track after ‘emms-history-load’ was invoked. The default value is nil.
+
+;; setup-mpd
+(require 'emms-player-mpd)
+
+;;Set the variables emms-player-mpd-server-name and emms-player-mpd-server-port to the location and port (respectively) of your MusicPD server. For example:
+
+(setq emms-player-mpd-server-name "localhost")
+(setq emms-player-mpd-server-port "6600")
+
+;;If your MusicPD setup requires a password, you will to set emms-player-mpd-server-password as follows.
+
+;; (setq emms-player-mpd-server-password "mypassword")
+
+
+;;Unless your MusicPD is configured to use absolute file names, you must set the emms-player-mpd-music-directory variable to the value of ’music_directory’ in your MusicPD configuration. There are additional options available as well, but the defaults should be sufficient for most uses.
+;;Once you’ve done the above, run the M-x emms-cache-set-from-mpd-all command to fill the Emms cache with the contents of your MusicPD database. The music in your MusicPD database should then be accessible via the Emms browser.
+;;You can set emms-player-mpd-sync-playlist to nil if your master Emms playlist contains only stored playlists.
 
   (defun my/tick-symbol (x)
     "Return a tick if X is true-ish."
@@ -19179,6 +19334,31 @@ with it.
 :END:
 
 #+end_example
+***** org roam agenda
+#+begin_src emacs-lisp
+
+;; The buffer you put this code in must have lexical-binding set to t!
+;; See the final configuration at the end for more details.
+
+(defun my/org-roam-filter-by-tag (tag-name)
+  (lambda (node)
+    (member tag-name (org-roam-node-tags node))))
+
+(defun my/org-roam-list-notes-by-tag (tag-name)
+  (mapcar #'org-roam-node-file
+          (seq-filter
+           (my/org-roam-filter-by-tag tag-name)
+           (org-roam-node-list))))
+
+(defun my/org-roam-refresh-agenda-list ()
+  (interactive)
+  (setq org-agenda-files (my/org-roam-list-notes-by-tag "Project")))
+
+;; Build the agenda list the first time for the session
+(my/org-roam-refresh-agenda-list)
+#+end_src
+
+#+RESULTS:
 
 **** Nicer generated heading IDs
 Thanks to alphapapa's [[https://github.com/alphapapa/unpackaged.el#export-to-html-with-useful-anchors][unpackaged.el]].
