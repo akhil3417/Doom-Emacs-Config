@@ -83,7 +83,7 @@
 
        :checkers
        syntax              ; tasing you for every semicolon you forget
-       (:if (executable-find "aspell") spell) ; tasing you for misspelling mispelling
+       ;; (:if (executable-find "aspell") spell) ; tasing you for misspelling mispelling
        ;; (spell +flyspell) ; tasing you for misspelling mispelling
        ;; grammar           ; tasing grammar mistake every you make
 
@@ -155,7 +155,6 @@
        ;;nim               ; python + lisp at the speed of c
        ;;nix               ; I hereby declare "nix geht mehr!"
        ;;ocaml             ; an objective camel
-       ;; (org +roam2)             ; organize your plain life in plain text
        ;; (org +pretty +pomodoro +dragndrop +present +hugo +pandoc +journal +gnuplot +roam2)               ; organize your plain life in plain text
        (org +pretty +pomodoro +dragndrop +present +hugo +pandoc +journal +gnuplot +roam2)               ; organize your plain life in plain text
        ;;php               ; perl's insecure younger brother
