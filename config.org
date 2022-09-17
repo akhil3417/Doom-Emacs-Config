@@ -12434,9 +12434,9 @@ prompt and everyone in the channel can see it.  Some things I learnt:
             (setq-local company-backends
                 (append '(telega-company-username telega-company-botcmd )
                         company-backends)))
-    :hook (telega-chat-mode . olivetti-mode)
-          (telega-chat-mode . my/telega/olivetti)
-          (telega-chat-mode . my/telega/company-backends)
+    ;; :hook (telega-chat-mode . olivetti-mode)
+          ;; (telega-chat-mode . my/telega/olivetti)
+      :hook   (telega-chat-mode . my/telega/company-backends)
     ;; installed telegram-tdlib from AUR
     :config
     (telega-mode-line-mode)
@@ -17548,10 +17548,10 @@ One of the media players available for Emacs is emms, which stands for Emacs Mul
   :config
   ;; (setq emms-source-file-default-directory "~/Music/"
      (setq emms-mode-line-format "「%s」"
-        emms-source-file-default-directory "~/Downloads/vids/"
+        emms-source-file-default-directory "~/Music/"
         emms-show-format "NP: %s"
         emms-browser-covers 'emms-browser-cache-thumbnail-async
-        emms-player-list '(emms-player-mpv) ;; currently using mpd
+        emms-player-list '(emms-player-mpv)
         ;; emms-player-mpv-environment '("PULSE_PROP_media.role=music")
         ;; emms-player-mpv-parameters '("--quiet" "--really-quiet" "--no-audio-display" "--force-window=no" "--vo=null")
         emms-browser-thumbnail-small-size 64
@@ -17579,8 +17579,8 @@ One of the media players available for Emacs is emms, which stands for Emacs Mul
                    (apply #'emms-player-simple-regexp emms-player-base-format-list))
 
   ;; save on quit and recover on startup
-  ;; (require 'emms-history)
-  ;; (emms-history-load)
+  (require 'emms-history)
+  (emms-history-load)
 
   ;; use libtag to extract tracks info.
   ;;
@@ -17648,7 +17648,7 @@ One of the media players available for Emacs is emms, which stands for Emacs Mul
    (or
     (funcall (emms-browser-filter-only-type 'file) track)
     (not (funcall
-          (emms-browser-filter-only-dir "~/Media/pending") track)))))
+          (emms-browser-filter-only-dir "~/Music/pending") track)))))
 
 ;To show a ’no cover’ image for albums which don’t have a cover, add the following code to your .emacs:
  ;; Suggested sizes are 100x100 for small, and 200x200 for medium.
@@ -17705,13 +17705,13 @@ One of the media players available for Emacs is emms, which stands for Emacs Mul
 ;; User Option: emms-history-start-playing
     ;; If non-nil emms starts playing the current track after ‘emms-history-load’ was invoked. The default value is nil.
 
-;; setup-mpd
-(require 'emms-player-mpd)
+;; setup-mpd --not using cz having weird issues in runit
+;; (require 'emms-player-mpd)
 
 ;;Set the variables emms-player-mpd-server-name and emms-player-mpd-server-port to the location and port (respectively) of your MusicPD server. For example:
 
-(setq emms-player-mpd-server-name "localhost")
-(setq emms-player-mpd-server-port "6600")
+;; (setq emms-player-mpd-server-name "localhost")
+;; (setq emms-player-mpd-server-port "6600")
 
 ;;If your MusicPD setup requires a password, you will to set emms-player-mpd-server-password as follows.
 
@@ -20179,7 +20179,7 @@ It's also nice to make use of the Unicode characters for check boxes, and other 
 #+end_src
 
 #+RESULTS:
-| :name | ⁍  | :src_block | » | :src_block_end | « | :quote | “ | :quote_end | ” | :lambda | λ | :def | ƒ | :composition | ∘ | :map | ↦ | :null | ∅ | :true | 𝕋 | :false | 𝔽  | :int | ℤ | :float | ℝ  | :str | 𝕊  | :bool | 𝔹 | :list | 𝕃 | :not | ￢ | :in | ∈ | :not-in | ∉ | :and | ∧ | :or | ∨ | :for | ∀ | :some | ∃ | :return | ⟼ | :yield | ⟻ | :union | ⋃  | :intersect | ∩ | :diff | ∖  | :tuple | ⨂  | :pipe |  | :dot | • | :checkbox | ☐  | :pending | ◼  | :checkedbox | ☑  | :list_property | ∷ | :em_dash | — | :ellipses | … | :arrow_right | → | :arrow_left | ← | :title | 𝙏  | :subtitle | 𝙩  | :author | 𝘼  | :date | 𝘿  | :property | ☸ | :options | ⌥ | :startup | ⏻ | :macro | 𝓜 | :html_head | 🅷  | :html | 🅗  | :latex_class | 🄻  | :latex_header | 🅻  | :beamer_header | 🅑  | :latex | 🅛  | :attr_latex | 🄛  | :attr_html | 🄗  | :attr_org | ⒪  | :begin_quote | ❝ | :end_quote | ❞ | :caption | ☰ | :header | › | :results | 🠶 | :begin_export | ⏩  | :end_export | ⏪  | :properties | ⚙  | :end | ∎ | :priority_a | ⚑  | :priority_b | ⬆  | :priority_c | ■ | :priority_d | ⬇  | :priority_e | ❓ | :checkbox | ☐  | :pending | ◼  | :checkedbox | ☑  | :list_property | ∷ | :em_dash | — | :ellipses | … | :arrow_right | → | :arrow_left | ← | :title | 𝙏  | :subtitle | 𝙩  | :author | 𝘼  | :date | 𝘿  | :property | ☸ | :options | ⌥ | :startup | ⏻ | :macro | 𝓜 | :html_head | 🅷  | :html | 🅗  | :latex_class | 🄻  | :latex_header | 🅻  | :beamer_header | 🅑  | :latex | 🅛  | :attr_latex | 🄛  | :attr_html | 🄗  | :attr_org | ⒪  | :begin_quote | ❝ | :end_quote | ❞ | :caption | ☰ | :header | › | :results | 🠶 | :begin_export | ⏩  | :end_export | ⏪  | :properties | ⚙  | :end | ∎ | :priority_a | ⚑  | :priority_b | ⬆  | :priority_c | ■ | :priority_d | ⬇  | :priority_e | ❓ |
+| :name | ⁍  | :src_block | » | :src_block_end | « | :quote | “ | :quote_end | ” | :lambda | λ | :def | ƒ | :composition | ∘ | :map | ↦ | :null | ∅ | :true | 𝕋  | :false | 𝔽  | :int | ℤ | :float | ℝ  | :str | 𝕊  | :bool | 𝔹  | :list | 𝕃  | :not | ￢ | :in | ∈ | :not-in | ∉ | :and | ∧ | :or | ∨ | :for | ∀ | :some | ∃ | :return | ⟼ | :yield | ⟻ | :union | ⋃  | :intersect | ∩ | :diff | ∖  | :tuple | ⨂  | :pipe |  | :dot | • | :checkbox | ☐  | :pending | ◼  | :checkedbox | ☑  | :list_property | ∷ | :em_dash | — | :ellipses | … | :arrow_right | → | :arrow_left | ← | :title | 𝙏  | :subtitle | 𝙩  | :author | 𝘼  | :date | 𝘿  | :property | ☸ | :options | ⌥ | :startup | ⏻ | :macro | 𝓜 | :html_head | 🅷  | :html | 🅗  | :latex_class | 🄻  | :latex_header | 🅻  | :beamer_header | 🅑  | :latex | 🅛  | :attr_latex | 🄛  | :attr_html | 🄗  | :attr_org | ⒪  | :begin_quote | ❝ | :end_quote | ❞ | :caption | ☰ | :header | › | :results | 🠶 | :begin_export | ⏩  | :end_export | ⏪  | :properties | ⚙  | :end | ∎ | :priority_a | ⚑  | :priority_b | ⬆  | :priority_c | ■ | :priority_d | ⬇  | :priority_e | ❓ | :checkbox | ☐  | :pending | ◼  | :checkedbox | ☑  | :list_property | ∷ | :em_dash | — | :ellipses | … | :arrow_right | → | :arrow_left | ← | :title | 𝙏  | :subtitle | 𝙩  | :author | 𝘼  | :date | 𝘿  | :property | ☸ | :options | ⌥ | :startup | ⏻ | :macro | 𝓜 | :html_head | 🅷  | :html | 🅗  | :latex_class | 🄻  | :latex_header | 🅻  | :beamer_header | 🅑  | :latex | 🅛  | :attr_latex | 🄛  | :attr_html | 🄗  | :attr_org | ⒪  | :begin_quote | ❝ | :end_quote | ❞ | :caption | ☰ | :header | › | :results | 🠶 | :begin_export | ⏩  | :end_export | ⏪  | :properties | ⚙  | :end | ∎ | :priority_a | ⚑  | :priority_b | ⬆  | :priority_c | ■ | :priority_d | ⬇  | :priority_e | ❓ |
 
 ~org-superstar-mode~ is great. While we're at it we may as well make tags prettier as well 🙂
 #+begin_src emacs-lisp :tangle packages.el
