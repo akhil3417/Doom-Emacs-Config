@@ -2887,7 +2887,7 @@ Here are some things you might want to consider changing:
 
     ### Text ###
 
-    font = Cantarell 9
+    font = Fira Code 15
 
     # The spacing between lines.  If the height is smaller than the
     # font height, it will get raised to the font height.
@@ -3362,9 +3362,12 @@ I prefer the dashboard, so let's ensure that's always switched to in new frames.
 (when (daemonp)
   (add-hook 'emacs-startup-hook #'greedily-do-daemon-setup)
   (add-hook! 'server-after-make-frame-hook
-    (unless (string-match-p "\\*draft\\|\\*stdin\\|emacs-everywhere" (buffer-name))
-      (switch-to-buffer +doom-dashboard-name))))
+    (unless (string-match-p "\\*draft\\|\\*stdin\\|emacs-everywhere" (buffer-name)))))
+      ;; (switch-to-buffer +doom-dashboard-name))))
 #+end_src
+
+#+RESULTS: daemon initialisation
+
 *** Emacs client wrapper
 I frequently want to make use of Emacs while in a terminal emulator. To make
 this easier, I can construct a few handy aliases.
@@ -4634,7 +4637,7 @@ List of keybindings (SPC h b b)")
 
 *** Dashboard in Emacsclient
 This setting ensures that emacsclient always opens on *dashboard* rather than *scratch*.
-#+begin_src emacs-lisp
+#+begin_src emacs-lisp :tangle no
 (setq doom-fallback-buffer "*dashboard*")
  (setq doom-fallback-buffer-name "► Doom"
      +doom-dashboard-name "► Doom")
@@ -12367,8 +12370,8 @@ CLOSED: [2022-04-14 Thu 17:30]
   window."
       (interactive "P")
       (make-process
-       :name "firefoxdeveloperedition"
-       :command `("firefox-developer-edition" ,(if arg "--private-window" "--new-window"))))
+       :name "firefox"
+       :command `("firefox" ,(if arg "--private-window" "--new-window"))))
 #+end_src
 
 #+RESULTS:
@@ -20179,7 +20182,7 @@ It's also nice to make use of the Unicode characters for check boxes, and other 
 #+end_src
 
 #+RESULTS:
-| :name | ⁍  | :src_block | » | :src_block_end | « | :quote | “ | :quote_end | ” | :lambda | λ | :def | ƒ | :composition | ∘ | :map | ↦ | :null | ∅ | :true | 𝕋  | :false | 𝔽  | :int | ℤ | :float | ℝ  | :str | 𝕊  | :bool | 𝔹  | :list | 𝕃  | :not | ￢ | :in | ∈ | :not-in | ∉ | :and | ∧ | :or | ∨ | :for | ∀ | :some | ∃ | :return | ⟼ | :yield | ⟻ | :union | ⋃  | :intersect | ∩ | :diff | ∖  | :tuple | ⨂  | :pipe |  | :dot | • | :checkbox | ☐  | :pending | ◼  | :checkedbox | ☑  | :list_property | ∷ | :em_dash | — | :ellipses | … | :arrow_right | → | :arrow_left | ← | :title | 𝙏  | :subtitle | 𝙩  | :author | 𝘼  | :date | 𝘿  | :property | ☸ | :options | ⌥ | :startup | ⏻ | :macro | 𝓜 | :html_head | 🅷  | :html | 🅗  | :latex_class | 🄻  | :latex_header | 🅻  | :beamer_header | 🅑  | :latex | 🅛  | :attr_latex | 🄛  | :attr_html | 🄗  | :attr_org | ⒪  | :begin_quote | ❝ | :end_quote | ❞ | :caption | ☰ | :header | › | :results | 🠶 | :begin_export | ⏩  | :end_export | ⏪  | :properties | ⚙  | :end | ∎ | :priority_a | ⚑  | :priority_b | ⬆  | :priority_c | ■ | :priority_d | ⬇  | :priority_e | ❓ | :checkbox | ☐  | :pending | ◼  | :checkedbox | ☑  | :list_property | ∷ | :em_dash | — | :ellipses | … | :arrow_right | → | :arrow_left | ← | :title | 𝙏  | :subtitle | 𝙩  | :author | 𝘼  | :date | 𝘿  | :property | ☸ | :options | ⌥ | :startup | ⏻ | :macro | 𝓜 | :html_head | 🅷  | :html | 🅗  | :latex_class | 🄻  | :latex_header | 🅻  | :beamer_header | 🅑  | :latex | 🅛  | :attr_latex | 🄛  | :attr_html | 🄗  | :attr_org | ⒪  | :begin_quote | ❝ | :end_quote | ❞ | :caption | ☰ | :header | › | :results | 🠶 | :begin_export | ⏩  | :end_export | ⏪  | :properties | ⚙  | :end | ∎ | :priority_a | ⚑  | :priority_b | ⬆  | :priority_c | ■ | :priority_d | ⬇  | :priority_e | ❓ |
+| :name | ⁍  | :src_block | » | :src_block_end | « | :quote | “ | :quote_end | ” | :lambda | λ | :def | ƒ | :composition | ∘ | :map | ↦ | :null | ∅ | :true | 𝕋 | :false | 𝔽  | :int | ℤ | :float | ℝ  | :str | 𝕊  | :bool | 𝔹 | :list | 𝕃 | :not | ￢ | :in | ∈ | :not-in | ∉ | :and | ∧ | :or | ∨ | :for | ∀ | :some | ∃ | :return | ⟼ | :yield | ⟻ | :union | ⋃  | :intersect | ∩ | :diff | ∖  | :tuple | ⨂  | :pipe |  | :dot | • | :checkbox | ☐  | :pending | ◼  | :checkedbox | ☑  | :list_property | ∷ | :em_dash | — | :ellipses | … | :arrow_right | → | :arrow_left | ← | :title | 𝙏  | :subtitle | 𝙩  | :author | 𝘼  | :date | 𝘿  | :property | ☸ | :options | ⌥ | :startup | ⏻ | :macro | 𝓜 | :html_head | 🅷  | :html | 🅗  | :latex_class | 🄻  | :latex_header | 🅻  | :beamer_header | 🅑  | :latex | 🅛  | :attr_latex | 🄛  | :attr_html | 🄗  | :attr_org | ⒪  | :begin_quote | ❝ | :end_quote | ❞ | :caption | ☰ | :header | › | :results | 🠶 | :begin_export | ⏩  | :end_export | ⏪  | :properties | ⚙  | :end | ∎ | :priority_a | ⚑  | :priority_b | ⬆  | :priority_c | ■ | :priority_d | ⬇  | :priority_e | ❓ | :checkbox | ☐  | :pending | ◼  | :checkedbox | ☑  | :list_property | ∷ | :em_dash | — | :ellipses | … | :arrow_right | → | :arrow_left | ← | :title | 𝙏  | :subtitle | 𝙩  | :author | 𝘼  | :date | 𝘿  | :property | ☸ | :options | ⌥ | :startup | ⏻ | :macro | 𝓜 | :html_head | 🅷  | :html | 🅗  | :latex_class | 🄻  | :latex_header | 🅻  | :beamer_header | 🅑  | :latex | 🅛  | :attr_latex | 🄛  | :attr_html | 🄗  | :attr_org | ⒪  | :begin_quote | ❝ | :end_quote | ❞ | :caption | ☰ | :header | › | :results | 🠶 | :begin_export | ⏩  | :end_export | ⏪  | :properties | ⚙  | :end | ∎ | :priority_a | ⚑  | :priority_b | ⬆  | :priority_c | ■ | :priority_d | ⬇  | :priority_e | ❓ |
 
 ~org-superstar-mode~ is great. While we're at it we may as well make tags prettier as well 🙂
 #+begin_src emacs-lisp :tangle packages.el
