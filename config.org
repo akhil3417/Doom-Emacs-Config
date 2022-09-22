@@ -20724,7 +20724,7 @@ The package that allows us to search through bibliography files and take notes o
    ;; I want to see the whole file
    org-noter-hide-other nil
    ;; Everything is relative to the rclone mega
-   org-noter-notes-search-path "~/org/notes"
+   ;; org-noter-notes-search-path "~/org/notes"
    )
   )
 
