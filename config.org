@@ -221,7 +221,6 @@ To install ~some-package~ from MELPA, ELPA or emacsmirror:
   (package! desktop-environment)
   (package! browse-url)
   (package! youtube-dl)
-  (package! aurel)
   (package! speed-type)
   (package! boxquote)
   ;; (package! define-word)
@@ -740,19 +739,16 @@ setting, and load it if it exists.
 XDG compliance and WM settings
 I have to set a few environment variables for the sake of compliance with various specifications, most notably the XDG Base Directory Specification. Also in this block I set an environment variable signaling to Java applications that the window manager is not a reparenting window manager.
 
-#+begin_src emacs-lisp :tangle no
+#+begin_src emacs-lisp :tangle yes
 
 (setenv "XDG_CURRENT_DESKTOP" "emacs")
-(setenv "GTK2_RC_FILES" (expand-file-name "~/.config/gtk-2.0/gtkrc"))
-;; (setenv "GTK3_INI_FILES" (expand-file-name "~/.config/gtk-3.0/settings.ini"))
+;; (setenv "GTK2_RC_FILES" (expand-file-name "~/.config/gtk-2.0/gtkrc"))
+(setenv "GTK3_INI_FILES" (expand-file-name "~/.config/gtk-3.0/settings.ini"))
 (setenv "QT_QPA_PLATFORMTHEME" "gtk2")
 
 ;;Make Java applications aware this is a non-reparenting window manager.
 (setenv "_JAVA_AWT_WM_NONREPARENTING" "1")
 #+end_src
-
-#+RESULTS:
-: 1
 
 Disable screen blanking
 I don’t need my laptop’s screen shutting off just because I’m sitting and watching a video with the laptop idle too long.
@@ -919,7 +915,7 @@ I’ve always been mixed on this behavior but it seems like a good idea.
     (efs/start-panel)
     ;; Launch apps that will run in the background
     (exwm/run-in-background "dunst")
-    ;; (exwm/run-in-background "nm-applet")
+    (exwm/run-in-background "nm-applet")
     (exwm/run-in-background "pasystray")
     ;; (exwm/run-in-background "volumeicon")
     (exwm/run-in-background "blueman-applet"))
@@ -947,7 +943,7 @@ I’ve always been mixed on this behavior but it seems like a good idea.
                  (exwm-layout-toggle-mode-line))
     ("qjackctl" (exwm-floating-toggle-floating))
     ;; ("mpv" (exwm-floating-toggle-floating)
-    ("mpv" (exwm/position-window))
+    ;; ("mpv" (exwm/position-window))
     ("mpv" (exwm-workspace-move-window 4)
      (exwm-layout-toggle-mode-line))
     ("gsi" (exwm-input-toggle-keyboard)))
@@ -2902,13 +2898,6 @@ the previously multi-windowed one"
   :config
   (beginend-global-mode))
 
-;; (use-package! drag-stuff
-;;   :bind
-;;   (("C-M-<up>" . drag-stuff-up)
-;;    ("C-M-<down>" . drag-stuff-down))
-;;   :config
-;;   (drag-stuff-global-mode))
-
 #+end_src
 
 #+RESULTS:
@@ -3030,25 +3019,6 @@ to keep track of the information on display.
 
 #+RESULTS:
 : t
-
-** DONE Aur
-CLOSED: [2022-03-31 Thu 20:05]
-
-#+begin_src emacs-lisp :tangle no
-(package! aurel)
-#+end_src
-
-#+begin_src emacs-lisp :tangle no
-;; Aurel: Search, vote for and download AUR packages
-(use-package! aurel
-  :defer t
-  :config
-  ;; Add "machine aur.archlinux.org login <user> password <password>" line to .authinfo
-  (setq aurel-aur-user-package-info-check t))
-#+end_src
-
-#+RESULTS:
-: #s(hash-table size 65 test eql rehash-size 1.5 rehash-threshold 0.8125 data (:use-package! (25088 10759 802159 219000) :init (25088 10759 802148 619000) :init-secs (0 0 148 255000) :use-package-secs (0 0 161 825000)))
 
 ** DONE Auth Sources
 CLOSED: [2022-03-31 Thu 20:05]
@@ -3435,7 +3405,7 @@ CLOSED: [2022-03-30 Wed 00:03]
 #+RESULTS:
 : my/set-redshift
 
-** DONE Emojify
+** DONE Emoji-fy
 CLOSED: [2022-03-30 Wed 00:09]
 #+begin_quote
 From the =:ui emoji= module.
@@ -4351,7 +4321,7 @@ I set comment-line to 'SPC TAB TAB' which is a rather comfortable keybinding for
 Relative line numbers are fantastic for knowing how far away line numbers are,
 then =ESC 12 <UP>= gets you exactly where you think.
 #+BEGIN_SRC emacs-lisp
-;; (setq display-line-numbers-type 'relative)
+(setq display-line-numbers-type 'absolute)
 (setq display-line-numbers-type nil)
 (map! :leader
       :desc "Comment or uncomment lines" "TAB TAB" #'comment-line
@@ -9646,6 +9616,126 @@ LSP auto format is nice, but not as configurable as prettier, better let prettie
   ))
 #+end_src
 
+** Very large files
+
+The /very large files/ mode loads large files in chunks, allowing one to open
+ridiculously large files.
+
+#+begin_src emacs-lisp :tangle packages.el
+(package! vlf :recipe (:host github :repo "emacs-straight/vlf" :files ("*.el"))
+  :pin "cacdb359f8c37c6e7e4c7937462b632d22462130")
+#+end_src
+
+To make VLF available without delaying startup, we'll just load it in quiet moments.
+
+#+begin_src emacs-lisp :noweb no-export :noweb-prefix no
+(use-package! vlf-setup
+  :defer-incrementally vlf-tune vlf-base vlf-write
+  vlf-search vlf-occur vlf-follow vlf-ediff vlf
+  :commands vlf vlf-mode
+  :init
+  <<vlf-largefile-prompt>>
+  :config
+  (advice-remove 'abort-if-file-too-large #'ad-Advice-abort-if-file-too-large)
+  <<vlf-linenum-offset>>)
+#+end_src
+
+#+RESULTS:
+
+Now, there are one or two tweaks worth applying to VLF. For starters, it goes to
+the liberty of advising ~abort-if-file-too-large~, and in doing so removes the
+option of opening files literally. I think that's a bit much, so we can remove
+the advice and instead override ~files--ask-user-about-large-file~ (the more
+appropriate function, I think) as a simpler approach, just sacrificing the
+original behaviour with src_elisp{(setq vlf-application 'always)} (which I can't
+imagine using anyway).
+
+#+name: vlf-largefile-prompt
+#+begin_src emacs-lisp :tangle no
+(defadvice! +files--ask-about-large-file-vlf (size op-type filename offer-raw)
+  "Like `files--ask-user-about-large-file', but with support for `vlf'."
+  :override #'files--ask-user-about-large-file
+  (if (eq vlf-application 'dont-ask)
+      (progn (vlf filename) (error ""))
+    (let ((prompt (format "File %s is large (%s), really %s?"
+                          (file-name-nondirectory filename)
+                          (funcall byte-count-to-string-function size) op-type)))
+      (if (not offer-raw)
+          (if (y-or-n-p prompt) nil 'abort)
+        (let ((choice
+               (car
+                (read-multiple-choice
+                 prompt '((?y "yes")
+                          (?n "no")
+                          (?l "literally")
+                          (?v "vlf"))
+                 (files--ask-user-about-large-file-help-text
+                  op-type (funcall byte-count-to-string-function size))))))
+          (cond ((eq choice ?y) nil)
+                ((eq choice ?l) 'raw)
+                ((eq choice ?v)
+                 (vlf filename)
+                 (error ""))
+                (t 'abort)))))))
+#+end_src
+
+#+RESULTS: vlf-largefile-prompt
+
+As you go from one chunk fetched by VLF to the next, the displayed line number
+of the first line /in each chunk/ is unchanged. I think it's reasonable to hope
+for an /overall/ line number, and by tracking chunk's cumulative line numbers we
+can implement this behaviour fairly easily.
+
+#+name: vlf-linenum-offset
+#+begin_src emacs-lisp :tangle no
+(defvar-local +vlf-cumulative-linenum '((0 . 0))
+  "An alist keeping track of the cumulative line number.")
+
+(defun +vlf-update-linum ()
+  "Update the line number offset."
+  (let ((linenum-offset (alist-get vlf-start-pos +vlf-cumulative-linenum)))
+    (setq display-line-numbers-offset (or linenum-offset 0))
+    (when (and linenum-offset (not (assq vlf-end-pos +vlf-cumulative-linenum)))
+      (push (cons vlf-end-pos (+ linenum-offset
+                                 (count-lines (point-min) (point-max))))
+            +vlf-cumulative-linenum))))
+
+(add-hook 'vlf-after-chunk-update-hook #'+vlf-log-poses-a)
+
+;; Since this only works with absolute line numbers, let's make sure we use them.
+gadd-hook! 'vlf-mode-hook (setq-local display-line-numbers t)
+#+end_src
+
+The other thing that doesn't work too well with VLF is searching with anything
+other than =M-x occur=. This is because trying to go to the next match at the end
+of a chunk usually wraps the point to the beginning of the chunk, instead of
+moving to the next chunk.
+
+#+begin_src emacs-lisp :tangle no
+(defun +vlf-next-chunk-or-start ()
+  (if (= vlf-file-size vlf-end-pos)
+      (vlf-jump-to-chunk 1)
+    (vlf-next-batch 1))
+  (goto-char (point-min)))
+
+(defun +vlf-last-chunk-or-end ()
+  (if (= 0 vlf-start-pos)
+      (vlf-end-of-file)
+    (vlf-prev-batch 1))
+  (goto-char (point-max)))
+
+(defun +vlf-isearch-wrap ()
+  (if isearch-forward
+      (+vlf-next-chunk-or-start)
+    (+vlf-last-chunk-or-end)))
+
+(add-hook! 'vlf-mode-hook (setq-local isearch-wrap-function #'+vlf-isearch-wrap))
+#+end_src
+
+#+RESULTS:
+
+Unfortunately, since evil-search doesn't have an analogue to
+~isearch-wrap-function~, we can't easily add support to it.
 * SHELLS
 ** Command-line shells
 **** desc
@@ -16959,7 +17049,6 @@ One of the media players available for Emacs is emms, which stands for Emacs Mul
 (emms-mode-line 1)
 (require 'emms-playing-time)
 (emms-playing-time 1)
-;; (require emms-mode-line-icon)
 (use-package! versuri
   :config
   (defun my/versuri-select ()
@@ -16971,14 +17060,13 @@ One of the media players available for Emacs is emms, which stands for Emacs Mul
   :commands (emms)
   :bind ("C-c e" . hydra-emms/body)
   :config
-  ;; (setq emms-source-file-default-directory "~/Music/"
-     (setq emms-mode-line-format "「%s」"
-        emms-source-file-default-directory "~/Music/"
+  (setq emms-source-file-default-directory "~/Music/"
+        emms-mode-line-format "「%s」"
         emms-show-format "NP: %s"
         emms-browser-covers 'emms-browser-cache-thumbnail-async
         emms-player-list '(emms-player-mpv)
-        ;; emms-player-mpv-environment '("PULSE_PROP_media.role=music")
-        ;; emms-player-mpv-parameters '("--quiet" "--really-quiet" "--no-audio-display" "--force-window=no" "--vo=null")
+        emms-player-mpv-environment '("PULSE_PROP_media.role=music")
+        emms-player-mpv-parameters '("--quiet" "--really-quiet" "--no-audio-display" "--force-window=no" "--vo=null")
         emms-browser-thumbnail-small-size 64
         emms-browser-thumbnail-medium-size 128)
        (emms-browser-make-filter "all" #'ignore)
@@ -17049,7 +17137,7 @@ One of the media players available for Emacs is emms, which stands for Emacs Mul
 ;; Show only tracks in one folder:
 
 (emms-browser-make-filter
- "80s" (emms-browser-filter-only-dir "~/Mp3s/80s"))
+ "90s" (emms-browser-filter-only-dir "~/Music/90s"))
 
 ;; Show all tracks played in the last month:
 
