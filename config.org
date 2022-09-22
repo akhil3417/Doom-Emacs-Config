@@ -405,7 +405,6 @@ It's useful to have some basic personal information
     (setq epg-gpg-program "gpg2")  ;; not necessary
     (require 'epa-file)
     (epa-file-enable)
-    (setq epa-pinentry-mode 'loopback)
     (setq epg-pinentry-mode 'loopback)
     (pinentry-start)
 
@@ -433,6 +432,7 @@ Speaking of ~GPG~, I want to use =~/.authinfo.gpg= instead of the default in
 make a difference, and I don't want to accidentally purge this file I have done
 src_shell{rm -rf~/.emac.d~ before}. I also want to cache as much as possible, as
 my home machine is pretty safe, and my laptop is shutdown a lot.
+
 #+begin_src emacs-lisp :tangle yes
 (setq auth-sources '("~/.authinfo.gpg")
       auth-source-cache-expiry nil)
@@ -509,6 +509,9 @@ my home machine is pretty safe, and my laptop is shutdown a lot.
 
 (load "auto-scroll.el")
 
+(load "prot-common.el")
+(load "prot-comment.el")
+(load "prot-bookmark.el")
 ;;(load "dunst.el")
 
 #+end_src
@@ -3254,11 +3257,6 @@ CLOSED: [2022-03-31 Thu 20:05]
 CLOSED: [2022-03-31 Thu 20:05]
 
 #+begin_src emacs-lisp :tangle no
-(package! auth-source)
-#+end_src
-
-#+begin_src emacs-lisp :tangle no
-
 ;;; Auth Source
 (use-package! auth-source
   ;; :ensure nil
@@ -3555,7 +3553,7 @@ That's no problem though, we just need to help TRAMP find them.
               "/run/current-system/profile/sbin")))
 #+end_src
 ** Password
-*** Generate passwords
+*** DONE Generate passwords
 
 #+BEGIN_SRC emacs-lisp
   (defun generate-password-non-interactive ()
@@ -3591,7 +3589,10 @@ it (for example a browser):
     [?\C-s ?P ?a ?s ?s ?w ?o ?r ?d ?: return ?w ?v ?$ ?y C-up C-up C-up tab])
  #+END_SRC
 
-**** Open passwords file
+ #+RESULTS:
+ : [19 80 97 115 115 119 111 114 100 58 return 119 118 36 121 C-up C-up C-up tab]
+
+**** TODO Open passwords file
 
 #+BEGIN_SRC emacs-lisp :tangle no
   (defun passwords ()
@@ -3599,6 +3600,10 @@ it (for example a browser):
     (interactive)
     (find-file (concat org-directory "vault/primary.org.gpg")))
 #+END_SRC
+
+#+RESULTS:
+: passwords
+
 * DONE UI
 CLOSED: [2022-04-02 Sat 23:43]
 ** DONE Windows
@@ -4569,9 +4574,8 @@ Also watch my [[https://protesilaos.com/codelog/2022-03-14-emacs-pulsar-demo/][d
 #+RESULTS:
 : t
 
-
-
-** general line
+** DONE general line
+CLOSED: [2022-09-22 Thu 11:28]
 I set comment-line to 'SPC TAB TAB' which is a rather comfortable keybinding for me on my ZSA Moonlander keyboard.  The standard Emacs keybinding for comment-line is 'C-x C-;'.  The other keybindings are for commands that toggle on/off various line-related settings.  Doom Emacs uses 'SPC t' for "toggle" commands, so I choose 'SPC t' plus 'key' for those bindings.
 
 | COMMAND                  | DESCRIPTION                                 | KEYBINDING  |
@@ -4721,19 +4725,6 @@ Settings related to fonts within Doom Emacs:
 + 'font-lock-comment-face' -- for comments.
 + 'font-lock-keyword-face' -- for keywords with special significance like 'setq' in elisp.
 Fira Code is amazing, and so is Roboto.
-
-
-#+begin_src emacs-lisp :tangle no
-(setq doom-font (font-spec :family "FiraCode" :size 15 :weight 'light)
-       doom-variable-pitch-font (font-spec :family "Roboto" :style "Regular" :size 12 :weight 'regular))
-
-;; There are two ways to load a theme. Both assume the theme is installed and
-;; available. You an either set `doom-theme' or manually load a theme with the
-;; `load-theme' function. This is the default:
-#+end_src
-
-#+RESULTS:
-: #<font-spec nil nil Roboto nil nil regular nil nil 12 nil nil nil ((:style . "Regular"))>
 
 #+BEGIN_SRC emacs-lisp :tangle yes
 ;; (setq doom-font (font-spec :family "FiraCode Nerd Font" :size 14)
@@ -5126,6 +5117,8 @@ icon. Then we'll redefine two functions used to generate the modeline.
   ))
 #+end_src
 
+#+RESULTS:
+
 *** kar modline
 #+begin_src emacs-lisp
 
@@ -5367,7 +5360,8 @@ Winner mode has been included with GNU Emacs since version 20.  This is a global
 
 #+RESULTS:
 
-** Theme magic
+** DONE Theme magic
+CLOSED: [2022-09-22 Thu 11:41]
 
 With all our fancy Emacs themes, my terminal is missing out!
 #+begin_src emacs-lisp :tangle packages.el
@@ -5387,12 +5381,14 @@ Since we're using =doom-themes=, our life is a little easier and we can use the
 colour utilities from Doom themes to easily grab sensible colours and generate
 lightened versions --- let's do that.
 
-#+begin_src emacs-lisp
+#+begin_src emacs-lisp :tangle yes
+(require 'theme-magic)
+(theme-magic-export-theme-mode)
 (use-package! theme-magic
   :commands theme-magic-from-emacs
   :config
-  (defadvice! theme-magic--auto-extract-16-doom-colors ()
-    :override #'theme-magic--auto-extract-16-colors
+  ;; (defadvice! theme-magic--auto-extract-16-doom-colors ()
+    ;; :override #'theme-magic--auto-extract-16-colors
     (list
      (face-attribute 'default :background)
      (doom-color 'error)
@@ -5409,7 +5405,7 @@ lightened versions --- let's do that.
      (doom-blend 'base8 'keywords 0.1)
      (doom-blend 'base8 'constants 0.1)
      (doom-blend 'base8 'functions 0.1)
-     (face-attribute 'default :foreground))))
+     (face-attribute 'default :foreground)))
 #+end_src
 
 #+RESULTS:
@@ -16007,10 +16003,7 @@ Finally, note that I control the placement of those buffers in the
     (define-key map (kbd "C-c d m") #'prot-diary-mail-entries)))
 #+end_src
 
-These are the contents of the =prot-diary.el= library (find the source
-code in [[https://gitlab.com/protesilaos/dotfiles][my dotfiles' repo]] (as with all my Elisp code)):
 
-#+include: prot-lisp/prot-diary.el src emacs-lisp :tangle no
 
 ** Screenshot
 
