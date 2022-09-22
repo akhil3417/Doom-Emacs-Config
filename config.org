@@ -20428,7 +20428,7 @@ The package that allows us to search through bibliography files and take notes o
 #+RESULTS:
 : Build complete!
 
-*** improving the output-file
+*** improving the html output-file
 
 At this point have a decent basic output for our website, but what if we want to make it look a little bit nicer?
 By setting a few more variables, we can use a nice stylesheet to give our site a more polished look:
@@ -20821,7 +20821,7 @@ and Minad's lovely =org-modern= goes a long way in this regard.
 #+end_src
 
 #+RESULTS:
-| org-modern-mode | locally-defer-font-lock | +org-pretty-mode | org-ref-org-menu | er/add-org-mode-expansions | org-appear-mode | elpher-org-mode-integration | +lookup--init-org-mode-handlers-h | (closure ((hook . org-mode-hook) (--dolist-tail--) t) (&rest _) (add-hook 'before-save-hook 'org-encrypt-entries nil t)) | #[0 \300\301\302\303\304$\207 [add-hook change-major-mode-hook org-fold-show-all append local] 5] | #[0 \300\301\302\303\304$\207 [add-hook change-major-mode-hook org-babel-show-result-all append local] 5] | org-babel-result-hide-spec | org-babel-hide-all-hashes | #[0 \301\211\207 [imenu-create-index-function org-imenu-get-tree] 2] | beginend-org-mode | doom-disable-show-paren-mode-h | doom-disable-show-trailing-whitespace-h | +org-enable-auto-reformat-tables-h | +org-enable-auto-update-cookies-h | +org-make-last-point-visible-h | org-fancy-priorities-mode | org-superstar-mode | evil-org-mode | toc-org-enable | embrace-org-mode-hook | org-eldoc-load | +literate-enable-recompile-h |
+| org-modern-mode | locally-defer-font-lock | +org-pretty-mode | org-ref-org-menu | er/add-org-mode-expansions | turn-on-flyspell | org-appear-mode | elpher-org-mode-integration | +lookup--init-org-mode-handlers-h | (closure ((hook . org-mode-hook) (--dolist-tail--) t) (&rest _) (add-hook 'before-save-hook 'org-encrypt-entries nil t)) | #[0 \300\301\302\303\304$\207 [add-hook change-major-mode-hook org-fold-show-all append local] 5] | #[0 \300\301\302\303\304$\207 [add-hook change-major-mode-hook org-babel-show-result-all append local] 5] | org-babel-result-hide-spec | org-babel-hide-all-hashes | #[0 \301\211\207 [imenu-create-index-function org-imenu-get-tree] 2] | beginend-org-mode | doom-disable-show-paren-mode-h | doom-disable-show-trailing-whitespace-h | +org-enable-auto-reformat-tables-h | +org-enable-auto-update-cookies-h | +org-make-last-point-visible-h | org-fancy-priorities-mode | org-superstar-mode | evil-org-mode | toc-org-enable | embrace-org-mode-hook | org-eldoc-load | +literate-enable-recompile-h |
 
 Since =org-modern='s tag face supplants Org's tag face, we need to adjust the
 spell-check face ignore list
@@ -20831,9 +20831,9 @@ spell-check face ignore list
   (cl-pushnew 'org-modern-tag (alist-get 'org-mode +spell-excluded-faces-alist)))
 #+end_src
 
-* Keyboard shortcuts
+* Keyboard shortcuts (org -roam)
 
-Everything is mapped to SPC-r because doom is not using it and r stands for roam.
+Everything is mapped to SPC-R because doom is not using it and R stands for roam.
 #+begin_src elisp :tangle yes
 (map! :leader
       (:prefix-map ("R" . "regular")
