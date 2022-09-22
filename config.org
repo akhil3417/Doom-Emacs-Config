@@ -148,7 +148,6 @@ To install ~some-package~ from MELPA, ELPA or emacsmirror:
   (package! easy-kill)
   (package! exotica-theme)
   (package! underwater-theme)
-  (package! shell-pop)
   (package! key-chord)
   ;; (package! undo-tree)
   (package! ibuffer-project)
@@ -412,9 +411,6 @@ It's useful to have some basic personal information
     (org-crypt-use-before-save-magic)
 #+END_SRC
 
-#+RESULTS:
-| #<subr F616e6f6e796d6f75732d6c616d626461_anonymous_lambda_7> | mixed-pitch-mode | locally-defer-font-lock | +org-pretty-mode | er/add-org-mode-expansions | turn-on-flyspell | org-appear-mode | elpher-org-mode-integration | +lookup--init-org-mode-handlers-h | (closure ((hook . org-mode-hook) (--dolist-tail--) t) (&rest _) (add-hook 'before-save-hook 'org-encrypt-entries nil t)) | #[0 \300\301\302\303\304$\207 [add-hook change-major-mode-hook org-show-all append local] 5] | #[0 \300\301\302\303\304$\207 [add-hook change-major-mode-hook org-babel-show-result-all append local] 5] | org-babel-result-hide-spec | org-babel-hide-all-hashes | #[0 \301\211\207 [imenu-create-index-function org-imenu-get-tree] 2] | flymake-proselint-setup | beginend-org-mode | doom-disable-show-paren-mode-h | doom-disable-show-trailing-whitespace-h | +org-enable-auto-reformat-tables-h | +org-enable-auto-update-cookies-h | +org-make-last-point-visible-h | evil-org-mode | toc-org-enable | embrace-org-mode-hook | org-eldoc-load | +literate-enable-recompile-h |
-
 #+begin_src emacs-lisp
 ;; (setq package-native-compile t)
 (setq org-directory "~/org/")
@@ -509,9 +505,9 @@ my home machine is pretty safe, and my laptop is shutdown a lot.
 
 (load "auto-scroll.el")
 
-(load "prot-common.el")
-(load "prot-comment.el")
-(load "prot-bookmark.el")
+;; (load "prot-common.el")
+;; (load "prot-comment.el")
+;; (load "prot-bookmark.el")
 ;;(load "dunst.el")
 
 #+end_src
@@ -4726,7 +4722,7 @@ Settings related to fonts within Doom Emacs:
 + 'font-lock-keyword-face' -- for keywords with special significance like 'setq' in elisp.
 Fira Code is amazing, and so is Roboto.
 
-#+BEGIN_SRC emacs-lisp :tangle yes
+#+begin_src emacs-lisp :tangle yes
 ;; (setq doom-font (font-spec :family "FiraCode Nerd Font" :size 14)
 ;;       ;;doom-variable-pitch-font (font-spec :family "ETBembo" :size 14)
 ;;       doom-variable-pitch-font (font-spec :family "Alegreya" :size 14))
@@ -5382,8 +5378,6 @@ colour utilities from Doom themes to easily grab sensible colours and generate
 lightened versions --- let's do that.
 
 #+begin_src emacs-lisp :tangle yes
-(require 'theme-magic)
-(theme-magic-export-theme-mode)
 (use-package! theme-magic
   :commands theme-magic-from-emacs
   :config
@@ -5406,12 +5400,15 @@ lightened versions --- let's do that.
      (doom-blend 'base8 'constants 0.1)
      (doom-blend 'base8 'functions 0.1)
      (face-attribute 'default :foreground)))
+(require 'theme-magic)
+;; (theme-magic-export-theme-mode)
 #+end_src
 
 #+RESULTS:
 : t
 
-** Screencast
+** DONE Screencast
+CLOSED: [2022-09-22 Thu 11:46]
 In a similar manner to [[Keycast]], [[https://gitlab.com/ambrevar/emacs-gif-screencast][gif-screencast]] may come in handy.
 #+begin_src emacs-lisp :tangle packages.el
 (package! gif-screencast :pin "5517a557a17d8016c9e26b0acb74197550f829b9")
@@ -5455,7 +5452,8 @@ theme.
 #+end_src
 
 #+RESULTS:
-** Treemacs
+** DONE Treemacs
+CLOSED: [2022-09-22 Thu 11:48]
 #+begin_quote
 From the =:ui treemacs= module.
 #+end_quote
@@ -5515,7 +5513,8 @@ Now, we just identify the files in question.
         "*/_region_.log"
         "*/_region_.tex"))
 #+end_src
-** NEOTREE
+** DONE NEOTREE
+CLOSED: [2022-09-22 Thu 11:48]
 Neotree is a file tree viewer.  When you open neotree, it jumps to the current file thanks to neo-smart-open.  The neo-window-fixed-size setting makes the neotree width be adjustable.  Doom Emacs had no keybindings set for neotree.  Since Doom Emacs uses 'SPC t' for 'toggle' keybindings, I used 'SPC t n' for toggle-neotree.
 
 | COMMAND        | DESCRIPTION                 | KEYBINDING |
@@ -5533,7 +5532,8 @@ Neotree is a file tree viewer.  When you open neotree, it jumps to the current f
       :desc "Toggle neotree file viewer" "t n" #'neotree-toggle
       :desc "Open directory in neotree" "d n" #'neotree-dir)
 #+END_SRC
-** pulsing cursor
+** DONE pulsing cursor
+CLOSED: [2022-09-22 Thu 11:48]
 #+begin_src emacs-lisp :tangle packages.el
 
 (package! pulsing-cursor
@@ -8716,7 +8716,6 @@ CLOSED: [2022-04-01 Fri 15:42]
 #+end_src
 
 #+RESULTS:
-: #s(hash-table size 65 test eql rehash-size 1.5 rehash-threshold 0.8125 data (:use-package! (25088 11642 749227 346000) :init (25088 11642 749191 846000) :init-secs (0 0 290 986000) :use-package-secs (0 0 1137 828000)))
 
 ** Very large files
 
@@ -9970,9 +9969,7 @@ REGION are passed to `fill-paragraph'."
 
 ** keychord
 In case  I  don’t use Evil (Vim emulation), which would add an extra layer of complexity to everything. Instead, I heavily leverage key-chord.el, which enables binding simultaneous key presses (chords) to commands.
-
 I have some custom code to bind chords to Doom’s leaders. Many commonly used commands are bound in these “key chord maps”.
-
 Enable the key chord package
 Set hardware-specific delay. Tweak this if:
 
@@ -10049,7 +10046,8 @@ Better regex than emacs regex
   (add-hook! 'devdocs-mode-hook
     (face-remap-add-relative 'variable-pitch '(:family "Noto Sans"))))
 #+end_src
-** LSP
+** DONE LSP
+CLOSED: [2022-09-22 Thu 12:20]
 LSP auto format is nice, but not as configurable as prettier, better let prettier handle it.
 #+begin_src emacs-lisp :tangle yes
 (add-hook! 'after-init-hook
@@ -10167,16 +10165,6 @@ It should come to no surprise that Emacs can operate as both a /terminal
 emulator for command line shells/ and /toolkit for terminal emulators/.
 The present section covers only the former category as I never use the
 likes of =ansi-term= or =vterm=.
-** shell-pop
-  #+begin_src emacs-lisp
-    (use-package! shell-pop
-      :bind (("<f4>" . shell-pop))
-      :config
-      (setq shell-pop-shell-type (quote ("ansi-term" "*ansi-term*" (lambda nil (ansi-term shell-pop-term-shell)))))
-      (setq shell-pop-term-shell "/bin/zsh")
-      (shell-pop--set-shell-type 'shell-pop-shell-type shell-pop-shell-type))
-  #+end_src
-
 ** Eshell
 
 Settings for the various shells and terminal emulators within Emacs.
@@ -10851,6 +10839,10 @@ Basically, its interaction model is as follows:
   (setq trashed-sort-key '("Date deleted" . t))
   (setq trashed-date-format "%Y-%m-%d %H:%M:%S"))
 #+end_src
+
+#+RESULTS:
+: t
+
 ** OPEN SPECIFIC FILES
 Keybindings to open files that I work with all the time using the find-file command, which is the interactive file search that opens with 'C-x C-f' in GNU Emacs or 'SPC f f' in Doom Emacs.  These keybindings use find-file non-interactively since we specify exactly what file to open.  The format I use for these bindings is 'SPC =' plus 'key' since Doom Emacs does not use 'SPC ='.
 
@@ -11617,99 +11609,6 @@ in the manual of the themes.  If you are using them, evaluate this form:
       ("t" counsel-imenu)
       ("q" (quick-calc t))
       ("x" comment-box)))
-#+end_src
-
-#+RESULTS:
-: t
-
-** pdf-tool
-#+begin_src emacs-lisp
-(use-package! pdf-tools
-  ;; :ensure t
-  :config
-  (pdf-tools-install)
-  (setq-default pdf-view-display-size 'fit-page
-                pdf-view-use-imagemagick t
-                pdf-view-midnight-colors '("white smoke" . "gray5"))
-  (bind-keys :map pdf-view-mode-map
-      ("\\" . hydra-pdftools/body)
-      ("<s-spc>" .  pdf-view-scroll-down-or-next-page)
-      ("g"  . pdf-view-first-page)
-      ("G"  . pdf-view-last-page)
-      ("l"  . image-forward-hscroll)
-      ("h"  . image-backward-hscroll)
-      ("j"  . pdf-view-next-line-or-next-page)
-      ("k"  . pdf-view-previous-line-or-previous-page)
-      ("e"  . pdf-view-goto-page)
-      ("t"  . pdf-view-goto-label)
-      ("u"  . pdf-view-revert-buffer)
-      ("al" . pdf-annot-list-annotations)
-      ("ad" . pdf-annot-delete)
-      ("aa" . pdf-annot-attachment-dired)
-      ("am" . pdf-annot-add-markup-annotation)
-      ("at" . pdf-annot-add-text-annotation)
-      ("y"  . pdf-view-kill-ring-save)
-      ("i"  . pdf-misc-display-metadata)
-      ("s"  . pdf-occur)
-      ("b"  . pdf-view-set-slice-from-bounding-box)
-      ("r"  . pdf-view-reset-slice))
-
-  (when (package-installed-p 'hydra)
-    (bind-keys :map pdf-view-mode-map
-               ("\\" . hydra-pdftools/body))
-    (defhydra hydra-pdftools (:color blue :hint nil)
-        "
-                                                                      ╭───────────┐
-       Move  History   Scale/Fit     Annotations  Search/Link    Do   │ PDF Tools │
-   ╭──────────────────────────────────────────────────────────────────┴───────────╯
-      ^^^_g_^^^       _B_    ^↧^    _+_    ^ ^     [_al_] list    [_s_] search      [_u_] revert buffer
-      ^^^^↑^^^^       ^↑^    _H_    ^↑^  ↦ _W_ ↤   [_am_] markup  [_o_] outline     [_i_] info
-      ^^^_p_^^^       ^ ^    ^↥^    _0_    ^ ^     [_at_] text    [_F_] link        [_d_] midgnight mode
-      ^^^^↑^^^^       ^↓^  ╭─^─^─┐  ^↓^  ╭─^ ^─┐   [_ad_] delete  [_f_] search link [_D_] print mode
- _h_ ← _e_/_t_ → _l_  _N_  │ _P_ │  _-_    _b_     [_aa_] dired
-      ^^^^↓^^^^       ^ ^  ╰─^─^─╯  ^ ^  ╰─^ ^─╯   [_y_]  yank
-      ^^^_n_^^^       ^ ^  _r_eset slice box
-      ^^^^↓^^^^
-      ^^^_G_^^^
-   --------------------------------------------------------------------------------
-        "
-        ("\\" hydra-master/body "back")
-        ("<ESC>" nil "quit")
-        ("al" pdf-annot-list-annotations)
-        ("ad" pdf-annot-delete)
-        ("aa" pdf-annot-attachment-dired)
-        ("am" pdf-annot-add-markup-annotation)
-        ("at" pdf-annot-add-text-annotation)
-        ("y"  pdf-view-kill-ring-save)
-        ("+" pdf-view-enlarge :color red)
-        ("-" pdf-view-shrink :color red)
-        ("0" pdf-view-scale-reset)
-        ("H" pdf-view-fit-height-to-window)
-        ("W" pdf-view-fit-width-to-window)
-        ("P" pdf-view-fit-page-to-window)
-        ("n" pdf-view-next-page-command :color red)
-        ("p" pdf-view-previous-page-command :color red)
-        ("d" pdf-view-midnight-minor-mode)
-        ("D" pdf-view-printer-minor-mode)
-        ("b" pdf-view-set-slice-from-bounding-box)
-        ("r" pdf-view-reset-slice)
-        ("g" pdf-view-first-page)
-        ("G" pdf-view-last-page)
-        ("e" pdf-view-goto-page)
-        ("t" pdf-view-goto-label)
-        ("o" pdf-outline)
-        ("s" pdf-occur)
-        ("i" pdf-misc-display-metadata)
-        ("u" pdf-view-revert-buffer)
-        ("F" pdf-links-action-perfom)
-        ("f" pdf-links-isearch-link)
-        ("B" pdf-history-backward :color red)
-        ("N" pdf-history-forward :color red)
-        ("l" image-forward-hscroll :color red)
-        ("h" image-backward-hscroll :color red)))
-
-   (use-package! org-pdfview
-     :ensure t))
 #+end_src
 
 #+RESULTS:
@@ -12792,8 +12691,10 @@ prompt and everyone in the channel can see it.  Some things I learnt:
 #+RESULTS:
 : t
 
-** Google Translate
+** DONE Google Translate
+CLOSED: [2022-09-22 Thu 12:05]
 #+begin_src emacs-lisp
+
      (use-package! google-translate
        :demand t
        :init
@@ -12827,7 +12728,7 @@ prompt and everyone in the channel can see it.  Some things I learnt:
 (use-package! youtube-dl
   :defer t
   :init
-  (setq youtube-dl-directory "~/Downloads/")
+  (setq youtube-dl-directory "~/Downloads/youtube-dl")
   :config
   (setq youtube-dl-program "yt-dlp")
   (setq youtube-dl-arguments
@@ -12972,7 +12873,7 @@ active region use it instead."
 
 EWW is the Emacs Web Wowser, the builtin browser in Emacs.  Below I set urls to open in a specific browser (eww) with browse-url-browser-function.  By default, Doom Emacs does not use 'SPC e' for anything, so I choose to use the format 'SPC e' plus 'key' for these (I also use 'SPC e' for 'eval' keybindings).  I chose to use 'SPC s w' for eww-search-words because Doom Emacs uses 'SPC s' for 'search' commands.
 
-#+BEGIN_SRC emacs-lisp :tangle yes
+#+begin_src emacs-lisp
 ;; (setq browse-url-browser-function 'eww-browse-url)
 ;; (map! :leader
 ;;       :desc "Search web for text between BEG/END"
@@ -14668,72 +14569,6 @@ lots of options and commands: make sure to read its official manual.
     (define-key map (kbd "t") #'ebdb-toggle-all-record-marks)
     (define-key map (kbd "T") #'ebdb-toggle-records-format) ; disables `ebdb-toggle-all-records-format'
     (define-key map (kbd "U") #'ebdb-unmark-all-records)))
-#+end_src
-
-** Rcirc (IRC client)
-
-The first time I used IRC in earnest was at EmacsConf 2021.  The event
-lasted two days (I also delivered [[https://emacsconf.org/2021/talks/freedom][a presentation]]).  For the first day I
-tried the =erc= package that is built into Emacs, while for the second I
-opted for =rcirc=, another built-in option.
-
-Overall, Rcirc feels more straightforward to me as a regular user.
-Whereas ERC seems to have too many options and a larger code base for
-technicalities I do not need to know about for the purposes of my casual
-usage of IRC.
-
-To get started, run =M-x irc= and confirm your choice at the prompts.  The
-defaults for the server and the connection port should be fine.  In my
-case, those steps are skipped because of the values specified in the
-=rcirc-server-alist=.  Note the presence of =prot-mail-auth-get-field=.
-This is a function that queries my =~/.authinfo.gpg= file to retrieve
-encrypted information stored there (see [[#h:8d0bd754-8a31-431b-b112-f541cc0144ac][Sample of authinfo.gpg]]).  I use
-this method to (i) automate the process of logging in while (ii) not
-divulging sensitive data (also see the mega-section on [[#h:5ad80664-3163-4d9d-be65-462637d77903][Email settings]]).
-
-IRC is fairly easy to use: you just type your message at the command
-prompt and everyone in the channel can see it.  Some things I learnt:
-
-+ Join a channel like =#emacs= by typing at the prompt =/join #emacs=.
-+ Leave a channel with =/leave #vim= 😉.
-+ To quit IRC do =/quit=, or optionally =/quit Going for a brisk walk=.
-+ You can mention another user in the channel just by including their
-  nick in your message, like =Hello protesilaos=.  When replying to
-  someone, do it like this =protesilaos: My reply here=.
-+ Start a private channel with, say, =protesilaos= by running the command
-  =/msg protesilaos My message here=.  Then use the channel like any
-  other.
-
-There probably are more commands and other tricks we can employ.  I
-expect to familiarise myself with them over time.
-
-The following configuration is straightforward and the doc string of
-every variable is clear on what it is supposed to do.
-
-#+begin_src emacs-lisp :tangle no
-(prot-emacs-builtin-package 'rcirc
-  (setq rcirc-server-alist
-        `(("irc.libera.chat"
-           :channels ("#emacs" "#org-mode" "#rcirc")
-           :port 6697 :encryption tls
-           :password ,(prot-mail-auth-get-field "libera" :secret))))
-
-  (setq rcirc-prompt "%t> ") ; Read the docs or use (customize-set-variable 'rcirc-prompt "%t> ")
-
-  (setq rcirc-default-nick "protesilaos"
-        rcirc-default-user-name rcirc-default-nick
-        rcirc-default-full-name "Protesilaos Stavrou")
-
-  ;; ;; NOTE 2021-11-28: demo from the days of EmacsConf 2021.  I don't
-  ;; ;; actually need this.
-  ;; (setq rcirc-bright-nicks '("bandali" "sachac" "zaeph"))
-
-  ;; NOTE 2021-11-28: Is there a canonical way to disable this?
-  (setq rcirc-timeout-seconds most-positive-fixnum)
-
-  (rcirc-track-minor-mode 1)
-
-  (define-key global-map (kbd "C-c i") #'irc))
 #+end_src
 
 ** ELFEED
