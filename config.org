@@ -12,7 +12,7 @@ This is my personal Doom Emacs config.  Doom Emacs is a distribution of Emacs th
 learned everything about them and are included in the workflow or may not
 require further attention.
 
-* Packages managment
+* Packages management
 ** Info
 This is where you install packages, by declaring them with the ~package!~ macro in
 =packages.el=, then running ~doom refresh~ on the command line.
@@ -25,7 +25,6 @@ This file shouldn't be byte compiled.
 ;; To install a package with Doom you must declare them here and run 'doom sync'
 ;; on the command line, then restart Emacs for the changes to take effect -- or
 ;; use 'M-x doom/reload'.
-
 
 ;; To install SOME-PACKAGE from MELPA, ELPA or emacsmirror:
 ;(package! some-package)
@@ -61,7 +60,6 @@ This file shouldn't be byte compiled.
 ;; Use `:pin' to specify a particular commit to install.
 ;(package! builtin-package :pin "1a2b3c4d5e")
 
-
 ;; Doom's packages are pinned to a specific commit and updated from release to
 ;; release. The `unpin!' macro allows you to unpin single packages...
 ;(unpin! pinned-package)
@@ -88,10 +86,7 @@ To install ~some-package~ from MELPA, ELPA or emacsmirror:
 
 ;; (add-to-list 'load-path "~/.emacs.d/")
 ;; (load "myplugin.el")
-;; Also, in many cases you would need the following instead of the second line:
-;; eaf
 
-;; (require 'myplugin)
 ;;shell setup
   (package! fish-completion)
   (package! tab-bar-echo-area)
@@ -101,7 +96,6 @@ To install ~some-package~ from MELPA, ELPA or emacsmirror:
   (package! symon)
   ;; (package! slime)
   ;; (package! sly)
-
   (package! cape)
 (package! org-ref)
 ;; (package! org-fragtog)
@@ -130,7 +124,6 @@ To install ~some-package~ from MELPA, ELPA or emacsmirror:
   (package! ctable)
   (package! deferred)
   (package! s)
-
   (package! sdcv)
   (package! clippy)
   (package! wordnut)
@@ -239,12 +232,8 @@ To install ~some-package~ from MELPA, ELPA or emacsmirror:
   ;; (package! git-timemachine)
   (package! org-pdfview)
   (package! xelb)
-
   (package! exwm-edit)
-
-
   ;; (package! page-break-lines)
-
   (package! nov)
   (package! multi-vterm)
   (package! cloc)
@@ -253,7 +242,6 @@ To install ~some-package~ from MELPA, ELPA or emacsmirror:
   (package! 2048-game)
   (package! chess)
   (package! smart-compile)
-
   (package! pulseaudio-control)
 
   (package! gitconfig-mode
@@ -268,10 +256,6 @@ To install ~some-package~ from MELPA, ELPA or emacsmirror:
 To install a package directly from a particular repo, you'll need to specify
 a ~:recipe~. You'll find documentation on what ~:recipe~ accepts [[https://github.com/raxod502/straight.el#the-recipe-format][here]]:
 #+begin_src emacs-lisp :tangle packages.el
-;; (package! bufler
-;;   :recipe (:host github
-;;            :repo "alphapapa/bufler.el"
-;;            :files (:defaults (:exclude "helm-bufler.el"))))
 ;; Make Elisp files in that directory available to the user.
 (add-to-list 'load-path "~/.config/doom/lisp/")
 
@@ -299,8 +283,6 @@ a ~:recipe~. You'll find documentation on what ~:recipe~ accepts [[https://githu
 (package! exwm-mff :recipe (:host github :repo "ieure/exwm-mff" :branch "main"))
 ;; (package! exwm-firefox-core :recipe (:host github :repo "walseb/exwm-firefox-core" :branch "master"))
 ;; (package! vulpea :recipe (:host github :repo "d12frosted/vulpea" :branch "master"))
-;; (package! nano-emacs
-;;   :recipe (:host github :repo "rougier/nano-emacs"))
 ;; (package! telega
 ;;   :recipe (:host github :repo "zevlg/telega.el"))
 
@@ -341,7 +323,6 @@ a ~:recipe~. You'll find documentation on what ~:recipe~ accepts [[https://githu
 (package! bon-app-launcher
     :recipe (:host github :repo "slamko/bon-app-launcher"
        :files ("bon-app-launcher.el")))
-
 
 ;; (package! exwm-module-for-doom-emacs
 ;;   :recipe (:host github
@@ -411,6 +392,9 @@ It's useful to have some basic personal information
     (org-crypt-use-before-save-magic)
 #+END_SRC
 
+#+RESULTS:
+| #[0 \300\301\302\303\304$\207 [add-hook before-save-hook org-encrypt-entries nil t] 5] | locally-defer-font-lock | +org-pretty-mode | org-ref-org-menu | er/add-org-mode-expansions | turn-on-flyspell | org-appear-mode | elpher-org-mode-integration | +lookup--init-org-mode-handlers-h | (closure ((hook . org-mode-hook) (--dolist-tail--) t) (&rest _) (add-hook 'before-save-hook 'org-encrypt-entries nil t)) | #[0 \300\301\302\303\304$\207 [add-hook change-major-mode-hook org-fold-show-all append local] 5] | #[0 \300\301\302\303\304$\207 [add-hook change-major-mode-hook org-babel-show-result-all append local] 5] | org-babel-result-hide-spec | org-babel-hide-all-hashes | #[0 \301\211\207 [imenu-create-index-function org-imenu-get-tree] 2] | beginend-org-mode | doom-disable-show-paren-mode-h | doom-disable-show-trailing-whitespace-h | +org-enable-auto-reformat-tables-h | +org-enable-auto-update-cookies-h | +org-make-last-point-visible-h | org-fancy-priorities-mode | org-superstar-mode | evil-org-mode | toc-org-enable | embrace-org-mode-hook | org-eldoc-load | +literate-enable-recompile-h |
+
 #+begin_src emacs-lisp
 ;; (setq package-native-compile t)
 (setq org-directory "~/org/")
@@ -457,18 +441,11 @@ my home machine is pretty safe, and my laptop is shutdown a lot.
 (add-to-list 'load-path "~/.config/doom/lisp/")
 (add-to-list 'load-path "~/.config/doom/lisp/bon-app-launcher")
 
-
-;; (load "emacs-with-nyxt.el")
-;; (load "prot-common.el")
 (load "setup-ui.el")
-
 (load "setup-minibuffer.el")
 (load "better-buffers.el");;essential
-;; (load "setup-corfu.el")
-
 (load "setup-orderless.el");;configured in doom already but...
 (load "setup-vertico.el")
-
 (load "setup-embark.el")
 (load "utilities.el");;essential
 (load "setup-isearch")
@@ -477,38 +454,33 @@ my home machine is pretty safe, and my laptop is shutdown a lot.
 ;; youtube videos. Phew. The churn rate of Invidious urls is quite high, which
 ;; makes this flaky, but anything's better than the browser interface to
 ;; Youtube.
-
 (load "setup-ytel.el");; youttuuube
 (load "setup-shell.el")
 
+;; (load "emacs-with-nyxt.el")
+;; (load "prot-common.el")
+;; (load "setup-corfu.el")
 ;; (load "setup-consult.el")
 ;; (load "sweet-kill.el") ;;overide doom session kill messages
-
 ;; (load "setup-dired.el")
 ;; (load "setup-email.el")
 ;; (load "setup-elfeed.el")
 ;; (load "elfeed-config.el")
-
-
 ;; (load "setup-email.el")
+;; (load "dunst.el")
+;; (load "chromium")
 
 (load "exwm-paste.el")
 (load "lock-screen.el")
-;; (load "chromium")
 (load "correct-previous-word-and-create-abbrev")
-;; (load "dunst")
 (load "lookup-on-github")
 (load "show-diffs-before-killing-buffers")
 (load "switch-window-patches")
-
 (load "pulseaudio.el")
-
 (load "auto-scroll.el")
-
-;; (load "prot-common.el")
-;; (load "prot-comment.el")
-;; (load "prot-bookmark.el")
-;;(load "dunst.el")
+(load "prot-common.el")
+(load "prot-comment.el")
+(load "prot-bookmark.el")
 
 #+end_src
 
@@ -635,8 +607,6 @@ setting, and load it if it exists.
       (add-hook 'exwm-mode-hook #'hidden-mode-line-mode))
     (setq exwm-input-line-mode-passthrough t)
 
-
-
     ;; make winner aware of new window configuration
     (with-eval-after-load 'winner
       (add-hook 'exwm-manage-finish-hook 'winner-save-old-configurations t))
@@ -670,24 +640,14 @@ setting, and load it if it exists.
 
     (evil-define-key 'normal exwm-mode-map (kbd "i") 'exwm/enter-insert-state)
     ;; Quick swtiching between workspaces
-    (defvar exwm-toggle-workspace 0
-      "Previously selected workspace. Used with `exwm/jump-to-last-exwm'.")
-
-    (defadvice exwm-workspace-switch (before save-toggle-workspace activate)
-      (setq exwm-toggle-workspace exwm-workspace-current-index))
-
-    (when (and exwm-install-logind-lock-handler
-               exwm-locking-command)
-      (add-hook 'exwm-init-hook 'exwm//install-logind-lock-handler))
-    (when exwm-autostart-xdg-applications
-      (add-hook 'exwm-init-hook 'exwm//autostart-xdg-applications t))
-    (add-hook 'exwm-init-hook 'exwm//install-frame-keybindings t)
-    (when exwm-custom-init
-      (add-hook 'exwm-init-hook exwm-custom-init t))
     ))
 #+end_src
+
+#+RESULTS:
+: exwm/init-exwm
+
 ** funcs
-#+begin_src emacs-lisp :tangle yes
+#+begin_src emacs-lisp :tangle no
 
 (defun exwm//persp-mode-inhibit-p (frame)
   (frame-parameter frame 'unsplittable))
@@ -737,38 +697,6 @@ setting, and load it if it exists.
   away from the current workspace, cycling if necessary."
   (mod (+ offset exwm-workspace-current-index) (exwm-workspace--count)))
 
-(defun exwm/workspace-next ()
-  "Switch to next exwm-workspace (to the right)."
-  (interactive)
-  (exwm-workspace-switch (exwm//ws-offset 1)))
-
-(defun exwm/workspace-prev ()
-  "Switch to next exwm-workspace (to the left)."
-  (interactive)
-  (exwm-workspace-switch (exwm//ws-offset -1)))
-
-;; Buffer move between frames semantics:
-;; - In source window, display last buffer that was replaced in this frame using `other-window'
-;; - In target frame, show the buffer in the active window
-(defun exwm/workspace-move-buffer-to-workspace (ws-id)
-  "Move the current buffer to the exwm-workspace with id WS-ID"
-  (let ((target-frame (exwm-workspace--workspace-from-frame-or-index ws-id))
-        (src-exwm-id exwm--id))
-    (if src-exwm-id
-        (progn
-          (exwm-workspace-move-window target-frame src-exwm-id)
-          (exwm-workspace-switch target-frame))
-      (let ((src-buffer (current-buffer)))
-        (switch-to-buffer (other-buffer src-buffer))
-        (pop-to-buffer src-buffer `((display-buffer-in-previous-window
-                                     display-buffer-use-some-window
-                                     display-buffer-pop-up-window
-                                     ;; display-buffer-use-some-frame
-                                     )
-                                    (inhibit-same-window . t)
-                                    (reusable-frames . ,target-frame)
-                                    ;; (frame-predicate . (lambda(f) (eql f ,target-frame)))
-                                    ))))))
 
 (defun exwm/workspace-move-buffer-next ()
   "Display active buffer in next frame (to the right)."
@@ -780,39 +708,6 @@ setting, and load it if it exists.
   (interactive)
   (exwm/workspace-move-buffer-to-workspace (exwm//ws-offset -1)))
 
-(defun exwm/layout-toggle-fullscreen ()
-  "Togggles full screen for Emacs and X windows"
-  (interactive)
-  (if exwm--id
-      (if (exwm-layout--fullscreen-p)
-          (exwm-reset)
-        (exwm-layout-set-fullscreen))
-    (spacemacs/toggle-maximize-buffer)))
-
-(defun exwm/run-program-in-home (command)
-  (let ((default-directory user-home-directory))
-    (start-process-shell-command command nil command)))
-
-(defun exwm/app-launcher (command)
-  "Launches an application in your PATH.
-Can show completions at point for COMMAND using helm or ivy"
-  (interactive (list (read-shell-command exwm-app-launcher--prompt)))
-  (exwm/run-program-in-home command))
-
-(defun exwm/launch-split-below (command)
-  (interactive (list (read-shell-command exwm-app-launcher--prompt)))
-  (split-window-below-and-focus)
-  (exwm/run-program-in-home command))
-
-(defun exwm/launch-split-right (command)
-  (interactive (list (read-shell-command exwm-app-launcher--prompt)))
-  (split-window-right-and-focus)
-  (exwm/run-program-in-home command))
-
-(defun exwm/jump-to-last-exwm ()
-  (interactive)
-  (exwm-workspace-switch exwm-toggle-workspace))
-
 (defun exwm/exwm-buffers-info ()
   (interactive)
   "Helper, return information about open exwm windows"
@@ -821,101 +716,6 @@ Can show completions at point for COMMAND using helm or ivy"
         for ecname = (buffer-local-value 'exwm-class-name buffer)
         when ecname
         do (message "Buffer name: '%s', exwm class name: '%s'" name ecname)))
-
-(defun exwm//convert-key-to-event (key)
-  "Converts something from (kbd ...) format to something suitable for
-    exwm-input-prefix-keys"
-  (let ((key (kbd key)))
-    (if (and (sequencep key)
-             (= (length key) 1))
-        (etypecase key
-          (string (string-to-char key))
-          (vector (elt key 0)))
-      (error "cannot convert to key event: %s" key))))
-
-
-(let ((debug-modes-active nil))
-  (defun exwm/toggle-debug-mode ()
-   "Toggle exwm and xcb debug modes"
-   (interactive)
-   (setf debug-modes-active (not debug-modes-active))
-   (message (if debug-modes-active
-                "Enabling xcb and exwm debug modes."
-              "Disabling xcb and exqm debug modes."))
-   (let ((flag (if debug-modes-active 1 0)))
-     (exwm-debug flag)
-     (xcb:debug flag))))
-
-(defvar exwm//autostart-process-list nil
-  "List of processes run during autostart.")
-
-(defun exwm/autostart-process (name command &optional directory)
-  "Can be used during initialization to run COMMAND as a process
-  with NAME and add it to the list of autostarted processes.
-
-DIRECTORY can be set to a string which will be used as working directory for the
-process.  If not supplied, will be set to `user-home-directory'.
-
-Prepends the value of `exwm-autostart-environmwnt' to
-`process-environment' for the started process.
-"
-  (push (let ((default-directory (or directory user-home-directory))
-              (process-environment (append exwm-autostart-environment process-environment)))
-          (start-process-shell-command name nil command))
-        exwm//autostart-process-list))
-
-(defun exwm//start-desktop-application (basename xdg)
-  "Autostart an application from a XDG desktop entry specification."
-  (let* ((type (gethash "Type" xdg))
-         ;; (name (gethash "Name" xdg))
-         (cmd (gethash "Exec" xdg))
-         (hidden (gethash "Hidden" xdg))
-         (include (gethash "OnlyShowIn" xdg))
-         (exclude (gethash "NotShowIn" xdg))
-         (try-exec (gethash "TryExec" xdg))
-         (exec-directory (gethash "Path" xdg))
-         ;; (dbus-p (gethash "DBusActivatable" xdg)) ; TODO: support
-         (included-p (cond (include (member "EXWM" (split-string include ";" t)))
-                           (exclude (not (member "EXWM" (split-string exclude ";" t))))
-                           (t)))
-         (should-exec-p (and
-                         (string= type "Application")
-                         included-p
-                         (if try-exec
-                             (executable-find try-exec)
-                           t))))
-    (when should-exec-p (exwm/autostart-process basename cmd exec-directory))))
-
-(defun exwm//read-xdg-autostart-files ()
-  "Return a hashtable for autostart applications as defined by the freedesktop specification."
-  (cl-loop with xdg-specs = (make-hash-table :test 'equal)
-           for dir in (append (xdg-config-dirs) (list (xdg-config-home)))
-           for autostart-dir = (expand-file-name "autostart/" dir)
-           for autostart-files = (when (file-exists-p autostart-dir)
-                                   (directory-files autostart-dir t (rx (1+ word) ".desktop")))
-           do
-           (cl-loop for file in autostart-files do
-                    (setf (gethash (file-name-base file) xdg-specs) (xdg-desktop-read-file file)))
-           finally (return xdg-specs)))
-
-(defun exwm//autostart-xdg-applications ()
-  "Run the autostart applications as defined by the freedesktop autostart specification."
-  (unless exwm//autostart-process-list
-    (cl-loop for basename being the hash-keys of
-             (exwm//read-xdg-autostart-files)
-             using (hash-values xdg) do
-             (exwm//start-desktop-application basename xdg))))
-
-(defun exwm//kill-autostart-processes ()
-  (cl-loop for p in exwm//autostart-process-list do
-        (if (process-live-p p) (kill-process p)))
-  (setq exwm//autostart-process-list nil))
-
-(let ((sm-keyvec (elt (edmacro-parse-keys doom-leader-key t) 0))
-      (our-keyvec (elt (edmacro-parse-keys "s-SPC" t) 0)))
-  (defun exwm//which-key-transform-filter (oldargs)
-    (cl-destructuring-bind (key-seq &rest rest) oldargs
-      (list* (cl-substitute sm-keyvec our-keyvec key-seq) rest))))
 
 ;; D-Bus locking
 ;; We should be able to talk to loginctl to handle the current session, so we
@@ -932,6 +732,9 @@ Prepends the value of `exwm-autostart-environmwnt' to
 
 
 #+end_src
+
+#+RESULTS:
+: exwm//install-logind-lock-handler
 
 ** final touchups
 
@@ -1755,7 +1558,6 @@ and adapted to use simulations keys to have a common yank keystroke."
 ** Desktop File
 
 This file is used by your "login manager" (GDM, LightDM, etc) to display EXWM as a desktop environment option when you log in.
-
 *IMPORTANT*: Make sure you create a symbolic link for this file into =/usr/share/xsessions=:
 
 #+begin_src sh :tangle no
@@ -2002,33 +1804,33 @@ screenchange-reload = true
 margin-top = 0
 margin-bottom = 0
 
-; [colors]
-; background = #f0232635
-; ; background = #aa2F343F
-; background-alt = #576075
-; foreground = #A6Accd
-; ; foreground = #f3f4f5
-; foreground-alt = #555
-; primary = #ffb52a
-; secondary = #e60053
-; alert = #bd2c40
-; underline-1 = #c792ea
-; draculamem = #ff5555
-; draculabat = #ff6e67
-; draculanet = #bd93f9
-; draculacpu = #f1fa8c
-; draculagreen = #5af78e
-; draculapink = #ff79c6
+[colors]
+background = #f0232635
+; background = #aa2F343F
+background-alt = #576075
+foreground = #A6Accd
+; foreground = #f3f4f5
+foreground-alt = #555
+primary = #ffb52a
+secondary = #e60053
+alert = #bd2c40
+underline-1 = #c792ea
+draculamem = #ff5555
+draculabat = #ff6e67
+draculanet = #bd93f9
+draculacpu = #f1fa8c
+draculagreen = #5af78e
+draculapink = #ff79c6
 
 ; for pywal
 
-[colors]
-background = ${xrdb:color0:#222}
-foreground = ${xrdb:color7:#222}
-foreground-alt = ${xrdb:color7:#222}
-primary = ${xrdb:color1:#222}
-secondary = ${xrdb:color2:#222}
-alert = ${xrdb:color3:#222}
+; [colors]
+; background = ${xrdb:color0:#222}
+; foreground = ${xrdb:color7:#222}
+; foreground-alt = ${xrdb:color7:#222}
+; primary = ${xrdb:color1:#222}
+; secondary = ${xrdb:color2:#222}
+; alert = ${xrdb:color3:#222}
 
 ; [bar/bar]
 ; ; ...
@@ -5452,7 +5254,7 @@ theme.
 #+end_src
 
 #+RESULTS:
-** DONE Treemacs
+** Treemacs
 CLOSED: [2022-09-22 Thu 11:48]
 #+begin_quote
 From the =:ui treemacs= module.
@@ -5513,7 +5315,7 @@ Now, we just identify the files in question.
         "*/_region_.log"
         "*/_region_.tex"))
 #+end_src
-** DONE NEOTREE
+** NEOTREE
 CLOSED: [2022-09-22 Thu 11:48]
 Neotree is a file tree viewer.  When you open neotree, it jumps to the current file thanks to neo-smart-open.  The neo-window-fixed-size setting makes the neotree width be adjustable.  Doom Emacs had no keybindings set for neotree.  Since Doom Emacs uses 'SPC t' for 'toggle' keybindings, I used 'SPC t n' for toggle-neotree.
 
@@ -6907,7 +6709,7 @@ CLOSED: [2022-04-02 Sat 23:19]
 #+RESULTS:
 : t
 
-* Window managment
+* Window management
 ** DONE SPLITS
 CLOSED: [2022-03-30 Wed 13:34]
 I set splits to default to opening on the right using 'prefer-horizontal-split'.  I set a keybinding for 'clone-indirect-buffer-other-window' for when I want to have the same document in two splits.  The text of the indirect buffer is always identical to the text of its base buffer; changes made by editing either one are visible immediately in the other.  But in all other respects, the indirect buffer and its base buffer are completely separate.  For example, I can fold one split but other will be unfolded.
@@ -15737,9 +15539,11 @@ Org for every line that starts with =;;;=, given my =diary-comment-start= is
 Finally, note that I control the placement of those buffers in the
 =display-buffer-alist= (read: [[#h:3d8ebbb1-f749-412e-9c72-5d65f48d5957][Window rules and basic tweaks]]).
 
-#+begin_src emacs-lisp :tangle no
+#+begin_src emacs-lisp :tangle yes
 ;;; Calendar and Diary (and prot-diary.el)
-(prot-emacs-builtin-package 'calendar
+(use-package! calendar
+  :config
+;; (prot-emacs-builtin-package 'calendar
   (setq calendar-mark-diary-entries-flag t)
   (setq calendar-mark-holidays-flag t)
   (setq calendar-mode-line-format nil)
@@ -15800,7 +15604,8 @@ Finally, note that I control the placement of those buffers in the
     (define-key map (kbd "M-n") #'calendar-forward-month)
     (define-key map (kbd "M-p") #'calendar-backward-month)))
 
-(prot-emacs-builtin-package 'appt
+(use-package! appt
+  :config
   (setq appt-display-diary nil)
   (setq appt-disp-window-function #'appt-disp-window)
   (setq appt-display-mode-line t)
@@ -15811,7 +15616,9 @@ Finally, note that I control the placement of those buffers in the
 
   (run-at-time 10 nil #'appt-activate 1))
 
-(prot-emacs-builtin-package 'prot-diary
+(load "prot-diary")
+(use-package! appt
+  :config
   ;; The idea is to get a reminder via email when I launch Emacs in the
   ;; morning and this file is evaluated.  Obviously this is not a super
   ;; sophisticated approach, though I do not need one.
@@ -15830,15 +15637,21 @@ Finally, note that I control the placement of those buffers in the
     (define-key map (kbd "M-n") #'prot-diary-heading-next)
     (define-key map (kbd "M-p") #'prot-diary-heading-previous)
     (define-key map (kbd "C-c C-a") #'prot-diary-align-timestamped-entries))
+
+
+  (define-prefix-command 'prot-diary-map)
+  (define-key global-map (kbd "C-c d") 'prot-diary-map)
   (let ((map global-map))
     (define-key map (kbd "C-c d c") #'calendar)
     (define-key map (kbd "C-c d d") #'prot-diary-display-entries)
     (define-key map (kbd "C-c d e") #'prot-diary-edit-diary)
     (define-key map (kbd "C-c d i") #'prot-diary-insert-entry)
     (define-key map (kbd "C-c d m") #'prot-diary-mail-entries)))
+
 #+end_src
 
-
+#+RESULTS:
+: t
 
 ** Screenshot
 
@@ -16360,7 +16173,7 @@ that control the placement of VC-related (and other) buffers are defined
 in the section on [[#h:3d8ebbb1-f749-412e-9c72-5d65f48d5957][window rules and basic tweaks]] (specifically, refer to
 the variable =display-buffer-alist=).
 
-#+begin_src emacs-lisp :tangle no
+#+begin_src emacs-lisp :tangle yes
 ;;; Diff-mode (and prot-diff.el extensions)
 (use-package! diff-mode
   :config
@@ -20551,11 +20364,9 @@ The package that allows us to search through bibliography files and take notes o
    ;;org-noter-always-create-frame nil
    ;; I want to see the whole file
    org-noter-hide-other nil
-   ;; Everything is relative to the rclone mega
    ;; org-noter-notes-search-path "~/org/notes"
    )
   )
-
 
 (use-package! org-pdftools
   :hook (org-load . org-pdftools-setup-link))
