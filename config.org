@@ -14902,8 +14902,7 @@ lots of options and commands: make sure to read its official manual.
     (define-key map (kbd "U") #'ebdb-unmark-all-records)))
 #+end_src
 
-** ELFEED
-*** Elfeed goodies
+** Elfeed goodies
 An RSS newsfeed reader for Emacs.
 Elfeed enables the nicest podcast integration I know: Treat podcast entries as regular RSS entries, but hit A to enqueue them in emms.
 
@@ -14964,173 +14963,6 @@ Usage:
 #+RESULTS:
 : ~/Music/
 
-*** Elfeed feed reader, prot-elfeed.el and prot-elfeed-bongo.el
-**** desc
-This is a standalone feed reader by Christopher Wellons that comes with
-good defaults and is very well designed overall.  It treats the stream
-of updates as a flat list that can be narrowed incrementally using an
-efficient tagging system.
-
-In terms of feed format specifications, i.e. Atom vs RSS, things should
-just work without any kind of configuration from your side (a huge plus
-compared to, say, Gnus' =nnrss= backend that only supports the latter).
-
-Elfeed stores feed sources in a single list that associates a valid URL
-to one or more tags.  These are then written to a database.  The Elisp
-part users should care about looks like this:
-
-#+begin_example
-(setq elfeed-feeds
-      '(("https://www.archlinux.org/feeds/news/" linux distro)
-        ("https://planet.emacslife.com/atom.xml" emacs community)
-        ("https://www.ecb.europa.eu/rss/press.html" economics eu)
-        ("http://feed.pippa.io/public/shows/teamhuman" podcast culture)
-        ("https://www.youtube.com/feeds/videos.xml?channel_id=UC0uTPqBCFIpZxlz_Lv1tk_g" personal video)
-        ("https://protesilaos.com/codelog.xml" personal)))
-#+end_example
-
-I keep the actual list in a GPG-encrypted file (defined in the variable
-=prot-elfeed-feeds-file= which is part of my =prot-elfeed.el= library that
-is reproduced after the following package configurations).  Emacs can
-transparently decrypt and read gpg-protected files, making it a great
-way to safely store sensitive data while still keeping everything
-perfectly functional.
-
-A good tagging system for your feeds will offer a strong foundation for
-catching up with the news.  I generally use 2-3 tags per feed, while I
-make sure that conceptually similar items will share at least one tag.
-My tags are not particularly sophisticated, though they are not random
-either: for example, I have a particular "EU" entry for all
-institutions, bodies, agencies, etc. of the European Union and then I
-have other more general ones, such as "politics" and "economics".  So,
-in this case, the European Central Bank gets tagged with =eu=, =economics=,
-while the European Parliament is =eu=, =politics=.
-
-The user interface consists of two distinct types of buffers:
-
-1. The =*elfeed-search*= buffer that holds the list with all the news
-   items.
-2. The individual item entries.
-
-By default, hitting =s= (=elfeed-search-live-filter=) in the search buffer
-will place the point inside the minibuffer, where you can then edit the
-applicable filters.  The [[https://github.com/skeeto/elfeed][Elfeed README]] offers a detailed explanation of
-how to apply such filters.  The ones I use the most:
-
-+ Prepend a =+= to the name of a tag to only show items that include that
-  tag.  With =-= show items that do not include it.
-+ Type in a regular string with the equals sign in front of it, say
-  "=TITLE", to show feeds whose name contains it.
-
-Other common cases are regular expressions and date ranges, though I
-have found that I never use those.  Probably because the tagging system
-is sufficiently powerful for my particular needs.
-
-My only inconvenience with =elfeed-search-live-filter= is that it does not
-support completion out-of-the-box.  Instead it expects full user input,
-which ins understandable given the types of searches it can conduct.
-Since I only need this facility to filter by tag, I rebind =s= to my
-=prot-elfeed-search-tag-filter=.  While =S-s= (shift and s) can still be
-used to access the original command, whenever we need more precise
-control over the search filters.
-
-The MPV-related functions require the external =mpv= program.  They will
-play a video in a new app window at a resolution that matches the
-current setup's display width or, in the case of an enclosure
-(presumably a podcast), play just the audio file without popping up a
-new app window.  The process runs in a dedicated buffer, so it can be
-terminated by killing the buffer.  In the future I might make this
-cleaner, so that it understands input from, e.g., =playerctl=, though it
-is not a priority as the current simplistic design is "good enough" for
-my case.
-
-For an older, albeit still relevant, demonstration of what I have here,
-watch [[https://protesilaos.com/codelog/2020-06-09-emacs-elfeed-demo/][my Elfeed video]] (2020-06-09).
-
-As I also am a user of Bongo, and because Emacs lets one handle things
-with precision, there are a few functions here that are meant to make
-the Elfeed search buffer a bongo-aware media library, from where we can
-enqueue online multimedia sources (video links, or podcast enclosures).
-The key is to not interfere with the primary Bongo playlist and library
-tandem, which is dedicated to my local music collection, but to maintain
-a separate playlist which can be controlled independently.  The entirety
-of my =prot-elfeed-bongo.el= is shared after =prot-elfeed.el= below the
-following package configurations (for my other extensions, refer to
-[[#h:758afe0d-bc7c-4afc-9c6b-b5e569901591][Bongo music or media manager (and prot-bongo.el)]]).
-
-The placement of my custom buffers for Elfeed's multimedia output is
-controlled by =display-buffer-alist= (see [[#h:3d8ebbb1-f749-412e-9c72-5d65f48d5957][Window rules and basic tweaks]]).
-
-I benefited in this particular Elfeed+Bongo workflow from an email
-exchange I had with Madhavan Krishnan: we shared code and ideas that
-helped establish the modalities of interaction between Elfeed and Bongo
-(this information is made public with permission).  Video demo with
-older code: [[https://protesilaos.com/codelog/2020-09-11-emacs-elfeed-bongo/][Manage podcasts in Emacs with Elfeed and Bongo]] (2020-09-11).
-
-Also see: [[#h:aa64c61e-49b5-41b0-b1fe-10bbe3be661f][Sample configuration for MPV (Elfeed+Bongo extension)]].
-
-**** code
-#+begin_src emacs-lisp :tangle no
-;;; Elfeed feed reader, prot-elfeed.el and prot-elfeed-bongo.el
-(use-package! elfeed
-  :config
-  (setq elfeed-use-curl t)
-  (setq elfeed-curl-max-connections 10)
-  (setq elfeed-db-directory (concat user-emacs-directory "elfeed/"))
-  (setq elfeed-enclosure-default-dir "~/Downloads/")
-  (setq elfeed-search-filter "@4-months-ago +unread")
-  (setq elfeed-sort-order 'descending)
-  (setq elfeed-search-clipboard-type 'CLIPBOARD)
-  (setq elfeed-search-title-max-width 100)
-  (setq elfeed-search-title-min-width 30)
-  (setq elfeed-search-trailing-width 25)
-  (setq elfeed-show-truncate-long-urls t)
-  (setq elfeed-show-unique-buffers t)
-  (setq elfeed-search-date-format '("%F %R" 16 :left))
-
-  ;; Make sure to also check the section on shr and eww for how I handle
-  ;; `shr-width' there.
-  (add-hook 'elfeed-show-mode-hook
-            (lambda () (setq-local shr-width (current-fill-column))))
-
-  (load "prot-elfeed-bongo.el")
-  (use-package! prot-elfeed-bongo)
-
-  (define-key global-map (kbd "C-c e") #'elfeed)
-  (let ((map elfeed-search-mode-map))
-    (define-key map (kbd "w") #'elfeed-search-yank)
-    (define-key map (kbd "g") #'elfeed-update)
-    (define-key map (kbd "G") #'elfeed-search-update--force)
-    (define-key map (kbd "b") #'prot-elfeed-bongo-insert-item)
-    (define-key map (kbd "h") #'prot-elfeed-bongo-switch-to-playlist)) ; "hop" mnemonic
-  (let ((map elfeed-show-mode-map))
-    (define-key map (kbd "w") #'elfeed-show-yank)
-    (define-key map (kbd "b") #'prot-elfeed-bongo-insert-item)))
-
-(with-eval-after-load 'elfeed
-  (load "prot-elfeed.el")
-  (use-package! prot-elfeed
-    :config
-    (setq prot-elfeed-tag-faces t)
-    (prot-elfeed-fontify-tags)
-    (add-hook 'elfeed-search-mode-hook #'prot-elfeed-load-feeds)
-
-    (let ((map elfeed-search-mode-map))
-      (define-key map (kbd "s") #'prot-elfeed-search-tag-filter)
-      (define-key map (kbd "o") #'prot-elfeed-search-open-other-window)
-      (define-key map (kbd "q") #'prot-elfeed-kill-buffer-close-window-dwim)
-      (define-key map (kbd "v") #'prot-elfeed-mpv-dwim)
-      (define-key map (kbd "+") #'prot-elfeed-toggle-tag))
-    (let ((map elfeed-show-mode-map))
-      (define-key map (kbd "a") #'prot-elfeed-show-archive-entry)
-      (define-key map (kbd "e") #'prot-elfeed-show-eww)
-      (define-key map (kbd "q") #'prot-elfeed-kill-buffer-close-window-dwim)
-      (define-key map (kbd "v") #'prot-elfeed-mpv-dwim)
-      (define-key map (kbd "+") #'prot-elfeed-toggle-tag))))
-#+end_src
-
-#+RESULTS:
-: t
 ** simple httpd
 #+begin_src emacs-lisp :tangle yes
 (use-package simple-httpd
@@ -15614,7 +15446,7 @@ I also use Emacs to play games and do other fun things. Using swiper means I don
 
 #+RESULTS:
 
-** tmr.el (TMR Must Recur)
+** TODO tmr.el (TMR Must Recur)
 
 Sometimes I need to set off a timer with a notification.  I used to rely
 on a homegrown shell script for such a task, but where is the fun in
@@ -21542,4 +21374,172 @@ exit
                                     ("==" . ?≡)
                                     ("<=" . ?≤)
                                     (">=" . ?≥)))
+#+end_src
+* Denote
+#+begin_src emacs-lisp :tangle packages.el
+
+(package! denote
+  :recipe (:host github
+           :repo "protesilaos/denote"))
+#+end_src
+
+#+RESULTS:
+| denote | :modules | ((:user) (:user . modules)) | :recipe | (:host github :repo protesilaos/denote) |
+
+#+begin_src emacs-lisp
+
+;;; Denote (simple note-taking)
+;; Read the manual: <https://protesilaos.com/emacs/denote>.
+(use-package! denote
+  :config
+  ;; Remember to check the doc strings of those variables.
+  (setq denote-directory (expand-file-name "~/Documents/notes/"))
+  (setq denote-known-keywords '("emacs" "philosophy" "politics" "economics"))
+  (setq denote-infer-keywords t)
+  (setq denote-sort-keywords t)
+  (setq denote-file-type 'text) ; Org is the default, set others here like I do
+
+  ;; We allow multi-word keywords by default.  The author's personal
+  ;; preference is for single-word keywords for a more disciplined
+  ;; workflow.
+  (setq denote-allow-multi-word-keywords nil)
+
+  (setq denote-date-format nil) ; read its doc string
+
+  ;; By default, we fontify backlinks in their bespoke buffer.
+  (setq denote-link-fontify-backlinks t)
+
+  ;; Also see `denote-link-backlinks-display-buffer-action' which is a bit
+  ;; advanced.
+
+  ;; If you use Markdown or plain text files you want to buttonise
+  ;; existing buttons upon visiting the file (Org renders links as
+  ;; buttons right away).
+  (add-hook 'find-file-hook #'denote-link-buttonize-buffer)
+
+  ;; We use different ways to specify a path for demo purposes.
+  (setq denote-dired-directories
+        (list denote-directory
+              (thread-last denote-directory (expand-file-name "attachments"))
+              (expand-file-name "~/Documents/books")))
+
+  ;; Generic (great if you rename files Denote-style in lots of places):
+  (add-hook 'dired-mode-hook #'denote-dired-mode)
+  ;;
+  ;; OR if only want it in `denote-dired-directories':
+  ;; (add-hook 'dired-mode-hook #'denote-dired-mode-in-directories)
+
+  ;; Here is a custom, user-level command from one of the examples we
+  ;; show in this manual.  We define it here and add it to a key binding
+  ;; below.  The manual: <https://protesilaos.com/emacs/denote>.
+  (defun prot/denote-journal ()
+    "Create an entry tagged 'journal', while prompting for a title."
+    (interactive)
+    (denote
+     (denote--title-prompt)
+     '("journal")))
+
+  ;; Denote DOES NOT define any key bindings.  This is for the user to
+  ;; decide.  For example:
+  (let ((map global-map))
+    (define-key map (kbd "C-c n j") #'prot/denote-journal)
+    (define-key map (kbd "C-c n n") #'denote)
+    (define-key map (kbd "C-c n N") #'denote-type)
+    (define-key map (kbd "C-c n d") #'denote-date)
+    (define-key map (kbd "C-c n s") #'denote-subdirectory)
+    ;; If you intend to use Denote with a variety of file types, it is
+    ;; easier to bind the link-related commands to the `global-map', as
+    ;; shown here.  Otherwise follow the same pattern for `org-mode-map',
+    ;; `markdown-mode-map', and/or `text-mode-map'.
+    (define-key map (kbd "C-c n i") #'denote-link) ; "insert" mnemonic
+    (define-key map (kbd "C-c n I") #'denote-link-add-links)
+    (define-key map (kbd "C-c n l") #'denote-link-find-file) ; "list" links
+    (define-key map (kbd "C-c n b") #'denote-link-backlinks)
+    ;; Note that `denote-rename-file' can work from any context, not
+    ;; just Dired buffers.  That is why we bind it here to the
+    ;; `global-map'.
+    (define-key map (kbd "C-c n r") #'denote-rename-file))
+
+  ;; Key bindings specifically for Dired.
+  (let ((map dired-mode-map))
+    (define-key map (kbd "C-c C-d C-i") #'denote-link-dired-marked-notes)
+    (define-key map (kbd "C-c C-d C-r") #'denote-dired-rename-marked-files))
+
+  (with-eval-after-load 'org-capture
+    (setq denote-org-capture-specifiers "%l\n%i\n%?")
+    (add-to-list 'org-capture-templates
+                 '("n" "New note (with denote.el)" plain
+                   (file denote-last-path)
+                   #'denote-org-capture
+                   :no-save t
+                   :immediate-finish nil
+                   :kill-buffer t
+                   :jump-to-captured t))))
+
+;;; Custom extensions for "focus mode" (logos.el)
+;; Read the manual: <https://protesilaos.com/emacs/logos>.
+(use-package! olivetti
+  :config
+  (setq olivetti-body-width 0.7)
+  (setq olivetti-minimum-body-width 80)
+  (setq olivetti-recall-visual-line-mode-entry-state t))
+
+(use-package! logos
+  :config
+  (setq logos-outlines-are-pages t)
+  (setq logos-outline-regexp-alist
+        `((emacs-lisp-mode . ,(format "\\(^;;;+ \\|%s\\)" logos--page-delimiter))
+          (org-mode . ,(format "\\(^\\*+ +\\|^-\\{5\\}$\\|%s\\)" logos--page-delimiter))
+          (markdown-mode . ,(format "\\(^\\#+ +\\|^[*-]\\{5\\}$\\|^\\* \\* \\*$\\|%s\\)" logos--page-delimiter))
+          (conf-toml-mode . "^\\[")
+          (t . ,(or outline-regexp logos--page-delimiter))))
+
+  ;; These apply when `logos-focus-mode' is enabled.  Their value is
+  ;; buffer-local.
+  (setq-default logos-hide-mode-line t)
+  (setq-default logos-hide-buffer-boundaries t)
+  (setq-default logos-hide-fringe t)
+  (setq-default logos-variable-pitch t) ; see my `fontaine' configurations
+  (setq-default logos-buffer-read-only nil)
+  (setq-default logos-scroll-lock nil)
+  (setq-default logos-olivetti t)
+
+  ;; I don't need to do `with-eval-after-load' for the `modus-themes' as
+  ;; I always load them before other relevant potentially packages.
+  (add-hook 'modus-themes-after-load-theme-hook #'logos-update-fringe-in-buffers)
+
+  (let ((map global-map))
+    (define-key map [remap narrow-to-region] #'logos-narrow-dwim)
+    (define-key map [remap forward-page] #'logos-forward-page-dwim)
+    (define-key map [remap backward-page] #'logos-backward-page-dwim)
+    ;; I don't think I ever saw a package bind M-] or M-[...
+    (define-key map (kbd "M-]") #'logos-forward-page-dwim)
+    (define-key map (kbd "M-[") #'logos-backward-page-dwim)
+    (define-key map (kbd "<f9>") #'logos-focus-mode))
+
+;;;; Extra tweaks
+  ;; place point at the top when changing pages, but not in `prog-mode'
+  (defun prot/logos--recenter-top ()
+    "Use `recenter' to reposition the view at the top."
+    (unless (derived-mode-p 'prog-mode)
+      (recenter 1))) ; Use 0 for the absolute top
+
+  (add-hook 'logos-page-motion-hook #'prot/logos--recenter-top))
+
+;;; Emoji input
+;; (use-package! emoji
+;;   :config
+;;   (defun prot/emoji-insert (&optional transient)
+;;     "Thin wrapper for `emoji-insert' and `emoji-search'.
+;; When called with optional TRANSIENT as a prefix argument, use the
+;; transient interface (transient.el), else pick an emoji with
+;; minibuffer completion."
+;;     (interactive "P")
+;;     (let ((cmd (if transient 'emoji-insert 'emoji-search)))
+;;       (call-interactively cmd)))
+
+  ;; The default key bindings for Emoji are behind the C-x 8 e prefix.
+  ;; (define-key global-map (kbd "C-.") #'prot/emoji-insert))
+
+(provide 'prot-emacs-write)
 #+end_src
