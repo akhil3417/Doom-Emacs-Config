@@ -87,6 +87,7 @@ To install ~some-package~ from MELPA, ELPA or emacsmirror:
 ;; (add-to-list 'load-path "~/.emacs.d/")
 ;; (load "myplugin.el")
 
+  (package! yaml)
 ;;shell setup
   (package! fish-completion)
   (package! tab-bar-echo-area)
@@ -896,7 +897,7 @@ I’ve always been mixed on this behavior but it seems like a good idea.
     (exwm-workspace-switch-create 0)
     (persp-switch "Chat")
 
-(setq telega-tdlib-max-version "1.8.5")
+;; (setq telega-tdlib-max-version "1.8.5")
     ;; Launch Telega in workspace 0 if we've logged in before
     (when (file-exists-p "~/.telega/db.sqlite")
       (telega nil))
@@ -944,8 +945,8 @@ I’ve always been mixed on this behavior but it seems like a good idea.
     ("qjackctl" (exwm-floating-toggle-floating))
     ;; ("mpv" (exwm-floating-toggle-floating)
     ;; ("mpv" (exwm/position-window))
-    ("mpv" (exwm-workspace-move-window 4)
-     (exwm-layout-toggle-mode-line))
+    ;; ("mpv" (exwm-workspace-move-window 4)
+    ;;  (exwm-layout-toggle-mode-line))
     ("gsi" (exwm-input-toggle-keyboard)))
 
   ;; position a window
@@ -3411,7 +3412,6 @@ CLOSED: [2022-03-30 Wed 00:09]
 From the =:ui emoji= module.
 #+end_quote
 
-
 For starters, twitter's emojis look nicer than emoji-one.
 Other than that, this is pretty great OOTB 😀.
 
@@ -3675,7 +3675,7 @@ CLOSED: [2022-03-30 Wed 11:36]
 
 ** Modus themes (prot's highly accessible themes)
 
-#+begin_src emacs-lisp :tangle yes
+#+begin_src emacs-lisp :tangle no
 ;;; Modus themes (my highly accessible themes)
 (use-package! modus-themes
   ;; Add all your customizations prior to loading the themes
@@ -3833,6 +3833,429 @@ CLOSED: [2022-03-30 Wed 11:36]
 #+RESULTS:
 : t
 
+** modus v3
+#+begin_src emacs-lisp :tangle yes
+
+;;; Modus themes (my highly accessible themes)
+(use-package! modus-themes
+  ;; Add all your customizations prior to loading the themes
+  ;;
+  ;; NOTE: these are not my preferences!  I am always testing various
+  ;; configurations.  Though I still like what I have here.
+  :config
+  ;; NOTE: these are not my preferences!  I am always testing various
+  ;; configurations.  Though I still like what I have here.
+  (setq modus-themes-italic-constructs nil
+        modus-themes-bold-constructs nil
+        modus-themes-mixed-fonts t
+        modus-themes-subtle-line-numbers t
+        modus-themes-intense-mouseovers nil
+        modus-themes-deuteranopia t
+        modus-themes-tabs-accented nil
+        modus-themes-variable-pitch-ui t
+        modus-themes-inhibit-reload t ; only applies to `customize-set-variable' and related
+
+        modus-themes-fringes nil ; {nil,'subtle,'intense}
+
+        ;; Options for `modus-themes-lang-checkers' are either nil (the
+        ;; default), or a list of properties that may include any of those
+        ;; symbols: `straight-underline', `text-also', `background',
+        ;; `intense' OR `faint'.
+        modus-themes-lang-checkers nil
+
+        ;; Options for `modus-themes-mode-line' are either nil, or a list
+        ;; that can combine any of `3d' OR `moody', `borderless',
+        ;; `accented', a natural number for extra padding (or a cons cell
+        ;; of padding and NATNUM), and a floating point for the height of
+        ;; the text relative to the base font size (or a cons cell of
+        ;; height and FLOAT)
+        modus-themes-mode-line '(borderless (height 0.9) (padding 3))
+
+        ;; Options for `modus-themes-markup' are either nil, or a list
+        ;; that can combine any of `bold', `italic', `background',
+        ;; `intense'.
+        modus-themes-markup '(bold italic intense)
+
+        ;; Options for `modus-themes-syntax' are either nil (the default),
+        ;; or a list of properties that may include any of those symbols:
+        ;; `faint', `yellow-comments', `green-strings', `alt-syntax'
+        modus-themes-syntax '(yellow-comments green-strings)
+
+        ;; Options for `modus-themes-hl-line' are either nil (the default),
+        ;; or a list of properties that may include any of those symbols:
+        ;; `accented', `underline', `intense'
+        modus-themes-hl-line nil
+
+        ;; Options for `modus-themes-paren-match' are either nil (the
+        ;; default), or a list of properties that may include any of those
+        ;; symbols: `bold', `intense', `underline'
+        modus-themes-paren-match '(bold)
+
+        ;; Options for `modus-themes-links' are either nil (the default),
+        ;; or a list of properties that may include any of those symbols:
+        ;; `neutral-underline' OR `no-underline', `faint' OR `no-color',
+        ;; `bold', `italic', `background'
+        modus-themes-links '(neutral-underline)
+
+        ;; Options for `modus-themes-box-buttons' are either nil (the
+        ;; default), or a list that can combine any of `flat',
+        ;; `accented', `faint', `variable-pitch', `underline',
+        ;; `all-buttons', the symbol of any font weight as listed in
+        ;; `modus-themes-weights', and a floating point number
+        ;; (e.g. 0.9) for the height of the button's text.
+        modus-themes-box-buttons nil
+
+        ;; Options for `modus-themes-prompts' are either nil (the
+        ;; default), or a list of properties that may include any of those
+        ;; symbols: `background', `bold', `gray', `intense', `italic'
+        modus-themes-prompts '(background intense)
+
+        ;; The `modus-themes-completions' is an alist that reads three
+        ;; keys: `matches', `selection', `popup'.  Each accepts a nil
+        ;; value (or empty list) or a list of properties that can include
+        ;; any of the following (for WEIGHT read further below):
+        ;;
+        ;; `matches' - `background', `intense', `underline', `italic', WEIGHT
+        ;; `selection' - `accented', `intense', `underline', `italic', `text-also', WEIGHT
+        ;; `popup' - same as `selected'
+        ;; `t' - applies to any key not explicitly referenced (check docs)
+        ;;
+        ;; WEIGHT is a symbol such as `semibold', `light', or anything
+        ;; covered in `modus-themes-weights'.  Bold is used in the absence
+        ;; of an explicit WEIGHT.
+        modus-themes-completions
+        '((matches . (semibold))
+          (selection . (extrabold accented))
+          (popup . (extrabold accented)))
+
+        modus-themes-mail-citations nil ; {nil,'intense,'faint,'monochrome}
+
+        ;; Options for `modus-themes-region' are either nil (the default),
+        ;; or a list of properties that may include any of those symbols:
+        ;; `no-extend', `bg-only', `accented'
+        modus-themes-region '(no-extend)
+
+        ;; Options for `modus-themes-diffs': nil, 'desaturated, 'bg-only
+        modus-themes-diffs 'desaturated
+
+        modus-themes-org-blocks nil ; {nil,'gray-background,'tinted-background}
+
+        modus-themes-org-agenda ; this is an alist: read the manual or its doc string
+        '((header-block . (variable-pitch light 1.6))
+          (header-date . (underline-today grayscale workaholic 1.2))
+          (event . (accented italic varied))
+          (scheduled . rainbow)
+          (habit . simplified))
+
+        ;; The `modus-themes-headings' is an alist with lots of possible
+        ;; combinations, including per-heading-level tweaks: read the
+        ;; manual or its doc string.
+        modus-themes-headings
+        '((0 . (variable-pitch light (height 1.3)))
+          (1 . (variable-pitch light (height 1.1)))
+          (2 . (rainbow variable-pitch light (height 1.0)))
+          (3 . (rainbow variable-pitch regular (height 0.9)))
+          (4 . (rainbow regular (height 0.8)))
+          (5 . (rainbow (height 0.7)))
+          (t . (variable-pitch extrabold))))
+
+  ;; Load the theme files before enabling a theme (else you get an error).
+  (modus-themes-load-themes)
+
+  ;; A simple check to load the desired theme at startup based on what
+  ;; the global preference for GNOME is.  If such preference is not
+  ;; registered, it just loads `modus-operandi'.  Check my dotfiles for
+  ;; the shell script called "delight", which handles system-wide theme
+  ;; switching (as I bind the `modus-themes-toggle' to <f5>, delight is
+  ;; bound to s-<f5> in the desktop's own custom key bindings).
+  (if (string-match-p
+       "dark"
+       (shell-command-to-string "gsettings get org.gnome.desktop.interface color-scheme"))
+      (modus-themes-load-vivendi)
+    (modus-themes-load-operandi))
+
+  (define-key global-map (kbd "<f5>") #'modus-themes-toggle)
+
+;;;; Modus themes "Summertime"
+
+  ;; Read the relevant blog post:
+  ;; <https://protesilaos.com/codelog/2022-07-26-modus-themes-color-override-demo/>
+
+  ;; Thanks to user "Summer Emacs" for (i) suggesting the name
+  ;; "summertime", (ii) testing variants of this in her setup, and (iii)
+  ;; sending me feedback on possible tweaks and refinements.  All errors
+  ;; are my own.  (This information is shared with permission.)
+  (define-minor-mode modus-themes-summertime
+    "Refashion the Modus themes by overriding their colors.
+
+This is a complete technology demonstration to show how to
+manually override the colors of the Modus themes.  I have taken
+good care of those overrides to make them work as a fully fledged
+color scheme that is compatible with all user options of the
+Modus themes.
+
+These overrides are usable by those who (i) like something more
+fancy than the comparatively austere looks of the Modus themes,
+and (ii) can cope with a lower contrast ratio.
+
+The overrides are set up as a minor mode, so that the user can
+activate the effect on demand.  Those who want to load the
+overrides at all times can either add them directly to their
+configuration or enable `modus-themes-summertime' BEFORE loading
+either of the Modus themes (if the overrides are evaluated after
+the theme, the theme must be reloaded).
+
+Remember that all changes to theme-related variables require a
+reload of the theme to take effect (the Modus themes have lots of
+user options, apart from those overrides).
+
+The `modus-themes-summertime' IS NOT an official extension to the
+Modus themes and DOES NOT comply with its lofty accessibility
+standards.  It is included in the official manual as guidance for
+those who want to make use of the color overriding facility we
+provide."
+    :init-value nil
+    :global t
+    (if modus-themes-summertime
+        (setq modus-themes-operandi-color-overrides
+              '((bg-main . "#fff0f2")
+                (bg-dim . "#fbe6ef")
+                (bg-alt . "#f5dae6")
+                (bg-hl-line . "#fad8e3")
+                (bg-active . "#efcadf")
+                (bg-inactive . "#f3ddef")
+                (bg-active-accent . "#ffbbef")
+                (bg-region . "#dfc5d1")
+                (bg-region-accent . "#efbfef")
+                (bg-region-accent-subtle . "#ffd6ef")
+                (bg-header . "#edd3e0")
+                (bg-tab-active . "#ffeff2")
+                (bg-tab-inactive . "#f8d3ef")
+                (bg-tab-inactive-accent . "#ffd9f5")
+                (bg-tab-inactive-alt . "#e5c0d5")
+                (bg-tab-inactive-alt-accent . "#f3cce0")
+                (fg-main . "#543f78")
+                (fg-dim . "#5f476f")
+                (fg-alt . "#7f6f99")
+                (fg-unfocused . "#8f6f9f")
+                (fg-active . "#563068")
+                (fg-inactive . "#8a5698")
+                (fg-docstring . "#5f5fa7")
+                (fg-comment-yellow . "#a9534f")
+                (fg-escape-char-construct . "#8b207f")
+                (fg-escape-char-backslash . "#a06d00")
+                (bg-special-cold . "#d3e0f4")
+                (bg-special-faint-cold . "#e0efff")
+                (bg-special-mild . "#c4ede0")
+                (bg-special-faint-mild . "#e0f0ea")
+                (bg-special-warm . "#efd0c4")
+                (bg-special-faint-warm . "#ffe4da")
+                (bg-special-calm . "#f0d3ea")
+                (bg-special-faint-calm . "#fadff9")
+                (fg-special-cold . "#405fb8")
+                (fg-special-mild . "#407f74")
+                (fg-special-warm . "#9d6f4f")
+                (fg-special-calm . "#af509f")
+                (bg-completion . "#ffc5e5")
+                (bg-completion-subtle . "#f7cfef")
+                (red . "#ed2f44")
+                (red-alt . "#e0403d")
+                (red-alt-other . "#e04059")
+                (red-faint . "#ed4f44")
+                (red-alt-faint . "#e0603d")
+                (red-alt-other-faint . "#e06059")
+                (green . "#217a3c")
+                (green-alt . "#417a1c")
+                (green-alt-other . "#006f3c")
+                (green-faint . "#318a4c")
+                (green-alt-faint . "#518a2c")
+                (green-alt-other-faint . "#20885c")
+                (yellow . "#b06202")
+                (yellow-alt . "#a95642")
+                (yellow-alt-other . "#a06f42")
+                (yellow-faint . "#b07232")
+                (yellow-alt-faint . "#a96642")
+                (yellow-alt-other-faint . "#a08042")
+                (blue . "#275ccf")
+                (blue-alt . "#475cc0")
+                (blue-alt-other . "#3340ef")
+                (blue-faint . "#476ce0")
+                (blue-alt-faint . "#575ccf")
+                (blue-alt-other-faint . "#3f60d7")
+                (magenta . "#bf317f")
+                (magenta-alt . "#d033c0")
+                (magenta-alt-other . "#844fe4")
+                (magenta-faint . "#bf517f")
+                (magenta-alt-faint . "#d053c0")
+                (magenta-alt-other-faint . "#846fe4")
+                (cyan . "#007a9f")
+                (cyan-alt . "#3f709f")
+                (cyan-alt-other . "#107f7f")
+                (cyan-faint . "#108aaf")
+                (cyan-alt-faint . "#3f80af")
+                (cyan-alt-other-faint . "#3088af")
+                (red-active . "#cd2f44")
+                (green-active . "#116a6c")
+                (yellow-active . "#993602")
+                (blue-active . "#475ccf")
+                (magenta-active . "#7f2ccf")
+                (cyan-active . "#007a8f")
+                (red-nuanced-bg . "#ffdbd0")
+                (red-nuanced-fg . "#ed6f74")
+                (green-nuanced-bg . "#dcf0dd")
+                (green-nuanced-fg . "#3f9a4c")
+                (yellow-nuanced-bg . "#fff3aa")
+                (yellow-nuanced-fg . "#b47232")
+                (blue-nuanced-bg . "#e3e3ff")
+                (blue-nuanced-fg . "#201f6f")
+                (magenta-nuanced-bg . "#fdd0ff")
+                (magenta-nuanced-fg . "#c0527f")
+                (cyan-nuanced-bg . "#dbefff")
+                (cyan-nuanced-fg . "#0f3f60")
+                (bg-diff-heading . "#b7cfe0")
+                (fg-diff-heading . "#041645")
+                (bg-diff-added . "#d6f0d6")
+                (fg-diff-added . "#004520")
+                (bg-diff-changed . "#fcefcf")
+                (fg-diff-changed . "#524200")
+                (bg-diff-removed . "#ffe0ef")
+                (fg-diff-removed . "#891626")
+                (bg-diff-refine-added . "#84cfa4")
+                (fg-diff-refine-added . "#002a00")
+                (bg-diff-refine-changed . "#cccf8f")
+                (fg-diff-refine-changed . "#302010")
+                (bg-diff-refine-removed . "#da92b0")
+                (fg-diff-refine-removed . "#500010")
+                (bg-diff-focus-added . "#a6e5c6")
+                (fg-diff-focus-added . "#002c00")
+                (bg-diff-focus-changed . "#ecdfbf")
+                (fg-diff-focus-changed . "#392900")
+                (bg-diff-focus-removed . "#efbbcf")
+                (fg-diff-focus-removed . "#5a0010"))
+              modus-themes-vivendi-color-overrides
+              '((bg-main . "#25152a")
+                (bg-dim . "#2a1930")
+                (bg-alt . "#382443")
+                (bg-hl-line . "#332650")
+                (bg-active . "#463358")
+                (bg-inactive . "#2d1f3a")
+                (bg-active-accent . "#50308f")
+                (bg-region . "#5d4a67")
+                (bg-region-accent . "#60509f")
+                (bg-region-accent-subtle . "#3f285f")
+                (bg-header . "#3a2543")
+                (bg-tab-active . "#26162f")
+                (bg-tab-inactive . "#362647")
+                (bg-tab-inactive-accent . "#36265a")
+                (bg-tab-inactive-alt . "#3e2f5a")
+                (bg-tab-inactive-alt-accent . "#3e2f6f")
+                (fg-main . "#debfe0")
+                (fg-dim . "#d0b0da")
+                (fg-alt . "#ae85af")
+                (fg-unfocused . "#8e7f9f")
+                (fg-active . "#cfbfef")
+                (fg-inactive . "#b0a0c0")
+                (fg-docstring . "#c8d9f7")
+                (fg-comment-yellow . "#cf9a70")
+                (fg-escape-char-construct . "#ff75aa")
+                (fg-escape-char-backslash . "#dbab40")
+                (bg-special-cold . "#2a3f58")
+                (bg-special-faint-cold . "#1e283f")
+                (bg-special-mild . "#0f3f31")
+                (bg-special-faint-mild . "#0f281f")
+                (bg-special-warm . "#44331f")
+                (bg-special-faint-warm . "#372213")
+                (bg-special-calm . "#4a314f")
+                (bg-special-faint-calm . "#3a223f")
+                (fg-special-cold . "#c0b0ff")
+                (fg-special-mild . "#bfe0cf")
+                (fg-special-warm . "#edc0a6")
+                (fg-special-calm . "#ff9fdf")
+                (bg-completion . "#502d70")
+                (bg-completion-subtle . "#451d65")
+                (red . "#ff5f6f")
+                (red-alt . "#ff8f6d")
+                (red-alt-other . "#ff6f9d")
+                (red-faint . "#ffa0a0")
+                (red-alt-faint . "#f5aa80")
+                (red-alt-other-faint . "#ff9fbf")
+                (green . "#51ca5c")
+                (green-alt . "#71ca3c")
+                (green-alt-other . "#51ca9c")
+                (green-faint . "#78bf78")
+                (green-alt-faint . "#99b56f")
+                (green-alt-other-faint . "#88bf99")
+                (yellow . "#f0b262")
+                (yellow-alt . "#f0e242")
+                (yellow-alt-other . "#d0a272")
+                (yellow-faint . "#d2b580")
+                (yellow-alt-faint . "#cabf77")
+                (yellow-alt-other-faint . "#d0ba95")
+                (blue . "#778cff")
+                (blue-alt . "#8f90ff")
+                (blue-alt-other . "#8380ff")
+                (blue-faint . "#82b0ec")
+                (blue-alt-faint . "#a0acef")
+                (blue-alt-other-faint . "#80b2f0")
+                (magenta . "#ff70cf")
+                (magenta-alt . "#ff77f0")
+                (magenta-alt-other . "#ca7fff")
+                (magenta-faint . "#e0b2d6")
+                (magenta-alt-faint . "#ef9fe4")
+                (magenta-alt-other-faint . "#cfa6ff")
+                (cyan . "#30cacf")
+                (cyan-alt . "#60caff")
+                (cyan-alt-other . "#40b79f")
+                (cyan-faint . "#90c4ed")
+                (cyan-alt-faint . "#a0bfdf")
+                (cyan-alt-other-faint . "#a4d0bb")
+                (red-active . "#ff6059")
+                (green-active . "#64dc64")
+                (yellow-active . "#ffac80")
+                (blue-active . "#4fafff")
+                (magenta-active . "#cf88ff")
+                (cyan-active . "#50d3d0")
+                (red-nuanced-bg . "#440a1f")
+                (red-nuanced-fg . "#ffcccc")
+                (green-nuanced-bg . "#002904")
+                (green-nuanced-fg . "#b8e2b8")
+                (yellow-nuanced-bg . "#422000")
+                (yellow-nuanced-fg . "#dfdfb0")
+                (blue-nuanced-bg . "#1f1f5f")
+                (blue-nuanced-fg . "#bfd9ff")
+                (magenta-nuanced-bg . "#431641")
+                (magenta-nuanced-fg . "#e5cfef")
+                (cyan-nuanced-bg . "#042f49")
+                (cyan-nuanced-fg . "#a8e5e5")
+                (bg-diff-heading . "#304466")
+                (fg-diff-heading . "#dae7ff")
+                (bg-diff-added . "#0a383a")
+                (fg-diff-added . "#94ba94")
+                (bg-diff-changed . "#2a2000")
+                (fg-diff-changed . "#b0ba9f")
+                (bg-diff-removed . "#50163f")
+                (fg-diff-removed . "#c6adaa")
+                (bg-diff-refine-added . "#006a46")
+                (fg-diff-refine-added . "#e0f6e0")
+                (bg-diff-refine-changed . "#585800")
+                (fg-diff-refine-changed . "#ffffcc")
+                (bg-diff-refine-removed . "#952838")
+                (fg-diff-refine-removed . "#ffd9eb")
+                (bg-diff-focus-added . "#1d4c3f")
+                (fg-diff-focus-added . "#b4dfb4")
+                (bg-diff-focus-changed . "#424200")
+                (fg-diff-focus-changed . "#d0daaf")
+                (bg-diff-focus-removed . "#6f0f39")
+                (fg-diff-focus-removed . "#eebdba")))
+      (setq modus-themes-operandi-color-overrides nil
+            modus-themes-vivendi-color-overrides nil))))
+
+(provide 'prot-emacs-modus-themes)
+#+end_src
+
+#+RESULTS:
+: prot-emacs-modus-themes
+
 ** DONE modus CustV2
 CLOSED: [2022-03-31 Thu 19:17]
 #+begin_src emacs-lisp :tangle no
@@ -3890,7 +4313,6 @@ CLOSED: [2022-03-31 Thu 19:17]
 
 #+RESULTS:
 : ((bg-main . #100b17) (bg-dim . #161129) (bg-alt . #181732) (bg-hl-line . #191628) (bg-active . #282e46) (bg-inactive . #1a1e39) (bg-region . #393a53) (bg-header . #202037) (bg-tab-bar . #262b41) (bg-tab-active . #120f18) (bg-tab-inactive . #3a3a5a) (fg-unfocused . #9a9aab))
-
 ** DONE brightness
 CLOSED: [2022-03-30 Wed 12:23]
 #+begin_src emacs-lisp :tangle no
@@ -4036,6 +4458,7 @@ CLOSED: [2022-03-31 Thu 19:31]
 
   (dolist (cmd '(embark-act embark-become))
     (advice-add cmd :before #'force-keycast-update)))
+          (add-to-list 'global-mode-string '("" keycast-mode-line))
 #+end_src
 
 #+RESULTS:
@@ -4060,7 +4483,7 @@ show commands, which looks cleaner.  I got the idea and original piece
 of Elisp from the [[https://github.com/aadcg/dotfiles][dotfiles of André Alexandre Gomes]] and then added a few
 tweaks of my own.
 
-#+begin_src emacs-lisp
+#+begin_src emacs-lisp :tangle yes
 ;;; Keycast mode
 (use-package! keycast
   :config
@@ -4093,105 +4516,33 @@ tweaks of my own.
 
 #+RESULTS:
 : t
-** DONE doom themes ui
-CLOSED: [2022-03-31 Thu 19:33]
-
+*** keycast doom
 #+begin_src emacs-lisp :tangle no
 
-  (use-package! dracula-theme
-    :disabled
-    :defer
-    :config
-    (custom-theme-set-faces 'dracula
-                            '(aw-background-face
-                              ((t (:background "#282a36" :inverse-video nil :weight normal))))
-                            '(aw-leading-char-face
-                              ((t (:foreground "#bd93f9" :height 2.5 :weight normal))))))
-  (use-package! dichromacy-theme
-    :disabled
-    :defer
-    :config
-    (custom-theme-set-faces 'dichromacy
-                            '(aw-background-face
-                              ((t (:background "#ffffff" :inverse-video nil :weight normal))))
-                            '(aw-leading-char-face
-                              ((t (:foreground "#009e73" :height 2.5 :weight normal))))
-                            '(org-level-1 ((t (:foreground "#0072b2" :inherit bold :height 1.3))))
-                            '(org-level-2 ((t (:foreground "#d55e00" :inherit bold :height 1.1))))
-                            '(org-document-title ((t (:inherit bold :height 1.5))))
-                            ))
-;;   (use-package! gruvbox-theme
-;;     :disabled
-;;     :defer
-;;     :config
-;;     (custom-theme-set-faces 'gruvbox
-;;                             '(aw-leading-char-face
-;;                               ((t (:height 2.5 :weight normal))))
-;;                             '(org-level-1 ((t (:height 1.3 :foreground "#83a598" :inherit (bold) ))))
-;;                             '(org-level-2 ((t (:height 1.1 ;;
-
-
-;; Henrik Lissner's Doom themes are a mainstay, mostly doom-rouge:
-;;
-;; [[file:/img/dotemacs/doom-rouge-demo.png]]
-(use-package! doom-themes
-  :ensure t
-  :defer
-  :init
-  (defun my/doom-theme-settings (theme &rest args)
-    "Additional face settings for doom themes"
-    (when (string-match-p "^doom-" (symbol-name theme))
-      (dolist (face-spec
-               '((aw-leading-char-face (:height 2.0 :foreground nil :inherit mode-line-emphasis)
-                                       ace-window)
-                 (aw-background-face (:inherit default :weight normal) ace-window)
-                 (org-level-1        (:height 1.22 :inherit outline-1) org)
-                 (org-level-2        (:height 1.17 :inherit outline-2) org)
-                 (org-level-3        (:height 1.12 :inherit outline-3) org)
-                 (tab-bar            (:background "black" :height 1.0 :foreground "white")
-                                     tab-bar)
-                 (tab-bar-tab
-                  (:foreground "#B16E75" :bold t :height 1.10 :background "#172030")
-                  tab-bar)
-                 (tab-bar-tab-inactive
-                  (:inherit 'mode-line-inactive :height 1.10 :background "black")
-                  tab-bar)))
-        (cl-destructuring-bind (face spec library) face-spec
-          (if (featurep library)
-              (apply #'set-face-attribute face nil spec)
-            (with-eval-after-load library
-              (when (string-match-p "^doom-" (symbol-name theme))
-                  (apply #'set-face-attribute face nil spec)))))))
-    (when (eq theme 'doom-rouge)
-      (set-face-attribute 'hl-line nil :background "#1f2a3f")))
-
-  (advice-add 'load-theme :after #'my/doom-theme-settings)
-
+(use-package! keycast
+  :commands keycast-mode
   :config
-  (doom-themes-org-config)
-  (use-package! doom-rouge-theme
-    :config
-    (setq doom-rouge-padded-modeline nil))
-
-  (use-package! doom-iosvkem-theme
-    :disabled
-    ;; :custom-face
-    ;; (default ((t (:background "#061229"))))
-    :config
-    (setq doom-Iosvkem-brighter-comments nil
-          doom-Iosvkem-comment-bg nil
-          doom-Iosvkem-brighter-modeline nil)))
-
-(use-package! moody
-  :disabled
-  :after (modus-themes smart-mode-line)
-  :config
-  (setq x-underline-at-descent-line t)
-  (moody-replace-sml/mode-line-buffer-identification)
-  (moody-replace-vc-mode))
+  (define-minor-mode keycast-mode
+    "Show current command and its key binding in the mode line."
+    :global t
+    (if keycast-mode
+        (progn
+          (add-hook 'pre-command-hook 'keycast--update t)
+          (add-to-list 'global-mode-string '("" keycast-mode-line)))
+          ;; (add-to-list 'global-mode-string '("" mode-line-keycast " ")))
+      (remove-hook 'pre-command-hook 'keycast--update)
+      (setq global-mode-string (remove '("" mode-line-keycast " ") global-mode-string))))
+  (custom-set-faces!
+    '(keycast-command :inherit doom-modeline-debug
+                      :height 0.9)
+    '(keycast-key :inherit custom-modified
+                  :height 1.1
+                  :weight bold)))
 #+end_src
 
 #+RESULTS:
+: t
+
 ** DONE Presentation
 CLOSED: [2022-03-31 Thu 19:51]
 #+begin_src emacs-lisp
@@ -4310,8 +4661,8 @@ Also watch my [[https://protesilaos.com/codelog/2022-03-14-emacs-pulsar-demo/][d
 CLOSED: [2022-09-22 Thu 11:28]
 I set comment-line to 'SPC TAB TAB' which is a rather comfortable keybinding for me on my ZSA Moonlander keyboard.  The standard Emacs keybinding for comment-line is 'C-x C-;'.  The other keybindings are for commands that toggle on/off various line-related settings.  Doom Emacs uses 'SPC t' for "toggle" commands, so I choose 'SPC t' plus 'key' for those bindings.
 
-| COMMAND                  | DESCRIPTION                                 | KEYBINDING  |
-|--------------------------+---------------------------------------------+-------------|
+| COMMAND                  | DESCRIPTION                               | KEYBINDING  |
+|--------------------------+-------------------------------------------+-------------|
 | comment-line             | /Comment or uncomment lines/                | SPC TAB TAB |
 | hl-line-mode             | /Toggle line highlighting in current frame/ | SPC t h     |
 | global-hl-line-mode      | /Toggle line highlighting globally/         | SPC t H     |
@@ -4322,7 +4673,7 @@ Relative line numbers are fantastic for knowing how far away line numbers are,
 then =ESC 12 <UP>= gets you exactly where you think.
 #+BEGIN_SRC emacs-lisp
 (setq display-line-numbers-type 'absolute)
-(setq display-line-numbers-type nil)
+;; (setq display-line-numbers-type nil)
 (map! :leader
       :desc "Comment or uncomment lines" "TAB TAB" #'comment-line
       (:prefix ("t" . "toggle")
@@ -4662,48 +5013,27 @@ Setting the theme to doom-vibrant.  To try out new themes, I set a keybinding fo
 #+begin_src emacs-lisp
 (use-package! doom-themes
   :config
-  ;; Global settings (defaults)
-  ;; (load-theme 'doom-vibrant t)
-  ;; (load-theme 'leuven t)
-  ;; (load-theme 'doom-dark+ t)
-  ;; (load-theme 'doom-solarized-light t)
-  ;; (load-theme 'doom-one t)
-  ;; (load-theme 'doom-one-light t)
-  ;; (load-theme 'doom-nord-light t)
-;; (setq doom-theme 'doom-flatwhite)
-
   ;; Enable flashing mode-line on errors
   (doom-themes-visual-bell-config)
-
   ;; Corrects (and improves) org-mode's native fontification.
   (doom-themes-org-config))
-
   (doom-themes-visual-bell-config)
 (map! :leader
       :desc "Load new theme" "h t" #'load-theme)
-#+END_SRC
 
-#+RESULTS:
-: counsel-load-theme
-
-#+end_src
-
-~doom-one~ is nice and all, but I find the ~vibrant~ variant nicer. Oh, and with the
-nice selection doom provides there's no reason for me to want the defaults.
-
-#+begin_src emacs-lisp
 (setq doom-theme 'modus-vivendi)
 (remove-hook 'window-setup-hook #'doom-init-theme-h)
 (add-hook 'after-init-hook #'doom-init-theme-h 'append)
 (delq! t custom-theme-load-path)
+#+END_SRC
+
+#+RESULTS:
+| custom-theme-directory | /home/shiva/.emacs.d/.local/straight/build-28.1/modus-themes/ | /home/shiva/.emacs.d/.local/straight/build-28.1/underwater-theme/ | /home/shiva/.emacs.d/.local/straight/build-28.1/exotica-theme/ | /home/shiva/.emacs.d/.local/straight/build-28.1/smart-mode-line/ | /home/shiva/.emacs.d/.local/straight/build-28.1/doom-themes/ |
+
 #+end_src
 
 However, by default ~red~ text is used in the ~modeline~, so let's make that orange
 so I don't feel like something's gone /wrong/ when editing files.
-
-
-#+RESULTS:
-| custom-theme-directory | /home/shiva/.emacs.d/.local/straight/build-28.1/modus-themes/ | /home/shiva/.emacs.d/.local/straight/build-28.1/underwater-theme/ | /home/shiva/.emacs.d/.local/straight/build-28.1/exotica-theme/ | /home/shiva/.emacs.d/.local/straight/build-28.1/smart-mode-line/ | /home/shiva/.emacs.d/.local/straight/build-28.1/doom-themes/ |
 
 #+begin_src emacs-lisp
 (custom-set-faces!
@@ -4736,7 +5066,7 @@ thus not worth noting in the modeline. So, let's conditionally hide it.
 The modeline is the bottom status bar that appears in Emacs windows.  For more information on what is available to configure in the Doom modeline, check out:
 https://github.com/seagle0128/doom-modeline
 
-#+begin_src emacs-lisp
+#+begin_src emacs-lisp :tangle yes
 ;; (set-face-attribute 'mode-line nil :font "Ubuntu Mono-13")
 ;; (setq doom-modeline-height 20     ;; sets modeline height
 ;;       doom-modeline-bar-width 2   ;; sets right bar width
@@ -4754,13 +5084,13 @@ https://github.com/seagle0128/doom-modeline
 
 (use-package! doom-modeline
   :after eshell     ;; Make sure it gets hooked after eshell
-  :hook (after-init . doom-modeline-init)
+  ;;:hook (after-init . doom-modeline-init)
   :custom-face
   (mode-line ((t (:height 0.90))))
   (mode-line-inactive ((t (:height 0.90))))
   :custom
-  (doom-modeline-height 15)
-  (doom-modeline-bar-width 5)
+  (doom-modeline-height 8)
+  (doom-modeline-bar-width 2)
   (doom-modeline-lsp t)
   (doom-modeline-github nil)
   (doom-modeline-mu4e nil)
@@ -4770,8 +5100,6 @@ https://github.com/seagle0128/doom-modeline
   (doom-modeline-buffer-file-name-style 'truncate-except-project)
   (doom-modeline-major-mode-icon nil))
 #+end_src
-
-#+RESULTS:
 
 **** DONE Doom's pdf modeline
 CLOSED: [2022-03-30 Wed 19:58]
@@ -4852,7 +5180,7 @@ icon. Then we'll redefine two functions used to generate the modeline.
 #+RESULTS:
 
 *** kar modline
-#+begin_src emacs-lisp
+#+begin_src emacs-lisp :tangle no
 
 ;;----------------------------------------------------------------
 ;; ** SMART MODE LINE
@@ -4992,7 +5320,7 @@ icon. Then we'll redefine two functions used to generate the modeline.
 #+end_src
 
 #+RESULTS:
-| global-evil-surround-mode-enable-in-buffers | better-jumper-mode-enable-in-buffers | global-company-mode-enable-in-buffers | evil-snipe-override-mode-enable-in-buffers | evil-snipe-mode-enable-in-buffers | yas-global-mode-enable-in-buffers | global-hl-line-mode-enable-in-buffers | smartparens-global-mode-enable-in-buffers | doom-disable-smartparens-navigate-skip-match-h | ws-butler-global-mode-enable-in-buffers | global-undo-fu-session-mode-enable-in-buffers | global-flycheck-mode-enable-in-buffers | persp-after-change-major-mode-h | doom-modeline-update-buffer-file-icon | global-emojify-mode-enable-in-buffers | global-rainbow-mode-enable-in-buffers | global-undo-tree-mode-enable-in-buffers | clean-mode-line | solaire-global-mode-enable-in-buffers | global-subword-mode-enable-in-buffers | git-commit-setup-font-lock-in-buffer | evil-mode-enable-in-buffers | doom--setq-evil-shift-width-for-after-change-major-mode-h | global-eldoc-mode-enable-in-buffers | global-font-lock-mode-enable-in-buffers | doom-highlight-non-default-indentation-h | +company-init-backends-h | doom-run-local-var-hooks-maybe-h |
+| doom--setq-evil-shift-width-for-after-change-major-mode-h | clean-mode-line | yas-global-mode-enable-in-buffers | global-evil-surround-mode-enable-in-buffers | git-commit-setup-font-lock-in-buffer | better-jumper-mode-enable-in-buffers | global-company-mode-enable-in-buffers | evil-snipe-override-mode-enable-in-buffers | evil-snipe-mode-enable-in-buffers | global-hl-line-mode-enable-in-buffers | smartparens-global-mode-enable-in-buffers | doom-disable-smartparens-navigate-skip-match-h | ws-butler-global-mode-enable-in-buffers | global-undo-fu-session-mode-enable-in-buffers | global-flycheck-mode-enable-in-buffers | +ligatures-init-buffer-h | persp-after-change-major-mode-h | global-emojify-mode-enable-in-buffers | doom-modeline-update-buffer-file-icon | pulsar-global-mode-enable-in-buffers | solaire-global-mode-enable-in-buffers | global-subword-mode-enable-in-buffers | evil-mode-enable-in-buffers | global-eldoc-mode-enable-in-buffers | global-font-lock-mode-enable-in-buffers | doom-highlight-non-default-indentation-h | +company-init-backends-h | doom-run-local-var-hooks-h |
 
 ** Writeroom
 #+begin_quote
@@ -5253,8 +5581,8 @@ Now, we just identify the files in question.
 CLOSED: [2022-09-22 Thu 11:48]
 Neotree is a file tree viewer.  When you open neotree, it jumps to the current file thanks to neo-smart-open.  The neo-window-fixed-size setting makes the neotree width be adjustable.  Doom Emacs had no keybindings set for neotree.  Since Doom Emacs uses 'SPC t' for 'toggle' keybindings, I used 'SPC t n' for toggle-neotree.
 
-| COMMAND        | DESCRIPTION                 | KEYBINDING |
-|----------------+-----------------------------+------------|
+| COMMAND        | DESCRIPTION               | KEYBINDING |
+|----------------+---------------------------+------------|
 | neotree-toggle | /Toggle neotree/            | SPC t n    |
 | neotree- dir   | /Open directory in neotree/ | SPC d n    |
 
@@ -6585,7 +6913,7 @@ Perspective provides multiple named workspaces (or "perspectives") in Emacs, sim
 | persp-prev                 | Switch to previous perspective      | SPC [      |
 | persp-add-buffer           | Add a buffer to current perspective | SPC +      |
 | persp-remove-by-name       | Remove perspective by name          | SPC -      |
-| +workspace/switch-to-{0-9} | Switch to workspace /n/             | SPC 0-9    |
+| +workspace/switch-to-{0-9} | Switch to workspace /n/               | SPC 0-9    |
 
 #+begin_src emacs-lisp
 (map! :leader
@@ -6981,8 +7309,8 @@ inside the src_elisp{(after! ... )} block ¯\_(ツ)_/¯.
 Then let's change the font to a sans serif, but the default one doesn't fit too
 well somehow, so let's switch to 'P22 Underground Book'; it looks much nicer.
 
-| COMMAND                     | DESCRIPTION                 | KEYBINDING       |
-|-----------------------------+-----------------------------+------------------|
+| COMMAND                     | DESCRIPTION               | KEYBINDING       |
+|-----------------------------+---------------------------+------------------|
 | centaur-tabs-mode           | /Toggle tabs globally/      | SPC t c          |
 | centaur-tabs-local-mode     | /Toggle tabs local display/ | SPC t C          |
 | centaur-tabs-forward        | /Next tab/                  | g <right> or g t |
@@ -8919,8 +9247,8 @@ Some custom functions to insert the date.  The function 'insert-todays-date' can
 ** REGISTERS
 Emacs registers are compartments where you can save text, rectangles and positions for later use. Once you save text or a rectangle in a register, you can copy it into the buffer once or many times; once you save a position in a register, you can jump back to that position once or many times.  The default GNU Emacs keybindings for these commands (with the exception of counsel-register) involves 'C-x r' followed by one or more other keys.  I wanted to make this a little more user friendly, and since I am using Doom Emacs, I choose to replace the 'C-x r' part of the key chords with 'SPC r'.
 
-| COMMAND                          | DESCRIPTION                        | KEYBINDING |
-|----------------------------------+------------------------------------+------------|
+| COMMAND                          | DESCRIPTION                      | KEYBINDING |
+|----------------------------------+----------------------------------+------------|
 | copy-to-register                 | /Copy to register/                 | SPC r c    |
 | frameset-to-register             | /Frameset to register/             | SPC r f    |
 | insert-register                  | /Insert contents of register/      | SPC r i    |
@@ -9479,8 +9807,8 @@ Summary of what these do:
 ** EVALUATE ELISP EXPRESSIONS
 Changing some keybindings from their defaults to better fit with Doom Emacs, and to avoid conflicts with my window managers which sometimes use the control key in their keybindings.  By default, Doom Emacs does not use 'SPC e' for anything, so I choose to use the format 'SPC e' plus 'key' for these (I also use 'SPC e' for 'eww' keybindings).
 
-| COMMAND         | DESCRIPTION                                    | KEYBINDING |
-|-----------------+------------------------------------------------+------------|
+| COMMAND         | DESCRIPTION                                  | KEYBINDING |
+|-----------------+----------------------------------------------+------------|
 | eval-buffer     | /Evaluate elisp in buffer/                     | SPC e b    |
 | eval-defun      | /Evaluate the defun containing or after point/ | SPC e d    |
 | eval-expression | /Evaluate an elisp expression/                 | SPC e e    |
@@ -9700,11 +10028,14 @@ can implement this behaviour fairly easily.
                                  (count-lines (point-min) (point-max))))
             +vlf-cumulative-linenum))))
 
-(add-hook 'vlf-after-chunk-update-hook #'+vlf-log-poses-a)
+(add-hook 'vlf-after-chunk-update-hook #'+vlf-log-poses-a)) ;;look here if end of file
 
 ;; Since this only works with absolute line numbers, let's make sure we use them.
-gadd-hook! 'vlf-mode-hook (setq-local display-line-numbers t)
+;; gadd-hook! 'vlf-mode-hook (setq-local display-line-numbers t)
 #+end_src
+
+#+RESULTS: vlf-linenum-offset
+| +vlf-log-poses-a |
 
 The other thing that doesn't work too well with VLF is searching with anything
 other than =M-x occur=. This is because trying to go to the next match at the end
@@ -10519,8 +10850,8 @@ Basically, its interaction model is as follows:
 ** OPEN SPECIFIC FILES
 Keybindings to open files that I work with all the time using the find-file command, which is the interactive file search that opens with 'C-x C-f' in GNU Emacs or 'SPC f f' in Doom Emacs.  These keybindings use find-file non-interactively since we specify exactly what file to open.  The format I use for these bindings is 'SPC =' plus 'key' since Doom Emacs does not use 'SPC ='.
 
-| PATH TO FILE                   | DESCRIPTION             | KEYBINDING |
-|--------------------------------+-------------------------+------------|
+| PATH TO FILE                   | DESCRIPTION           | KEYBINDING |
+|--------------------------------+-----------------------+------------|
 | ~/Org/agenda/agenda.org        | /Edit agenda file/      | SPC = a    |
 | ~/.config/doom/config.org"     | /Edit doom config.org/  | SPC = c    |
 | ~/.config/doom/init.el"        | /Edit doom init.el/     | SPC = i    |
@@ -10542,36 +10873,36 @@ Keybindings to open files that I work with all the time using the find-file comm
 #+END_SRC
 ** dired General commands and keybindings(read c)
  Keybindings To Open Dired
-| COMMAND    | DESCRIPTION                          | KEYBINDING |
-|------------+--------------------------------------+------------|
+| COMMAND    | DESCRIPTION                        | KEYBINDING |
+|------------+------------------------------------+------------|
 | dired      | /Open dired file manager/            | SPC d d    |
 | dired-jump | /Jump to current directory in dired/ | SPC d j    |
 │
 *│ │ Basic dired commands*
-| COMMAND                | DESCRIPTION                                   | KEYBINDING |
-|------------------------+-----------------------------------------------+------------|
+| COMMAND                | DESCRIPTION                                 | KEYBINDING |
+|------------------------+---------------------------------------------+------------|
 | dired-view-file        | /View file in dired/                          | SPC d v    |
 | dired-up-directory     | /Go up in directory tree/                     | h          |
 | dired-find-file        | /Go down in directory tree (or open if file)/ | l          |
-| dired-next-line        | Move down to next line                        | j          |
-| dired-previous-line    | Move up to previous line                      | k          |
-| dired-mark             | Mark file at point                            | m          |
-| dired-unmark           | Unmark file at point                          | u          |
-| dired-do-copy          | Copy current file or marked files             | C          |
-| dired-do-rename        | Rename current file or marked files           | R          |
-| dired-hide-details     | Toggle detailed listings on/off               | (          |
-| dired-git-info-mode    | Toggle git information on/off                 | )          |
-| dired-create-directory | Create new empty directory                    | +          |
-| dired-diff             | Compare file at point with another            | =          |
-| dired-subtree-toggle   | Toggle viewing subtree at point               | TAB        |
-|                        |                                               |            |
+| dired-next-line        | Move down to next line                      | j          |
+| dired-previous-line    | Move up to previous line                    | k          |
+| dired-mark             | Mark file at point                          | m          |
+| dired-unmark           | Unmark file at point                        | u          |
+| dired-do-copy          | Copy current file or marked files           | C          |
+| dired-do-rename        | Rename current file or marked files         | R          |
+| dired-hide-details     | Toggle detailed listings on/off             | (          |
+| dired-git-info-mode    | Toggle git information on/off               | )          |
+| dired-create-directory | Create new empty directory                  | +          |
+| dired-diff             | Compare file at point with another          | =          |
+| dired-subtree-toggle   | Toggle viewing subtree at point             | TAB        |
+|                        |                                             |            |
 │
 │
 *│ │ Keybindings Within Dired With Peep-Dired-Mode Enabled*
 *│ │ If peep-dired is enabled, you will get image previews as you go up/down with 'j' and 'k'*
 │
-| COMMAND              | DESCRIPTION                                | KEYBINDING |
-|----------------------+--------------------------------------------+------------|
+| COMMAND              | DESCRIPTION                              | KEYBINDING |
+|----------------------+------------------------------------------+------------|
 | peep-dired           | /Toggle previews within dired/             | SPC d p    |
 | peep-dired-next-file | /Move to next file in peep-dired-mode/     | j          |
 | peep-dired-prev-file | /Move to previous file in peep-dired-mode/ | k          |
@@ -11971,8 +12302,8 @@ prompt and everyone in the channel can see it.  Some things I learnt:
   other.
 
 
-| COMMAND | DESCRIPTION                                   | KEYBINDING |
-|---------+-----------------------------------------------+------------|
+| COMMAND | DESCRIPTION                                 | KEYBINDING |
+|---------+---------------------------------------------+------------|
 | erc-tls | /Launch ERC using more secure TLS connection/ | SPC e E    |
 
 #+begin_src emacs-lisp
@@ -12008,26 +12339,352 @@ prompt and everyone in the channel can see it.  Some things I learnt:
     ;; :hook (telega-chat-mode . olivetti-mode)
           ;; (telega-chat-mode . my/telega/olivetti)
       :hook   (telega-chat-mode . my/telega/company-backends)
-    ;; installed telegram-tdlib from AUR
     :config
-    (telega-mode-line-mode)
-    (telega-notifications-mode)
-    :custom (telega-server-libs-prefix "/usr")
+    ;; (telega-mode-line-mode)
+    ;; (telega-notifications-mode 1)
+  ;; clear all bindings (he willl introduce many conflicting bindings again :/)
+  (setf (cdr telega-chat-mode-map) nil)
+  (setf (cdr telega-msg-button-map) nil)
+  ;; (setf (cdr telega-root-mode-map) nil)
+  ;; (setq telega-root-mode-map nil)
+  ;;Easy closing
+  (map! :map telega-root-mode-map
+        :n "q" 'bury-buffer)
+  (map! :map telega-chat-mode-map
+        :n "q" 'bury-buffer)
+  ;;Open Telega
+  (map! :leader
+        :prefix "o"
+        :desc "Telega" "g" #'telega)
+  ;; :desc "Telega" "g" #'=telegram)
+  (map! :after telega
+        :mode telega-root-mode
+        "C-j" 'telega-button-forward
+        "C-k" 'telega-button-backward
+
+        "C-/" 'telega-filter-undo
+        "C-_" 'telega-filter-undo
+        "C-x C-/" 'telega-filter-redo
+        "C-x C-_" 'telega-filter-redo
+
+        [?\t] 'telega-button-forward
+        "\e\t" 'telega-button-backward
+        [backtab] 'telega-button-backward
+
+        ;; "M-g u" 'telega-root-next-unread
+        ;; "M-g i" 'telega-root-next-important
+        ;; "M-g m" 'telega-root-next-mention
+        ;; "M-g @" 'telega-root-next-mention
+
+        (:localleader
+         ;; "q" 'bury-buffer
+         ;; "Q" 'telega-kill
+         "J" 'telega-chat-join-by-link
+         "N" 'telega-chat-create
+
+         ;; NOTE: Deleting all chats is very-very-very dangerous, so
+         ;; disabled, use M-x telega-chats-filtered-delete RET if you know
+         ;; what you are doing
+         ;; (define-key map (kbd "D") 'telega-chats-filtered-delete)
+
+         "K" 'telega-chats-filtered-kill-chatbuf
+         "R" 'telega-chats-filtered-toggle-read
+
+         :desc "sort" "\\" telega-sort-map
+
+         :desc "filter" "/" telega-filter-map
+
+         (:prefix ("?" . "describe")
+          "w" 'telega-describe-connected-websites
+          "s" 'telega-describe-active-sessions
+          "n" 'telega-describe-network
+          "y" 'telega-describe-notifications
+          "N" 'telega-describe-notifications
+          "p" 'telega-describe-privacy-settings)
+
+         (:prefix ("F" . "folder")
+          "+" 'telega-folder-create
+          "-" 'telega-folder-delete
+          "=" 'telega-folders-reorder
+          "R" 'telega-folder-rename
+          "a" 'telega-chat-add-to-folder
+          "d" 'telega-chat-remove-from-folder)
+
+         (:prefix ("c". "call")
+          "a" 'telega-voip-accept
+          "d" 'telega-voip-discard
+          "b" 'telega-voip-buffer-show
+          "l" 'telega-voip-list-calls)
+
+         (:prefix ("v" . "View")
+          "s" 'telega-view-search
+          "s" 'telega-view-search
+          "n" 'telega-view-nearby
+          "v" 'telega-view-reset
+          "0" 'telega-view-compact
+          "1" 'telega-view-one-line
+          "2" 'telega-view-two-lines
+          "t" 'telega-view-topics
+          "T" 'telega-view-top
+          "S" 'telega-view-settings
+          "c" 'telega-view-contacts
+          "C" 'telega-view-calls
+          "l" 'telega-view-last-messages
+          "f" 'telega-view-folders
+          "^" 'telega-view-pinned-messages
+          "p" 'telega-view-pinned-messages
+          "d" 'telega-view-deleted-chats)))
+
+  (map! :mode telega-chat-mode
+        :map telega-chat-mode-map
+        "C-l" 'telega-chatbuf-recenter-1
+
+        ;; ;; C-M-[ - cancels edit/reply
+        "\e\e" 'telega-chatbuf-cancel-aux
+        "C-c C-k" 'telega-chatbuf-cancel-aux
+        "C-M-c" 'telega-chatbuf-cancel-aux
+        "C-M-a" 'telega-chatbuf-beginning-of-thing
+
+        "C-c ?" 'telega-describe-chat
+
+        "RET" 'telega-chatbuf-newline-or-input-send
+        "M-p" 'telega-chatbuf-edit-prev
+        "M-n" 'telega-chatbuf-edit-next
+        "M-r" 'telega-chatbuf-input-search
+
+        ;; ;;; ellit-org: chatbuf-attach-bindings
+        ;; ;; - {{{where-is(telega-chatbuf-attach,telega-chat-mode-map)}}} ::
+        ;; ;;   {{{fundoc(telega-chatbuf-attach,2)}}}
+        ;; (define-key map (kbd "C-c C-a") 'telega-chatbuf-attach)
+        ;; ;;; ellit-org: chatbuf-attach-bindings
+        ;; ;; - {{{where-is(telega-chatbuf-attach-media,telega-chat-mode-map)}}} ::
+        ;; ;;   {{{fundoc(telega-chatbuf-attach-media,2)}}}
+        ;; (define-key map (kbd "C-c C-f") 'telega-chatbuf-attach-media)
+        ;; ;;; ellit-org: chatbuf-attach-bindings
+        ;; ;; - {{{where-is(telega-chatbuf-attach-clipboard,telega-chat-mode-map)}}} ::
+        ;; ;;   {{{fundoc(telega-chatbuf-attach-clipboard,2)}}}
+        ;; (define-key map (kbd "C-c C-v") 'telega-chatbuf-attach-clipboard)
+
+        ;; ;;; ellit-org: chatbuf-filtering-bindings
+        ;; ;; - {{{where-is(telega-chatbuf-filter,telega-chat-mode-map)}}} ::
+        ;; ;;   {{{fundoc(telega-chatbuf-filter,2)}}}
+        ;; (define-key map (kbd "C-c /") 'telega-chatbuf-filter)
+        ;; ;;; ellit-org: chatbuf-filtering-bindings
+        ;; ;; - {{{where-is(telega-chatbuf-filter-cancel,telega-chat-mode-map)}}} ::
+        ;; ;;   {{{fundoc(telega-chatbuf-filter-cancel, 2)}}}
+        ;; (define-key map (kbd "C-c C-c") 'telega-chatbuf-filter-cancel)
+        ;; ;;; ellit-org: chatbuf-filtering-bindings
+        ;; ;; - {{{where-is(telega-chatbuf-filter-search,telega-chat-mode-map)}}} ::
+        ;; ;;   {{{fundoc(telega-chatbuf-filter-search, 2)}}}
+        ;; (define-key map (kbd "C-c C-s") 'telega-chatbuf-filter-search)
+        ;; (define-key map (kbd "C-c C-r") 'telega-chatbuf-filter-search)
+
+        ;; ;; jumping around links
+        "TAB" 'telega-chatbuf-complete-or-next-link
+        "<backtab>" 'telega-chatbuf-prev-link
+
+        ;; Additional prefix keymaps
+        "M-g" telega-chatbuf-fastnav-map
+        (:localleader
+         ;; "i" 'telega-describe-chat
+         ;; "h" 'telega-describe-chat
+         ;; "a" 'telega-chat-add-member
+         ;; "o" 'telega-chat-set-custom-order
+         ;; "r" 'telega-chat-toggle-read
+         ;; "d" 'telega-chat-delete
+         ;; "P" 'telega-chat-toggle-pin
+         ;; "^" 'telega-chat-toggle-pin
+         ;; "C" 'telega-chat-call
+         ;; "DEL" 'telega-chat-delete
+
+         :desc "Filter" "/" #'telega-chatbuf-filter
+         :desc "Describe" "?" #'telega-chatbuf-describe
+         :desc "Attach from clipboard" "p" #'telega-chatbuf-attach-clipboard
+         :desc "Attach" "a" #'telega-chatbuf-attach
+         :desc "Attach File" "f" #'telega-chatbuf-attach-fille
+         :desc "Filter cancel" "c" #'telega-chatbuf-filter-cancel
+         :desc "Cancel aux" "k" #'telega-chatbuf-cancel-aux
+         :desc "Filter search" "s" #'telega-chatbuf-filter-search
+         :desc "My search" "S" #'+hydra/telega-search/body
+         ))
+
+  (map! :map telega-msg-button-map
+        "r" #'telega-msg-reply
+        "c" 'telega-msg-copy-text
+        "n" #'evil-ex-search-next
+        "C-j" #'telega-button-forward
+        "C-k" #'telega-button-backward
+        "c" #'telega-msg-edit
+        (:localleader
+         "k" #'telega-chatbuf-cancel-aux
+         ;; ;; ffplay media controls for some media messages
+         "," 'telega-msg--vvnote-rewind-10-backward
+         "<" 'telega-msg--vvnote-rewind-10-backward
+         "." 'telega-msg--vvnote-rewind-10-forward
+         ">" 'telega-msg--vvnote-rewind-10-forward
+         "x" 'telega-msg--vvnote-play-speed-toggle
+
+         "0" 'telega-msg--vvnote-stop
+         "1" 'telega-msg--vvnote-rewind-part
+         "2" 'telega-msg--vvnote-rewind-part
+         "3" 'telega-msg--vvnote-rewind-part
+         "4" 'telega-msg--vvnote-rewind-part
+         "5" 'telega-msg--vvnote-rewind-part
+         "6" 'telega-msg--vvnote-rewind-part
+         "7" 'telega-msg--vvnote-rewind-part
+         "8" 'telega-msg--vvnote-rewind-part
+         "9" 'telega-msg--vvnote-rewind-part
+         "B" 'telega-msg-ban-sender
+         "F" 'telega-msg-forward-marked-or-at-point-to-multiple-chats
+         "L" 'telega-msg-redisplay
+         "U" 'telega-chatbuf-msg-marks-toggle
+         ;; ;; Menu for right mouse on a message
+         ;; (define-key map [down-mouse-3] telega-msg-button-menu-map)
+         ;; (define-key map [mouse-3] #'ignore)
+         "DEL" 'telega-msg-delete-marked-or-at-point
+         "*" 'telega-msg-favorite-toggle
+         "m" #'telega-msg-mark-toggle
+         "U" #'telega-chatbuf-unmark-all
+         "i" #'telega-describe-message
+         "e" #'telega-msg-edit
+         "f" #'telega-msg-forward-marked-or-at-point
+         "d" #'telega-msg-delete-marked-or-at-point
+         ;; "k" #'telega-msg-delete-marked-or-at-point
+         "l" #'telega-msg-redisplay
+         "T" #'telega-msg-open-thread
+         "=" #'telega-msg-diff-edits
+         "y" #'telega-msg-copy-text
+         "Y" #'telega-chatbuf-copy-link
+         "j" #'+hydra/telega-search/body/body
+         "R" #'telega-msg-resend
+         "S" #'telega-msg-save
+         "P" #'telega-msg-pin-toggle
+         "^" #'telega-msg-pin-toggle))
+
+  ;; (map! :leader "G" telega-prefix-map)
+  (map! :leader "y" telega-prefix-map)
+  (map! :map telega-prefix-map
+        :leader
+        :prefix "y"
+        :desc "View folders" "F" #'telega-view-folders
+        :desc "Kill telega" "k" #'telega-kill)
+
+  (setq telega-chat-input-markups '("markdown1" nil "markdown2"))
+
+  ;; (setq telega-completing-read-function 'ivy-completing-read)
+  (setq telega-completing-read-function 'completing-read)
+
+  ;;FIXME the path is in nix store!
+  ;;;;;;;Contributed packages
+  (add-load-path! (concat doom-emacs-dir ".local/straight/repos/telega.el/contrib"))
+  (require 'telega-mnz) ;;;syntax highlight for code blocks
+  (add-hook! 'telega-root-mode-hook 'global-telega-mnz-mode)
+  (require 'telega-url-shorten) ;;;Url shortening with small svg icons
+  (add-hook! 'telega-root-mode-hook 'global-telega-url-shorten-mode)
+  (require 'telega-dired-dwim) ;;; select multiple files from dired
+  ;; (require 'telega-transient)
+  ;; (telega-transient-mode 1)
+
+  ;; font some icons
+  (set-fontset-font t 'unicode "Symbola" nil 'append)
+
+  (setq telega-notifications-mode 1)
+
+  (after! doom-modeline
+    ;; (setq telega-mode-line--logo-image-cache
+    ;;       (doom-modeline-icon 'fileicon "telegram" "✈️" "#"
+    ;;                           :face
+    ;;                           'all-the-icons-blue
+    ;;                           'mode-line-inactive))
+    ;; (defun telega-mode-line-logo-image()
+    ;;   (doom-modeline-icon 'fileicon "telegram" "✈️" "#"
+    ;;                       :face
+    ;;                       (if (telega-user-online-p (telega-user-me))
+    ;;                           'all-the-icons-blue
+    ;;                         'all-the-icons-red
+    ;;                         )
+    ;;                       'mode-line-inactive))
+    (setq telega-mode-line-string-format
+          '(" "
+            (:eval
+             (telega-mode-line-icon))
+            (:eval
+             (when telega-use-tracking-for
+               (telega-mode-line-tracking)))
+            (:eval
+             (telega-mode-line-unread-unmuted))
+            (:eval
+             (telega-mode-line-mentions 'messages))))
+    (telega-mode-line-mode))
+
+  ;; ;; '(image :type svg
+  ;; ;;         :file "/home/striker/.config/emacs/.local/straight/build-28.0.50/telega/etc/telega-logo.svg"
+  ;; ;;         :ascent center :background "#191729" :height 18))
+
+  (add-to-list 'display-buffer-alist
+               '((lambda (bufname _action)
+                   (with-current-buffer bufname
+                     (eq major-mode 'telega-image-mode)))
+                 (display-buffer-in-side-window)
+                 (reusable-frames     . visible)
+                 (side                . right)
+                 ;; (window-height       . 0.33)
+                 (window-width        . 0.45)
+                 ))
+
+  ;; fallback buffer
+  ;; (add-hook! 'telega-image-mode-hook #'doom-mark-buffer-as-real-h)
+  ;; (add-hook! 'telega-chat-mode-hook #'doom-mark-buffer-as-real-h)
+  ;; (doom-set-buffer-real (get-buffer "*Telega Root*") t)
+
+  ;; (add-to-list 'display-buffer-alist
+  ;;              '("^\\*Image\\*$"
+  ;;                (reusable-frames     . visible)
+  ;;                (side                . right)
+  ;;                (window-height       . 0.33)
+  ;;                )))
+
+  ;; Found %count messages with %query
+  (after! hydra
+    (defhydra +hydra/telega-search
+      (:hint nil)
+      "
+     Found %(plist-get telega-chatbuf--msg-filter 'total-count) messages with
+     [_g_] First    [_l_] Show list
+     [_k_] Previous [_s_] seach in another chat     ╭─────────────────────
+     [_j_] Next     [_c_] change query              │[_q_] quit
+     [_G_] Last                                   │[_q_] Quit and go back"
+      ;; ("j" (progn (git-gutter:next-hunk 1) (recenter)))
+      ("j" (progn (telega-chatbuf--input-search-next) (recenter)))
+      ("k" (progn (telega-chatbuf--input-search-next) (recenter)))
+      ("g" (progn (goto-char (point-min)) (git-gutter:next-hunk 1)))
+      ("G" (progn (goto-char (point-min)) (git-gutter:previous-hunk 1)))
+      ("l" git-gutter:popup-hunk)
+      ("s" telega-chatbuf-filter)
+      ("c" telega-chatbuf-filter-search)
+      ("q"
+       telega-chatbuf-filter-cancel
+       ;; (when (get-buffer git-gutter:popup-buffer)
+       ;;   (kill-buffer (get-buffer git-gutter:popup-buffer)))
+       nil
+       :color blue)
+      ))
+
+    :custom (telega-server-libs-prefix "/usr/local")
             (telega-chat-bidi-display-reordering 'right-to-left)
             (telega-sticker-size '(10 . 24))
             (telega-emoji-use-images nil))
 
-(setq telega-tdlib-max-version "1.8.5")
+;; (setq telega-tdlib-max-version "1.8.5")
 #+end_src
 
 
 #+RESULTS:
-: 1.8.5
+| telega-mnz-mode--maybe | telega-url-shorten-mode--maybe | my/telega/company-backends |
 ** telega new
 
-#+begin_src emacs-lisp :tangle yes
+#+begin_src emacs-lisp :tangle no
 ;;; telegram/config.el -*- lexical-binding: t; -*-
-(setq telega-tdlib-max-version "1.8.6")
 (use-package! telega
   :config
   ;; clear all bindings (he willl introduce many conflicting bindings again :/)
@@ -12950,6 +13607,7 @@ some of the above.
           thing-at-point-url-at-point))
   ;; (setq eww-bookmarks-directory (locate-user-emacs-file "eww-bookmarks/"))
   (setq eww-bookmarks-directory (expand-file-name "~/.config/eww-bookmarks/"))
+  (setq bookmark-file (expand-file-name "~/.config/eww-bookmarks/emacs-bookmarks"))
   (setq eww-history-limit 150)
   (setq eww-use-external-browser-for-content-type
         "\\`\\(video/\\|audio\\)") ; On GNU/Linux check your mimeapps.list
@@ -14592,8 +15250,8 @@ os.system(command)
 ** CLIPPY
 Gives us a popup box with "Clippy, the paper clip". You can make him say various things by calling 'clippy-say' function.  But the more useful functions of clippy are the two describe functions provided: 'clippy-describe-function' and 'clippy-describe-variable'.  Hit the appropriate keybinding while the point is over a function/variable to call it.  A popup with helpful clippy will appear, telling you about the function/variable (using describe-function and describe-variable respectively).
 
-| COMMAND                  | DESCRIPTION                             | KEYBINDING |
-|--------------------------+-----------------------------------------+------------|
+| COMMAND                  | DESCRIPTION                           | KEYBINDING |
+|--------------------------+---------------------------------------+------------|
 | clippy-describe-function | /Clippy describes function under point/ | SPC c h f  |
 | clippy-describe-variable | /Clippy describes variable under point/ | SPC c h v  |
 
@@ -16736,60 +17394,6 @@ For example =(measure-time (prettier-eslint))=.
 
 #+RESULTS:
 : measure-time
-** USLS --- Unassuming Sidenotes of Little Significance
-
-NOTE 2021-12-29: USLS is subject to a rewrite.  I have been using it
-daily since its inception, though the code needs to be refactored.  As a
-proof-of-concept of its utility, check out my =invtr= (only for curious
-hackers, not actual users): [[#h:c66a0f25-840a-49f0-a615-66dfca61890b][INVTR (toy inventory and client manager)]].
-
-This is a library that I am developing to help me flesh out my
-note-taking system.  In essence, =usls= is a set of helper functions
-around standard Emacs tools, such as =find-file=, =dired=, and internal
-libraries like =thingatpt=.  It has no external dependencies whatsoever.
-This blog post of mine documents the principles and general ideas about
-it: [[https://protesilaos.com/codelog/2020-10-08-intro-usls-emacs-notes/][My simple note-taking system for Emacs (without Org)]] (2020-10-08).
-
-Because this is standard Emacs stuff, I can always benefit from the rest
-of my setup, such as to search for file contents in the current
-directory.  Study the entirety of my [[#h:98d3abcc-f34e-4029-aabc-740f0b6421f8][Completion framework and extras]].
-
-In the =usls.el= code I wanted to respect key binding conventions, so I
-did not bind any keys: this is a user-level customisation.  The other
-options I have here are for the sake of visibility and are left to their
-default values.
-
-The code for this project is on the [[https://gitlab.com/protesilaos/usls][USLS Gitlab repo]] and reproduced in
-the subsequent code block.
-
-#+begin_src emacs-lisp
-;;; USLS --- Unassuming Sidenotes of Little Significance
-(load "usls.el")
-(use-package! usls
-  :config
-  (setq usls-directory (expand-file-name "~/Documents/notes/"))
-  (setq usls-known-categories '("economics" "philosophy" "politics" "technical" "void" "linux" "shell" "emacs"))
-  (setq usls-file-type-extension ".txt") ; {.txt,.org,.md}
-  (setq usls-subdir-support nil)
-  (setq usls-file-region-separator 'line) ; {'line,'heading, OR string of your choice}
-  (setq usls-file-region-separator-heading-level 1)
-  (setq usls-custom-header-function nil)
-
-  (add-hook 'usls-mode-hook #'goto-address-mode)
-
-  (let ((map global-map))               ; globally bound keys
-    (define-key map (kbd "C-c n d") #'usls-dired)
-    (define-key map (kbd "C-c n f") #'usls-find-file)
-    (define-key map (kbd "C-c n a") #'usls-append-region-buffer-or-file)
-    (define-key map (kbd "C-c n n") #'usls-new-note))
-  (let ((map usls-mode-map))            ; only for usls buffers
-    (define-key map (kbd "C-c n i") #'usls-id-insert)
-    (define-key map (kbd "C-c n l") #'usls-follow-link)))
-#+end_src
-
-#+RESULTS:
-: t
-
 ** Repeatable key chords (repeat-mode)
 
 Emacs28 comes with a built-in utility for repeating selected commands in
@@ -17034,8 +17638,8 @@ CLOSED: [2022-03-30 Wed 09:28]
 ** EMMS
 One of the media players available for Emacs is emms, which stands for Emacs Multimedia System.  By default, Doom Emacs does not use 'SPC a',' so the format I use for these bindings is 'SPC a' plus 'key'.
 
-| COMMAND               | DESCRIPTION                       | KEYBINDING |
-|-----------------------+-----------------------------------+------------|
+| COMMAND               | DESCRIPTION                     | KEYBINDING |
+|-----------------------+---------------------------------+------------|
 | emms-playlist-mode-go | /Switch to the playlist buffer/   | SPC a a    |
 | emms-pause            | /Pause the track/                 | SPC a x    |
 | emms-stop             | /Stop the track/                  | SPC a s    |
@@ -18741,17 +19345,17 @@ with it.
     (setq org-roam-capture-templates
           `(("s" "standard" plain "%?"
      :if-new
-     (file+head "%<%Y%m%d%H%M%S>-${slug}.org"
+     (file+head "standard/%<%Y%m%d%H%M%S>-${slug}.org"
       "#+title: ${title}\n#+filetags: \n\n ")
      :unnarrowed t)
         ("d" "definition" plain
          "%?"
          :if-new
-         (file+head "${slug}.org" "#+title: ${title}\n#+filetags: definition \n\n* Definition\n\n\n* Examples\n")
+         (file+head "definition/${slug}.org" "#+title: ${title}\n#+filetags: definition \n\n* Definition\n\n\n* Examples\n")
          :unnarrowed t)
         ("r" "ref" plain "%?"
            :if-new
-           (file+head "${citekey}.org"
+           (file+head "ref/${citekey}.org"
            "#+title: ${slug}: ${title}\n
 \n#+filetags: reference ${keywords} \n
 \n* ${title}\n\n
@@ -18760,32 +19364,40 @@ with it.
            :unnarrowed t)
           ("p" "person" plain "%?"
            :if-new
-           (file+head "${slug}.org" "%^{relation|some guy|family|friend|colleague}p %^{birthday}p %^{address}p
+           (file+head "person/${slug}.org" "%^{relation|some guy|family|friend|colleague}p %^{birthday}p %^{address}p
 ,#+title:${slug}\n#+filetags: :person: \n"
                       :unnarrowed t))
 
  ("b" "book notes" plain
  "\n* Source\n\nAuthor: %^{Author}\nTitle: ${title}\nYear: %^{Year}\n\n* Summary\n\n%?"
- :if-new (file+head "%<%Y%m%d%H%M%S>-${slug}.org" "#+title: ${title}\n")
+ :if-new (file+head "BookNotes/%<%Y%m%d%H%M%S>-${slug}.org" "#+title: ${title}\n")
  :unnarrowed t)
 ("p" "project" plain "* Goals\n\n%?\n\n* Tasks\n\n** TODO Add initial tasks\n\n* Dates\n\n"
- :if-new (file+head "%<%Y%m%d%H%M%S>-${slug}.org" "#+title: ${title}\n#+filetags: Project")
+ :if-new (file+head "Projects/%<%Y%m%d%H%M%S>-${slug}.org" "#+title: ${title}\n#+filetags: Project")
  :unnarrowed t)
 ("B" "book notes" plain (file "~/org/org-roam2/Templates/BookNoteTemplate.org")
- :if-new (file+head "%<%Y%m%d%H%M%S>-${slug}.org" "#+title: ${title}\n")
+ :if-new (file+head "BookNotes/%<%Y%m%d%H%M%S>-${slug}.org" "#+title: ${title}\n")
  :unnarrowed t)
 ("l" "programming language" plain
  "* Characteristics\n\n- Family: %?\n- Inspired by: \n\n* Reference:\n\n"
- :if-new (file+head "%<%Y%m%d%H%M%S>-${slug}.org" "#+title: ${title}\n")
- :unnarrowed t))))
-
+ :if-new (file+head "ProgLangs/%<%Y%m%d%H%M%S>-${slug}.org" "#+title: ${title}\n")
+ :unnarrowed t)
+ ("a" "article" plain "%?"
+         :if-new
+         (file+head "articles/${title}.org" "#+title: ${title}\n#+filetags: :article:\n")
+         :immediate-finish t
+         :unnarrowed t))))
 (setq org-roam-dailies-capture-templates
       '(("d" "default" entry "* %<%I:%M %p>: %?"
          :if-new (file+head "%<%Y-%m-%d>.org" "#+title: %<%Y-%m-%d>\n"))))
+;; modifying the display template to show the node "type"
+(setq org-roam-node-display-template
+      (concat "${type:15} ${title:*} " (propertize "${tags:10}" 'face 'org-tag)))
+
 #+end_src
 
 #+RESULTS:
-| s | standard | plain | %? | :if-new | (file+head %<%Y%m%d%H%M%S>-${slug}.org #+title: ${title} |
+: ${type:15} ${title:*} ${tags:10}
 
 ***** Citations
 #+begin_src emacs-lisp :tangle no
