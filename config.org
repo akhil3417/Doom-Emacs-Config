@@ -17178,8 +17178,7 @@ rather than the whole path."
 #+END_SRC
 
 ** emms dbus notification
-#+begin_src emacs-lisp :tangle no
-
+#+begin_src emacs-lisp :tangle yes
 ; choose D-Bus to disseminate messages, if it is running.
 (cond
  ;; test to see if D-Bus notifications are available
@@ -17211,18 +17210,6 @@ rather than the whole path."
 (defun emms-notifications-message (track-name)
   "Share track name via Emacs minibuffer."
   (message "EMMS is now playing: %s" track-name))
-
-(setq emms-player-next-function 'emms-notify-and-next)
-
-(defun emms-notify-and-next ()
-  "Send a notification of track and start next."
-  (emms-next)
-  (let ((track-name (emms-track-description (emms-playlist-current-selected-track))))
-    (cond
-     ((eq notify-method 'notify-via-dbus-notifications)
-      (emms-notifications-dbus track-name))
-     (t (emms-notifications-message track-name)))))
-
 
 (defun emms-start ()
   "Start playing the current track in the EMMS playlist."
