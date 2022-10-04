@@ -1,4 +1,4 @@
- #+TITLE:Akhil's Doom Emacs Config
+#+TITLE:Akhil's Doom Emacs Config
 #+AUTHOR: Akhil Pratap Singh
 #+DESCRIPTION: Akhil's personal Doom Emacs config.
 #+STARTUP: fold
@@ -7,7 +7,6 @@
 ABOUT THIS CONFIG →
 
 This is my personal Doom Emacs config.  Doom Emacs is a distribution of Emacs that uses the "evil" keybindings (Vim keybindings) and includes a number of nice extensions and a bit of configuration out of the box.  I am maintaining this config not just for myself, but also for those that want to explore some of what is possible with Emacs.  I will add a lot of examples of plugins and settings, some of them I may not even use personally.  I am doing this so that others can save their time and so that people can use ready snippets without errors.
-
 *Note*: The sections that are tagged as DONE in this org document mean that I have
 learned everything about them and are included in the workflow or may not
 require further attention.
@@ -121,6 +120,7 @@ To install ~some-package~ from MELPA, ELPA or emacsmirror:
 ;; (package! org-notifications)
 ;; (package! org-wild-notifier)
 
+  (package! mpv)
   (package! epc)
   (package! ctable)
   (package! deferred)
@@ -251,6 +251,9 @@ To install ~some-package~ from MELPA, ELPA or emacsmirror:
 			   :files ("gitignore-mode.el")))
 #+end_src
 
+#+RESULTS:
+| gitignore-mode | :modules | ((:user) (:user . modules)) | :recipe | (:host github :repo magit/git-modes :files (gitignore-mode.el)) |
+
 *** Packages from git repositories
 To install a package directly from a particular repo, you'll need to specify
 a ~:recipe~. You'll find documentation on what ~:recipe~ accepts [[https://github.com/raxod502/straight.el#the-recipe-format][here]]:
@@ -279,6 +282,19 @@ a ~:recipe~. You'll find documentation on what ~:recipe~ accepts [[https://githu
   :recipe (:host github
            :repo "kmonad/kbd-mode"))
 
+;; (package! elfeed-tube
+;;   :recipe (:host github
+;;            :repo "karthink/elfeed-tube"))
+
+(package! tmr
+  :recipe (:host github
+           :repo "protesilaos/tmr.el"))
+
+
+(package! ef-themes
+  :recipe (:host github
+           :repo "protesilaos/ef-themes"))
+
 (package! exwm-mff :recipe (:host github :repo "ieure/exwm-mff" :branch "main"))
 ;; (package! exwm-firefox-core :recipe (:host github :repo "walseb/exwm-firefox-core" :branch "master"))
 ;; (package! vulpea :recipe (:host github :repo "d12frosted/vulpea" :branch "master"))
@@ -302,10 +318,6 @@ a ~:recipe~. You'll find documentation on what ~:recipe~ accepts [[https://githu
 (package! pulsar
     :recipe (:host github :repo "protesilaos/pulsar"
        :files ("pulsar.el")))
-
-(package! tmr
-    :recipe (:host github :repo "protesilaos/tmr.el"
-       :files ("tmr.el")))
 
 (package! usls
     :recipe (:host github :repo "protesilaos/usls"
@@ -438,7 +450,15 @@ my home machine is pretty safe, and my laptop is shutdown a lot.
 #+begin_src emacs-lisp
 ;; -*- lexical-binding: t -*-
 (add-to-list 'load-path "~/.config/doom/lisp/")
+(add-to-list 'load-path "~/.config/doom/lisp/elfeed-tube/")
 (add-to-list 'load-path "~/.config/doom/lisp/bon-app-launcher")
+
+(load "elfeed-tube.el")
+(load "elfeed-tube-contrib.el")
+(load "elfeed-tube-fill.el")
+(load "elfeed-tube-mpv.el")
+(load "elfeed-tube-test.el")
+(load "elfeed-tube-utils.el")
 
 (load "setup-ui.el")
 (load "setup-minibuffer.el")
@@ -464,7 +484,6 @@ my home machine is pretty safe, and my laptop is shutdown a lot.
 ;; (load "setup-dired.el")
 ;; (load "setup-email.el")
 ;; (load "setup-elfeed.el")
-;; (load "elfeed-config.el")
 ;; (load "setup-email.el")
 ;; (load "dunst.el")
 ;; (load "chromium")
@@ -481,6 +500,7 @@ my home machine is pretty safe, and my laptop is shutdown a lot.
 (load "prot-comment.el")
 (load "prot-bookmark.el")
 
+(load "org-protocol-capture-html.el")
 #+end_src
 
 #+RESULTS:
@@ -502,6 +522,10 @@ setting, and load it if it exists.
 
 ** Rudimentry Settings
 #+begin_src emacs-lisp
+
+  ;; Use visual line motions even outside of visual-line-mode buffers
+  (evil-global-set-key 'motion "j" 'evil-next-visual-line)
+  (evil-global-set-key 'motion "k" 'evil-previous-visual-line)
 
 (global-set-key (kbd "<C-wheel-up>") 'text-scale-increase)
 (global-set-key (kbd "<C-wheel-down>") 'text-scale-decrease)
@@ -945,7 +969,7 @@ I’ve always been mixed on this behavior but it seems like a good idea.
     ("qjackctl" (exwm-floating-toggle-floating))
     ;; ("mpv" (exwm-floating-toggle-floating)
     ;; ("mpv" (exwm/position-window))
-    ;; ("mpv" (exwm-workspace-move-window 4)
+    ("mpv" (exwm-workspace-move-window 4))
     ;;  (exwm-layout-toggle-mode-line))
     ("gsi" (exwm-input-toggle-keyboard)))
 
@@ -1310,8 +1334,8 @@ configured to use @ (at symbol) as separator."
         ([?\C-\s-b] . [?\C-b]) ;; bookmark
         ([?\C-\s-s] . [?\C-s]) ;; save
         ;; QuickFind next
-        ([?\C-,] . [C-g])
-        ([?\C-.] . [C-S-g])
+        ([?\C-\\] . [C-g])
+        ([?\C-\/] . [C-S-g])
         ;;idk
         ;; ([?\C-\S-u] . [C-S-f])
         ;; Open new window?
@@ -1864,13 +1888,13 @@ font-2 = "Material Icons:size=10;3"
 font-3 = "Fira Mono:size=6;-3"
 
 modules-left = exwm exwm-path exwm-workspace
-modules-center = spotify
+modules-center = spotify mpd
 ; modules-left = exwm-workspace
-modules-right =  wireless-network networkspeedup networkspeeddown cpu memory uptime arch-aur-updates battery temperature date pulseaudio volume pavolume
+modules-right =  wireless-network networkspeedup networkspeeddown cpu memory uptime arch-aur-updates battery temperature date pulseaudio
 
 ; exwm-workspace exwm exwm-path spotify mu4e telegram xkeyboard cpu cpu1 date battery1 battery temperture temperature1 xbacklight wireless-network wired-network
 ; weathe volume uptime filesystem pulseaudio memory wlan eth network networkspeedup networkspeeddown networkspeedup1 networkspeeddown1 arch-aur-updates aur-updates
-; filesystem1 kernel load-average mpd release pub-ip pavolume
+; filesystem1 kernel load-average mpd release pub-ip pavolume  ;; was at the end volume pavolume
 tray-position = right
 tray-padding =2
 tray-maxsize =40
@@ -4255,7 +4279,7 @@ CLOSED: [2022-03-31 Thu 19:31]
 #+end_src
 
 *** keycast karthik
-#+begin_src emacs-lisp
+#+begin_src emacs-lisp :tangle no
 
 ;; ** SCREENCAST
 ;; Presentation-mode will embiggen everything. Keycast-mode shows the keys being
@@ -4297,7 +4321,7 @@ CLOSED: [2022-03-31 Thu 19:31]
 #+end_src
 
 #+RESULTS:
-: t
+| ( keycast-mode-line) |   | (:eval (propertize (format  V:%s%%  (desktop-environment-volume-get)) 'keymap display-volume-keymap)) | emms-mode-line-string | emms-playing-time-string | appt-mode-string | (pyvenv-virtual-env-name ( venv: pyvenv-virtual-env-name  )) |
 
 *** Keycast prot
 
@@ -4318,7 +4342,7 @@ show commands, which looks cleaner.  I got the idea and original piece
 of Elisp from the [[https://github.com/aadcg/dotfiles][dotfiles of André Alexandre Gomes]] and then added a few
 tweaks of my own.
 
-#+begin_src emacs-lisp :tangle yes
+#+begin_src emacs-lisp :tangle no
 ;;; Keycast mode
 (use-package! keycast
   :config
@@ -4936,6 +4960,9 @@ https://github.com/seagle0128/doom-modeline
   (doom-modeline-major-mode-icon nil))
 #+end_src
 
+#+RESULTS:
+: doom-modeline
+
 **** DONE Doom's pdf modeline
 CLOSED: [2022-03-30 Wed 19:58]
 #+begin_quote
@@ -5155,7 +5182,7 @@ icon. Then we'll redefine two functions used to generate the modeline.
 #+end_src
 
 #+RESULTS:
-| doom--setq-evil-shift-width-for-after-change-major-mode-h | clean-mode-line | yas-global-mode-enable-in-buffers | global-evil-surround-mode-enable-in-buffers | git-commit-setup-font-lock-in-buffer | better-jumper-mode-enable-in-buffers | global-company-mode-enable-in-buffers | evil-snipe-override-mode-enable-in-buffers | evil-snipe-mode-enable-in-buffers | global-hl-line-mode-enable-in-buffers | smartparens-global-mode-enable-in-buffers | doom-disable-smartparens-navigate-skip-match-h | ws-butler-global-mode-enable-in-buffers | global-undo-fu-session-mode-enable-in-buffers | global-flycheck-mode-enable-in-buffers | +ligatures-init-buffer-h | persp-after-change-major-mode-h | global-emojify-mode-enable-in-buffers | doom-modeline-update-buffer-file-icon | pulsar-global-mode-enable-in-buffers | solaire-global-mode-enable-in-buffers | global-subword-mode-enable-in-buffers | evil-mode-enable-in-buffers | global-eldoc-mode-enable-in-buffers | global-font-lock-mode-enable-in-buffers | doom-highlight-non-default-indentation-h | +company-init-backends-h | doom-run-local-var-hooks-h |
+| doom--setq-evil-shift-width-for-after-change-major-mode-h | clean-mode-line | global-evil-surround-mode-enable-in-buffers | doom-modeline-auto-set-modeline | yas-global-mode-enable-in-buffers | +ligatures-init-buffer-h | persp-after-change-major-mode-h | better-jumper-mode-enable-in-buffers | global-company-mode-enable-in-buffers | evil-snipe-override-mode-enable-in-buffers | evil-snipe-mode-enable-in-buffers | git-commit-setup-font-lock-in-buffer | global-hl-line-mode-enable-in-buffers | smartparens-global-mode-enable-in-buffers | doom-disable-smartparens-navigate-skip-match-h | ws-butler-global-mode-enable-in-buffers | global-undo-fu-session-mode-enable-in-buffers | global-flycheck-mode-enable-in-buffers | global-emojify-mode-enable-in-buffers | doom-modeline-update-buffer-file-icon | pulsar-global-mode-enable-in-buffers | global-subword-mode-enable-in-buffers | evil-mode-enable-in-buffers | global-eldoc-mode-enable-in-buffers | global-font-lock-mode-enable-in-buffers | +company-init-backends-h | doom-highlight-non-default-indentation-h | which-func-ff-hook | doom-run-local-var-hooks-h |
 
 ** Writeroom
 #+begin_quote
@@ -7082,7 +7109,7 @@ The following functions helps achieve this:
 : op/buffer-to-side-window
 
 ** all in one setup kar
-#+begin_src emacs-lisp :tangle no
+#+begin_src emacs-lisp :tangle yes
 
 
 ;; * WINDOW MANAGEMENT
@@ -9403,6 +9430,36 @@ moving to the next chunk.
 
 Unfortunately, since evil-search doesn't have an analogue to
 ~isearch-wrap-function~, we can't easily add support to it.
+**  Smart Move to beginning of line
+#+begin_src emacs-lisp
+
+(defun my-smarter-move-beginning-of-line (arg)
+  "Move point back to indentation of beginning of line.
+
+      Move point to the first non-whitespace character on this line.
+      If point is already there, move to the beginning of the line.
+      Effectively toggle between the first non-whitespace character and
+      the beginning of the line.
+
+      If ARG is not nil or 1, move forward ARG - 1 lines first.  If
+      point reaches the beginning or end of the buffer, stop there."
+  (interactive "^p")
+  (setq arg (or arg 1))
+
+  ;; Move lines first
+  (when (/= arg 1)
+    (let ((line-move-visual nil))
+      (forward-line (1- arg))))
+
+  (let ((orig-point (point)))
+    (back-to-indentation)
+    (when (= orig-point (point))
+      (move-beginning-of-line 1))))
+
+;; remap C-a to `smarter-move-beginning-of-line'
+(global-set-key [remap evil-beginning-of-line]
+                'my-smarter-move-beginning-of-line)
+#+end_src
 * SHELLS
 ** desc
 Eshell is a strictly line-oriented command prompt written in Emacs Lisp.
@@ -10337,7 +10394,7 @@ in the manual of the themes.  If you are using them, evaluate this form:
           pdf-outline-minor-mode
           pdf-misc-size-indication-minor-mode
           pdf-occur-global-minor-mode))
-  (setq pdf-view-display-size 'fit-height)
+  (setq pdf-view-display-size 'fit-height) ;;fit-page
   (setq pdf-view-continuous t)
   (setq pdf-view-use-dedicated-register nil)
   (setq pdf-view-max-image-width 1080)
@@ -14252,7 +14309,7 @@ Usage:
 +  Do something else while listening :-)
 +  Pause emms with M-x emms-pause when needed.
 
- #+BEGIN_SRC emacs-lisp :tangle yes
+ #+BEGIN_SRC emacs-lisp :tangle no
 ;; (use-package! elfeed-goodies)
 ;; (elfeed-goodies/setup)
 ;; (setq elfeed-goodies/entry-pane-size 0.5)
@@ -14294,6 +14351,9 @@ Usage:
 (emms-default-players)
 (setq emms-source-file-default-directory "~/Music/")
 #+END_SRC
+
+#+RESULTS:
+: ~/Music/
 
 #+RESULTS:
 : ~/Music/
@@ -14386,6 +14446,101 @@ date heading that contains list of urls."
 
 #+RESULTS:
 : qbs
+** Mini-buffer editing more space
+Sometimes you want to be able to do fancy things with the text that you're entering into the minibuffer. Sometimes you just want to be able to read it, especially when it comes to lots of text. This binds C-M-e in a minibuffer) so that you can edit the contents of the minibuffer before submitting it.
+#+begin_src emacs-lisp :tangle packages.el
+(package! miniedit)
+#+end_src
+#+begin_src emacs-lisp
+(use-package miniedit
+  :commands minibuffer-edit
+  :init (miniedit-install))
+#+end_src
+** Copy filename to clipboard
+#+begin_src emacs-lisp
+(defun my/copy-file-name-to-clipboard ()
+  "Copy the current buffer file name to the clipboard."
+  (interactive)
+  (let ((filename (if (equal major-mode 'dired-mode)
+                      default-directory
+                    (buffer-file-name))))
+    (when filename
+      (kill-new filename)
+      (message "Copied buffer file name '%s' to the clipboard." filename))))(defun my/copy-file-name-to-clipboard ()
+  "Copy the current buffer file name to the clipboard."
+  (interactive)
+  (let ((filename (if (equal major-mode 'dired-mode)
+                      default-directory
+                    (buffer-file-name))))
+    (when filename
+      (kill-new filename)
+      (message "Copied buffer file name '%s' to the clipboard." filename))))
+#+end_src
+
+#+RESULTS:
+: my/copy-file-name-to-clipboard
+** open current file with external program
+#+begin_src emacs-lisp
+
+(defun my/open-with (arg)
+  "Open visited file in default external program.
+
+      With a prefix ARG always prompt for command to use."
+  (interactive "P")
+  (when buffer-file-name
+    (shell-command (concat
+                    (cond
+                     ((and (not arg) (eq system-type 'darwin)) "open")
+                     ((and (not arg) (member system-type '(gnu gnu/linux gnu/kfreebsd))) "xdg-open")
+                     (t (read-shell-command "Open current file with: ")))
+                    " "
+                    (shell-quote-argument buffer-file-name)))))
+#+end_src
+
+** Org Mode: Insert YouTube video with separate caption
+#+begin_src emacs-lisp :tangle packages.el
+(package! dash)
+#+end_src
+#+begin_src emacs-lisp
+(require 'dash)
+
+(defun my-msecs-to-timestamp (msecs)
+  "Convert MSECS to string in the format HH:MM:SS.MS."
+  (concat (format-seconds "%02h:%02m:%02s" (/ msecs 1000))
+          "." (format "%03d" (mod msecs 1000))))
+
+(defun my-org-insert-youtube-video-with-transcript (url)
+  (interactive "MURL: ")
+  (let* ((id (if (string-match "\\(?:v=\\|youtu\\.be/\\)\\([^&]+\\)" url) (match-string 1 url) url))
+         (temp-file (make-temp-name "org-youtube-"))
+         (temp-file-name (concat temp-file ".en.srv1"))
+         data)
+    (when (and (call-process "yt-dlp" nil nil nil
+                             "--write-sub" "--write-auto-sub"  "--no-warnings" "--sub-lang" "en" "--skip-download" "--sub-format" "srv1"
+                             "-o" temp-file
+                             (format "https://youtube.com/watch?v=%s" id))
+               (file-exists-p temp-file-name))
+      (insert
+       (format "#+begin_export html
+<iframe width=\"560\" height=\"315\" src=\"https://www.youtube.com/embed/%s\" title=\"YouTube video player\" frameborder=\"0\" allow=\"accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture\" allowfullscreen></iframe>\n#+end_export\n" id)
+       "\n"
+       (mapconcat (lambda (o)
+                    (format "| [[https://youtube.com/watch?v=%s&t=%ss][%s]] | %s |\n"
+                            id
+                            (dom-attr o 'start)
+                            (my-msecs-to-timestamp (* 1000 (string-to-number (dom-attr o 'start))))
+                            (->> (dom-text o)
+                                 (replace-regexp-in-string "[ \n]+" " ")
+                                 (replace-regexp-in-string "&#39;" "'")
+                                 (replace-regexp-in-string "&quot;" "\""))))
+                  (dom-by-tag (xml-parse-file temp-file-name) 'text)
+                  ""))
+      (delete-file temp-file-name))))
+
+#+end_src
+
+#+RESULTS:
+: my-org-insert-youtube-video-with-transcript
 ** org roam qutebrowser
 #+begin_src emacs-lisp :tangle yes
 (require 'org-roam-protocol)
@@ -14823,11 +14978,10 @@ being it has no notion of multiple timers---just the last one.
 
 #+begin_src emacs-lisp
 ;;; TMR Must Recur (just my generic timer)
-(load "tmr.el")
 (use-package! tmr
 :config
   (setq tmr-sound-file
-        "/usr/share/sounds/freedesktop/stereo/alarm-clock-elapsed.oga")
+        "~/.config/doom/NotificationSound.opus")
   (setq tmr-notification-urgency 'normal)
   (setq tmr-descriptions-list (list "Boil water" "Prepare tea" "Bake bread"))
   (let ((map global-map))
@@ -16854,8 +17008,6 @@ One of the media players available for Emacs is emms, which stands for Emacs Mul
        ;; libre-fm
        ;; (emms-librefm-scrobbler-enable)
 
-;;Adding ‘emms-player-mpd’ to your Emms player list is accomplished by invoking:
-;; (add-to-list 'emms-player-list 'emms-player-mpd)
   (require 'emms-setup)
   (emms-all)
   (emms-default-players)
@@ -16865,6 +17017,22 @@ One of the media players available for Emacs is emms, which stands for Emacs Mul
   ;; re-compute the regxp for mpv
   (emms-player-set emms-player-mpv 'regex
                    (apply #'emms-player-simple-regexp emms-player-base-format-list))
+
+
+;; ;; setup-mpd --not using cz having weird issues in runit
+;; (require 'emms-player-mpd)
+
+;; ;;Set the variables emms-player-mpd-server-name and emms-player-mpd-server-port to the location and port (respectively) of your MusicPD server. For example:
+
+;; (setq emms-player-mpd-server-name "localhost")
+;; (setq emms-player-mpd-server-port "6600")
+
+;; ;;If your MusicPD setup requires a password, you will to set emms-player-mpd-server-password as follows.
+
+;; ;; (setq emms-player-mpd-server-password "mypassword")
+
+;; ;;Adding ‘emms-player-mpd’ to your Emms player list is accomplished by invoking:
+;; (add-to-list 'emms-player-list 'emms-player-mpd)
 
   ;; save on quit and recover on startup
   (require 'emms-history)
@@ -16992,17 +17160,6 @@ One of the media players available for Emacs is emms, which stands for Emacs Mul
 ;; User Option: emms-history-start-playing
     ;; If non-nil emms starts playing the current track after ‘emms-history-load’ was invoked. The default value is nil.
 
-;; setup-mpd --not using cz having weird issues in runit
-;; (require 'emms-player-mpd)
-
-;;Set the variables emms-player-mpd-server-name and emms-player-mpd-server-port to the location and port (respectively) of your MusicPD server. For example:
-
-;; (setq emms-player-mpd-server-name "localhost")
-;; (setq emms-player-mpd-server-port "6600")
-
-;;If your MusicPD setup requires a password, you will to set emms-player-mpd-server-password as follows.
-
-;; (setq emms-player-mpd-server-password "mypassword")
 
 
 ;;Unless your MusicPD is configured to use absolute file names, you must set the emms-player-mpd-music-directory variable to the value of ’music_directory’ in your MusicPD configuration. There are additional options available as well, but the defaults should be sufficient for most uses.
@@ -17097,6 +17254,11 @@ _v_: vol     _a_: seek bw     _#_: shuffle            _s_elect
     ("a" emms-seek-backward)
     ("h" emms-seek-forward)
     ("SPC" emms-pause)
+    ;; ("n" emms-player-mpd-next)
+    ;; ("c" emms-player-mpd-previous)
+    ;; ("a" emms-player-mpd-seek)
+    ;; ("h" emms-player-mpd-seek)
+    ;; ("SPC" emms-player-mpd-pause)
     ("DEL" (emms-player-seek-to 0))
     ("<backspace>" (emms-player-seek-to 0))
     ("r" emms-toggle-repeat-track)
@@ -17178,7 +17340,7 @@ rather than the whole path."
 #+END_SRC
 
 ** emms dbus notification
-#+begin_src emacs-lisp :tangle yes
+#+begin_src emacs-lisp :tangle no
 ; choose D-Bus to disseminate messages, if it is running.
 (cond
  ;; test to see if D-Bus notifications are available
@@ -17222,6 +17384,10 @@ rather than the whole path."
       (emms-notifications-dbus track-name))
      (t (emms-notifications-message track-name)))))
 #+end_src
+
+#+RESULTS:
+: emms-start
+
 ** emms kdialog notification (not the pleasing)
 
 #+begin_src emacs-lisp :tangle no
@@ -17617,6 +17783,7 @@ Copied from =Thomas Journa='s config to move around org-buffers.
       org-log-done 'time                          ; having the time a item is done sounds convenient
       org-list-allow-alphabetical t               ; have a. A. a) A) list bullets
       org-export-in-background t                  ; run export processes in external emacs process
+      org-export-allow-bind-keywords t     ; Bind keywords can be handy
       org-catch-invisible-edits 'smart            ; try not to accidently do weird stuff in invisible regions
       org-export-with-sub-superscripts '{})       ; don't treat lone _ / ^ as sub/superscripts, require _{} / ^{}
 #+end_src
@@ -17816,6 +17983,23 @@ post-processing the =latexdiff= result.
   (add-to-list 'orgdiff-latexdiff-postprocess-hooks #'+orgdiff-nicer-change-colours))
 #+end_src
 
+***** WAIT org-todo-keywords
+#+begin_src emacs-lisp
+
+(setq org-todo-keywords
+      '((sequence "TODO(t)" "PROJ(p)" "LOOP(l)" "STRT(s)" "WAIT(w@/!)" "HOLD(h)" "IDEA(i)" "NEXT(n)" "|" "DONE(d!)" "KILL(k)" "READ(R)")
+       (sequence "BACKLOG(b)" "SOMEDAY(S)" "PLAN(P)" "READY(r)" "ACTIVE(a)" "REVIEW(v)" "|" "COMPLETED(c)" "CANC(K@)")
+       (sequence "[ ](T)" "[-](B)" "[?](W)" "|" "[X](D)")
+       (sequence "|" "OKAY(o)" "YES(y)" "NO(n)")))
+
+#+end_src
+
+#+RESULTS:
+| sequence | TODO(t)    | PROJ(p)    | LOOP(l) | STRT(s)  | WAIT(w@/!) | HOLD(h)   | IDEA(i) | NEXT(n) |              |          | DONE(d!) | KILL(k) | READ(R) |
+| sequence | BACKLOG(b) | SOMEDAY(S) | PLAN(P) | READY(r) | ACTIVE(a)  | REVIEW(v) |         |         | COMPLETED(c) | CANC(K@) |          |         |         |
+| sequence | [ ](T)     | [-](B)     | [?](W)  |          |            | [X](D)    |         |         |              |          |          |         |         |
+| sequence |            |            | OKAY(o) | YES(y)   | NO(n)      |           |         |         |              |          |          |         |         |
+
 **** getting things done
 
    Getting things done package to make my life work.
@@ -17863,6 +18047,8 @@ set up org-capture.
 #+end_src
 
 #+begin_src emacs-lisp :noweb no-export
+(require 'org-protocol-capture-html)
+
 (after! org-capture
   <<prettify-capture>>
 
@@ -17905,7 +18091,7 @@ set up org-capture.
                    :type entry
                    :template ("* TODO %?"
                               "%i %a"))
-                  ("Personal note" :keys "n"
+                  ("Personal note" :keys "N"
                    :icon ("sticky-note-o" :set "faicon" :color "green")
                    :file +org-capture-todo-file
                    :prepend t
@@ -17913,6 +18099,14 @@ set up org-capture.
                    :type entry
                    :template ("* %?"
                               "%i %a"))
+
+                  ("Web site" :keys "w"
+                   :icon ("globe" :set "faicon" :color "blue")
+                   :file "~/org/org-capture/webnotes.org"
+                   :prepend t
+                   :headline ""
+                   :type entry
+                   :template ("* %?\n%c\n%:initial"))
                   ("Email" :keys "e"
                    :icon ("envelope" :set "faicon" :color "blue")
                    :file +org-capture-todo-file
@@ -18158,6 +18352,20 @@ no modeline.
 #+RESULTS:
 | lambda | nil | (interactive) | (set-window-parameter nil 'mode-line-format 'none) | (org-capture) |
 
+**** Habit Tracking
+
+https://orgmode.org/manual/Tracking-your-habits.html
+
+#+begin_src emacs-lisp
+
+(require 'org-habit)
+(add-to-list 'org-modules 'org-habit)
+(setq org-habit-graph-column 60)
+
+#+end_src
+
+#+RESULTS:
+: 60
 **** Super agenda
 
 The agenda is nice, but a souped up version is nicer.
@@ -18180,18 +18388,7 @@ The agenda is nice, but a souped up version is nicer.
                            "~/org/org-capture/todo.org"
                            "~/org/org-roam2/daily/"
                            "~/org/org-roam2/todo.org/")))
-;; (setq org-agenda-files '("~/Dropbox/Org/Daily"
-;;                          "~/Dropbox/Org/references/notes/agenda.org" "~/Dropbox/Org/references/notes/incubate.org"
-;;                          "~/Dropbox/Org/references/notes/openquestions.org"))
-;; (custom-set-variables
-;;  '(org-agenda-files "/home/shiva/org/org-agenda/agenda.org"))
-#+end_src
 
-#+RESULTS:
-| ~/org/org-agenda/daily | ~/org/org-agenda/incubate.org | ~/org/org-agenda/openquestions.org | ~/org/org-agenda/todo.org/ | ~/org/org-agenda/agenda.org | ~/org/org-capture/todo.org | ~/org/org-roam2/daily/ | ~/org/org-roam2/todo.org/ |
-
-
-#+begin_src emacs-lisp
 (custom-set-variables
  '(org-agenda-files
    '("~/org/org-agenda/daily"
@@ -18209,7 +18406,8 @@ The agenda is nice, but a souped up version is nicer.
 #+RESULTS:
 | ~/org/notes/ |
 
-#+begin_src emacs-lisp :tangle no
+
+#+begin_src emacs-lisp :tangle yes
 
 (setq org-super-agenda-groups
       '((:name "Next Items"
@@ -18224,22 +18422,28 @@ The agenda is nice, but a souped up version is nicer.
                      :order 1)))
 #+end_src
 
+#+RESULTS:
+| :name       | Next Items  | :time-grid | t      | :tag   | (NEXT outbox) |
+| :name       | Important   | :priority  | A      |        |               |
+| :name       | Quick Picks | :effort<   | 0:30   |        |               |
+| :priority<= | B           | :scheduled | future | :order |             1 |
 
+
+#+RESULTS:
+: prot-org-custom-daily-agenda
 
 #+begin_src emacs-lisp :tangle yes
-(after! org-agenda
-  (org-super-agenda-mode))
+;; (after! org-agenda
+(org-super-agenda-mode)
 
 (setq org-agenda-skip-scheduled-if-done t
-      org-agenda-time-grid '((daily today require-timed) "----------------------" nil)
       org-agenda-skip-deadline-if-done t
       org-agenda-include-deadlines t
       org-agenda-block-separator nil
       org-agenda-tags-column 100 ;; from testing this seems to be a good value
       org-agenda-compact-blocks t
-      org-agenda-include-diary t
-      org-agenda-compact-blocks t
-      org-agenda-start-with-log-mode t)
+      org-agenda-include-diary t)
+;; org-agenda-start-with-log-mode t)
 
 (setq org-agenda-custom-commands
       '(("o" "Overview"
@@ -18289,8 +18493,26 @@ The agenda is nice, but a souped up version is nicer.
                            :tag "Read"
                            :order 30)
                           (:name "Waiting"
-                           :todo "WAITING"
+                           :todo "WAIT"
                            :order 20)
+                          (:name "In Review"
+                           :todo "REVIEW"
+                           :order 21)
+                          (:name "In Planning"
+                           :todo "PLAN"
+                           :order 22)
+                          (:name "Project Backlog"
+                           :todo "BACKLOG"
+                           :order 23)
+                          (:name "Ready For Work"
+                           :todo "READY"
+                           :order 24)
+                          (:name "Active Projects"
+                           :todo "ACTIVE"
+                           :order 25)
+                          (:name "Completed Projects"
+                           :todo "COMPLETED"
+                           :order 26)
                           (:name "University"
                            :tag "uni"
                            :order 32)
@@ -18299,14 +18521,86 @@ The agenda is nice, but a souped up version is nicer.
                            :tag ("Trivial" "Unimportant")
                            :todo ("SOMEDAY" )
                            :order 90)
-                          (:discard (:tag ("Chore" "Routine" "Daily")))))))))))
+                          (:discard (:tag ("Chore" "Routine" "Daily")))))))))
+        ("d" "Dashboard"
+          ((agenda "" ((org-deadline-warning-days 7)))
+           (todo "NEXT"
+                 ((org-agenda-overriding-header "Next Tasks")))
+           (tags-todo "agenda/ACTIVE" ((org-agenda-overriding-header "Active Projects")))))
+
+         ("n" "Next Tasks"
+          ((todo "NEXT"
+                 ((org-agenda-overriding-header "Next Tasks")))))
+
+
+         ("w" "Work Tasks" tags-todo "+work")
+
+         ;; Low-effort next actions
+         ("e" tags-todo "+TODO=\"NEXT\"+Effort<15&+Effort>0"
+          ((org-agenda-overriding-header "Low Effort Tasks")
+           (org-agenda-max-todos 20)
+           (org-agenda-files org-agenda-files)))
+
+         ("W" "Workflow Status"
+          ((todo "WAIT"
+                 ((org-agenda-overriding-header "Waiting on External")
+                  (org-agenda-files org-agenda-files)))
+           (todo "REVIEW"
+                 ((org-agenda-overriding-header "In Review")
+                  (org-agenda-files org-agenda-files)))
+           (todo "PLAN"
+                 ((org-agenda-overriding-header "In Planning")
+                  (org-agenda-todo-list-sublevels nil)
+                  (org-agenda-files org-agenda-files)))
+           (todo "BACKLOG"
+                 ((org-agenda-overriding-header "Project Backlog")
+                  (org-agenda-todo-list-sublevels nil)
+                  (org-agenda-files org-agenda-files)))
+           (todo "READY"
+                 ((org-agenda-overriding-header "Ready for Work")
+                  (org-agenda-files org-agenda-files)))
+           (todo "ACTIVE"
+                 ((org-agenda-overriding-header "Active Projects")
+                  (org-agenda-files org-agenda-files)))
+           (todo "COMPLETED"
+                 ((org-agenda-overriding-header "Completed Projects")
+                  (org-agenda-files org-agenda-files)))
+           (todo "CANC"
+                 ((org-agenda-overriding-header "Cancelled Projects")
+                  (org-agenda-files org-agenda-files)))))))
+
+
+(let ((map global-map))
+  (define-key map (kbd "C-c a") #'org-agenda)
+  (define-key map (kbd "C-c c") #'org-capture)
+  (define-key map (kbd "C-c l") #'org-store-link)
+  (define-key map (kbd "C-c L") #'org-insert-link-global)
+  (define-key map (kbd "C-c O") #'org-open-at-point-global))
+(let ((map org-mode-map))
+  ;; (define-key map (kbd "C-'") nil)
+  ;; (define-key map (kbd "C-,") nil)
+  ;; (define-key map (kbd "<C-return>") nil)
+  ;; (define-key map (kbd "<C-S-return>") nil)
+  ;; (define-key map (kbd "C-M-S-<right>") nil)
+  ;; (define-key map (kbd "C-M-S-<left>") nil)
+  (define-key map (kbd "C-c M-l") #'org-insert-last-stored-link)
+  (define-key map (kbd "C-c C-M-l") #'org-toggle-link-display))
+
+(defun my-org-check-agenda ()
+  "Peek at agenda."
+  (interactive)
+  (cond
+   ((derived-mode-p 'org-agenda-mode)
+    (if (window-parent) (delete-window) (bury-buffer)))
+   ((get-buffer "*Org Agenda*")
+    (switch-to-buffer-other-window "*Org Agenda*"))
+   (t (org-agenda nil "a"))))
 
 #+end_src
 
 #+RESULTS:
-| o | Overview | ((agenda  ((org-agenda-span 'day) (org-super-agenda-groups '((:name Today :time-grid t :date today :todo TODAY :scheduled today :order 1))))) (alltodo  ((org-agenda-overriding-header ) (org-super-agenda-groups '((:name Next to do :todo NEXT :order 1) (:name Important :tag Important :priority A :order 6) (:name Due Today :deadline today :order 2) (:name Due Soon :deadline future :order 8) (:name Overdue :deadline past :face error :order 7) (:name Assignments :tag Assignment :order 10) (:name Issues :tag Issue :order 12) (:name Emacs :tag Emacs :order 13) (:name Projects :tag Project :order 14) (:name Research :tag Research :order 15) (:name To read :tag Read :order 30) (:name Waiting :todo WAITING :order 20) (:name University :tag uni :order 32) (:name Trivial :priority<= E :tag (Trivial Unimportant) :todo (SOMEDAY) :order 90) (:discard (:tag (Chore Routine Daily)))))))) |
-
-**** org capture acedemics
+: org-toggle-link-display
+**** org capture academics
 
 Set some capture templates, to work with GTD.
 #+begin_src emacs-lisp :tangle no
@@ -18376,6 +18670,9 @@ to initialise), let's not load roam.
   (org-roam-setup))
  #+end_src
 
+ #+RESULTS:
+ : t
+
 ***** Hotter Buffer
 #+begin_src emacs-lisp :tangle yes
 (defun org-roam-buffer-setup ()
@@ -18433,6 +18730,9 @@ with it.
     (browse-url-xdg-open (format "http://localhost:%d" org-roam-ui-port))))
 #+end_src
 
+#+RESULTS:
+| org-roam-ui-mode |
+
 ***** Org-roam-capture templates
 
 #+begin_src emacs-lisp :tangle yes
@@ -18486,7 +18786,19 @@ with it.
 (setq org-roam-dailies-capture-templates
       '(("d" "default" entry "* %<%I:%M %p>: %?"
          :if-new (file+head "%<%Y-%m-%d>.org" "#+title: %<%Y-%m-%d>\n"))))
-;; modifying the display template to show the node "type"
+
+ ;; Creating the property “type” on my nodes.
+(cl-defmethod org-roam-node-type ((node org-roam-node))
+  "Return the TYPE of NODE."
+  (condition-case nil
+      (file-name-nondirectory
+       (directory-file-name
+        (file-name-directory
+         (file-relative-name (org-roam-node-file node) org-roam-directory))))
+    (error "")))
+
+;; Modifying the display template to show the node “type”
+
 (setq org-roam-node-display-template
       (concat "${type:15} ${title:*} " (propertize "${tags:10}" 'face 'org-tag)))
 
@@ -19400,7 +19712,7 @@ It's also nice to make use of the Unicode characters for check boxes, and other 
 #+end_src
 
 #+RESULTS:
-| :name | ⁍  | :src_block | » | :src_block_end | « | :quote | “ | :quote_end | ” | :lambda | λ | :def | ƒ | :composition | ∘ | :map | ↦ | :null | ∅ | :true | 𝕋 | :false | 𝔽  | :int | ℤ | :float | ℝ  | :str | 𝕊  | :bool | 𝔹 | :list | 𝕃 | :not | ￢ | :in | ∈ | :not-in | ∉ | :and | ∧ | :or | ∨ | :for | ∀ | :some | ∃ | :return | ⟼ | :yield | ⟻ | :union | ⋃  | :intersect | ∩ | :diff | ∖  | :tuple | ⨂  | :pipe |  | :dot | • | :checkbox | ☐  | :pending | ◼  | :checkedbox | ☑  | :list_property | ∷ | :em_dash | — | :ellipses | … | :arrow_right | → | :arrow_left | ← | :title | 𝙏  | :subtitle | 𝙩  | :author | 𝘼  | :date | 𝘿  | :property | ☸ | :options | ⌥ | :startup | ⏻ | :macro | 𝓜 | :html_head | 🅷  | :html | 🅗  | :latex_class | 🄻  | :latex_header | 🅻  | :beamer_header | 🅑  | :latex | 🅛  | :attr_latex | 🄛  | :attr_html | 🄗  | :attr_org | ⒪  | :begin_quote | ❝ | :end_quote | ❞ | :caption | ☰ | :header | › | :results | 🠶 | :begin_export | ⏩  | :end_export | ⏪  | :properties | ⚙  | :end | ∎ | :priority_a | ⚑  | :priority_b | ⬆  | :priority_c | ■ | :priority_d | ⬇  | :priority_e | ❓ | :checkbox | ☐  | :pending | ◼  | :checkedbox | ☑  | :list_property | ∷ | :em_dash | — | :ellipses | … | :arrow_right | → | :arrow_left | ← | :title | 𝙏  | :subtitle | 𝙩  | :author | 𝘼  | :date | 𝘿  | :property | ☸ | :options | ⌥ | :startup | ⏻ | :macro | 𝓜 | :html_head | 🅷  | :html | 🅗  | :latex_class | 🄻  | :latex_header | 🅻  | :beamer_header | 🅑  | :latex | 🅛  | :attr_latex | 🄛  | :attr_html | 🄗  | :attr_org | ⒪  | :begin_quote | ❝ | :end_quote | ❞ | :caption | ☰ | :header | › | :results | 🠶 | :begin_export | ⏩  | :end_export | ⏪  | :properties | ⚙  | :end | ∎ | :priority_a | ⚑  | :priority_b | ⬆  | :priority_c | ■ | :priority_d | ⬇  | :priority_e | ❓ |
+| :name | ⁍  | :src_block | » | :src_block_end | « | :quote | “ | :quote_end | ” | :lambda | λ | :def | ƒ | :composition | ∘ | :map | ↦ | :null | ∅ | :true | 𝕋 | :false | 𝔽  | :int | ℤ | :float | ℝ  | :str | 𝕊  | :bool | 𝔹 | :list | 𝕃 | :not | ￢ | :in | ∈ | :not-in | ∉ | :and | ∧ | :or | ∨ | :for | ∀ | :some | ∃ | :return | ⟼ | :yield | ⟻ | :union | ⋃ | :intersect | ∩ | :diff | ∖  | :tuple | ⨂ | :pipe |  | :dot | • | :checkbox | ☐ | :pending | ◼  | :checkedbox | ☑ | :list_property | ∷ | :em_dash | — | :ellipses | … | :arrow_right | → | :arrow_left | ← | :title | 𝙏  | :subtitle | 𝙩  | :author | 𝘼  | :date | 𝘿  | :property | ☸ | :options | ⌥ | :startup | ⏻ | :macro | 𝓜 | :html_head | 🅷 | :html | 🅗 | :latex_class | 🄻 | :latex_header | 🅻 | :beamer_header | 🅑 | :latex | 🅛 | :attr_latex | 🄛 | :attr_html | 🄗 | :attr_org | ⒪ | :begin_quote | ❝ | :end_quote | ❞ | :caption | ☰ | :header | › | :results | 🠶 | :begin_export | ⏩ | :end_export | ⏪ | :properties | ⚙ | :end | ∎ | :priority_a | ⚑  | :priority_b | ⬆ | :priority_c | ■ | :priority_d | ⬇ | :priority_e | ❓ | :checkbox | ☐ | :pending | ◼  | :checkedbox | ☑ | :list_property | ∷ | :em_dash | — | :ellipses | … | :arrow_right | → | :arrow_left | ← | :title | 𝙏  | :subtitle | 𝙩  | :author | 𝘼  | :date | 𝘿  | :property | ☸ | :options | ⌥ | :startup | ⏻ | :macro | 𝓜 | :html_head | 🅷 | :html | 🅗 | :latex_class | 🄻 | :latex_header | 🅻 | :beamer_header | 🅑 | :latex | 🅛 | :attr_latex | 🄛 | :attr_html | 🄗 | :attr_org | ⒪ | :begin_quote | ❝ | :end_quote | ❞ | :caption | ☰ | :header | › | :results | 🠶 | :begin_export | ⏩ | :end_export | ⏪ | :properties | ⚙ | :end | ∎ | :priority_a | ⚑  | :priority_b | ⬆ | :priority_c | ■ | :priority_d | ⬇ | :priority_e | ❓ |
 
 ~org-superstar-mode~ is great. While we're at it we may as well make tags prettier as well 🙂
 #+begin_src emacs-lisp :tangle packages.el
@@ -20198,6 +20510,23 @@ Of course, there's an Emacs mode for this.
     :assign "<-"
     :multiply "%*%"))
 #+end_src
+**** latex
+#+begin_src emacs-lisp :tangle yes
+
+(with-eval-after-load 'ox-latex
+(add-to-list 'org-latex-classes
+             '("org-plain-latex"
+               "\\documentclass{article}
+           [NO-DEFAULT-PACKAGES]
+           [PACKAGES]
+           [EXTRA]"
+               ("\\section{%s}" . "\\section*{%s}")
+               ("\\subsection{%s}" . "\\subsection*{%s}")
+               ("\\subsubsection{%s}" . "\\subsubsection*{%s}")
+               ("\\paragraph{%s}" . "\\paragraph*{%s}")
+               ("\\subparagraph{%s}" . "\\subparagraph*{%s}"))))
+
+#+end_src
 ** org modern
 project's README: https://github.com/minad/org-modern.
 
@@ -20807,3 +21136,8 @@ exit
 
 (provide 'prot-emacs-write)
 #+end_src
+
+#+RESULTS:
+: prot-emacs-write
+
+
