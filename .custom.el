@@ -3,31 +3,36 @@
  ;; If you edit it by hand, you could mess it up, so be careful.
  ;; Your init file should contain only one such instance.
  ;; If there is more than one, they won't work right.
+ '(Man-notify-method 'aggressive)
  '(custom-safe-themes
    '("cf922a7a5c514fad79c483048257c5d8f242b21987af0db813d3f0b138dfaf53" "4f1d2476c290eaa5d9ab9d13b60f2c0f1c8fa7703596fa91b235db7f99a9441b" "835868dcd17131ba8b9619d14c67c127aa18b90a82438c8613586331129dda63" "e87f48ec4aebdca07bb865b90088eb28ae4b286ee8473aadb39213d361d0c45f" "046e442b73846ae114d575a51be9edb081a1ef29c05ae5e237d5769ecfd70c2e" "7397cc72938446348521d8061d3f2e288165f65a2dbb6366bb666224de2629bb" "e2c926ced58e48afc87f4415af9b7f7b58e62ec792659fcb626e8cba674d2065" "9f1d0627e756e58e0263fe3f00b16d8f7b2aca0882faacdc20ddd56a95acb7c2" default))
+ '(elfeed-feeds
+   '("https://www.youtube.com/feeds/videos.xml?channel_id=UCq-Fj5jknLsUf-MWSy4_brA"))
  '(hacker-typer-remove-comments t)
  '(hacker-typer-type-rate 1)
  '(ignored-local-variable-values
    '((eval progn
-           (setq-local dired-omit-files "\\`[.]?#\\|\\`[.][.]?\\'"))
+      (setq-local dired-omit-files "\\`[.]?#\\|\\`[.][.]?\\'"))
      (eval progn
-           (when
-               (and
-                (derived-mode-p 'emacs-lisp-mode)
-                (fboundp '+compile-this-elisp-file))
-             (add-hook 'after-save-hook #'+compile-this-elisp-file nil t))
-           (when
-               (require 'git-auto-commit-mode nil t)
-             (git-auto-commit-mode 1)
-             (setq-local gac-automatically-push-p t)))))
+      (when
+          (and
+           (derived-mode-p 'emacs-lisp-mode)
+           (fboundp '+compile-this-elisp-file))
+        (add-hook 'after-save-hook #'+compile-this-elisp-file nil t))
+      (when
+          (require 'git-auto-commit-mode nil t)
+        (git-auto-commit-mode 1)
+        (setq-local gac-automatically-push-p t)))))
+ '(org-agenda-files
+   '("~/org/org-agenda/daily" "~/org/org-agenda/incubate.org" "~/org/org-agenda/openquestions.org" "~/org/org-agenda/todo.org/" "~/org/org-agenda/agenda.org" "~/org/org-capture/todo.org" "~/org/org-roam2/daily/" "~/org/org-roam2/todo.org/"))
  '(package-selected-packages
-   '(enotify org-notify gnus-desktop-notify emojify all-the-icons olivetti mpv gameoflife cape exwm)))
+   '(visual-fill-column aio calfw org-wild-notifier elfeed-tube-mpv elfeed-tube dash miniedit pdf-tools all-the-icons-completion all-the-icons-dired recursion-indicator edwina trashed alert rcirc-notify enotify org-notify gnus-desktop-notify emojify all-the-icons olivetti mpv gameoflife cape exwm))
+ '(warning-suppress-types '((comp) (defvaralias))))
 (custom-set-faces
  ;; custom-set-faces was added by Custom.
  ;; If you edit it by hand, you could mess it up, so be careful.
  ;; Your init file should contain only one such instance.
  ;; If there is more than one, they won't work right.
- '(cursor ((((class color) (min-colors 89)) :background "#ff62d4")))
  '(doom-modeline-buffer-modified ((t (:foreground "orange"))))
  '(font-lock-comment-face ((t (:slant italic))))
  '(font-lock-keyword-face ((t (:slant italic))))
@@ -58,4 +63,7 @@
 (put 'set-goal-column 'disabled nil)
 (put 'narrow-to-region 'disabled nil)
 (put 'customize-group 'disabled nil)
-(setq telega-tdlib-max-version "1.8.5")
+;; (setq telega-tdlib-max-version "1.8.5")
+;; (setq telega-server-libs-prefix "/home/shiva/gitclones/td/tdlib/")
+(setq telega-server-libs-prefix "/usr/local/")
+
