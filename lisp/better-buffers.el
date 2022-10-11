@@ -8,11 +8,19 @@
 ;; ** KEYBINDINGS
 ;;----------------------------------------------------------------------
 
-(global-set-key (kbd "C-x k") 'my/kill-this-buffer)
+;; (global-set-key (kbd "C-x k") 'my/kill-this-buffer)
+(global-set-key (kbd "C-x k") 'my-kill-current-buffer)
+;; (global-set-key (kbd "C-a")
+;;                 (defun my/switch-to-other-buffer (&optional _arg)
+;;                   (interactive)
+;;                   (switch-to-buffer (other-buffer))))
+
 (global-set-key (kbd "C-a")
-                (defun my/switch-to-other-buffer (&optional _arg)
-                  (interactive)
-                  (switch-to-buffer (other-buffer))))
+(defun my-switch-to-previous-buffer ()
+  "Switch to previously open buffer.
+      Repeated invocations toggle between the two most recently open buffers."
+  (interactive)
+  (switch-to-buffer (other-buffer (current-buffer) 1))))
 
 ;; Keys to traverse buffers
 ;; (global-set-key (kbd "<C-M-return>") 'ido-display-buffer)

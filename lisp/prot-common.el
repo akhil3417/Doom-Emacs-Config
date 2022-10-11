@@ -270,38 +270,15 @@ Return the exit code and output in a list."
   "Regular expression that matches URLs.
 Copy of variable `browse-url-button-regexp'.")
 
-;; This was my old approach to the task:
-;;
-;; ;; Based on `org--line-empty-p'.
-;; (defmacro prot-common--line-p (name regexp)
-;;   "Make NAME function to match REGEXP on line n from point."
-;;   `(defun ,name (n)
-;;      (save-excursion
-;;        (goto-char (point-at-bol))
-;;        (and (not (bobp))
-;; 	        (or (beginning-of-line n) t)
-;; 	        (save-match-data
-;; 	          (looking-at ,regexp))))))
-;;
-;; (prot-common--line-p
-;;  prot-common-empty-line-p
-;;  "[\s\t]*$")
-;;
-;; (prot-common--line-p
-;;  prot-common-indent-line-p
-;;  "^[\s\t]+")
-;;
-;; (prot-common--line-p
-;;  prot-common-non-empty-line-p
-;;  "^.+$")
-;;
-;; (prot-common--line-p
-;;  prot-common-text-list-line-p
-;;  "^\\([\s\t#*+]+\\|[0-9]+[^\s]?[).]+\\)")
-;;
-;; (prot-common--line-p
-;;  prot-common-text-heading-line-p
-;;  "^[=-]+")
+(autoload 'auth-source-search "auth-source")
+
+;;;###autoload
+(defun prot-common-auth-get-field (host prop)
+  "Find PROP in `auth-sources' for HOST entry."
+  (when-let ((source (auth-source-search :host host)))
+    (if (eq prop :secret)
+       (funcall (plist-get (car source) prop))
+      (plist-get (flatten-list source) prop))))
 
 (provide 'prot-common)
 ;;; prot-common.el ends here
