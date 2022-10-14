@@ -3427,36 +3427,7 @@ than Objective-C. As such, it'll be switching the icon associated with =.m=.
           (cdr (assoc "matlab" all-the-icons-extension-icon-alist))))
 #+end_src
 
-** DONE red shift
-CLOSED: [2022-03-30 Wed 00:03]
-#+begin_src emacs-lisp
-(setq my/redshift-min 500)
-(setq my/redshift-max 6000)
-(setq my/redshift-step 250)
-;; Since get-redshift is slow
-(setq my/redshift-val-cache nil)
-(defun my/set-redshift (redness brightness-percent)
-  (interactive "nRedshift level: \nnBrightess percent: ")
-  (let* ((safe-redness
-          (cond ((< redness my/redshift-min) my/redshift-min)
-                ((> redness my/redshift-max) my/redshift-max)
-                (t redness)))
-         (safe-brightness-percent
-          (cond ((< brightness-percent 10) 10)
-                ((> brightness-percent 100) 100)
-                (t brightness-percent)))
-         (redshift-command (format "redshift -P -O %s -b %s" safe-redness (/ safe-brightness-percent 100.0))))
-    (message redshift-command)
-    (save-window-excursion
-      (shell-command redshift-command nil nil))))
-
-#+end_src
-
-#+RESULTS:
-: my/set-redshift
-
-** DONE Emoji-fy
-CLOSED: [2022-03-30 Wed 00:09]
+** Emoji-fy
 #+begin_quote
 From the =:ui emoji= module.
 #+end_quote
