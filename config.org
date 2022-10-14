@@ -14002,6 +14002,34 @@ This section includes configurations for programs like email clients,
 news reader, music players…  Anything you would normally see in a
 standalone application.  The end goal is to eventually integrate every
 aspect of my computing inside of Emacs.
+** DONE red shift
+CLOSED: [2022-03-30 Wed 00:03]
+#+begin_src emacs-lisp
+(setq my/redshift-min 500)
+(setq my/redshift-max 6000)
+(setq my/redshift-step 250)
+;; Since get-redshift is slow
+(setq my/redshift-val-cache nil)
+(defun my/set-redshift (redness brightness-percent)
+  (interactive "nRedshift level: \nnBrightess percent: ")
+  (let* ((safe-redness
+          (cond ((< redness my/redshift-min) my/redshift-min)
+                ((> redness my/redshift-max) my/redshift-max)
+                (t redness)))
+         (safe-brightness-percent
+          (cond ((< brightness-percent 10) 10)
+                ((> brightness-percent 100) 100)
+                (t brightness-percent)))
+         (redshift-command (format "redshift -P -O %s -b %s" safe-redness (/ safe-brightness-percent 100.0))))
+    (message redshift-command)
+    (save-window-excursion
+      (shell-command redshift-command nil nil))))
+
+#+end_src
+
+#+RESULTS:
+: my/set-redshift
+
 ** Exercism
 Exercism is a useful site for learning a programming language by performing
 various exercises. You can opt to use either an in-browser editor or your own
