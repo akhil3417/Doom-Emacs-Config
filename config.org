@@ -3531,7 +3531,9 @@ CLOSED: [2022-03-30 Wed 11:35]
   #+RESULTS:
   : toggle-transparency
 
-** modus theme prot
+** DONE modus theme prot
+CLOSED: [2022-10-14 Fri 16:22]
+- State "DONE"       from              [2022-10-14 Fri 16:22]
 #+begin_src emacs-lisp :tangle yes
 
 ;;; Modus themes (my highly accessible themes)
@@ -4063,9 +4065,9 @@ we're at it.
         "l" #'spray-backward-word
         "q" #'spray-quit))
 #+end_src
-** Keycast
-CLOSED: [2022-03-31 Thu 19:31]
-
+** DONE Keycast
+CLOSED: [2022-10-14 Fri 14:53]
+- State "DONE"       from              [2022-10-14 Fri 14:53]
 #+begin_src emacs-lisp :tangle packages.el
 (package! keycast :pin "72d9add8ba16e0cae8cfcff7fc050fa75e493b4e")
 #+end_src
@@ -4323,8 +4325,9 @@ then =ESC 12 <UP>= gets you exactly where you think.
 #+RESULTS:
 : toggle-truncate-lines
 
-** DASHBOARD
-CLOSED: [2022-03-31 Thu 20:52]
+** DONE DASHBOARD
+CLOSED: [2022-10-14 Fri 14:53]
+- State "DONE"       from              [2022-10-14 Fri 14:53]
 Emacs Dashboard is an extensible startup screen showing you recent files, bookmarks, agenda items and an Emacs banner.
 
 *** Configuring Dashboard
@@ -5058,8 +5061,9 @@ lightened versions --- let's do that.
 #+RESULTS:
 : t
 
-** DONE Screencast
-CLOSED: [2022-09-22 Thu 11:46]
+** FIXME Screencast
+- State "FIXME"      from "DONE"       [2022-10-14 Fri 15:10] \\
+  fix colors
 In a similar manner to [[Keycast]], [[https://gitlab.com/ambrevar/emacs-gif-screencast][gif-screencast]] may come in handy.
 #+begin_src emacs-lisp :tangle packages.el
 (package! gif-screencast :pin "5517a557a17d8016c9e26b0acb74197550f829b9")
