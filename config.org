@@ -9762,6 +9762,7 @@ ecosystem:
   (kbd "t") 'dired-toggle-marks
   (kbd "u") 'dired-unmark
   (kbd "C") 'dired-do-copy
+  (kbd "I") 'dired-info
   (kbd "D") 'dired-do-delete
   (kbd "J") 'dired-goto-file
   (kbd "M") 'dired-do-chmod
@@ -9774,6 +9775,7 @@ ecosystem:
   (kbd "p") 'dired-ranger-paste
   (kbd "Y") 'dired-copy-filename-as-kill ; copies filename to kill ring.
   (kbd "+") 'dired-create-directory
+  (kbd "F") 'dired-do-find-marked-files ;;open all marked files at once
   (kbd "-") 'dired-up-directory
   (kbd "% l") 'dired-downcase
   (kbd "% u") 'dired-upcase
