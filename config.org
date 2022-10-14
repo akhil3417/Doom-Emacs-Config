@@ -457,8 +457,6 @@ my home machine is pretty safe, and my laptop is shutdown a lot.
 (add-to-list 'load-path "~/.config/doom/lisp/elfeed-tube/")
 (add-to-list 'load-path "~/.config/doom/lisp/bon-app-launcher")
 
-;;(load "doom-modeline-exwm.el")
-;;(load "doom-modeline-now-playing.el")
 (load "elfeed-tube.el")
 
 (load "elfeed-tube.el")
@@ -483,6 +481,18 @@ my home machine is pretty safe, and my laptop is shutdown a lot.
 ;; Youtube.
 (load "setup-ytel.el");; youttuuube
 (load "setup-shell.el")
+(load "exwm-paste.el")
+(load "lock-screen.el")
+(load "correct-previous-word-and-create-abbrev")
+(load "lookup-on-github")
+(load "show-diffs-before-killing-buffers")
+(load "switch-window-patches")
+(load "pulseaudio.el")
+(load "auto-scroll.el")
+(load "prot-common.el")
+(load "prot-comment.el")
+(load "prot-bookmark.el")
+(load "org-protocol-capture-html.el")
 
 ;; (load "emacs-with-nyxt.el")
 ;; (load "prot-common.el")
@@ -496,19 +506,7 @@ my home machine is pretty safe, and my laptop is shutdown a lot.
 ;; (load "dunst.el")
 ;; (load "chromium")
 
-(load "exwm-paste.el")
-(load "lock-screen.el")
-(load "correct-previous-word-and-create-abbrev")
-(load "lookup-on-github")
-(load "show-diffs-before-killing-buffers")
-(load "switch-window-patches")
-(load "pulseaudio.el")
-(load "auto-scroll.el")
-(load "prot-common.el")
-(load "prot-comment.el")
-(load "prot-bookmark.el")
 
-(load "org-protocol-capture-html.el")
 #+end_src
 
 #+RESULTS:
@@ -531,9 +529,9 @@ setting, and load it if it exists.
 ** Rudimentry Settings
 #+begin_src emacs-lisp
 
-  ;; Use visual line motions even outside of visual-line-mode buffers
-  (evil-global-set-key 'motion "j" 'evil-next-visual-line)
-  (evil-global-set-key 'motion "k" 'evil-previous-visual-line)
+;; Use visual line motions even outside of visual-line-mode buffers
+(evil-global-set-key 'motion "j" 'evil-next-visual-line)
+(evil-global-set-key 'motion "k" 'evil-previous-visual-line)
 
 (global-set-key (kbd "<C-wheel-up>") 'text-scale-increase)
 (global-set-key (kbd "<C-wheel-down>") 'text-scale-decrease)
@@ -554,7 +552,7 @@ setting, and load it if it exists.
 #+end_src
 
 #+RESULTS:
-: hydra-brightness-up/body
+: hydra-cycle-buffers/body
 
 * Exwm Config
 ** Edwina configuration
@@ -571,6 +569,9 @@ The following line
  Open season with this at the moment.
 
  noticing some issues that temp buffer are not appearing in doom, will continue to test.
+ #+begin_src emacs-lisp :tangle no
+(package! edwina)
+ #+end_src
 #+BEGIN_SRC elisp :tangle no
 (use-package! edwina
   :config
@@ -3022,8 +3023,7 @@ I'd like to have just the buffer name, then if applicable the project folder
 
 For example when I open my config file it the window will be titled =config.org ●
 doom= then as soon as I make a change it will become =config.org ◉ doom=.
-* DONE services
-CLOSED: [2022-03-31 Thu 20:07]
+* services
 ** DONE Proced (process monitor, similar to `top')
 CLOSED: [2022-03-31 Thu 20:05]
 
@@ -3296,19 +3296,6 @@ anything to be run.
 <<run-setup()>>
 #+end_src
 
-** DONE =server-shutdown=
-CLOSED: [2022-03-31 Thu 20:06]
-Thi s is the converse function to the built-in =server-start=.
-#+BEGIN_SRC emacs-lisp
-(defun server-shutdown ()
-  "Save buffers, Quit, and Shutdown (kill) server"
-  (interactive)
-  (save-some-buffers)
-  (kill-emacs))
-#+END_SRC
-
-#+RESULTS:
-: server-shutdown
 ** DONE TRAMP
 CLOSED: [2022-03-31 Thu 20:06]
 Another lovely Emacs feature, TRAMP stands for /Transparent Remote Access,
@@ -3321,7 +3308,7 @@ Unfortunately, when connecting to remote machines Tramp can be a wee pit picky
 with the prompt format. Let's try to get Bash, and be a bit more permissive with
 prompt recognition.
 
-#+begin_src emacs-lisp :tangle no
+#+begin_src emacs-lisp :tangle yes
 (after! tramp
   (setenv "SHELL" "/bin/bash")
   (setq tramp-shell-prompt-pattern "\\(?:^\\|\\)[^]#$%>\n]*#?[]#$%>] *\\(\\[[0-9;]*[a-zA-Z] *\\)*")) ;; default + 
@@ -3331,7 +3318,7 @@ prompt recognition.
 In case the remote shell is misbehaving, here are some things to try
 ***** Zsh
 There are some escape code you don't want, let's make it behave more considerately.
-#+begin_src shell :eval no :tangle no
+#+begin_src shell :eval no :tangle yes
 if [[ "$TERM" == "dumb" ]]; then
     unset zle_bracketed_paste
     unset zle
@@ -3352,25 +3339,55 @@ That's no problem though, we just need to help TRAMP find them.
               "/run/current-system/profile/bin"
               "/run/current-system/profile/sbin")))
 #+end_src
-** DONE Generate passwords
+* UI
+CLOSED: [2022-04-02 Sat 23:43]
+** DONE brightness
+CLOSED: [2022-03-30 Wed 12:23]
+#+begin_src emacs-lisp :tangle no
+(setq my/brightness-min 1)
+(setq my/brightness-max 100)
+(setq my/brightness-step 5)
 
-#+BEGIN_SRC emacs-lisp
-  (defun generate-password-non-interactive ()
-     (string-trim (shell-command-to-string "pwgen -A 24")))
+(defun my/get-brightness ()
+  (* my/brightness-step (round (string-to-number
+                                (shell-command-to-string "xbacklight -get"))
+                               my/brightness-step)))
 
-  (defun generate-password ()
-    "Generates and inserts a new password"
-    (interactive)
-    (insert
-     (shell-command-to-string
-      (concat "pwgen -A " (read-string "Length: " "24") " 1"))))
-#+END_SRC
+(defun my/set-brightness (level)
+  (interactive "nBrightness level: ")
+  (let ((safe-level
+         (cond ((< level my/brightness-min) my/brightness-min)
+               ((> level my/brightness-max) my/brightness-max)
+               (t level))))
+    (save-window-excursion
+      (shell-command
+       (format "xbacklight -set %s &" safe-level) nil nil))))
+
+(defun my/brightness-step-change (delta)
+  (my/set-brightness (+ delta (my/get-brightness))))
+
+(defun my/brightness-increase ()
+  (interactive)
+  (my/brightness-step-change my/brightness-step))
+
+(defun my/brightness-decrease ()
+  (interactive)
+  (my/brightness-step-change (- my/brightness-step)))
+
+;; (map! "<XF86MonBrightnessDown>" 'my/brightness-decrease)
+;; (map! "<XF86MonBrightnessUp>" 'my/brightness-increase)
+
+
+;; (defun my/set-brightness-lg-5k (level)
+;;   (interactive "nBrightness level: ")
+;;   (save-window-excursion
+;;     (shell-command
+;;      (format "echo \"0i%s\n\" | sudo /home/shiva/repos/LG-ultrafine-brightness/build/LG_ultrafine_brightness
+#+end_src
 
 #+RESULTS:
-: generate-password
+: my/brightness-decrease
 
-* DONE UI
-CLOSED: [2022-04-02 Sat 23:43]
 ** DONE Windows
 CLOSED: [2022-03-30 Wed 00:00]
 
@@ -3510,6 +3527,9 @@ Email and IRC.
 #+begin_src emacs-lisp
 (add-hook! '(mu4e-compose-mode org-msg-edit-mode circe-channel-mode) (emoticon-to-emoji 1))
 #+end_src
+
+#+RESULTS:
+
 ** DONE Modus themes
 CLOSED: [2022-03-30 Wed 11:00]
 Proteolas did a lovely job with the Modus themes, so much so that they were
@@ -3540,167 +3560,7 @@ CLOSED: [2022-03-30 Wed 11:35]
   #+RESULTS:
   : toggle-transparency
 
-** Modus themes (prot's highly accessible themes)
-
-#+begin_src emacs-lisp :tangle no
-;;; Modus themes (my highly accessible themes)
-(use-package! modus-themes
-  ;; Add all your customizations prior to loading the themes
-  ;;
-  ;; NOTE: these are not my preferences!  I am always testing various
-  ;; configurations.  Though I still like what I have here.
-  :config
-  (setq modus-themes-italic-constructs nil
-        modus-themes-bold-constructs nil
-        modus-themes-mixed-fonts nil
-        modus-themes-subtle-line-numbers t
-        modus-themes-intense-mouseovers nil
-        modus-themes-deuteranopia t
-        modus-themes-tabs-accented nil
-        modus-themes-variable-pitch-ui nil
-        modus-themes-inhibit-reload t ; only applies to `customize-set-variable' and related
-
-        modus-themes-fringes nil ; {nil,'subtle,'intense}
-
-        ;; Options for `modus-themes-lang-checkers' are either nil (the
-        ;; default), or a list of properties that may include any of those
-        ;; symbols: `straight-underline', `text-also', `background',
-        ;; `intense' OR `faint'.
-        modus-themes-lang-checkers nil
-
-        ;; Options for `modus-themes-mode-line' are either nil, or a list
-        ;; that can combine any of `3d' OR `moody', `borderless',
-        ;; `accented', a natural number for extra padding (or a cons cell
-        ;; of padding and NATNUM), and a floating point for the height of
-        ;; the text relative to the base font size (or a cons cell of
-        ;; height and FLOAT)
-        modus-themes-mode-line '(borderless (padding 3))
-
-        ;; Options for `modus-themes-markup' are either nil, or a list
-        ;; that can combine any of `bold', `italic', `background',
-        ;; `intense'.
-        modus-themes-markup nil
-
-        ;; Options for `modus-themes-syntax' are either nil (the default),
-        ;; or a list of properties that may include any of those symbols:
-        ;; `faint', `yellow-comments', `green-strings', `alt-syntax'
-        modus-themes-syntax nil
-
-        ;; Options for `modus-themes-hl-line' are either nil (the default),
-        ;; or a list of properties that may include any of those symbols:
-        ;; `accented', `underline', `intense'
-        modus-themes-hl-line '(intense)
-
-        ;; Options for `modus-themes-paren-match' are either nil (the
-        ;; default), or a list of properties that may include any of those
-        ;; symbols: `bold', `intense', `underline'
-        modus-themes-paren-match '(bold)
-
-        ;; Options for `modus-themes-links' are either nil (the default),
-        ;; or a list of properties that may include any of those symbols:
-        ;; `neutral-underline' OR `no-underline', `faint' OR `no-color',
-        ;; `bold', `italic', `background'
-        modus-themes-links '(no-underline background faint)
-
-        ;; Options for `modus-themes-box-buttons' are either nil (the
-        ;; default), or a list that can combine any of `flat',
-        ;; `accented', `faint', `variable-pitch', `underline',
-        ;; `all-buttons', the symbol of any font weight as listed in
-        ;; `modus-themes-weights', and a floating point number
-        ;; (e.g. 0.9) for the height of the button's text.
-        modus-themes-box-buttons '(variable-pitch (height 0.9) flat faint accented)
-
-        ;; Options for `modus-themes-prompts' are either nil (the
-        ;; default), or a list of properties that may include any of those
-        ;; symbols: `background', `bold', `gray', `intense', `italic'
-        modus-themes-prompts '(italic gray intense bold)
-
-        ;; The `modus-themes-completions' is an alist that reads three
-        ;; keys: `matches', `selection', `popup'.  Each accepts a nil
-        ;; value (or empty list) or a list of properties that can include
-        ;; any of the following (for WEIGHT read further below):
-        ;;
-        ;; `matches' - `background', `intense', `underline', `italic', WEIGHT
-        ;; `selection' - `accented', `intense', `underline', `italic', `text-also', WEIGHT
-        ;; `popup' - same as `selected'
-        ;; `t' - applies to any key not explicitly referenced (check docs)
-        ;;
-        ;; WEIGHT is a symbol such as `semibold', `light', or anything
-        ;; covered in `modus-themes-weights'.  Bold is used in the absence
-        ;; of an explicit WEIGHT.
-        modus-themes-completions
-        '((matches . (extrabold background intense))
-          (selection . (semibold intense accented text-also))
-          (popup . (accented intense)))
-
-        modus-themes-mail-citations 'faint ; {nil,'intense,'faint,'monochrome}
-
-        ;; Options for `modus-themes-region' are either nil (the default),
-        ;; or a list of properties that may include any of those symbols:
-        ;; `no-extend', `bg-only', `accented'
-        modus-themes-region '(no-extend accented)
-
-        ;; Options for `modus-themes-diffs': nil, 'desaturated, 'bg-only
-        modus-themes-diffs nil
-
-        modus-themes-org-blocks nil ; {nil,'gray-background,'tinted-background}
-
-        modus-themes-org-agenda ; this is an alist: read the manual or its doc string
-        '((header-block . (variable-pitch regular 1.4))
-          (header-date . (bold-today grayscale underline-today 1.2))
-          (event . (accented italic varied))
-          (scheduled . uniform)
-          (habit . nil))
-
-        modus-themes-headings ; this is an alist: read the manual or its doc string
-        '((t . (extrabold)))
-
-        ;; Sample for headings:
-
-        ;; modus-themes-headings
-        ;; '((1 . (variable-pitch light 1.6))
-        ;;   (2 . (variable-pitch regular 1.4))
-        ;;   (3 . (variable-pitch regular 1.3))
-        ;;   (4 . (1.2))
-        ;;   (5 . (1.1))
-        ;;   (t . (monochrome 1.05)))
-        )
-
-  ;; Load the theme files before enabling a theme (else you get an error).
-  (modus-themes-load-themes)
-
-  ;; Custom faces (for demo purposes---check the themes' manual for more
-  ;; advanced uses).
-  (defun prot/modus-themes-custom-faces ()
-    (modus-themes-with-colors
-      (custom-set-faces
-       ;; Here add all your face definitions.
-       `(cursor ((,class :background ,magenta-intense))))))
-
-  (add-hook 'modus-themes-after-load-theme-hook #'prot/modus-themes-custom-faces)
-
-  ;; Enable the theme at startup.  This is done after loading the files.
-  ;; You only need `modus-themes-load-operandi' for the light theme or
-  ;; `modus-themes-load-vivendi' for the dark one.  What I have here is
-  ;; a simple test to load a light/dark theme based on some general time
-  ;; ranges (just accounting for the hour and without checking for the
-  ;; actual sunrise/sunset times).  Plus we have `modus-themes-toggle'
-  ;; to switch themes at will.
-  (let ((time (string-to-number (format-time-string "%H"))))
-    (if (and (> time 5) (< time 18))
-        (modus-themes-load-operandi)
-      (modus-themes-load-vivendi)))
-
-  ;; Also check my package configurations for `prot-fonts' because I use
-  ;; the `modus-themes-after-load-theme-hook' for some typeface-related
-  ;; tweaks (as those are made at the "face" level).
-  (define-key global-map (kbd "<f5>") #'modus-themes-toggle))
-#+end_src
-
-#+RESULTS:
-: t
-
-** modus v3
+** modus theme prot
 #+begin_src emacs-lisp :tangle yes
 
 ;;; Modus themes (my highly accessible themes)
@@ -4180,53 +4040,6 @@ CLOSED: [2022-03-31 Thu 19:17]
 
 #+RESULTS:
 : ((bg-main . #100b17) (bg-dim . #161129) (bg-alt . #181732) (bg-hl-line . #191628) (bg-active . #282e46) (bg-inactive . #1a1e39) (bg-region . #393a53) (bg-header . #202037) (bg-tab-bar . #262b41) (bg-tab-active . #120f18) (bg-tab-inactive . #3a3a5a) (fg-unfocused . #9a9aab))
-** DONE brightness
-CLOSED: [2022-03-30 Wed 12:23]
-#+begin_src emacs-lisp :tangle no
-(setq my/brightness-min 1)
-(setq my/brightness-max 100)
-(setq my/brightness-step 5)
-
-(defun my/get-brightness ()
-  (* my/brightness-step (round (string-to-number
-                                (shell-command-to-string "xbacklight -get"))
-                               my/brightness-step)))
-
-(defun my/set-brightness (level)
-  (interactive "nBrightness level: ")
-  (let ((safe-level
-         (cond ((< level my/brightness-min) my/brightness-min)
-               ((> level my/brightness-max) my/brightness-max)
-               (t level))))
-    (save-window-excursion
-      (shell-command
-       (format "xbacklight -set %s &" safe-level) nil nil))))
-
-(defun my/brightness-step-change (delta)
-  (my/set-brightness (+ delta (my/get-brightness))))
-
-(defun my/brightness-increase ()
-  (interactive)
-  (my/brightness-step-change my/brightness-step))
-
-(defun my/brightness-decrease ()
-  (interactive)
-  (my/brightness-step-change (- my/brightness-step)))
-
-;; (map! "<XF86MonBrightnessDown>" 'my/brightness-decrease)
-;; (map! "<XF86MonBrightnessUp>" 'my/brightness-increase)
-
-
-;; (defun my/set-brightness-lg-5k (level)
-;;   (interactive "nBrightness level: ")
-;;   (save-window-excursion
-;;     (shell-command
-;;      (format "echo \"0i%s\n\" | sudo /home/shiva/repos/LG-ultrafine-brightness/build/LG_ultrafine_brightness
-#+end_src
-
-#+RESULTS:
-: my/brightness-decrease
-
 ** DONE Elcord
 CLOSED: [2022-03-30 Wed 12:23]
 
@@ -4279,15 +4092,33 @@ we're at it.
         "l" #'spray-backward-word
         "q" #'spray-quit))
 #+end_src
-** DONE Keycast
+** Keycast
 CLOSED: [2022-03-31 Thu 19:31]
 
 #+begin_src emacs-lisp :tangle packages.el
 (package! keycast :pin "72d9add8ba16e0cae8cfcff7fc050fa75e493b4e")
 #+end_src
 
-*** keycast karthik
-#+begin_src emacs-lisp :tangle no
+*** keycast misc
+
+Once enabled, this package uses the mode line to show the keys being
+pressed and the command they call.  It is quite useful for screen
+casting.
+
+The placement of the indicator is controlled by the user option
+=keycast-mode-line-window-predicate= which I set to the current window.
+The =moody.el= library offers that specific piece of functionality
+(though [[#h:c07b9dfc-14a2-41a6-9310-53539dec8684][I also configure Moody]] for its primary purpose of styling the
+mode line).
+
+The tweaks to the =keycast-substitute-alist= prevent the display of
+self-inserting characters and some other commands that are not
+particularly useful while screen casting.  Now the indicator will only
+show commands, which looks cleaner.  I got the idea and original piece
+of Elisp from the [[https://github.com/aadcg/dotfiles][dotfiles of André Alexandre Gomes]] and then added a few
+tweaks of my own.
+
+#+begin_src emacs-lisp :tangle yes
 
 ;; ** SCREENCAST
 ;; Presentation-mode will embiggen everything. Keycast-mode shows the keys being
@@ -4300,6 +4131,7 @@ CLOSED: [2022-03-31 Thu 19:31]
   (setq keycast-separator-width 1)
   (dolist (input '(self-insert-command
                    org-self-insert-command))
+
     (add-to-list 'keycast-substitute-alist `(,input "." "Typing!")))
 
   (defun store-action-key+cmd (cmd)
@@ -4324,37 +4156,9 @@ CLOSED: [2022-03-31 Thu 19:31]
     (force-mode-line-update t))
 
   (dolist (cmd '(embark-act embark-become))
-    (advice-add cmd :before #'force-keycast-update)))
-          (add-to-list 'global-mode-string '("" keycast-mode-line))
-#+end_src
+    
+    (advice-add cmd :before #'force-keycast-update))
 
-#+RESULTS:
-| ( keycast-mode-line) |   | (:eval (propertize (format  V:%s%%  (desktop-environment-volume-get)) 'keymap display-volume-keymap)) | emms-mode-line-string | emms-playing-time-string | appt-mode-string | (pyvenv-virtual-env-name ( venv: pyvenv-virtual-env-name  )) |
-
-*** Keycast prot
-
-Once enabled, this package uses the mode line to show the keys being
-pressed and the command they call.  It is quite useful for screen
-casting.
-
-The placement of the indicator is controlled by the user option
-=keycast-mode-line-window-predicate= which I set to the current window.
-The =moody.el= library offers that specific piece of functionality
-(though [[#h:c07b9dfc-14a2-41a6-9310-53539dec8684][I also configure Moody]] for its primary purpose of styling the
-mode line).
-
-The tweaks to the =keycast-substitute-alist= prevent the display of
-self-inserting characters and some other commands that are not
-particularly useful while screen casting.  Now the indicator will only
-show commands, which looks cleaner.  I got the idea and original piece
-of Elisp from the [[https://github.com/aadcg/dotfiles][dotfiles of André Alexandre Gomes]] and then added a few
-tweaks of my own.
-
-#+begin_src emacs-lisp :tangle no
-;;; Keycast mode
-(use-package! keycast
-  :config
-  ;; Those are for `keycast-mode'
   (setq keycast-mode-line-window-predicate 'moody-window-active-p) ; assumes `moody.el'
   (setq keycast-separator-width 1)
   (setq keycast-mode-line-remove-tail-elements nil)
@@ -4374,21 +4178,6 @@ tweaks of my own.
         '((minibuffer . nil)))
   (setq keycast-log-newest-first t)
 
-  ;; Specify `keycast-insert-after' buffer identification.  This make it
-  ;; possible to seamlessly toggle `prot-moody-set-height' without
-  ;; disrupting keycast.
-  (with-eval-after-load 'prot-moody
-    (add-hook 'prot-moody-set-height-hook #'prot-moody-keycast-insert-after)))
-#+end_src
-
-#+RESULTS:
-: t
-*** keycast doom
-#+begin_src emacs-lisp :tangle no
-
-(use-package! keycast
-  :commands keycast-mode
-  :config
   (define-minor-mode keycast-mode
     "Show current command and its key binding in the mode line."
     :global t
@@ -4398,20 +4187,29 @@ tweaks of my own.
           (add-to-list 'global-mode-string '("" keycast-mode-line)))
           ;; (add-to-list 'global-mode-string '("" mode-line-keycast " ")))
       (remove-hook 'pre-command-hook 'keycast--update)
-      (setq global-mode-string (remove '("" mode-line-keycast " ") global-mode-string))))
+      (setq global-mode-string (remove '("" mode-line-keycast " ") global-mode-string)))
+  ;; Specify `keycast-insert-after' buffer identification.  This make it
+  ;; possible to seamlessly toggle `prot-moody-set-height' without
+  ;; disrupting keycast.
+  (with-eval-after-load 'prot-moody
+    (add-hook 'prot-moody-set-height-hook #'prot-moody-keycast-insert-after)))
   (custom-set-faces!
     '(keycast-command :inherit doom-modeline-debug
                       :height 0.9)
     '(keycast-key :inherit custom-modified
                   :height 1.1
                   :weight bold)))
+          (add-to-list 'global-mode-string '("" keycast-mode-line))
+
 #+end_src
 
 #+RESULTS:
-: t
+| ( keycast-mode-line) |   | emms-mode-line-string | emms-playing-time-string | appt-mode-string | (pyvenv-virtual-env-name ( venv: pyvenv-virtual-env-name  )) |
 
-** DONE Presentation
+** Presentation
 CLOSED: [2022-03-31 Thu 19:51]
+
+
 #+begin_src emacs-lisp
 
 ;; ** PRESENTATION (BIG) MODE
@@ -4423,7 +4221,7 @@ CLOSED: [2022-03-31 Thu 19:51]
         presentation-mode-lighter " BIG"
         presentation-keep-last-text-scale nil))
 #+end_src
-** DONE Frame sizing
+** Frame sizing
 CLOSED: [2022-03-31 Thu 20:07]
 It's nice to control the size of new frames, when launching Emacs that can be
 done with src_shell{emacs -geometry 160x48}. After the font size adjustment
@@ -4445,8 +4243,9 @@ default to be something roughly 80% of that size.
 #+RESULTS:
 : ((width . 80) (height . 24) (right-divider-width . 2) (bottom-divider-width . 2) (font . -*-Hack-*-*-*-*-15-*-*-*-*-*-*-*) (tool-bar-lines . 0) (menu-bar-lines . 0) (vertical-scroll-bars) (internal-border-width . 1) (buffer-predicate . exwm-layout--other-buffer-predicate) (left-fringe . 4) (right-fringe . 4))
 
-** pulsar.el (highlight cursor position)
-
+** DONE pulsar.el (highlight cursor position)
+CLOSED: [2022-10-14 Fri 13:09]
+- State "DONE"       from              [2022-10-14 Fri 13:09]
 This is a small package of mine that highlights the current line after a
 given command is invoked.  The affected commands are defined in the user
 option =pulsar-pulse-functions=.  Then all one needs is to enable the
@@ -4553,7 +4352,7 @@ then =ESC 12 <UP>= gets you exactly where you think.
 #+RESULTS:
 : toggle-truncate-lines
 
-** DONE DASHBOARD
+** DASHBOARD
 CLOSED: [2022-03-31 Thu 20:52]
 Emacs Dashboard is an extensible startup screen showing you recent files, bookmarks, agenda items and an Emacs banner.
 
@@ -4600,7 +4399,7 @@ This setting ensures that emacsclient always opens on *dashboard* rather than *s
 #+RESULTS:
 : ► Doom
 
-** DONE Prettier page breaks
+** Prettier page breaks
 CLOSED: [2022-03-31 Thu 20:59]
 
 In some files, =^L= appears as a page break character. This isn't that visually
@@ -4624,10 +4423,11 @@ these as horizontal rules.
 #+end_src
 
 #+RESULTS:
+: t
 
-** DONE FONTS
+** FONTS
 CLOSED: [2022-03-30 Wed 12:22]
-*** Zoom in font-size
+*** Zoom font-size
 #+BEGIN_SRC emacs-lisp
   (defun zoom-in ()
     (interactive)
@@ -4703,11 +4503,6 @@ Fira Code is amazing, and so is Roboto.
 ;;       doom-unicode-font (font-spec :family "DejaVu Sans Mono")
 ;;       doom-big-font (font-spec :family "Fira Mono" :size 19))
 
-;; (setq doom-font (font-spec :family "JetBrains Mono" :size 15)
-;;     doom-big-font (font-spec :family "JetBrains Mono" :size 24)
-;;     doom-variable-pitch-font (font-spec :family "Overpass" :size 16)
-;;     doom-unicode-font (font-spec :family "JuliaMono")
-;;     doom-serif-font (font-spec :family "IBM Plex Mono" :weight 'light))
 ;;
 ;; (setq doom-font (font-spec :family "Input Mono Narrow" :size 15 :weight 'semi-light)
 ;;       doom-variable-pitch-font (font-spec :family "Fira Sans") ; inherits `doom-font''s :size
@@ -4874,7 +4669,8 @@ Thankfully, it isn't to hard to add these to the ~composition-function-table~.
 
 ** DONE MODELINE
 CLOSED: [2022-03-31 Thu 19:49]
-*** DONE Theme and modeline
+*** doom modeline
+**** Theme and modeline
 CLOSED: [2022-03-30 Wed 12:25]
 
 Setting the theme to doom-vibrant.  To try out new themes, I set a keybinding for counsel-load-theme with 'SPC h t'.
@@ -4894,47 +4690,6 @@ Setting the theme to doom-vibrant.  To try out new themes, I set a keybinding fo
 (add-hook 'after-init-hook #'doom-init-theme-h 'append)
 (delq! t custom-theme-load-path)
 
-#+end_src
-
-#+RESULTS:
-| custom-theme-directory | /home/shiva/.emacs.d/.local/straight/build-28.1/modus-themes/ | /home/shiva/.emacs.d/.local/straight/build-28.1/underwater-theme/ | /home/shiva/.emacs.d/.local/straight/build-28.1/exotica-theme/ | /home/shiva/.emacs.d/.local/straight/build-28.1/smart-mode-line/ | /home/shiva/.emacs.d/.local/straight/build-28.1/doom-themes/ |
-
-
-However, by default ~red~ text is used in the ~modeline~, so let's make that orange
-so I don't feel like something's gone /wrong/ when editing files.
-
-#+begin_src emacs-lisp
-(custom-set-faces!
-  '(doom-modeline-buffer-modified :foreground "orange"))
-#+end_src
-
-#+RESULTS:
-| doom--customize-themes-h-33 | doom--customize-themes-h-34 |
-
-While we're modifying the modeline, =LF UTF-8= is the default file encoding, and
-thus not worth noting in the modeline. So, let's conditionally hide it.
-
-#+begin_src emacs-lisp :tangle no
-(defun doom-modeline-conditional-buffer-encoding ()
-  "We expect the encoding to be LF UTF-8, so only show the modeline when this is not the case"
-  (setq-local doom-modeline-buffer-encoding
-              (unless (and (memq (plist-get (coding-system-plist buffer-file-coding-system) :category)
-                                 '(coding-category-undecided coding-category-utf-8))
-                           (not (memq (coding-system-eol-type buffer-file-coding-system) '(1 2))))
-                t)))
-
-(add-hook 'after-change-major-mode-hook #'doom-modeline-conditional-buffer-encoding)
-#+end_src
-
-#+RESULTS:
-: doom-modeline-conditional-buffer-encoding
-
-*** doom modeline
-**** basic stuff modeline
-The modeline is the bottom status bar that appears in Emacs windows.  For more information on what is available to configure in the Doom modeline, check out:
-https://github.com/seagle0128/doom-modeline
-
-#+begin_src emacs-lisp :tangle yes
 (set-face-attribute 'mode-line nil :font "Ubuntu Mono-13")
 ;; (setq doom-modeline-height 20     ;; sets modeline height
 ;;       doom-modeline-bar-width 2   ;; sets right bar width
@@ -4969,15 +4724,41 @@ https://github.com/seagle0128/doom-modeline
   (doom-modeline-major-mode-icon nil))
 #+end_src
 
+
+However, by default ~red~ text is used in the ~modeline~, so let's make that orange
+so I don't feel like something's gone /wrong/ when editing files.
+
+#+begin_src emacs-lisp
+(custom-set-faces!
+  '(doom-modeline-buffer-modified :foreground "orange"))
+#+end_src
+
 #+RESULTS:
-: doom-modeline
+| doom--customize-themes-h-33 | doom--customize-themes-h-34 |
+
+While we're modifying the modeline, =LF UTF-8= is the default file encoding, and
+thus not worth noting in the modeline. So, let's conditionally hide it.
+
+#+begin_src emacs-lisp :tangle yes
+(defun doom-modeline-conditional-buffer-encoding ()
+  "We expect the encoding to be LF UTF-8, so only show the modeline when this is not the case"
+  (setq-local doom-modeline-buffer-encoding
+              (unless (and (memq (plist-get (coding-system-plist buffer-file-coding-system) :category)
+                                 '(coding-category-undecided coding-category-utf-8))
+                           (not (memq (coding-system-eol-type buffer-file-coding-system) '(1 2))))
+                t)))
+
+(add-hook 'after-change-major-mode-hook #'doom-modeline-conditional-buffer-encoding)
+#+end_src
+
+#+RESULTS:
+| doom--setq-evil-shift-width-for-after-change-major-mode-h | doom-modeline-conditional-buffer-encoding | clean-mode-line | solaire-global-mode-enable-in-buffers | ess-r-package-auto-activate | global-evil-surround-mode-enable-in-buffers | yas-global-mode-enable-in-buffers | doom-modeline-auto-set-modeline | +ligatures-init-buffer-h | persp-after-change-major-mode-h | better-jumper-mode-enable-in-buffers | global-company-mode-enable-in-buffers | evil-snipe-override-mode-enable-in-buffers | evil-snipe-mode-enable-in-buffers | git-commit-setup-font-lock-in-buffer | global-hl-line-mode-enable-in-buffers | smartparens-global-mode-enable-in-buffers | doom-disable-smartparens-navigate-skip-match-h | ws-butler-global-mode-enable-in-buffers | global-undo-fu-session-mode-enable-in-buffers | global-flycheck-mode-enable-in-buffers | global-emojify-mode-enable-in-buffers | doom-modeline-update-buffer-file-icon | pulsar-global-mode-enable-in-buffers | global-subword-mode-enable-in-buffers | evil-mode-enable-in-buffers | global-eldoc-mode-enable-in-buffers | global-font-lock-mode-enable-in-buffers | +company-init-backends-h | doom-highlight-non-default-indentation-h | which-func-ff-hook | doom-run-local-var-hooks-h |
 
 **** DONE Doom's pdf modeline
 CLOSED: [2022-03-30 Wed 19:58]
 #+begin_quote
 From the =:ui modeline= module.
 #+end_quote
-
 
 Very nice and pretty, however I think the PDF modeline could do with tweaking.
 I raised [[https://github.com/seagle0128/doom-modeline/pull/425][an issue]] on this, however the response was basically "put your
@@ -5029,26 +4810,6 @@ icon. Then we'll redefine two functions used to generate the modeline.
 
 #+RESULTS:
 : doom-modeline-format--pdf
-
-**** Doom-modeline settings
-
-#+begin_src elisp :tangle no
-(after! doom-modeline
-  (setq doom-modeline-enable-word-count t
-        doom-modeline-header-line nil
-        ;doom-modeline-hud nil
-        doom-themes-padded-modeline t
-        doom-flatwhite-brighter-modeline nil
-        doom-plain-brighter-modeline nil))
-(add-hook! 'doom-modeline-mode-hook
-           (progn
-  (set-face-attribute 'header-line nil
-                      :background (face-background 'mode-line)
-                      :foreground (face-foreground 'mode-line))
-  ))
-#+end_src
-
-#+RESULTS:
 
 *** kar modline
 #+begin_src emacs-lisp :tangle no
@@ -5191,7 +4952,7 @@ icon. Then we'll redefine two functions used to generate the modeline.
 #+end_src
 
 #+RESULTS:
-| doom--setq-evil-shift-width-for-after-change-major-mode-h | clean-mode-line | global-evil-surround-mode-enable-in-buffers | doom-modeline-auto-set-modeline | yas-global-mode-enable-in-buffers | +ligatures-init-buffer-h | persp-after-change-major-mode-h | better-jumper-mode-enable-in-buffers | global-company-mode-enable-in-buffers | evil-snipe-override-mode-enable-in-buffers | evil-snipe-mode-enable-in-buffers | git-commit-setup-font-lock-in-buffer | global-hl-line-mode-enable-in-buffers | smartparens-global-mode-enable-in-buffers | doom-disable-smartparens-navigate-skip-match-h | ws-butler-global-mode-enable-in-buffers | global-undo-fu-session-mode-enable-in-buffers | global-flycheck-mode-enable-in-buffers | global-emojify-mode-enable-in-buffers | doom-modeline-update-buffer-file-icon | pulsar-global-mode-enable-in-buffers | global-subword-mode-enable-in-buffers | evil-mode-enable-in-buffers | global-eldoc-mode-enable-in-buffers | global-font-lock-mode-enable-in-buffers | +company-init-backends-h | doom-highlight-non-default-indentation-h | which-func-ff-hook | doom-run-local-var-hooks-h |
+| doom--setq-evil-shift-width-for-after-change-major-mode-h | clean-mode-line | solaire-global-mode-enable-in-buffers | global-evil-surround-mode-enable-in-buffers | yas-global-mode-enable-in-buffers | better-jumper-mode-enable-in-buffers | global-company-mode-enable-in-buffers | evil-snipe-override-mode-enable-in-buffers | evil-snipe-mode-enable-in-buffers | +ligatures-init-buffer-h | persp-after-change-major-mode-h | doom-modeline-auto-set-modeline | global-hl-line-mode-enable-in-buffers | smartparens-global-mode-enable-in-buffers | doom-disable-smartparens-navigate-skip-match-h | ws-butler-global-mode-enable-in-buffers | global-undo-fu-session-mode-enable-in-buffers | global-flycheck-mode-enable-in-buffers | git-commit-setup-font-lock-in-buffer | global-emojify-mode-enable-in-buffers | doom-modeline-conditional-buffer-encoding | doom-modeline-update-buffer-file-icon | pulsar-global-mode-enable-in-buffers | global-subword-mode-enable-in-buffers | evil-mode-enable-in-buffers | global-eldoc-mode-enable-in-buffers | global-font-lock-mode-enable-in-buffers | doom-highlight-non-default-indentation-h | +company-init-backends-h | which-func-ff-hook | doom-run-local-var-hooks-h |
 
 ** Writeroom
 #+begin_quote
@@ -5823,7 +5584,7 @@ just add a new =file= annotator.
 Another small thing is the face used for docstrings. At the moment it's =(italic
 shadow)=, but I don't like that.
 
-#+begin_src emacs-lisp
+#+begin_src emacs-lisp :tangle yes
 (after! marginalia
 
   (add-to-list 'marginalia-prompt-categories '("\\burl\\b" . url))
@@ -8081,6 +7842,7 @@ have the following.
 | +abbrev-file-name |
 
 ** Dabbrev (dynamic word completion)
+***  Desc
 
 This is Emacs' own approach to dynamic/arbitrary text completion inside
 the buffer: "dynamic abbreviation" or else =dabbrev=.  This mechanism
@@ -8118,6 +7880,7 @@ based on that input.
 To check what I have on regular expressions, see further below my
 configurations and documentation for [[#h:6c6759c8-3ae3-40b0-8356-05cc0975e12a][re-builder (regexp-builder)]].
 
+***  code
 #+begin_src emacs-lisp :tangle yes
 ;;; Dabbrev (dynamic word completion)
 (use-package! dabbrev
@@ -8228,7 +7991,7 @@ configurations and documentation for [[#h:6c6759c8-3ae3-40b0-8356-05cc0975e12a][
 #+RESULTS:
 : my-abbrev
 
-** DONE Ispell
+** DONE Spell
 CLOSED: [2022-04-01 Fri 15:55]
 **** Downloading dictionaries
 Let's get a nice big dictionary from [[http://app.aspell.net/create][SCOWL Custom List/Dictionary Creator]] with
@@ -8268,6 +8031,9 @@ cd aspell6-en-custom
 
 ;; (after! cape
 ;;   (setq cape-dict-file (if (file-exists-p ispell-personal-dictionary) ispell-personal-dictionary cape-dict-file)))
+
+(add-hook 'text-mode-hook 'flyspell-mode)
+(add-hook 'prog-mode-hook 'flyspell-prog-mode)
 #+end_src
 
 #+RESULTS:
@@ -8289,10 +8055,18 @@ nearby (also means that if I change the 'main' dictionary I keep my addition).
 
 ** DONE Impatient mode
 CLOSED: [2022-04-01 Fri 15:50]
+#+begin_src emacs-lisp :tangle packages.el
+
+(package! impatient-mode
+    :recipe (:host github :repo "skeeto/impatient-mode"))
+#+end_src
+
+And then point your browser to http://localhost:8080/imp/, select a buffer, and watch your changes appear as you type!
+
 #+begin_src emacs-lisp
 ;; impatient-mode
 ;; Thanks to impatient-mode you can see the effect of your HTML as you type it.
-
+;;
 ;; (use-package! impatient-mode
 ;;   :ensure t)
 #+end_src
@@ -9266,7 +9040,10 @@ there’s a noticable lag when typing normally (delay too large)
 ** Regex
 
 Better regex than emacs regex
-
+#+begin_src emacs-lisp :tangle no
+(package! visual-regexp)
+(package! visual-regexp-steroids)
+#+end_src
 #+begin_src emacs-lisp :tangle yes
 (use-package! visual-regexp
   :config
@@ -9277,6 +9054,9 @@ Better regex than emacs regex
 (use-package! visual-regexp-steroids
   :after 'visual-regexp)
 #+end_src
+
+#+RESULTS:
+
 ** Docs
 #+begin_src emacs-lisp :tangle yes
 (use-package! devdocs
@@ -10379,6 +10159,8 @@ in the manual of the themes.  If you are using them, evaluate this form:
 
 #+begin_src emacs-lisp
 ;;; Extensions for PDFs (pdf-tools)
+ (pdf-loader-install)
+
 (use-package! pdf-tools
   :config
   (setq pdf-tools-enabled-modes         ; simplified from the defaults
@@ -10388,13 +10170,19 @@ in the manual of the themes.  If you are using them, evaluate this form:
           pdf-outline-minor-mode
           pdf-misc-size-indication-minor-mode
           pdf-occur-global-minor-mode))
-  (setq pdf-view-display-size 'fit-height) ;;fit-page
+  (setq pdf-view-display-size 'fit-page) ;;fit-height
   (setq pdf-view-continuous t)
+  (setq pdf-annot-activate-created-annotations t)
   (setq pdf-view-use-dedicated-register nil)
   (setq pdf-view-max-image-width 1080)
+  (add-hook 'pdf-view-mode-hook (lambda () (cua-mode 0)))
+  (define-key pdf-view-mode-map (kbd "C-s") 'isearch-forward)
   (setq pdf-outline-imenu-use-flat-menus t)
+ (setq pdf-view-resize-factor 1.1)
+ (define-key pdf-view-mode-map (kbd "h") 'pdf-annot-add-highlight-markup-annotation)
+ (define-key pdf-view-mode-map (kbd "t") 'pdf-annot-add-text-annotation)
+ (define-key pdf-view-mode-map (kbd "D") 'pdf-annot-delete)
 
-  (pdf-loader-install)
 
   ;; Those functions and hooks are adapted from the manual of my
   ;; modus-themes.  The idea is to (i) add a backdrop that is distinct
@@ -10412,9 +10200,14 @@ in the manual of the themes.  If you are using them, evaluate this form:
         (pdf-view-midnight-minor-mode -1))
       (prot/pdf-tools-backdrop)))
 
+  (add-hook 'pdf-view-mode-hook (lambda () (cua-mode 0)))
   (add-hook 'pdf-tools-enabled-hook #'prot/pdf-tools-midnight-mode-toggle)
   (add-hook 'modus-themes-after-load-theme-hook #'prot/pdf-tools-midnight-mode-toggle))
+
 #+end_src
+
+#+RESULTS:
+: INTERLEAVE_PAGE_NOTE
 
 ** Hydra
 #+begin_src emacs-lisp
@@ -14271,6 +14064,19 @@ Which do you think I want?
 #+RESULTS:
 : t
 
+** generate password
+
+#+BEGIN_SRC emacs-lisp
+  (defun generate-password-non-interactive ()
+     (string-trim (shell-command-to-string "pwgen -A 24")))
+
+  (defun generate-password ()
+    "Generates and inserts a new password"
+    (interactive)
+    (insert
+     (shell-command-to-string
+      (concat "pwgen -A " (read-string "Length: " "24") " 1"))))
+#+END_SRC
 
 ** Info pages
 Slightly improve the look and feel of Info pages, might actually encourage me to /read/ them.
@@ -17879,7 +17685,29 @@ spell-check face ignore list
       org-export-allow-bind-keywords t     ; Bind keywords can be handy
       org-catch-invisible-edits 'smart            ; try not to accidently do weird stuff in invisible regions
       org-export-with-sub-superscripts '{})       ; don't treat lone _ / ^ as sub/superscripts, require _{} / ^{}
+
+
+(setq org-use-tag-inheritance nil)
+(setq org-startup-indented t)
+(setq org-hide-leading-stars t)
+(setq org-treat-S-cursor-todo-selection-as-state-change t)
+(setq org-hide-emphasis-markers t)
+(setq org-support-shift-select t)
+(require 'org-inlinetask)
+(setq org-image-actual-width nil)
+(setq org-time-stamp-custom-formats '("<%A, %B %d, %Y>" . "<%m/%d/%y %a %H:%M>"))
+(setq org-archive-location (concat "org/archive-"
+                                   (format-time-string "%Y%m" (current-time))
+                                   ".org_archive::"))
+(with-eval-after-load 'ox
+  (require 'ox-pandoc))
+(setq org-pandoc-options-for-beamer-pdf '((pdf-engine . "xelatex")))
+(setq org-export-with-smart-quotes t)
 #+end_src
+
+#+RESULTS:
+: t
+
 I also like the src_elisp{:comments} header-argument, so let's make that a
 default.
 #+begin_src emacs-lisp
@@ -18343,6 +18171,7 @@ set up org-capture.
                    :headline ""
                    :type entry
                    :template ("* %?\n%c\n%:initial"))
+                  
                   ("Email" :keys "e"
                    :icon ("envelope" :set "faicon" :color "blue")
                    :file +org-capture-todo-file
@@ -18353,6 +18182,15 @@ set up org-capture.
                               "Send an email %^{urgancy|soon|ASAP|anon|at some point|eventually} to %^{recipiant}"
                               "about %^{topic}"
                               "%U %i %a"))
+                  
+                  ("Appointment" :keys "a"
+                   :icon ("eye" :set "faicon" :color "lcyan")
+                   :file +org-capture-todo-file
+                   :prepend t
+                   :headline "Appointment"
+                   :type entry
+                   :template ("* %? \n:PROPERTIES:\n:calendar-id: akhilpratapsingh3417@gmail.com\n:LOCATION:\n:END:\n\n:org-gcal:\n%^T\n:END:\nLink: %a"))
+                  
                   ("Interesting" :keys "i"
                    :icon ("eye" :set "faicon" :color "lcyan")
                    :file +org-capture-todo-file
@@ -18382,6 +18220,7 @@ set up org-capture.
                                :icon ("bubble_chart" :set "material" :color "silver")
                                :desc ""
                                :i-type "idea")))
+                  
                   ("Tasks" :keys "k"
                    :icon ("inbox" :set "octicon" :color "yellow")
                    :file +org-capture-todo-file
@@ -18399,6 +18238,7 @@ set up org-capture.
                               ("Scheduled Task" :keys "s"
                                :icon ("calendar" :set "octicon" :color "orange")
                                :extra "\nSCHEDULED: %^{Start time:}t")))
+                  
                   ("Project" :keys "p"
                    :icon ("repo" :set "octicon" :color "silver")
                    :prepend t
@@ -18422,6 +18262,7 @@ set up org-capture.
                                :time-or-todo "%U"
                                :heading "Unreleased"
                                :file +org-capture-project-changelog-file)))
+                  
                   ("\tCentralised project templates"
                    :keys "o"
                    :type entry
@@ -18673,6 +18514,19 @@ The agenda is nice, but a souped up version is nicer.
 #+begin_src emacs-lisp :tangle yes
 ;; (after! org-agenda
 (org-super-agenda-mode)
+
+(setq org-agenda-buffer-name "Agenda")
+(setq org-agenda-scheduled-leaders '("SCH: " "Sched.%2dx: "))
+(setq org-agenda-hide-tags-regexp "work\\|paperwork\\|GCAL\\|refile\\|research\\|planner\\|noexport\\|health\\|ideas\\|notes\\|home\\|school\\|personal\\|tasks\\|proposal\\|habit")
+;; (setq diary-file "~/org/org-roam2/daily/")
+;; (setq org-agenda-deadline-leaders '("DUE TODAY: " "In %3d d.: " "%2d d. ago: "))
+;;(setq org-agenda-skip-scheduled-if-deadline-is-shown t)
+;; (setq org-agenda-todo-list-sublevels t)
+;;(setq org-agenda-include-deadlines t)
+;;(setq org-agenda-todo-ignore-deadlines 'future)
+;;(setq org-agenda-skip-scheduled-if-done t)
+(setq org-agenda-include-diary t)
+(setq org-deadline-warning-days 7)
 
 (setq org-agenda-skip-scheduled-if-done t
       org-agenda-skip-deadline-if-done t
@@ -19040,10 +18894,28 @@ with it.
 (setq org-roam-node-display-template
       (concat "${type:15} ${title:*} " (propertize "${tags:10}" 'face 'org-tag)))
 
+(defun my/org-roam--backlinks-list (file)
+  (if (org-roam--org-roam-file-p file)
+      (--reduce-from
+       (concat acc (format "- [[file:%s][%s]]\n"
+                           (file-relative-name (car it) org-roam-directory)
+                           (org-roam--get-title-or-slug (car it))))
+       "" (org-roam-sql [:select [from]
+                         :from links
+                         :where (= to $s1)
+                         :and from :not :like $s2] file "%private%"))
+    ""))
+
+(defun my/org-export-preprocessor (_backend)
+  (let ((links (my/org-roam--backlinks-list (buffer-file-name))))
+    (unless (string= links "")
+      (save-excursion
+        (goto-char (point-max))
+        (insert (concat "\n* Backlinks\n" links))))))
 #+end_src
 
 #+RESULTS:
-: ${type:15} ${title:*} ${tags:10}
+: my/org-export-preprocessor
 
 ****** Citations
 #+begin_src emacs-lisp :tangle no
@@ -19791,6 +19663,16 @@ much.
                  (org-export-backend-options (org-export-get-backend 'latex)))
      (cl-pushnew '(:latex-font-set nil "fontset" nil)
                  (org-export-backend-options (org-export-get-backend 'latex)))))
+#+end_src
+***** org refile
+#+begin_src emacs-lisp
+(setq org-refile-targets (quote ((nil :maxlevel . 9)
+                                 (org-agenda-files :maxlevel . 9))))
+(setq org-refile-use-outline-path 'file)
+(setq org-refile-active-region-within-subtree t)
+(setq org-outline-path-complete-in-steps nil)
+(setq org-refile-allow-creating-parent-nodes (quote confirm))
+
 #+end_src
 
 **** DONE Visuals
@@ -21689,8 +21571,17 @@ The package that allows us to search through bibliography files and take notes o
    ;; I want to see the whole file
    org-noter-hide-other nil
    ;; org-noter-notes-search-path "~/org/notes"
+   org-noter-separate-notes-from-heading t
+   org-noter-default-heading-title "Page $p$"
+   org-noter-auto-save-last-location t
+   org-noter-separate-notes-from-heading t
+   org-noter-doc-property-in-notes t
+   org-noter-always-create-frame t
    )
   )
+
+(setq org-noter-property-doc-file "INTERLEAVE_PDF"
+      org-noter-property-note-location "INTERLEAVE_PAGE_NOTE")
 
 (use-package! org-pdftools
   :hook (org-load . org-pdftools-setup-link))
@@ -21705,12 +21596,21 @@ The package that allows us to search through bibliography files and take notes o
 
 **** Org-journal
 #+begin_src emacs-lisp
-(setq org-journal-dir "~/org/journal/"
-      org-journal-date-prefix "* "
-      org-journal-time-prefix "** "
-      org-journal-date-format "%B %d, %Y (%A) "
-      org-journal-file-format "%Y-%m-%d.org")
+(use-package org-journal
+      ;; :defer t
+      :bind
+      ("C-c n j" . org-journal-new-entry)
+      :custom
+      (org-journal-dir "~/org/journal")
+      (org-journal-date-prefix "#+TITLE: ")
+      (org-journal-time-prefix "** ")
+      (org-journal-file-format "%Y-%m-%d.org")
+      (org-journal-date-format "%A, %d %B %Y"))
+(setq org-journal-enable-agenda-integration t)
 #+end_src
+
+#+RESULTS:
+: t
 
 **** Org-publish
 #+begin_src emacs-lisp
@@ -21752,6 +21652,37 @@ The package that allows us to search through bibliography files and take notes o
 #+RESULTS:
 : Build complete!
 
+**** Ox-Hugo
+I have recently started using =ox-hugo= to help post on my Hugo based website. The following section sets up an org-capture to enable quick blogging.
+#+BEGIN_SRC elisp :tangle no
+(defun org-hugo-new-subtree-post-capture-template ()
+  "Returns `org-capture' template string for new Hugo post.
+See `org-capture-templates' for more information."
+  (let* (;; http://www.holgerschurig.de/en/emacs-blog-from-org-to-hugo/
+         (date (format-time-string (org-time-stamp-format  :inactive) (org-current-time)))
+         (title (read-from-minibuffer "Post Title: ")) ;Prompt to enter the post title
+         (fname (org-hugo-slug title)))
+    (mapconcat #'identity
+               `(
+                 ,(concat "* TODO " title)
+                 ":PROPERTIES:"
+                 ,(concat ":EXPORT_FILE_NAME: " fname)
+                 ,(concat ":EXPORT_DATE: " date) ;Enter current date and time
+                 ,(concat ":EXPORT_HUGO_CUSTOM_FRONT_MATTER: "  ":tags something :subtitle booyea :featured false :categories abc :highlight true ")
+                 ":END:"
+                 "%?\n")          ;Place the cursor here
+               "\n")))
+(defvar hugo-org-path "/home/cantos/Dropbox/blog/sunny-website/org-content/"
+  "define the place where we put our org files for hugo")
+;;(defvar org-capture-blog (concat hugo-org-path "blog.org"))
+
+(setq org-capture-templates
+      '(
+        ("h" "Hugo Post"
+         entry
+         (file+olp "/home/cantos/Dropbox/blog/sunny-website/org-content/blog.org" "Posts")
+         (function  org-hugo-new-subtree-post-capture-template))))
+#+END_SRC
 **** improving the html output-file
 
 At this point have a decent basic output for our website, but what if we want to make it look a little bit nicer?
@@ -21773,6 +21704,149 @@ By setting a few more variables, we can use a nice stylesheet to give our site a
 
 This will remove the default JavaScript and CSS code that gets injected into the HTML output by default and replace it with the link to a nice stylesheet called Simple.css (or a CSS file of your own!).
 
+**** Org-ref settings
+
+#+BEGIN_SRC emacs-lisp :tangle no
+(use-package org-ref)
+
+(setq reftex-default-bibliography '("~/Dropbox/Dissertation/library.bib"))
+(setq org-ref-default-bibliography '("~/Dropbox/Dissertation/library.bib")
+      org-ref-pdf-directory "~/Dropbox/Zotero/storage")
+(setq org-ref-default-citation-link "citep")
+(setq bibtex-dialect 'biblatex)
+(defun my/org-ref-open-pdf-at-point ()
+  "Open the pdf for bibtex key under point if it exists."
+  (interactive)
+  (let* ((results (org-ref-get-bibtex-key-and-file))
+         (key (car results))
+         (pdf-file (car (bibtex-completion-find-pdf key))))
+    (if (file-exists-p pdf-file)
+        (org-open-file pdf-file)
+      (message "No PDF found for %s" key))))
+(setq org-ref-open-pdf-function 'my/org-ref-open-pdf-at-point)
+(setq bibtex-completion-pdf-field "file")
+(setq bibtex-autokey-year-length 4
+      bibtex-autokey-name-year-separator ""
+      bibtex-autokey-year-title-separator ""
+      bibtex-autokey-titleword-separator ""
+      bibtex-autokey-titlewords 0
+      bibtex-autokey-titlewords-stretch 0
+      bibtex-autokey-titleword-length 0)
+(setq org-ref-notes-function 'orb-edit-notes)
+(setq org-ref-note-title-format
+  "* TODO %y -%t
+ :PROPERTIES:
+  :Custom_ID: %k
+  :AUTHOR: %9a
+  :JOURNAL: %j
+  :VOLUME: %v
+  :DOI: %D
+  :URL: %U
+ :END:
+
+")
+#+END_SRC
+
+**** Bibtex-completion
+
+#+BEGIN_SRC emacs-lisp :tangle no
+(setq-default bibtex-completion-bibliography "~/Dropbox/Dissertation/library.bib")
+(setq bibtex-completion-pdf-field "File")
+(setq bibtex-completion-notes-path "~/Dropbox/org")
+(setq bibtex-completion-notes-template-multiple-files
+ (concat
+  " ${title}\n"
+  "#+ROAM_KEY: cite:${=key=}\n\n\n"
+  "- tags ::\n"
+  "- keywords :: ${keywords}\n\n"
+  "* Meta information\n"
+  ":PROPERTIES:\n"
+  ":Custom_ID: ${=key=}\n"
+  ":INTERLEAVE_PDF: %(orb-process-file-field \"${=key=}\")\n"
+  ":AUTHOR: ${author-abbrev}\n"
+  ":JOURNAL: ${journaltitle}\n"
+  ":DATE: ${date}\n"
+  ":YEAR: ${year}\n"
+  ":DOI: ${doi}\n"
+  ":URL: ${url}\n"
+  ":END:\n\n"
+  ))
+#+END_SRC
+
+**** Org-appt settings
+
+#+BEGIN_SRC emacs-lisp :tangle no
+(require 'appt)
+
+(setq-default appt-display-mode-line t)
+(appt-activate 1)
+(org-agenda-to-appt 1)
+(appt-check 1)
+(setq appt-message-warning-time 60)
+(setq appt-display-interval 900)
+#+END_SRC
+
+**** Org-roam-bibtex
+
+#+BEGIN_SRC emacs-lisp :tangle no
+(use-package org-roam-bibtex
+  :after (org-roam)
+  :hook (org-roam-mode . org-roam-bibtex-mode)
+  :config
+  (setq orb-preformat-keywords
+    '("=key=" "title" "url" "file" "author-or-editor" "keywords"))
+  (setq orb-autokey-format "%A%y")
+  (setq orb-pdf-scrapper-export-fields
+    '("author" "editor" "title" "journal" "date"))
+  (setq orb-templates
+        '(("r" "ref" plain (function org-roam-capture--get-point)
+           ""
+           :file-name "${=key=}"
+           :head "#+TITLE: ${title}\n
+                  #+ROAM_KEY: ${ref}
+
+- tags ::
+- keywords :: ${keywords}\n
+
+ * Meta information\n
+        :PROPERTIES:\n
+        :Custom_ID: ${=key=}\n
+        :URL: ${url}\n
+        :AUTHOR: ${author-or-editor}\n
+        :INTERLEAVE_PDF: %(orb-process-file-field \"${=key=}\")\n
+        :INTERLEAVE_PAGE_NOTE: \n
+        :END:\n\n"
+
+        :unnarrowed t)))
+  :bind (:map org-mode-map
+         (("C-c n a" . orb-note-actions))))
+#+END_SRC
+
+#+RESULTS:
+: orb-note-actions
+
+**** Org-roam-server
+
+#+BEGIN_SRC emacs-lisp :tangle no
+(use-package org-roam-server
+  :config
+  (setq org-roam-server-host "127.0.0.1"
+        org-roam-server-port 8080
+        org-roam-server-authenticate nil
+        org-roam-server-export-inline-images t
+        org-roam-server-serve-files nil
+        org-roam-server-served-file-extensions '("pdf" "mp4" "ogv")
+        org-roam-server-network-poll t
+        org-roam-server-network-arrows nil
+        org-roam-server-network-label-truncate t
+        org-roam-server-network-label-truncate-length 60
+        org-roam-server-network-label-wrap-length 20)
+  (defun org-roam-server-open ()
+    "Ensure the server is active, then open the roam graph."
+    (interactive)
+    (org-roam-server-mode 1)
+    (browse-url-xdg-open (format "http://localhost:%d" org-roam-server-port))))
+#+END_SRC
 *** org modern
 project's README: https://github.com/minad/org-modern.
 
@@ -22565,166 +22639,6 @@ Add .mdx support
  (add-to-list 'auto-mode-alist '("\\.mdx\\'" . markdown-mode))
 
 #+end_src
-* EVA
-
-Emacs Virtual assistant
-
-#+begin_src emacs-lisp :tangle no
-
-(use-package! eva
-:init
-(setq ess-history-file "~/self/data/.Rhistory")
-(setq ess-ask-for-ess-directory nil)
-  (setq eva-ai-name "HAL"
-        eva-user-name "Akhil"
-        eva-user-birthday "1999-01-02"
-        eva-user-short-title "Dude"
-        eva-fallback-to-emacs-idle t)
-      (setq eva--idle-secs-fn #'eva--idle-secs-gnome)
-  (setq eva-idle-log-path         "~/self/data/idle.tsv")
-  (setq eva-buffer-focus-log-path "~/self/data/buffer-focus.tsv")
-  (setq eva-buffer-info-path      "~/self/data/buffer-info.tsv")
-  (setq eva-main-ledger-path      "~/self/data/l.ledger")
-  (setq eva-main-datetree-path    "~/org/notes/diary.org")
-  :config
-  (setq org-journal-dir "~/org/journal/")
-    (setq org-journal-date-prefix "#+TITLE: "
-        org-journal-file-format "%Y-%m-%d.org"
-        org-journal-date-format "%A, %d %B %Y")
-    (require 'eva-builtin)
-  (require 'eva-activity)
-    (add-hook 'eva-after-load-vars-hook #'eva-check-dangling-clock)
-  (add-hook 'eva-after-load-vars-hook #'eva-check-org-variables)
-   (setq eva-items
-        (list
-         (eva-item-create :fn #'eva-greet
-                          :min-hours-wait 1)
-
-         (eva-item-create :fn #'eva-query-mood
-                          :dataset "~/self/data/mood.tsv"
-                          :min-hours-wait 1)
-
-         (eva-item-create :fn #'eva-query-activity
-                          :dataset "~/self/data/activities.tsv"
-                          :min-hours-wait 1)
-
-         (eva-item-create :fn #'eva-present-diary
-                          :max-successes-per-day 1)
-
-         (eva-item-create :fn #'eva-query-weight
-                          :dataset "~/self/data/weight.tsv"
-                          :max-entries-per-day 1)
-
-         (eva-item-create :fn #'eva-plot-weight
-                          :max-entries-per-day 1)
-
-         (eva-item-create :fn #'eva-query-sleep
-                          :dataset "~/self/data/sleep.tsv"
-                          :min-hours-wait 5
-                          :lookup-posted-time t)
-
-         (eva-item-create :fn #'eva-present-ledger-report)
-
-         (eva-item-create :fn #'eva-present-org-agenda)
-
-         (eva-item-create :fn #'eva-query-ingredients
-                          :dataset "~/self/data/ingredients.tsv"
-                          :min-hours-wait 5)
-
-         (eva-item-create :fn #'eva-query-cold-shower
-                          :dataset "~/self/data/cold.tsv"
-                          :max-entries-per-day 1)
-
-         ;; you can inline define the functions too
-         (eva-item-create
-          :fn (eva-defun my-bye ()
-                (message (eva-emit "All done for now."))
-                (bury-buffer (eva-buffer-chat)))
-          :min-hours-wait 0)))
-        (transient-replace-suffix 'eva-dispatch '(0)
-    '["General actions"
-      ("q" "Quit" bury-buffer)
-      ("l" "View Ledger report" eva-present-ledger-report)
-      ("f" "View Ledger file" eva-present-ledger-file)
-      ("a" "View Org agenda" org-agenda-list)])
-
-  (define-key eva-chat-mode-map (kbd "l") #'eva-present-ledger-report)
-  (define-key eva-chat-mode-map (kbd "a") #'org-agenda-list)
-
-  ;; Activities
-  (setq eva-activity-list
-        (list (eva-activity-create :name "sleep"
-                                   :cost-false-pos 3
-                                   :cost-false-neg 3)
-
-              (eva-activity-create :name "studying"
-                                   :cost-false-pos 8
-                                   :cost-false-neg 8)
-
-              (eva-activity-create :name "coding"
-                                   :cost-false-pos 5
-                                   :cost-false-neg 5)
-
-              (eva-activity-create :name "working"
-                                   :cost-false-pos 5
-                                   :cost-false-neg 5)
-              (eva-activity-create :name "unknown"
-                                   :cost-false-pos 0
-                                   :cost-false-neg 0)))
-  (eva-mode))
-#+end_src
-* Ox-Hugo
-I have recently started using =ox-hugo= to help post on my Hugo based website. The following section sets up an org-capture to enable quick blogging.
-#+BEGIN_SRC elisp :tangle no
-(defun org-hugo-new-subtree-post-capture-template ()
-  "Returns `org-capture' template string for new Hugo post.
-See `org-capture-templates' for more information."
-  (let* (;; http://www.holgerschurig.de/en/emacs-blog-from-org-to-hugo/
-         (date (format-time-string (org-time-stamp-format  :inactive) (org-current-time)))
-         (title (read-from-minibuffer "Post Title: ")) ;Prompt to enter the post title
-         (fname (org-hugo-slug title)))
-    (mapconcat #'identity
-               `(
-                 ,(concat "* TODO " title)
-                 ":PROPERTIES:"
-                 ,(concat ":EXPORT_FILE_NAME: " fname)
-                 ,(concat ":EXPORT_DATE: " date) ;Enter current date and time
-                 ,(concat ":EXPORT_HUGO_CUSTOM_FRONT_MATTER: "  ":tags something :subtitle booyea :featured false :categories abc :highlight true ")
-                 ":END:"
-                 "%?\n")          ;Place the cursor here
-               "\n")))
-(defvar hugo-org-path "/home/cantos/Dropbox/blog/sunny-website/org-content/"
-  "define the place where we put our org files for hugo")
-;;(defvar org-capture-blog (concat hugo-org-path "blog.org"))
-
-(setq org-capture-templates
-      '(
-        ("h" "Hugo Post"
-         entry
-         (file+olp "/home/cantos/Dropbox/blog/sunny-website/org-content/blog.org" "Posts")
-         (function  org-hugo-new-subtree-post-capture-template))))
-#+END_SRC
-
-* Some helper macros
-
- There are a few handy macros added by doom, namely
- - ~load!~ for loading external ~.el~ files relative to this one
- - ~use-package!~ for configuring packages
- - ~add-load-path!~ for adding directories to the ~load-path~ where ~Emacs~ looks when
-   you load packages
-
-#+begin_src emacs-lisp :tangle no
-
-    (setq prettify-symbols-alist '(("lambda" . ?λ)
-                                    ("->" . ?→)
-                                    ("->>" . ?↠)
-                                    ("=>" . ?⇒)
-                                    ("/=" . ?≠)
-                                    ("!=" . ?≠)
-                                    ("==" . ?≡)
-                                    ("<=" . ?≤)
-                                    (">=" . ?≥)))
-#+end_src
 * Denote
 #+begin_src emacs-lisp :tangle packages.el
 
@@ -22897,3 +22811,23 @@ See `org-capture-templates' for more information."
 #+RESULTS:
 : prot-emacs-write
 
+* Some helper macros
+
+ There are a few handy macros added by doom, namely
+ - ~load!~ for loading external ~.el~ files relative to this one
+ - ~use-package!~ for configuring packages
+ - ~add-load-path!~ for adding directories to the ~load-path~ where ~Emacs~ looks when
+   you load packages
+
+#+begin_src emacs-lisp :tangle no
+
+    (setq prettify-symbols-alist '(("lambda" . ?λ)
+                                    ("->" . ?→)
+                                    ("->>" . ?↠)
+                                    ("=>" . ?⇒)
+                                    ("/=" . ?≠)
+                                    ("!=" . ?≠)
+                                    ("==" . ?≡)
+                                    ("<=" . ?≤)
+                                    (">=" . ?≥)))
+#+end_src
