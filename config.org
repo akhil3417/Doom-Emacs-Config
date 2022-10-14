@@ -4338,7 +4338,7 @@ I set comment-line to 'SPC TAB TAB' which is a rather comfortable keybinding for
 Relative line numbers are fantastic for knowing how far away line numbers are,
 then =ESC 12 <UP>= gets you exactly where you think.
 #+BEGIN_SRC emacs-lisp
-(setq display-line-numbers-type 'absolute)
+;; (setq display-line-numbers-type 'relative)
 ;; (setq display-line-numbers-type nil)
 (map! :leader
       :desc "Comment or uncomment lines" "TAB TAB" #'comment-line
@@ -4572,22 +4572,6 @@ files.
 #+end_src
 
 #+RESULTS: detect-missing-fonts
-#+begin_example
-(unless noninteractive
-  (add-hook! 'doom-init-ui-hook
-    (run-at-time nil nil
-                 (lambda nil
-                   (message "%s missing the following fonts: %s"
-                            (propertize "Warning!" 'face
-                                        '(bold warning))
-                            (mapconcat
-                             (lambda
-                               (font)
-                               (propertize font 'face 'font-lock-variable-name-face))
-                             '("JetBrainsMono.*" "Merriweather")
-                             ", "))
-                   (sleep-for 0.5)))))
-#+end_example
 
 *** Mixed pitch
 #+begin_quote
@@ -4609,7 +4593,7 @@ runs after UI initialisation and both
 + conditionally enables =mixed-pitch-mode=
 + sets up the mixed pitch hooks
 
-#+begin_src emacs-lisp :tangle no
+#+begin_src emacs-lisp :tangle yes
 (defvar mixed-pitch-modes '(org-mode LaTeX-mode markdown-mode gfm-mode Info-mode)
   "Modes that `mixed-pitch-mode' should be enabled in, but only after UI initialisation.")
 (defun init-mixed-pitch-h ()
@@ -4629,7 +4613,7 @@ As mixed pitch uses the variable =mixed-pitch-face=, we can create a new functio
 to apply mixed pitch with a serif face instead of the default. This was created
 for writeroom mode.
 
-#+begin_src emacs-lisp :tangle no
+#+begin_src emacs-lisp :tangle yes
 (autoload #'mixed-pitch-serif-mode "mixed-pitch"
   "Change the default face of the current buffer to a serifed variable pitch, while keeping some faces fixed pitch." t)
 
@@ -4659,7 +4643,7 @@ Th /Th/
 #+end_center
 
 Thankfully, it isn't to hard to add these to the ~composition-function-table~.
-#+begin_src emacs-lisp :tangle no
+#+begin_src emacs-lisp :tangle yes
 (set-char-table-range composition-function-table ?f '(["\\(?:ff?[fijlt]\\)" 0 font-shape-gstring]))
 (set-char-table-range composition-function-table ?T '(["\\(?:Th\\)" 0 font-shape-gstring]))
 #+end_src
