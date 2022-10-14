@@ -4177,11 +4177,12 @@ tweaks of my own.
 #+end_src
 
 #+RESULTS:
-| ( keycast-mode-line) |   | emms-mode-line-string | emms-playing-time-string | appt-mode-string | (pyvenv-virtual-env-name ( venv: pyvenv-virtual-env-name  )) |
+| ( keycast-mode-line) |   | emms-mode-line-string | emms-playing-time-string | appt-mode-string | (pyvenv-virtual-env-name ( venv: pyvenv-virtual-env-name  )) | telega-mode-line-format |
 
 ** Presentation
 CLOSED: [2022-03-31 Thu 19:51]
 
+[[id:1a0e26b3-6bdc-4d69-b3d9-f52ef82774a7][Org presentation using org-reveal]]
 
 #+begin_src emacs-lisp
 
