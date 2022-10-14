@@ -5235,13 +5235,13 @@ are just waiting to be saved!
 
 (after! company
   (setq company-idle-delay 0.1
-        company-minimum-prefix-length 2)
-  (setq company-show-numbers t)
-  (add-hook 'evil-normal-state-entry-hook #'company-abort)) ;; make aborting less annoying.
+        company-minimum-prefix-length 1)
+  (setq company-show-numbers t))
+  ;; (add-hook 'evil-normal-state-entry-hook #'company-abort)) ;; make aborting less annoying. currently disable caues dabbrev closes company -yasnipper automatically
 #+end_src
 
 #+RESULTS:
-| company-abort | +company-abort-h |
+: t
 
 Now, the improvements from ~precedent~ are mostly from remembering history, so
 let's improve that memory.
