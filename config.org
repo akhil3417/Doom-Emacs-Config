@@ -5216,10 +5216,11 @@ CLOSED: [2022-09-22 Thu 11:48]
 #+begin_quote
 From the =:completion company= module.
 #+end_quote
-
+[[../../.emacs.d/modules/completion/company/README.org][Completion Module Readme.org]]
 It's nice to have completions almost all the time, in my opinion. Key strokes
 are just waiting to be saved!
-#+begin_src emacs-lisp
+
+#+begin_src emacs-lisp :tangle yes
 
 (use-package! company
   :defer 3
@@ -5227,10 +5228,7 @@ are just waiting to be saved!
   ("M-s <tab>"      'company-yasnippet)
 
   (:keymaps   'company-active-map
-  ;; "C-p"       nil
-  ;; "C-n"       nil
   "C-;"       'company-other-backend
-  ;; "C-w"       nil
   "C-]"       'company-show-location
   "M-."       'company-show-location)
 
@@ -5245,7 +5243,7 @@ are just waiting to be saved!
   (setq company-idle-delay 0.1
         company-minimum-prefix-length 1)
   (setq company-show-numbers t))
-  ;; (add-hook 'evil-normal-state-entry-hook #'company-abort)) ;; make aborting less annoying. currently disable caues dabbrev closes company -yasnipper automatically
+   ;;(add-hook 'evil-normal-state-entry-hook #'company-abort)) ;; make aborting less annoying. currently disable caues dabbrev closes company -yasnipper automatically-but i use SPC i s
 #+end_src
 
 #+RESULTS:
@@ -5279,7 +5277,7 @@ let's improve that memory.
 We then configure the dictionary we're using in [[*Ispell][Ispell]].
 *** ESS
 ~company-dabbrev-code~ is nice. Let's have it.
-#+begin_src emacs-lisp :tangle no
+#+begin_src emacs-lisp :tangle yes
 (set-company-backend! 'ess-r-mode '(company-R-args company-R-objects company-dabbrev-code :separate))
 #+end_src
 
@@ -5460,6 +5458,10 @@ all three of the above is easier to learn and more consistent overall.
   (dolist (fn '(pulsar-recenter-top pulsar-reveal-entry))
     (add-hook 'consult-after-jump-hook fn)))
 #+end_src
+
+#+RESULTS:
+: t
+
 *** consult keybinds
 #+begin_src emacs-lisp
 
@@ -5470,7 +5472,7 @@ all three of the above is easier to learn and more consistent overall.
                 ("M-s M-j" . consult-org-heading))
 
   :bind (("C-x b"   . consult-buffer)
-         ("C-x C-R" . consult-recent-file)
+         ("C-x C-r" . consult-recent-file)
          ("C-x M-k" . consult-kmacro)
          ("C-x M-r" . consult-complex-command);;M-:
          ("M-s M-o" . consult-multi-occur)
@@ -5478,8 +5480,6 @@ all three of the above is easier to learn and more consistent overall.
          ("C-c m" . consult-mode-command);;C-c m
          ;; ("C-h C-m" . consult-minor-mode-menu)
          ("C-h h" . consult-minor-mode-menu)
-         ;; ("C-c C-j" . consult-outline) ;;M-g o
-         ("M-s M-j" . consult-outline) ;;M-s M-s
          ("M-s M-l" . consult-line)
          ("M-s l"   . consult-line-symbol-at-point)
          ("M-s f"   . consult-fd)
@@ -5497,10 +5497,7 @@ all three of the above is easier to learn and more consistent overall.
          ("M-g M"   . consult-global-mark)
          ("<help> a" . consult-apropos)
          ("M-s i" . consult-imenu-all)
-         ;; ("s-b" . consult-buffer)
          ("M-g e" . consult-compile-error)
-         ;; ("M-g g" . consult-goto-line) ;;doom already have this
-         ;; ("H-b" . consult-buffer)
          ("M-M" . consult-register-store)
          ;; ("C-x r r" . consult-register) ;;spc r r
          ("M-s k l" . consult-focus-lines)
@@ -5514,24 +5511,15 @@ all three of the above is easier to learn and more consistent overall.
          ("b" . consult-buffer-other-frame)
          :map tab-prefix-map
          ("b" . consult-buffer-other-tab)))
-         ;; :map space-menu-file-map
-         ;; ("l" . consult-locate)
-         ;; :map minibuffer-local-map
-         ;; ("M-r" . consult-history)))
-
-
-  ;; :bind (("C-c h" . consult-history)
-  ;;        ("C-c k" . consult-kmacro)
-  ;;        ("M-#" . consult-register-load);; M '
-  ;;        ("M-'" . consult-register-store)
-  ;;        ("M-s e" . consult-isearch))
 
 #+end_src
 
 #+RESULTS:
 : consult-buffer-other-tab
 
-** Marginalia
+** DONE Marginalia
+CLOSED: [2022-10-14 Fri 23:30]
+- State "DONE"       from              [2022-10-14 Fri 23:30]
 #+begin_quote
 Part of the =:completion vertico= module.
 #+end_quote
@@ -5824,18 +5812,16 @@ completion in more scenaria and with relevant candidates.
 A package such as Daniel's own Corfu is used to visualise in-buffer
 completion.
 
-#+begin_src emacs-lisp :tangle yes
+#+begin_src emacs-lisp :tangle no
 ;;; CAPE (extra completion-at-point backends)
 (use-package! cape
   :config
   (setq cape-dabbrev-min-length 3)
   (dolist (backend '( cape-symbol cape-keyword cape-file cape-dabbrev))
+  ;; (dolist (backend '( cape-keyword cape-file cape-dict cape-history cape-symbol cape-abbrev))
     (add-to-list 'completion-at-point-functions backend)))
 
 #+end_src
-
-#+RESULTS:
-: t
 
 ** IVY
 Ivy is a generic completion mechanism for Emacs.
@@ -9381,6 +9367,8 @@ overview of the options I specify for Dired proper:
     counterparts.  If you want to reverse this order, you must include
     the =-X= option (such as =-AFXhlv --group-directories-first=).
 
+  -  man find-name-dried
+
 + Hide all the details by default (permissions, size, etc.).  Those can
   easily be toggled on with the left parenthesis.  Also enable
   highlighting of the current line (=hl-line-mode=), which makes it even
@@ -9769,7 +9757,7 @@ ecosystem:
   (kbd "t") 'dired-toggle-marks
   (kbd "u") 'dired-unmark
   (kbd "C") 'dired-do-copy
-  (kbd "I") 'dired-info
+  (kbd "i") 'dired-info
   (kbd "D") 'dired-do-delete
   (kbd "J") 'dired-goto-file
   (kbd "M") 'dired-do-chmod
@@ -9950,7 +9938,7 @@ ecosystem:
 #+end_src
 
 #+RESULTS:
-| doom-modeline-set-project-modeline | usls-mode-activate | pdf-occur-dired-minor-mode | dired-async-mode | prot-dired-setup-imenu | dired-extra-startup | toggle-truncate-lines | hl-line-mode | dired-hide-details-mode | +dired-disable-gnu-ls-flags-maybe-h | sml/set-buffer-identification | beginend-dired-mode | doom--recentf-add-dired-directory-h | dired-omit-mode | all-the-icons-dired-mode | diredfl-mode | ranger-set-dired-key | (lambda nil (interactive) (dired-hide-details-mode 1) (all-the-icons-dired-mode 1)) |
+| denote-dired-mode | pdf-occur-dired-minor-mode | dired-async-mode | prot-dired-setup-imenu | dired-extra-startup | toggle-truncate-lines | hl-line-mode | dired-hide-details-mode | beginend-dired-mode | doom--recentf-add-dired-directory-h | +dired-disable-gnu-ls-flags-maybe-h | dired-omit-mode | all-the-icons-dired-mode | diredfl-mode | ranger-set-dired-key | (lambda nil (interactive) (dired-hide-details-mode 1) (all-the-icons-dired-mode 1)) |
 
 ** dired-like mode for the trash (trashed.el)
 
@@ -16424,7 +16412,6 @@ In a screenshot, it looks like this:
 ** Helper function to measure the running time of a function
 
 For example =(measure-time (prettier-eslint))=.
-
 #+BEGIN_SRC emacs-lisp
   (defmacro measure-time (&rest body)
     "Measure the time it takes to evaluate BODY."
