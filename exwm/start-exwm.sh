@@ -79,12 +79,6 @@ export _JAVA_AWT_WM_NONREPARENTING=1
 
 # exec dbus-launch --exit-with-session /usr/local/bin/emacs --eval "(progn (require 'exwm) (exwm-enable))"
 # "exwm-enable" has to be called before the frame is spawned.
-# usr/local/bin/emacs --daemon --eval "(require 'exwm)" -f exwm-enable
-# emacs --daemon --eval "(require 'exwm)" -f exwm-enable
  # exec dbus-launch --exit-with-session emacs -mm --debug-init -l ~/.emacs.d/desktop.el
-# exec dbus-launch --exit-with-session emacs -mm #--debug-init
-# exec emacs
-# exec emacs --daemon && emacsclient -c --eval "(exwm-enable)"
-# exec dbus-launch --exit-with-session emacs --eval "(exwm-enable)"
 exec dbus-run-session emacs --eval "(exwm-enable)"
 # exec emacsclient -c
