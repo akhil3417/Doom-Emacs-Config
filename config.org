@@ -5111,7 +5111,7 @@ From the =:ui treemacs= module.
 
 Quite often there are superfluous files I'm not that interested in. There's no
 good reason for them to take up space. Let's add a mechanism to ignore them.
-#+begin_src emacs-lisp :tangle no
+#+begin_src emacs-lisp :tangle yes
 (after! treemacs
   (defvar treemacs-file-ignore-extensions '()
     "File extension which `treemacs-ignore-filter' will ensure are ignored")
@@ -5132,8 +5132,11 @@ good reason for them to take up space. Let's add a mechanism to ignore them.
   (add-to-list 'treemacs-ignored-file-predicates #'treemacs-ignore-filter))
 #+end_src
 
+#+RESULTS:
+| treemacs-ignore-filter | treemacs--std-ignore-file-predicate |
+
 Now, we just identify the files in question.
-#+begin_src emacs-lisp :tangle no
+#+begin_src emacs-lisp :tangle yes
 (setq treemacs-file-ignore-extensions
       '(;; LaTeX
         "aux"
