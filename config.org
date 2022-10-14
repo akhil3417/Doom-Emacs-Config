@@ -3382,7 +3382,7 @@ CLOSED: [2022-03-30 Wed 12:23]
 ;;   (interactive "nBrightness level: ")
 ;;   (save-window-excursion
 ;;     (shell-command
-;;      (format "echo \"0i%s\n\" | sudo /home/shiva/repos/LG-ultrafine-brightness/build/LG_ultrafine_brightness
+;;      (format "echo \"0i%s\n\" | sudo /repos/LG-ultrafine-brightness/build/LG_ultrafine_brightness
 #+end_src
 
 #+RESULTS:
@@ -4398,7 +4398,6 @@ these as horizontal rules.
 #+end_src
 
 #+RESULTS:
-: t
 
 ** FONTS
 CLOSED: [2022-03-30 Wed 12:22]
@@ -5172,6 +5171,10 @@ Now, we just identify the files in question.
         "*/_region_.log"
         "*/_region_.tex"))
 #+end_src
+
+#+RESULTS:
+| */_minted-* | */.auctex-auto | */_region_.log | */_region_.tex |
+
 ** NEOTREE
 CLOSED: [2022-09-22 Thu 11:48]
 Neotree is a file tree viewer.  When you open neotree, it jumps to the current file thanks to neo-smart-open.  The neo-window-fixed-size setting makes the neotree width be adjustable.  Doom Emacs had no keybindings set for neotree.  Since Doom Emacs uses 'SPC t' for 'toggle' keybindings, I used 'SPC t n' for toggle-neotree.
@@ -5779,7 +5782,6 @@ while using relevant Consult commands, such as =consult-grep=.
   (prot-embark-keymaps 1)
   (prot-embark-setup-packages 1))
 #+end_src
-
 
 ** Minibuffer history (savehist-mode)
 
