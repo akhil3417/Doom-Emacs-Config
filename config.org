@@ -135,7 +135,6 @@ To install ~some-package~ from MELPA, ELPA or emacsmirror:
   (package! telega)
   (package! smart-mode-line)
   (package! system-packages)
-  (package! presentation)
   (package! kind-icon)
   (package! define-word)
   (package! dired-sidebar)
@@ -4179,22 +4178,6 @@ tweaks of my own.
 #+RESULTS:
 | ( keycast-mode-line) |   | emms-mode-line-string | emms-playing-time-string | appt-mode-string | (pyvenv-virtual-env-name ( venv: pyvenv-virtual-env-name  )) | telega-mode-line-format |
 
-** Presentation
-CLOSED: [2022-03-31 Thu 19:51]
-
-[[id:1a0e26b3-6bdc-4d69-b3d9-f52ef82774a7][Org presentation using org-reveal]]
-
-#+begin_src emacs-lisp
-
-;; ** PRESENTATION (BIG) MODE
-(use-package! presentation
-  :ensure t
-  :commands presentation-mode
-  :config
-  (setq presentation-default-text-scale 1.50
-        presentation-mode-lighter " BIG"
-        presentation-keep-last-text-scale nil))
-#+end_src
 ** Frame sizing
 CLOSED: [2022-03-31 Thu 20:07]
 It's nice to control the size of new frames, when launching Emacs that can be
