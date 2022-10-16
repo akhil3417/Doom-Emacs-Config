@@ -18407,6 +18407,7 @@ The agenda is nice, but a souped up version is nicer.
 (setq org-agenda-custom-commands
       '(("o" "Overview"
          ((agenda "" ((org-agenda-span 'day)
+                      (org-agenda-start-day nil)
                       (org-super-agenda-groups
                        '((:name "Today"
                           :time-grid t
