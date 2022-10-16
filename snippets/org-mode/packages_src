@@ -1,0 +1,10 @@
+# -*- mode: snippet -*-
+# name: packages src
+# uuid: src_packages
+# key: <ps
+# condition: t
+# expand-env: ((yas-after-exit-snippet-hook #'org-edit-src-code))
+# --
+#+begin_src emacs-lisp :tangle packages.el
+`%`$0
+#+end_src
