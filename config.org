@@ -18322,7 +18322,8 @@ The agenda is nice, but a souped up version is nicer.
   :commands org-super-agenda-mode)
 
 #+end_src
-#+begin_src emacs-lisp :tangle no
+
+#+begin_src emacs-lisp :tangle no 
 (after! org
   (setq org-agenda-files '("~/org/org-agenda/daily"
                            "~/org/org-agenda/incubate.org"
