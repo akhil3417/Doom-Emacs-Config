@@ -4424,7 +4424,7 @@ frame if FRAME is nil, and to 1 if AMT is nil."
     (interactive "p")
     (zoom-frame (- (or amt 1)) frame))
 #+end_src
-*** Font gen
+*** Font Config
 Settings related to fonts within Doom Emacs:
 + 'doom-font' -- standard monospace font that is used for most things in Emacs.
 + 'doom-variable-pitch-font' -- variable font which is useful in some Emacs plugins.
