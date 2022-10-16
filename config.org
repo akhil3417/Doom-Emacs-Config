@@ -17748,18 +17748,14 @@ CLOSED: [2022-10-07 Fri 20:58]
 #+begin_src emacs-lisp
 
 (setq org-todo-keywords
-      '((sequence "TODO(t!)" "PROJ(p)" "MAYB(m)" "LOOP(l)" "CLAR(l)" "STRT(s@)" "READ(R@/!)" "WAIT(w@/!)" "FIXME(f@/!)" "IDEA(i)" "NEXT(n)" "BLOCKED(B@)" "|" "DONE(d!)" "KILL(k)" "DUPLICATE(u@)" "HOLD(h)")
-       (sequence "BACKLOG(b)"  "SOMEDAY(S)" "PLAN(P)" "READY(r)" "FOUND(F@/!)" "ACTIVE(a)" "REVIEW(v!)" "|" "COMPLETED(c)" "CANC(C@)")
+      '((sequence "TODO(t!)" "PROJ(p)" "LOOP(l)" "CLAR(L@)" "READ(R@/!)" "WAIT(w@/!)" "FIXME(f@/!)" "IDEA(i)" "STRT(s)" "NEXT(n)" "DUPLICATE(u@)" "|" "DONE(d!)" "KILL(k@/!)"  "HOLD(h@/!)" "BLOCKED(B@)")
+       (sequence "BACKLOG(b)" "SOMEDAY(S)" "PLAN(P)" "READY(r)" "FOUND(F@/!)" "ACTIVE(a@)" "REVIEW(v!)" "|" "COMPLETED(c)" "CANC(C@)")
        (sequence "[ ](T)" "[-](B)" "[?](W)" "|" "[X](D)")
        (sequence "|" "OKAY(o)" "YES(y)" "NO(n)")))
 
 #+end_src
 
-#+RESULTS:
-| sequence | TODO(t!)   | GO(g@)     | PROJ(p) | MAYB(m)  | LOOP(l)     | CLAR(l)   | STRT(s) | REVIEW(v!) | WAIT(w@/!)   | FIXME(f@/!) | HOLD(h) | IDEA(i) | NEXT(n) | BLOCKED(B@) |   |   | DONE(d!) | KILL(k) | DUPLICATE(u@) | READ(R@/!) |
-| sequence | BACKLOG(b) | SOMEDAY(S) | PLAN(P) | READY(r) | FOUND(F@/!) | ACTIVE(a) |         |            | COMPLETED(c) | CANC(C@)    |         |         |         |             |   |   |          |         |               |            |
-| sequence | [ ](T)     | [-](B)     | [?](W)  |          |             | [X](D)    |         |            |              |             |         |         |         |             |   |   |          |         |               |            |
-| sequence |            |            | OKAY(o) | YES(y)   | NO(n)       |           |         |            |              |             |         |         |         |             |   |   |          |         |               |            |
+
 
 ****** Citation
 
