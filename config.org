@@ -18353,7 +18353,7 @@ The agenda is nice, but a souped up version is nicer.
 
 #+RESULTS:
 
-#+begin_src emacs-lisp :tangle yes
+#+begin_src emacs-lisp :tangle no
 
 (setq org-super-agenda-groups
       '((:name "Next Items"
@@ -18468,7 +18468,7 @@ The agenda is nice, but a souped up version is nicer.
                            :todo ("REVIEW" "DUPLICATE")
                            :order 21)
                           (:name "In Planning"
-                           :todo ("PLAN" "SOMEDAY" "IDEA")
+                           :todo ("PLAN" "IDEA")
                            :order 22)
                           (:name "Project Backlog"
                            :todo "BACKLOG"
@@ -18488,6 +18488,7 @@ The agenda is nice, but a souped up version is nicer.
                           (:name "Trivial"
                            :priority<= "E"
                            :tag ("Trivial" "Unimportant")
+                           :todo ("SOMEDAY" )
                            :order 90)
                           (:discard (:tag ("Chore" "Routine" "Daily")))))))))
         ("d" "Dashboard"
