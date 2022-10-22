@@ -22166,19 +22166,39 @@ but more convenient, like =;=.
 
 This makes use of =aas= (/Auto Activating Snippets/) for CDLaTeX-like symbol input.
 
-#+begin_src emacs-lisp :tangle packages.el
-(package! laas :recipe (:local-repo "lisp/LaTeX-auto-activating-snippets"))
+#+begin_src emacs-lisp :tangle no
+(package! laas :recipe (:host github :repo "tecosaur/LaTeX-auto-activating-snippets"))
+
 #+end_src
 
-#+begin_src emacs-lisp
+#+begin_src emacs-lisp :tangle no
 (use-package! laas
   :hook (LaTeX-mode . laas-mode)
   :config
+  (aas-set-snippets 'laas-mode
+                    ;; set condition!
+                    :cond #'texmathp ; expand only while in math
+                    "supp" "\\supp"
+                    "On" "O(n)"
+                    "O1" "O(1)"
+                    "Olog" "O(\\log n)"
+                    "Olon" "O(n \\log n)"
+                    ;; bind to functions!
+                    "Sum" (lambda () (interactive)
+                            (yas-expand-snippet "\\sum_{$1}^{$2} $0"))
+                    "Span" (lambda () (interactive)
+                             (yas-expand-snippet "\\Span($1)$0"))
+                    ;; add accent snippets
+                    :cond #'laas-object-on-left-condition
+                    "qq" (lambda () (interactive) (laas-wrap-previous-object "sqrt")))
   (defun laas-tex-fold-maybe ()
     (unless (equal "/" aas-transient-snippet-key)
       (+latex-fold-last-macro-a)))
   (add-hook 'aas-post-snippet-expand-hook #'laas-tex-fold-maybe))
 #+end_src
+
+#+RESULTS:
+| preview-mode-setup | er/add-latex-mode-expansions | mixed-pitch-mode | laas-mode | beginend-LaTeX-mode | reftex-mode | evil-tex-mode | adaptive-wrap-prefix-mode | +evil-embrace-latex-mode-hook-h | embrace-LaTeX-mode-hook |
 
 *** SyncTeX
 
