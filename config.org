@@ -22274,8 +22274,6 @@ I've integrated this into a little package, =pdftotext.el=.
 The output can be slightly nicer without spelling errors, and with prettier page
 feeds (=^L= by default).
 
-#+begin_src emacs-lisp
-#+end_src
 
 This is very nice, now we just need to associate it with =.pdf= files, and make
 sure =pdf-tools= doesn't take priority.
