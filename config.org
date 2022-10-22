@@ -18682,56 +18682,56 @@ with it.
 #+begin_src emacs-lisp :tangle yes
 
 (after! org-roam
-    (setq org-roam-capture-templates
-          `(("s" "standard" plain "%?"
-     :if-new
-     (file+head "standard/%<%Y%m%d%H%M%S>-${slug}.org"
-      "#+title: ${title}\n#+filetags: \n\n ")
-     :unnarrowed t)
-        ("d" "definition" plain
-         "%?"
-         :if-new
-         (file+head "definition/${slug}.org" "#+title: ${title}\n#+filetags: definition \n\n* Definition\n\n\n* Examples\n")
-         :unnarrowed t)
-        ("r" "ref" plain "%?"
+  (setq org-roam-capture-templates
+        `(("s" "standard" plain "%?"
+           :if-new
+           (file+head "standard/%<%Y%m%d%H%M%S>-${slug}.org"
+                      "#+title: ${title}\n#+date\n#+filetags: \n\n ")
+           :unnarrowed t)
+
+          ("d" "definition" plain
+           "%?"
+           :if-new
+           (file+head "definition/${slug}.org" "#+title: ${title}\n#+filetags: definition \n\n* Definition\n\n\n* Examples\n")
+           :unnarrowed t)
+          ("r" "ref" plain "%?"
            :if-new
            (file+head "ref/${citekey}.org"
-           "#+title: ${slug}: ${title}\n
-\n#+filetags: reference ${keywords} \n
-\n* ${title}\n\n
-\n* Summary
-\n\n\n* Rough note space\n")
+                      "#+title: ${slug}: ${title}\n
+                      \n#+filetags: reference ${keywords} \n
+                      \n* ${title}\n\n
+                      \n* Summary
+                      \n\n\n* Rough note space\n")
            :unnarrowed t)
-          ("p" "person" plain "%?"
+          ("P" "person" plain "%?"
            :if-new
-           (file+head "person/${slug}.org" "%^{relation|some guy|family|friend|colleague}p %^{birthday}p %^{address}p
-,#+title:${slug}\n#+filetags: :person: \n"
-                      :unnarrowed t))
-
- ("b" "book notes" plain
- "\n* Source\n\nAuthor: %^{Author}\nTitle: ${title}\nYear: %^{Year}\n\n* Summary\n\n%?"
- :if-new (file+head "BookNotes/%<%Y%m%d%H%M%S>-${slug}.org" "#+title: ${title}\n")
- :unnarrowed t)
-("p" "project" plain "* Goals\n\n%?\n\n* Tasks\n\n** TODO Add initial tasks\n\n* Dates\n\n"
- :if-new (file+head "Projects/%<%Y%m%d%H%M%S>-${slug}.org" "#+title: ${title}\n#+filetags: Project")
- :unnarrowed t)
-("B" "book notes" plain (file "~/org/org-roam2/Templates/BookNoteTemplate.org")
- :if-new (file+head "BookNotes/%<%Y%m%d%H%M%S>-${slug}.org" "#+title: ${title}\n")
- :unnarrowed t)
-("l" "programming language" plain
- "* Characteristics\n\n- Family: %?\n- Inspired by: \n\n* Reference:\n\n"
- :if-new (file+head "ProgLangs/%<%Y%m%d%H%M%S>-${slug}.org" "#+title: ${title}\n")
- :unnarrowed t)
- ("a" "article" plain "%?"
-         :if-new
-         (file+head "articles/${title}.org" "#+title: ${title}\n#+filetags: :article:\n")
-         :immediate-finish t
-         :unnarrowed t))))
+           (file+head "${slug}.org" "%^{relation|some guy|family|friend|colleague}p %^{birthday}p %^{address}p
+,#+title:${slug}\n#+filetags: :person: \n")
+           :unnarrowed t)
+          ("p" "project" plain "* Goals\n\n%?\n\n* Tasks\n\n** TODO Add initial tasks\n\n* Dates\n\n"
+           :if-new (file+head "Projects/%<%Y%m%d%H%M%S>-${slug}.org" "#+title: ${title}\n#+filetags: Project")
+           :unnarrowed t)
+          ;; ("b" "book notes" plain
+          ;;  "\n* Source\n\nAuthor: %^{Author}\nTitle: ${title}\nYear: %^{Year}\n\n* Summary\n\n%?"
+          ;;  :if-new (file+head "BookNotes/%<%Y%m%d%H%M%S>-${slug}.org" "#+title: ${title}\n")
+          ;;  :unnarrowed t)
+          ("b" "book notes" plain (file "~/org/org-roam2/Templates/BookNotesTemplate.org")
+           :if-new (file+head "BookNotes/%<%Y%m%d%H%M%S>-${slug}.org" "#+title: ${title}\n")
+           :unnarrowed t)
+          ("l" "programming language" plain
+           "* Characteristics\n\n- Family: %?\n- Inspired by: \n\n* Reference:\n\n"
+           :if-new (file+head "ProgLangs/%<%Y%m%d%H%M%S>-${slug}.org" "#+title: ${title}\n")
+           :unnarrowed t)
+          ("a" "article" plain "%?"
+           :if-new
+           (file+head "Articles/${title}.org" "#+title: ${title}\n#+filetags: :article:\n")
+           :immediate-finish t
+           :unnarrowed t))))
 (setq org-roam-dailies-capture-templates
       '(("d" "default" entry "* %<%I:%M %p>: %?"
          :if-new (file+head "%<%Y-%m-%d>.org" "#+title: %<%Y-%m-%d>\n"))))
 
- ;; Creating the property “type” on my nodes.
+;; Creating the property “type” on my nodes.
 (cl-defmethod org-roam-node-type ((node org-roam-node))
   "Return the TYPE of NODE."
   (condition-case nil
