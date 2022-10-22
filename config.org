@@ -18542,6 +18542,9 @@ The agenda is nice, but a souped up version is nicer.
                           (:name "University"
                            :tag "uni"
                            :order 32)
+                          (:name "Binge Watch"
+                           :tag ("tvshow" "movie" "documentry")
+                           :order 33)
                           (:name "Trivial"
                            :priority<= "E"
                            :tag ("Trivial" "Unimportant")
