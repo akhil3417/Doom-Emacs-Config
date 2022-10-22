@@ -348,26 +348,6 @@ a ~:recipe~. You'll find documentation on what ~:recipe~ accepts [[https://githu
 If the package you are trying to install does not contain a ~PACKAGENAME.el~
 file, or is located in a subdirectory of the repo, you'll need to specify
 ~:files~ in the ~:recipe~:
-#+begin_src emacs-lisp :tangle no
-
-;; (package! discover :recipe (:host github :repo "mickeynp/discover.el"))
-;; (package! xah-fly-keys :recipe (:host github :repo "xahlee/xah-fly-keys"))
-;; (package! maple-iedit :recipe (:host github :repo "honmaple/emacs-maple-iedit"))
-;; (package! ctrlf :recipe (:host github :repo "raxod502/ctrlf"))
-;; (package! scrollkeeper :recipe (:host github :repo "alphapapa/scrollkeeper.el"))
-;; (package! awesome-tab :recipe (:host github :repo "manateelazycat/awesome-tab"))
-;; (package! ob-session-async :recipe (:host github :repo "jackkamm/ob-session-async"))
-;; (package! maple-explorer :recipe (:host github :repo "honmaple/emacs-maple-explorer"))
-;; (package! sunrise-commander :recipe (:host github :repo "sunrise-commander/sunrise-commander"))
-;; (package! awesome-pair :recipe (:host github :repo "manateelazycat/awesome-pair"))
-;; (package! eaf :recipe (:host github
-;;                             :repo "manateelazycat/emacs-application-framework"
-;;                             :files ("*")
-;;                             :no-byte-compile t))
-;; (package! this-package
-  ;; :recipe (:host github :repo "username/repo"
-           ;; :files ("some-file.el" "src/lisp/*.el")))
-#+end_src
 
 *** Disabling built-in packages
 If you'd like to disable a package included with Doom, for whatever reason,
