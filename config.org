@@ -10031,7 +10031,83 @@ in the manual of the themes.  If you are using them, evaluate this form:
 #+end_src
 
 #+RESULTS:
-: INTERLEAVE_PAGE_NOTE
+: t
+
+** Taking notes on PDFs(org-noter)
+:PROPERTIES:
+:NOTER_DOCUMENT: ../../org/notes/notes.org
+:END:
+#+begin_src emacs-lisp :tangle packages.el
+(package! pdf-tools-org-noter-helpers :recipe (:host github :repo "analyticd/pdf-tools-org-noter-helpers"))
+#+end_src
+
+#+begin_src emacs-lisp :tangle packages.el
+(package! org-noter-plus-djvu :recipe (:host github :repo "c1-g/org-noter-plus-djvu"))
+#+end_src
+#+begin_src emacs-lisp :tangle yes
+   (use-package! org-noter
+  :after (:any org pdf-view)
+  :config
+  (setq
+   ;; The WM can handle splits
+   org-noter-notes-window-location 'other-frame
+   ;; Please stop opening frames
+   org-noter-always-create-frame nil
+   ;; I want to see the whole file
+   org-noter-hide-other nil
+   ;; org-noter-notes-search-path "~/org/notes"
+   org-noter-separate-notes-from-heading t
+   org-noter-default-heading-title "Page $p$"
+   org-noter-auto-save-last-location t
+   org-noter-separate-notes-from-heading t
+   org-noter-doc-property-in-notes t
+   org-noter-always-create-frame t
+   )
+  )
+
+(setq org-noter-property-doc-file "INTERLEAVE_PDF"
+      org-noter-property-note-location "INTERLEAVE_PAGE_NOTE")
+
+;; (use-package! org-pdftools
+;;   :hook (org-load . org-pdftools-setup-link))
+;; (use-package! org-noter-pdftools
+;;   :after org-noter
+;;   :config
+;;   (with-eval-after-load 'pdf-annot
+;;     (add-hook 'pdf-annot-activate-handler-functions #'org-noter-pdftools-jump-to-note)))
+
+;; (setq org-noter-notes-search-path '("~/org/notes/"))
+#+end_src
+#+RESULTS:
+: pdf-tools-org-noter-helpers
+
+#+begin_src emacs-lisp
+(defun org-noter-create-notes-file-for-current-book ()
+  "Create the org-noter file based on the PDF file name for the current buffer."
+  (interactive)
+  (call-interactively 'bookmark-set)
+  (save-excursion
+    (let* ((book-filename buffer-file-name)
+           (filename-non-directory (file-name-nondirectory book-filename))
+           (filename (replace-regexp-in-string
+                      " " "-"
+                      (first (split-string filename-non-directory "\\\."))))
+           (noter-filepath (concatenate 'string org-directory "/" filename "-notes" ".org")))
+      (with-temp-buffer (find-file noter-filepath)
+                        (if (not (file-exists-p noter-filepath))
+                            (delay-mode-hooks
+                              (point-min)
+                              (org-insert-heading)
+                              (insert (format " %s\n" filename))
+                              (org-set-property "NOTER_DOCUMENT" book-filename)
+                              (save-buffer))
+                          (find-file noter-filepath))
+                        (org-noter))
+      (call-interactively 'bookmark-jump))))
+#+end_src
+
+#+RESULTS:
+: org-noter-create-notes-file-for-current-book
 
 ** Hydra
 #+begin_src emacs-lisp
@@ -21404,46 +21480,6 @@ The package that allows us to search through bibliography files and take notes o
   (setq orb-preformat-keywords
    '("citekey" "title" "url" "file" "author-or-editor" "keywords" "pdf" "doi" "author" "tags" "year" "author-bbrev")))
 ;)
-#+end_src
-
-**** Taking notes on PDFs
-:PROPERTIES:
-:NOTER_DOCUMENT: ../../org/notes/notes.org
-:END:
-
-#+begin_src emacs-lisp :tangle yes
-   (use-package! org-noter
-  :after (:any org pdf-view)
-  :config
-  (setq
-   ;; The WM can handle splits
-   ;;org-noter-notes-window-location 'other-frame
-   ;; Please stop opening frames
-   ;;org-noter-always-create-frame nil
-   ;; I want to see the whole file
-   org-noter-hide-other nil
-   ;; org-noter-notes-search-path "~/org/notes"
-   org-noter-separate-notes-from-heading t
-   org-noter-default-heading-title "Page $p$"
-   org-noter-auto-save-last-location t
-   org-noter-separate-notes-from-heading t
-   org-noter-doc-property-in-notes t
-   org-noter-always-create-frame t
-   )
-  )
-
-(setq org-noter-property-doc-file "INTERLEAVE_PDF"
-      org-noter-property-note-location "INTERLEAVE_PAGE_NOTE")
-
-(use-package! org-pdftools
-  :hook (org-load . org-pdftools-setup-link))
-(use-package! org-noter-pdftools
-  :after org-noter
-  :config
-  (with-eval-after-load 'pdf-annot
-    (add-hook 'pdf-annot-activate-handler-functions #'org-noter-pdftools-jump-to-note)))
-
-
 #+end_src
 
 **** Org-journal
