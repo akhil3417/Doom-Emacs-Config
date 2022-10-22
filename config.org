@@ -2642,8 +2642,7 @@ Here are some things you might want to consider changing:
 - =mouse_left/right/middle_click= - Action to take when clicking a notification
 - Any of the key bindings in the =shortcuts= section (though these are deprecated in 1.5.0, use =dunstctl=)
 
-#+begin_src conf :tangle no
-# +begin_src conf :tangle ~/.config/dunst/dunstrc :mkdirp yes
+#+begin_src conf :tangle ~/.config/dunst/dunstrc :mkdirp yes
 
 [global]
     ### Display ###
