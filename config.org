@@ -18738,7 +18738,7 @@ with it.
   (setq org-roam-capture-templates
         `(("s" "standard" plain "%?"
            :if-new
-           (file+head "standard/%<%Y%m%d%H%M%S>-${slug}.org"
+           (file+head "standard/%<%Y%m%d%H%M%S>--${slug}.org"
                       "#+title: ${title}\n#+date\n#+filetags: \n\n ")
            :unnarrowed t)
 
@@ -18751,6 +18751,7 @@ with it.
            :if-new
            (file+head "ref/${citekey}.org"
                       "#+title: ${slug}: ${title}\n
+                      \n#+date : %<%Y%m%d%H%M%S>
                       \n#+filetags: reference ${keywords} \n
                       \n* ${title}\n\n
                       \n* Summary
@@ -18762,29 +18763,40 @@ with it.
 ,#+title:${slug}\n#+filetags: :person: \n")
            :unnarrowed t)
           ("p" "project" plain "* Goals\n\n%?\n\n* Tasks\n\n** TODO Add initial tasks\n\n* Dates\n\n"
-           :if-new (file+head "Projects/%<%Y%m%d%H%M%S>-${slug}.org" "#+title: ${title}\n#+filetags: Project")
+           :if-new (file+head "Projects/%<%Y%m%d%H%M%S>--${slug}.org" "#+title: ${title}\n#+filetags: Project")
            :unnarrowed t)
-          ;; ("b" "book notes" plain
-          ;;  "\n* Source\n\nAuthor: %^{Author}\nTitle: ${title}\nYear: %^{Year}\n\n* Summary\n\n%?"
+          ("b" "book notes" plain
+           "\n* Source\n\nAuthor: %^{Author}\nTitle: ${title}\nYear: %^{Year}\n\n* Summary\n\n%?"
+           :if-new (file+head "BookNotes/%<%Y%m%d%H%M%S>--${slug}.org" "#+title: ${title}\n")
+           :unnarrowed t)
+          ;; templates can be used as well, which is pretty cool
+          ;; ("b" "book notes" plain (file "~/org/org-roam2/Templates/BookNotesTemplate.org")
           ;;  :if-new (file+head "BookNotes/%<%Y%m%d%H%M%S>-${slug}.org" "#+title: ${title}\n")
           ;;  :unnarrowed t)
-          ("b" "book notes" plain (file "~/org/org-roam2/Templates/BookNotesTemplate.org")
-           :if-new (file+head "BookNotes/%<%Y%m%d%H%M%S>-${slug}.org" "#+title: ${title}\n")
-           :unnarrowed t)
           ("l" "programming language" plain
            "* Characteristics\n\n- Family: %?\n- Inspired by: \n\n* Reference:\n\n"
-           :if-new (file+head "ProgLangs/%<%Y%m%d%H%M%S>-${slug}.org" "#+title: ${title}\n")
+           :if-new (file+head "ProgLangs/%<%Y%m%d%H%M%S>--${slug}.org" "#+title: ${title}\n")
            :unnarrowed t)
+
+          ("n" "notes" plain "%?"
+           :if-new
+           (file+head "Notes/%<%Y%m%d%H%M%S>--${title}.org" "#+title: ${title}\n#+STARTUP: content\n#+date : %<%Y-%m-%d>\n#+filetags: :%^{tags|article:note|learn|info|posix|web|intresting|emacs|gnu_linux|health|food|shopping|pentesting|tv_shows|elfeed|void_linux|internet} ")
+           :immediate-finish t
+           :unnarrowed t)
+
           ("a" "article" plain "%?"
            :if-new
-           (file+head "Articles/${title}.org" "#+title: ${title}\n#+filetags: :article:\n")
+           (file+head "Articles/%<%Y%m%d%H%M%S>--${title}.org" "#+title: ${title}\n#+STARTUP: content\n#+date : %<%Y-%m-%d>\n#+filetags: :%^{tags|article:read|learn|info|posix|web|intresting|emacs|gnu_linux|health|food|shopping|pentesting|tv_shows|elfeed|void_linux|internet} ")
+
+           ;; (file+head "Articles/%<%Y%m%d%H%M%S>-${title}.org" "#+title: ${title}\n#+date : %<%Y%m%d%H%M%S>\n#+filetags: :article:%^{tags|read|learn|info}
+            ;; \n\n%i %a")
            :immediate-finish t
            :unnarrowed t))))
 (setq org-roam-dailies-capture-templates
       '(("d" "default" entry "* %<%I:%M %p>: %?"
          :if-new (file+head "%<%Y-%m-%d>.org" "#+title: %<%Y-%m-%d>\n"))))
 
-;; Creating the property “type” on my nodes.
+;; ;; Creating the property “type” on my nodes.
 (cl-defmethod org-roam-node-type ((node org-roam-node))
   "Return the TYPE of NODE."
   (condition-case nil
@@ -18796,8 +18808,12 @@ with it.
 
 ;; Modifying the display template to show the node “type”
 
-(setq org-roam-node-display-template
-      (concat "${type:15} ${title:*} " (propertize "${tags:10}" 'face 'org-tag)))
+;; (setq org-roam-node-display-template
+;;        (concat "${type:15} ${title:*} " (propertize "${tags:10}" 'face 'org-tag)))
+;; #("${doom-type:15} ${doom-hierarchy:*}  ${doom-tags:42}" 20 35
+;;   (face font-lock-keyword-face)
+;;   36 51
+;;   (face org-tag)))
 
 (defun my/org-roam--backlinks-list (file)
   (if (org-roam--org-roam-file-p file)
