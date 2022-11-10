@@ -19243,7 +19243,18 @@ appropriate.  In tables, insert a new row or end the table."
  :i [return] #'unpackaged/org-return-dwim)
 #+end_src
 ***** Snippet Helpers
+****** Structure Templates
 
+#+begin_src emacs-lisp :tangle no
+
+  ;; This is needed as of Org 9.2
+  (require 'org-tempo)
+
+  (add-to-list 'org-structure-template-alist '("sh" . "src shell"))
+  (add-to-list 'org-structure-template-alist '("el" . "src emacs-lisp"))
+  (add-to-list 'org-structure-template-alist '("py" . "src python"))
+
+#+end_src
 I often want to set =src-block= headers, and it's a pain to
 + type them out
 + remember what the accepted values are
