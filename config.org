@@ -426,8 +426,6 @@ my home machine is pretty safe, and my laptop is shutdown a lot.
 (add-to-list 'load-path "~/.config/doom/lisp/bon-app-launcher")
 
 (load "elfeed-tube.el")
-
-(load "elfeed-tube.el")
 (load "elfeed-tube-contrib.el")
 (load "elfeed-tube-fill.el")
 (load "elfeed-tube-mpv.el")
@@ -13693,7 +13691,6 @@ Any time you regenerate the site files, you can just reload the page to see the 
 
 ** Newsfeed
 
-
 RSS feeds are still a thing. Why not make use of them with =elfeed=.
 I really like what [[https://github.com/fuxialexander/doom-emacs-private-xfu/tree/master/modules/app/rss][fuxialexander]] has going on, but I don't think I need a custom
 module. Let's just try to patch on the main things I like the look of.
@@ -17243,7 +17240,6 @@ need to have a template assigned.
 #+end_src
 
 ** Plaintext
-
 *** Ansi colours
 
 It's nice to see ANSI colour codes displayed, however we don't want to disrupt
@@ -17571,7 +17567,6 @@ spell-check face ignore list
 (after! spell-fu
   (cl-pushnew 'org-modern-tag (alist-get 'org-mode +spell-excluded-faces-alist)))
 #+end_src
-
 **** Behaviour
 ***** Tweaking defaults
 #+begin_src emacs-lisp :tangle yes
@@ -17790,7 +17785,6 @@ CLOSED: [2022-10-07 Fri 20:58]
        (sequence "|" "OKAY(o)" "YES(y)" "NO(n)")))
 
 #+end_src
-
 
 
 ****** Citation
@@ -18913,7 +18907,6 @@ with it.
 #+end_src
 
 #+RESULTS:
-
 ***** Nicer generated heading IDs
 Thanks to alphapapa's [[https://github.com/alphapapa/unpackaged.el#export-to-html-with-useful-anchors][unpackaged.el]].
 
