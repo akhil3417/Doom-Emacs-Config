@@ -14208,7 +14208,7 @@ Gives us a popup box with "Clippy, the paper clip". You can make him say various
 
 #+end_src
 
-** DONE System Package Managment
+** DONE System Package Managment (Arch)
 CLOSED: [2022-04-15 Fri 11:43]
 
 This one is a pleasant surprise to have honestly. Having Emacs handle system packages as well as its own makes life a million times easier. Since I use yay on Arch, I configure an entry for it and use it if it’s installed.
