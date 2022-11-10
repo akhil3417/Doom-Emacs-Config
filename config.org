@@ -16646,7 +16646,7 @@ One of the media players available for Emacs is emms, which stands for Emacs Mul
 
   (require 'emms-setup)
   (emms-all)
-  (emms-default-players)
+  ;; (emms-default-players)
   (emms-playing-time-disable-display)
 
   (add-to-list 'emms-player-base-format-list "opus")
