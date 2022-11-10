@@ -9225,7 +9225,7 @@ overview of the options I specify for Dired proper:
     counterparts.  If you want to reverse this order, you must include
     the =-X= option (such as =-AFXhlv --group-directories-first=).
 
-  -  man find-name-dried
+  -  find-name-dired
 
 + Hide all the details by default (permissions, size, etc.).  Those can
   easily be toggled on with the left parenthesis.  Also enable
@@ -9616,6 +9616,7 @@ ecosystem:
   (kbd "u") 'dired-unmark
   (kbd "C") 'dired-do-copy
   (kbd "i") 'dired-info
+  (kbd "I") 'prot-dired-insert-subdir
   (kbd "D") 'dired-do-delete
   (kbd "J") 'dired-goto-file
   (kbd "M") 'dired-do-chmod
