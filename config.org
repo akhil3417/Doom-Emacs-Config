@@ -9971,7 +9971,7 @@ the PDF switches to a dark theme when it has to.  Those are documented
 in the manual of the themes.  If you are using them, evaluate this form:
 =(info "(modus-themes) Backdrop for pdf-tools (DIY)")=.
 
-#+begin_src emacs-lisp
+#+begin_src emacs-lisp :tangle yes
 ;;; Extensions for PDFs (pdf-tools)
  (pdf-loader-install)
 
