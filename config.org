@@ -6400,7 +6400,7 @@ well somehow, so let's switch to 'P22 Underground Book'; it looks much nicer.
 | centaur-tabs-forward-group  | /Next tab group/            | g <down>         |
 | centaur-tabs-backward-group | /Previous tab group/        | g <up>           |
 
-#+BEGIN_SRC emacs-lisp
+#+BEGIN_SRC emacs-lisp :tangle no
 (after! centaur-tabs
   (centaur-tabs-mode -1)
 (setq centaur-tabs-set-bar 'over
