@@ -14421,7 +14421,7 @@ Other potentially relevant parts of my dotemacs:
                nil
                "No URL in clipboard")
     (let* ((url (current-kill 0))
-           (download-dir (expand-file-name "~/learnlinux/gitclones/"))
+           (download-dir (expand-file-name "~/gitclones/"))
            (project-dir (concat (file-name-as-directory download-dir)
                                 (file-name-base url)))
            (default-directory download-dir)
