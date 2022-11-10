@@ -1,7 +1,6 @@
-#+TITLE: My Doom Emacs Config
+#+TITLE: Akhil's Doom Emacs Config
 #+AUTHOR: *Akhil Pratap Singh*
 #+DESCRIPTION: Akhil's personal Doom Emacs config.
-#+STARTUP: fold
 #+PROPERTY: header-args:emacs-lisp :tangle config.el
 #+options: coverpage:yes
 #+startup: fold
