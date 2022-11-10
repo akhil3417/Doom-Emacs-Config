@@ -13676,17 +13676,7 @@ Usage:
           ("http://www.howardism.org/index.xml" emacs)
           ("http://www.masteringemacs.org/feed/" emacs))))
 
-(require 'emms-setup)
-(emms-all)
-(emms-default-players)
-(setq emms-source-file-default-directory "~/Music/")
 #+END_SRC
-
-#+RESULTS:
-: ~/Music/
-
-#+RESULTS:
-: ~/Music/
 
 ** simple httpd
 #+begin_src emacs-lisp :tangle yes
