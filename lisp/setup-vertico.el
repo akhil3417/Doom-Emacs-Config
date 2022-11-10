@@ -23,8 +23,7 @@
               ("C-o"     . embark-minimal-act)
               ("C-M-o"   . embark-minimal-act-noexit)
               ("M-s o"   . embark-export)
-              ("C-c C-o" . embark-export)
-              ("C-l"     . embark-export))
+              ("C-c C-o" . embark-export))
   :config
   (setq vertico-resize t
         vertico-count 17
