@@ -18808,8 +18808,12 @@ with it.
 
 ;; Modifying the display template to show the node “type”
 
-(setq org-roam-node-display-template
-      (concat "${type:15} ${title:*} " (propertize "${tags:10}" 'face 'org-tag)))
+;; (setq org-roam-node-display-template
+;;        (concat "${type:15} ${title:*} " (propertize "${tags:10}" 'face 'org-tag)))
+;; #("${doom-type:15} ${doom-hierarchy:*}  ${doom-tags:42}" 20 35
+;;   (face font-lock-keyword-face)
+;;   36 51
+;;   (face org-tag)))
 
 (defun my/org-roam--backlinks-list (file)
   (if (org-roam--org-roam-file-p file)
