@@ -9,7 +9,7 @@
 ;;----------------------------------------------------------------------
 
 (global-set-key (kbd "C-x k") 'my/kill-this-buffer)
-;; (global-set-key (kbd "C-x k") 'my-kill-current-buffer)
+(global-set-key (kbd "C-x k") 'my-kill-current-buffer)
 ;; (global-set-key (kbd "C-a")
 ;;                 (defun my/switch-to-other-buffer (&optional _arg)
 ;;                   (interactive)
