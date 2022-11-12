@@ -14,7 +14,9 @@ learned everything about them and are included in the workflow or may not
 require further attention.
 
 * Packages management
-** Info
+** DONE Info
+CLOSED: [2022-11-12 Sat 10:20]
+- State "DONE"       from              [2022-11-12 Sat 10:20]
 This is where you install packages, by declaring them with the ~package!~ macro in
 =packages.el=, then running ~doom refresh~ on the command line.
 This file shouldn't be byte compiled.
