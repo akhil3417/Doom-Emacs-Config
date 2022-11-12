@@ -234,18 +234,6 @@ a ~:recipe~. You'll find documentation on what ~:recipe~ accepts [[https://githu
 ;; Make Elisp files in that directory available to the user.
 (add-to-list 'load-path "~/.config/doom/lisp/")
 
-;; (package! emacs-application-framework
-;; :recipe (:host github :repo "manateelazycat/emacs-application-framework"
-;; :files ("eaf.el" "src/lisp/*.el")))
-
-;; (when (package! eaf :recipe (:host github
-;;                              :repo "manateelazycat/emacs-application-framework"
-;;                              :files ("*.el" "*.py" "app" "core")
-;;                              :build (:not compile)))
-
-;;   (package! ctable :recipe (:host github :repo "kiwanami/emacs-ctable"))
-;;   (package! deferred :recipe (:host github :repo "kiwanami/emacs-deferred"))
-;;   (package! epc :recipe (:host github :repo "kiwanami/emacs-epc")))
 
 (package! ytel-show
     :recipe (:host github :repo "xFA25E/ytel-show"
@@ -255,9 +243,6 @@ a ~:recipe~. You'll find documentation on what ~:recipe~ accepts [[https://githu
   :recipe (:host github
            :repo "kmonad/kbd-mode"))
 
-;; (package! elfeed-tube
-;;   :recipe (:host github
-;;            :repo "karthink/elfeed-tube"))
 
 (package! tmr
   :recipe (:host github
@@ -269,10 +254,6 @@ a ~:recipe~. You'll find documentation on what ~:recipe~ accepts [[https://githu
            :repo "protesilaos/ef-themes"))
 
 (package! exwm-mff :recipe (:host github :repo "ieure/exwm-mff" :branch "main"))
-;; (package! exwm-firefox-core :recipe (:host github :repo "walseb/exwm-firefox-core" :branch "master"))
-;; (package! vulpea :recipe (:host github :repo "d12frosted/vulpea" :branch "master"))
-;; (package! telega
-;;   :recipe (:host github :repo "zevlg/telega.el"))
 
 (package! mathpix.el
   :recipe (:host github :repo "jethrokuan/mathpix.el"))
@@ -284,9 +265,6 @@ a ~:recipe~. You'll find documentation on what ~:recipe~ accepts [[https://githu
     :recipe (:host github :repo "magit/git-modes"
        :files ("gitignore-mode.el")))
 
-;; (package! cape
-;;     :recipe (:host github :repo "minad/cape"
-;;        :files ("cape.el")))
 
 (package! pulsar
     :recipe (:host github :repo "protesilaos/pulsar"
@@ -308,11 +286,6 @@ a ~:recipe~. You'll find documentation on what ~:recipe~ accepts [[https://githu
     :recipe (:host github :repo "slamko/bon-app-launcher"
        :files ("bon-app-launcher.el")))
 
-;; (package! exwm-module-for-doom-emacs
-;;   :recipe (:host github
-;;            :repo "LemonBreezes/exwm-module-for-doom-emacs"))
-;; (package! another-package
-;;   :recipe (:host github :repo "username/repo"))
 #+end_src
 
 If the package you are trying to install does not contain a ~PACKAGENAME.el~
