@@ -24,10 +24,10 @@
         (git-auto-commit-mode 1)
         (setq-local gac-automatically-push-p t)))))
  '(org-agenda-files
-   '("~/org/org-agenda/daily" "~/org/org-agenda/incubate.org" "~/org/org-agenda/openquestions.org" "~/org/org-agenda/todo.org/" "~/org/org-agenda/agenda.org" "~/org/org-capture/todo.org" "~/org/org-roam2/daily/" "~/org/org-roam2/todo.org/"))
+   '("~/org/org-agenda/daily" "~/org/org-agenda/incubate.org" "~/org/org-agenda/openquestions.org" "~/org/org-agenda/todo.org" "~/org/org-agenda/agenda.org" "~/org/org-capture/todo.org" "~/org/org-capture/webnotes.org" "~/org/org-roam2/daily/" "~/org/org-roam2/todo/todo.org"))
  '(package-selected-packages
-   '(visual-fill-column aio calfw org-wild-notifier elfeed-tube-mpv elfeed-tube dash miniedit pdf-tools all-the-icons-completion all-the-icons-dired recursion-indicator edwina trashed alert rcirc-notify enotify org-notify gnus-desktop-notify emojify all-the-icons olivetti mpv gameoflife cape exwm))
- '(warning-suppress-types '((comp) (defvaralias))))
+   '(mentor pacmacs w3m org-noter-pdftools visual-fill-column calfw  elfeed-tube-mpv elfeed-tube dash miniedit pdf-tools all-the-icons-completion all-the-icons-dired recursion-indicator edwina trashed rcirc-notify emojify all-the-icons olivetti gameoflife cape exwm))
+ '(warning-suppress-types '((org-element-cache) (comp) (defvaralias))))
 (custom-set-faces
  ;; custom-set-faces was added by Custom.
  ;; If you edit it by hand, you could mess it up, so be careful.
