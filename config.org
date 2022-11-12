@@ -4405,7 +4405,7 @@ runs after UI initialisation and both
 + conditionally enables =mixed-pitch-mode=
 + sets up the mixed pitch hooks
 
-#+begin_src emacs-lisp :tangle yes
+#+begin_src emacs-lisp
 (defvar mixed-pitch-modes '(org-mode LaTeX-mode markdown-mode gfm-mode Info-mode)
   "Modes that `mixed-pitch-mode' should be enabled in, but only after UI initialisation.")
 (defun init-mixed-pitch-h ()
@@ -4418,6 +4418,25 @@ Also immediately enables `mixed-pitch-modes' if currently in one of the modes."
 (add-hook 'doom-init-ui-hook #'init-mixed-pitch-h)
 #+end_src
 
+As mixed pitch uses the variable =mixed-pitch-face=, we can create a new function
+to apply mixed pitch with a serif face instead of the default (see the
+subsequent face definition). This was created for writeroom mode.
+
+#+begin_src emacs-lisp
+(autoload #'mixed-pitch-serif-mode "mixed-pitch"
+  "Change the default face of the current buffer to a serifed variable pitch, while keeping some faces fixed pitch." t)
+
+(setq! variable-pitch-serif-font (font-spec :family "Alegreya" :size 27))
+
+(after! mixed-pitch
+  (setq mixed-pitch-set-height t)
+  (set-face-attribute 'variable-pitch-serif nil :font variable-pitch-serif-font)
+  (defun mixed-pitch-serif-mode (&optional arg)
+    "Change the default face of the current buffer to a serifed variable pitch, while keeping some faces fixed pitch."
+    (interactive)
+    (let ((mixed-pitch-face 'variable-pitch-serif))
+      (mixed-pitch-mode (or arg 'toggle)))))
+#+end_src
 #+RESULTS:
 | init-mixed-pitch-h | persp-mode | window-divider-mode | +ligatures-init-h | +popup-mode |
 
@@ -4425,17 +4444,14 @@ As mixed pitch uses the variable =mixed-pitch-face=, we can create a new functio
 to apply mixed pitch with a serif face instead of the default. This was created
 for writeroom mode.
 
-#+begin_src emacs-lisp :tangle yes
+#+begin_src emacs-lisp
 (autoload #'mixed-pitch-serif-mode "mixed-pitch"
   "Change the default face of the current buffer to a serifed variable pitch, while keeping some faces fixed pitch." t)
 
+(setq! variable-pitch-serif-font (font-spec :family "Alegreya" :size 27))
+
 (after! mixed-pitch
-  (defface variable-pitch-serif
-    '((t (:family "serif")))
-    "A variable-pitch face with serifs."
-    :group 'basic-faces)
   (setq mixed-pitch-set-height t)
-  (setq variable-pitch-serif-font (font-spec :family "Alegreya" :size 11))
   (set-face-attribute 'variable-pitch-serif nil :font variable-pitch-serif-font)
   (defun mixed-pitch-serif-mode (&optional arg)
     "Change the default face of the current buffer to a serifed variable pitch, while keeping some faces fixed pitch."
@@ -4455,13 +4471,37 @@ Th /Th/
 #+end_center
 
 Thankfully, it isn't to hard to add these to the ~composition-function-table~.
-#+begin_src emacs-lisp :tangle yes
+#+begin_src emacs-lisp
 (set-char-table-range composition-function-table ?f '(["\\(?:ff?[fijlt]\\)" 0 font-shape-gstring]))
 (set-char-table-range composition-function-table ?T '(["\\(?:Th\\)" 0 font-shape-gstring]))
 #+end_src
 
 #+RESULTS:
 | [\(?:Th\) 0 font-shape-gstring] |
+
+**** Variable pitch serif font
+
+
+It would be nice if we were able to make use of a serif version of the
+=variable-pitch= face. Since this doesn't already exist, let's create it.
+
+#+begin_src emacs-lisp
+(defface variable-pitch-serif
+    '((t (:family "serif")))
+    "A variable-pitch face with serifs."
+    :group 'basic-faces)
+#+end_src
+
+For ease of use, let's also set up an easy way of setting the ~:font~ attribute.
+
+#+begin_src emacs-lisp
+(defcustom variable-pitch-serif-font (font-spec :family "serif")
+  "The font face used for `variable-pitch-serif'."
+  :group 'basic-faces
+  :set (lambda (symbol value)
+         (set-face-attribute 'variable-pitch-serif nil :font value)
+         (set-default-toplevel-value symbol value)))
+#+end_src
 
 ** DONE MODELINE
 CLOSED: [2022-03-31 Thu 19:49]
@@ -4760,6 +4800,9 @@ For starters, I think Doom is a bit over-zealous when zooming in
 (setq +zen-text-scale 0.8)
 #+end_src
 
+#+RESULTS:
+: 0.8
+
 Then, when using Org it would be nice to make a number of other aesthetic
 tweaks. Namely:
 + Use a serifed variable-pitch font
@@ -4818,6 +4861,9 @@ tweaks. Namely:
                 ;; (unless +zen--original-org-pretty-table-mode-p (org-pretty-table-mode -1))
                 ))))
 #+end_src
+
+#+RESULTS:
+| +zen-nonprose-org-h |
 
 ** WINNER MODE
 Winner mode has been included with GNU Emacs since version 20.  This is a global minor mode and, when activated, it allows you to “undo” (and “redo”) changes in the window configuration with the key commands 'SCP w <left>' and 'SPC w <right>'.
