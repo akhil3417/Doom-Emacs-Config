@@ -2843,10 +2843,19 @@ the previously multi-windowed one"
   :config
   (beginend-global-mode))
 
+(map! "C-w" nil)
+(global-set-key  (kbd "C-<tab>") #'evil-window-next)
+ (global-set-key             (kbd "C-<iso-lefttab>") #'evil-window-prev)
+     (global-set-key   (kbd "C-w") #'ace-window)
+
+(map!
+    :nvig "C-<iso-lefttab>" #'evil-window-prev
+      :nvig  "C-w" #'ace-window)
+(map! :nvig "C-<tab>" #'evil-window-next)
+
 #+end_src
 
 #+RESULTS:
-: #s(hash-table size 65 test eql rehash-size 1.5 rehash-threshold 0.8125 data (:use-package! (25130 54428 460394 790000) :init (25130 54428 460089 20000) :init-secs (0 0 194 725000) :use-package-secs (0 0 527 776000)))
 
 ** Desktop Key Bindings
 
