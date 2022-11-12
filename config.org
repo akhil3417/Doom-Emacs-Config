@@ -4874,22 +4874,10 @@ Winner mode has been included with GNU Emacs since version 20.  This is a global
        :desc "Winner redo" "<right>" #'winner-redo
        :desc "Winner undo" "<left>" #'winner-undo))
 
-;;----------------------------------------------------------------
-;; ** +WINNER+
-;;----------------------------------------------------------------
-
 ;; Winner mode is disabled in favor of =tab-bar-history-mode=, which does the
 ;; same but with a separate window configuration history for each tab. This is
 ;; usually what I want.
-;; (use-package! winner
-;;   ;; :disabled
-;;   :commands winner-undo
-;;   :bind (("C-c <left>" . winner-undo)
-;;          ("C-x C-/" . winner-undo)
-;;          ("H-/" . winner-undo)
-;;          ("s-u" . winner-undo))
-;;   :config
-;;   (winner-mode +1))
+
 #+END_SRC
 
 #+RESULTS:
@@ -5081,13 +5069,11 @@ Neotree is a file tree viewer.  When you open neotree, it jumps to the current f
 ** DONE pulsing cursor
 CLOSED: [2022-09-22 Thu 11:48]
 #+begin_src emacs-lisp :tangle packages.el
-
 (package! pulsing-cursor
     :recipe (:host github :repo "jasonjckn/pulsing-cursor"))
 #+end_src
 
 #+begin_src emacs-lisp :tangle no
-
 (use-package pulsing-cursor
     :config (pulsing-cursor-mode +1))
 #+end_src
@@ -5125,6 +5111,7 @@ are just waiting to be saved!
 
 (after! company
   (setq company-idle-delay 0.1
+        company-selection-wrap-around t
         company-minimum-prefix-length 2)
   (setq company-show-numbers t))
    ;;(add-hook 'evil-normal-state-entry-hook #'company-abort)) ;; make aborting less annoying. currently disable caues dabbrev closes company -yasnipper automatically-but i use SPC i s
@@ -5425,10 +5412,10 @@ shadow)=, but I don't like that.
 #+begin_src emacs-lisp :tangle yes
 (after! marginalia
 
-  (add-to-list 'marginalia-prompt-categories '("\\burl\\b" . url))
-  (setq marginalia-max-relative-age 0)  ; time is absolute here!
-  (setq marginalia-annotators
-        '(marginalia-annotators-heavy marginalia-annotators-light))
+  ;; (add-to-list 'marginalia-prompt-categories '("\\burl\\b" . url))
+  ;; (setq marginalia-max-relative-age 0)  ; time is absolute here!
+  ;; (setq marginalia-annotators
+  ;;       '(marginalia-annotators-heavy marginalia-annotators-light))
 
   (setq marginalia-censor-variables nil)
 
@@ -14288,7 +14275,7 @@ Other potentially relevant parts of my dotemacs:
 + [[#h:1ae84fae-efc1-4bcc-9542-55b4ab8391a3][Paragraphs and fill-mode (prot-fill.el)]]
 + [[#h:e03b6415-a18f-4058-b9b0-5721d38c6c50][Font configurations (prot-fonts.el)]]
 
-#+begin_src emacs-lisp :tangle no
+#+begin_src emacs-lisp :tangle yes
 ;;; Custom extensions for "focus mode" (logos.el)
 (use-package! olivetti
   :config
@@ -16483,16 +16470,6 @@ CLOSED: [2022-03-30 Wed 10:22]
         (which-key--create-buffer-and-show
          nil (symbol-value keymap))))
 
-    ;; (defun my/which-key-repeat-mode-binding ()
-    ;;   (when repeat-mode
-    ;;     (when-let* ((rep-map-sym (or repeat-map (repeat--command-property 'repeat-map)))
-    ;;                 (keymap (and (symbolp rep-map-sym) (symbol-value rep-map-sym))))
-    ;;       (set-transient-map
-    ;;        (make-composed-keymap
-    ;;         (let ((map (make-sparse-keymap)))
-    ;;           (define-key map (kbd "C-h") #'my/which-key-repeat-mode-dispatch)
-    ;;           map)
-    ;;         keymap)))))
 
     (defun my/which-key-repeat-mode-binding ()
       (when repeat-mode
@@ -17227,12 +17204,17 @@ There's one little niggle with Doom, as ~doom/toggle-line-numbers~ doesn't run
   (run-hooks 'display-line-numbers-mode-hook))
 #+end_src
 
+#+RESULTS:
+
 Lastly, I think I actually like this enough that I'll go ahead and remove line
 numbers in text mode.
 
 #+begin_src emacs-lisp
 (remove-hook 'text-mode-hook #'display-line-numbers-mode)
 #+end_src
+
+#+RESULTS:
+| +spell-remove-run-together-switch-for-aspell-h | er/add-text-mode-expansions | auto-fill-mode | +setup-text-mode-left-margin | (lambda (&rest _) (if (derived-mode-p 'org-mode) nil (let* ((modified (buffer-modified-p)) (buffer-undo-list t) (inhibit-read-only t) (inhibit-modification-hooks t)) (unwind-protect (progn (ansi-color-apply-on-region (point-min) (point-max) t)) (if modified nil (restore-buffer-modified-p nil)))))) | flyspell-mode | auto-revert-mode | text-mode-hook-identify |
 
 ** ORG MODE
 *** Org
@@ -17410,7 +17392,6 @@ Copied from =Thomas Journa='s config to move around org-buffers.
 #+end_src
 ***** Org Modern
 
-
 Fontifying =org-mode= buffers to be as pretty as possible is of paramount importance,
 and Minad's lovely =org-modern= goes a long way in this regard.
 
@@ -17493,6 +17474,9 @@ and Minad's lovely =org-modern= goes a long way in this regard.
           ("RESULTS" . "🠶")))
   (custom-set-faces! '(org-modern-statistics :inherit org-checkbox-statistics-todo)))
 #+end_src
+
+#+RESULTS:
+| org-modern-mode | mixed-pitch-mode | org-fragtog-mode | locally-defer-font-lock | +org-pretty-mode | org-ref-org-menu | er/add-org-mode-expansions | turn-on-org-cdlatex | org-appear-mode | elpher-org-mode-integration | auto-revert-mode | #[0 \301\211\207 [imenu-create-index-function org-imenu-get-tree] 2] | beginend-org-mode | +lookup--init-org-mode-handlers-h | (closure ((hook . org-mode-hook) (--dolist-tail--) t) (&rest _) (add-hook 'before-save-hook 'org-encrypt-entries nil t)) | #[0 \300\301\302\303\304$\207 [add-hook change-major-mode-hook org-fold-show-all append local] 5] | #[0 \300\301\302\303\304$\207 [add-hook change-major-mode-hook org-babel-show-result-all append local] 5] | org-babel-result-hide-spec | org-babel-hide-all-hashes | doom-disable-show-paren-mode-h | doom-disable-show-trailing-whitespace-h | +org-enable-auto-reformat-tables-h | +org-enable-auto-update-cookies-h | +org-make-last-point-visible-h | org-fancy-priorities-mode | org-superstar-mode | evil-org-mode | toc-org-enable | flyspell-mode | embrace-org-mode-hook | org-eldoc-load | +literate-enable-recompile-h |
 
 Since =org-modern='s tag face supplants Org's tag face, we need to adjust the
 spell-check face ignore list
@@ -19609,7 +19593,7 @@ Let's make headings a bit bigger
 #+end_src
 
 #+RESULTS:
-| doom--customize-themes-h-9 | doom--customize-themes-h-10 | doom--customize-themes-h-35 |
+| doom--customize-themes-h-1854 | doom--customize-themes-h-1855 | doom--customize-themes-h-1875 | doom--customize-themes-h-1876 | doom--customize-themes-h-1878 | doom--customize-themes-h-1885 |
 
 
 And the same with the title.
@@ -19651,8 +19635,6 @@ responsive.
 (add-hook 'org-mode-hook #'locally-defer-font-lock)
 #+end_src
 
-#+RESULTS:
-| (closure ((hook . org-mode-hook) (--dolist-tail--) t) (&rest _) (add-hook 'before-save-hook 'org-encrypt-entries nil t)) | mixed-pitch-mode | elpher-org-mode-integration | locally-defer-font-lock | +org-pretty-mode | turn-on-flyspell | org-appear-mode | flymake-proselint-setup | auto-revert-mode | beginend-org-mode | er/add-org-mode-expansions | +lookup--init-org-mode-handlers-h | (closure ((hook . org-mode-hook) (--dolist-tail--) t) (&rest _) (add-hook 'before-save-hook 'org-encrypt-entries nil t)) | #[0 \301\211\207 [imenu-create-index-function org-imenu-get-tree] 2] | #[0 \300\301\302\303\304$\207 [add-hook change-major-mode-hook org-show-all append local] 5] | #[0 \300\301\302\303\304$\207 [add-hook change-major-mode-hook org-babel-show-result-all append local] 5] | org-babel-result-hide-spec | org-babel-hide-all-hashes | doom-disable-show-paren-mode-h | doom-disable-show-trailing-whitespace-h | +org-enable-auto-reformat-tables-h | +org-enable-auto-update-cookies-h | +org-make-last-point-visible-h | org-fancy-priorities-mode | org-superstar-mode | evil-org-mode | toc-org-enable | embrace-org-mode-hook | org-eldoc-load | +literate-enable-recompile-h |
 
 Apparently this causes issues with some people, but I haven't noticed anything
 problematic beyond the expected slight delay in some fontification, so until I
@@ -20031,6 +20013,14 @@ I've also added some fun alternatives, just commented out.
         (?D . 'all-the-icons-green)
         (?E . 'all-the-icons-blue)))
 #+end_src
+
+#+RESULTS:
+| 65 | quote | all-the-icons-red    |
+| 66 | quote | all-the-icons-orange |
+| 67 | quote | all-the-icons-yellow |
+| 68 | quote | all-the-icons-green  |
+| 69 | quote | all-the-icons-blue   |
+
 It's also nice to make use of the Unicode characters for check boxes, and other commands.
 #+begin_src emacs-lisp
 (appendq! +ligatures-extra-symbols
@@ -20150,13 +20140,15 @@ It's also nice to make use of the Unicode characters for check boxes, and other 
 ;;          ("emacs"      . ,(all-the-icons-fileicon "emacs"          :face 'all-the-icons-lpurple :v-adjust 0.01))))
 ;;  (org-pretty-tags-global-mode))
 #+end_src
-
 ***** Org Plot
 We can use some of the variables in =org-plot= to use the current doom theme
 colours.
 #+begin_src emacs-lisp
+(defvar +org-plot-term-size '(1050 . 650)
+  "The size of the GNUPlot terminal, in the form (WIDTH . HEIGHT).")
+
 (after! org-plot
-  (defun org-plot/generate-theme (_type)
+  (defun +org-plot-generate-theme (_type)
     "Use the current Doom theme colours to generate a GnuPlot preamble."
     (format "
 fgt = \"textcolor rgb '%s'\" # foreground text
@@ -20223,13 +20215,14 @@ set palette defined ( 0 '%s',\
             (doom-color 'orange)
             (doom-color 'yellow)
             (doom-color 'teal)
-            (doom-color 'violet)
-            ))
-  (defun org-plot/gnuplot-term-properties (_type)
-    (format "background rgb '%s' size 1050,650"
-            (doom-color 'bg)))
-  (setq org-plot/gnuplot-script-preamble #'org-plot/generate-theme)
-  (setq org-plot/gnuplot-term-extra #'org-plot/gnuplot-term-properties))
+            (doom-color 'violet)))
+
+  (defun +org-plot-gnuplot-term-properties (_type)
+    (format "background rgb '%s' size %s,%s"
+            (doom-color 'bg) (car +org-plot-term-size) (cdr +org-plot-term-size)))
+
+  (setq org-plot/gnuplot-script-preamble #'+org-plot-generate-theme)
+  (setq org-plot/gnuplot-term-extra #'+org-plot-gnuplot-term-properties))
 #+end_src
 
 #+RESULTS:
@@ -20296,7 +20289,6 @@ NO line numbers.
 #+end_src
 
 **** Exporting
-
 ***** General settings
 
 By default Org only exports the first three levels of headings as ... headings.
@@ -21315,8 +21307,6 @@ information."
 #+end_src
 
 **** Markdown Export
-
-
 ***** GFM
 
 
@@ -21678,112 +21668,6 @@ This will remove the default JavaScript and CSS code that gets injected into the
     (org-roam-server-mode 1)
     (browse-url-xdg-open (format "http://localhost:%d" org-roam-server-port))))
 #+END_SRC
-*** org modern
-project's README: https://github.com/minad/org-modern.
-
-The package is still in its early days, so expect things to change.
-Though I am already happy with the results.
-
-#+begin_src emacs-lisp :tangle no
-;; (setq nano-font-family-monospaced "Roboto Mono")
-;; Add frame borders and window dividers
-;; (require 'nano)
-;; (setq nano-font-family-proportional nil)
-;; (setq nano-font-size 14)
-(modify-all-frames-parameters
- '((right-divider-width . 5)
-   (internal-border-width . 1)))
-(dolist (face '(window-divider
-                window-divider-first-pixel
-                window-divider-last-pixel))
-  (face-spec-reset-face face)
-  (set-face-foreground face (face-attribute 'default :background)))
-(set-face-background 'fringe (face-attribute 'default :background))
-
-(setq
- ;; Edit settings
- org-auto-align-tags nil
- org-tags-column 0
- org-catch-invisible-edits 'show-and-error
- org-special-ctrl-a/e t
- org-insert-heading-respect-content t
-
- ;; Org styling, hide markup etc.
- org-hide-emphasis-markers t
- org-pretty-entities t
- org-ellipsis "…"
-
- ;; Agenda styling
- org-agenda-block-separator ?─
- org-agenda-time-grid
- '((daily today require-timed)
-   (800 1000 1200 1400 1600 1800 2000)
-   " ┄┄┄┄┄ " "┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄")
- org-agenda-current-time-string
- "⭠ now ─────────────────────────────────────────────────")
-
-;; ;; Enable org-modern-mode
-;; (add-hook 'org-mode-hook #'org-modern-mode)
-;; (add-hook 'org-agenda-finalize-hook #'org-modern-agenda)
-
-(use-package! org-modern
-  :config
-  (setq org-modern-label-border 1)
-  (setq org-modern-variable-pitch nil)
-  (setq org-modern-timestamp t)
- (setq org-modern-table t)
-  (setq org-modern-table-vertical 1)
-  (setq org-modern-table-horizontal 0)
-  (setq org-modern-list ; I swap the defaults for + and *
-        '((?+ . "•")
-          (?- . "–")
-          (?* . "◦")))
-
-  ;; NOTE 2022-03-05: The variables that are commented out are the
-  ;; defaults.
-
-  ;; (setq org-modern-star ["◉""○""◈""◇""⁕"])
-  ;; (setq org-modern-hide-stars 'leading)
-  ;; (setq org-modern-checkbox
-  ;;       '((?X . #("▢✓" 0 2 (composition ((2)))))
-  ;;         (?- . #("▢–" 0 2 (composition ((2)))))
-  ;;         (?\s . #("▢" 0 1 (composition ((1)))))))
-  ;; (setq org-modern-horizontal-rule t)
-  ;; (setq org-modern-priority t)
-  ;; (setq org-modern-todo t)
-  ;; (setq org-modern-tag t)
-  ;; (setq org-modern-block t)
-  ;; (setq org-modern-keyword t)
-  ;; (setq org-modern-statistics t)
-  ;; (setq org-modern-progress ["○""◔""◐""◕""●"])
-
-  (add-hook 'org-mode-hook #'org-modern-mode)
-  (add-hook 'org-agenda-finalize-hook #'org-modern-agenda)
-
-  ;; NOTE 2022-03-06: I am experimenting with various styles here.  DO NOT COPY.
-  ;;
-  ;; Also note that I do not wrap this in `with-eval-after-load' because
-  ;; the `modus-themes' are always loaded first in my config.
-  (defun prot/org-modern-face-tweaks ()
-    (modus-themes-with-colors
-      (custom-set-faces
-       `(org-modern-label ((,class :box (:line-width (-1 . ,org-modern-label-border) :color ,bg-main))))
-       `(org-modern-done ((,class :inherit org-modern-label :background ,bg-special-faint-mild :foreground ,green-alt-other)))
-       `(org-modern-priority ((,class :inherit org-modern-label :background ,bg-special-faint-calm :foreground ,magenta-alt-other)))
-       `(org-modern-statistics ((,class :inherit org-modern-label :background ,bg-special-faint-warm :foreground ,yellow-alt-other)))
-       `(org-modern-tag ((,class :inherit org-modern-label :background ,bg-special-faint-calm :foreground ,magenta)))
-       `(org-modern-todo ((,class :inherit org-modern-label :background ,bg-special-faint-warm :foreground ,red-alt-other)))
-       `(org-modern-date-active ((,class :inherit org-modern-label :background ,bg-alt :foreground ,fg-main)))
-       `(org-modern-date-inactive ((,class :inherit org-modern-date-active :foreground ,fg-dim)))
-       `(org-modern-time-active ((,class :inherit org-modern-label :background ,bg-active :foreground ,fg-main)))
-       `(org-modern-time-inactive ((,class :inherit org-modern-date-inactive))))))
-
-  (add-hook 'modus-themes-after-load-theme-hook #'prot/org-modern-face-tweaks))
-#+end_src
-
-#+RESULTS:
-: t
-
 ** Latex
 
 *** To-be-implemented ideas
@@ -22207,7 +22091,6 @@ priority of =mypyls=
 
 ** Markdown
 
-
 Most of the time when I write markdown, it's going into some app/website which
 will do it's own line wrapping, hence we /only/ want to use visual line wrapping. No hard stuff.
 #+begin_src emacs-lisp
@@ -22412,7 +22295,6 @@ Everything is mapped to SPC-R because doom is not using it and R stands for roam
        :desc "tag (roam)"           "t"   #'org-roam-tag-add
        :desc "tag (org)"            "T"   #'org-set-tags-command
        :desc "pomodoro"             "p"   #'org-pomodoro
-       :desc "change nano-theme"    "n"   #'nano-toggle-theme
        :desc "rebuid db"            "d"   #'org-roam-db-build-cache
        :desc "cite"                 "c"   #'helm-bibtex
        :desc "thesaurus this word"  "w"  #'powerthesaurus-lookup-word-at-point
@@ -22447,28 +22329,38 @@ Everything is mapped to SPC-R because doom is not using it and R stands for roam
 #+RESULTS:
 : org-gtd-show-stuck-projects
 
-** Window movement
-The default window movement keys are super cumbersome, here are some better defaults.
+** getting things done
 
-#+begin_src emacs-lisp :tangle no
+   Getting things done package to make my life work.
 
-(map! "C-w" nil)
-(global-set-key  (kbd "C-<tab>") #'evil-window-next)
- (global-set-key             (kbd "C-<iso-lefttab>") #'evil-window-prev)
-     (global-set-key   (kbd "C-w") #'ace-window)
-
-(map!
-    :nvig "C-<iso-lefttab>" #'evil-window-prev
-      :nvig  "C-w" #'ace-window)
-(map! :nvig "C-<tab>" #'evil-window-next)
+  #+begin_src emacs-lisp :tangle no
+(use-package! org-gtd
+  :after org
+  :config
+  ;; where org-gtd will put its files. This value is also the default one.
+  (setq org-gtd-directory "~/org/Daily/")
+  ;; package: https://github.com/Malabarba/org-agenda-property
+  ;; this is so you can see who an item was delegated to in the agenda
+  (setq org-agenda-property-list '("DELEGATED_TO"))
+  ;; I think this makes the agenda easier to read
+  (setq org-agenda-property-position 'next-line)
+  ;; package: https://www.nongnu.org/org-edna-el/
+  ;; org-edna is used to make sure that when a project task gets DONE,
+  ;; the next TODO is automatically changed to NEXT.
+  (setq org-edna-use-inheritance t)
+  (org-edna-load)
+  :bind
+  (("C-c d c" . org-gtd-capture) ;; add item to inbox
+  ("C-c d p" . org-gtd-process-inbox) ;; process entire inbox
+  ("C-c d n" . org-gtd-show-all-next) ;; see all NEXT items
+  ("C-c d s" . org-gtd-show-stuck-projects)) ;; see projects that don't have a NEXT item
+  :init
+  (bind-key "C-c c" 'org-gtd-clarify-finalize)) ;; the keybinding to hit when you're done editing an item in the processing phase
 #+end_src
 
-** Markdown
-Add .mdx support
-#+begin_src emacs-lisp :tangle yes
- (add-to-list 'auto-mode-alist '("\\.mdx\\'" . markdown-mode))
+#+RESULTS:
+: org-gtd-show-stuck-projects
 
-#+end_src
 * Denote
 #+begin_src emacs-lisp :tangle packages.el
 
