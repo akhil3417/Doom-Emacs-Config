@@ -22105,6 +22105,8 @@ normal text, the first two much so. Then the fourth level tends to be the same
 as body text, while the fifth and sixth are (increasingly) smaller, with the
 sixth greyed out. Since the sixth level is so small, I'll turn up the boldness a notch.
 #+begin_src emacs-lisp
+ (add-to-list 'auto-mode-alist '("\\.mdx\\'" . markdown-mode))
+
 (custom-set-faces!
   '(markdown-header-face-1 :height 1.25 :weight extra-bold :inherit markdown-header-face)
   '(markdown-header-face-2 :height 1.15 :weight bold       :inherit markdown-header-face)
@@ -22528,6 +22530,7 @@ Everything is mapped to SPC-R because doom is not using it and R stands for roam
   ;; (define-key global-map (kbd "C-.") #'prot/emoji-insert))
 
 (provide 'prot-emacs-write)
+
 #+end_src
 
 #+RESULTS:
