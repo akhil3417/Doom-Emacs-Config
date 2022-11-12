@@ -582,6 +582,7 @@ If no universal argument is passed, assume only one output"
     (define-key map (kbd "C-c a C-d") #'prot-eshell-complete-recent-dir)
     (define-key map (kbd "C-c a C-s") #'prot-eshell-find-subdirectory-recursive)))
 
+
 ;; (use-package! eshell-prompt-extras
 ;;   :after (eshell)
 ;;   :config
@@ -611,29 +612,6 @@ If no universal argument is passed, assume only one output"
 ;;     (setq eshell-highlight-prompt nil
 ;;           eshell-prompt-function 'my/epe-theme-prompt)))
 ;;
-(require 'em-cmpl)
-(add-to-list 'load-path "~/.config/doom/lisp/")
-(load "prot-eshell.el")
-(use-package! prot-eshell
-  :config
-  (setq prot-eshell-output-buffer "*Exported Eshell output*")
-  (setq prot-eshell-output-delimiter "* * *")
-  (let ((map eshell-mode-map))
-    (define-key map (kbd "M-k") #'eshell-kill-input)
-    (define-key map (kbd "C-c a C-f") #'prot-eshell-ffap-find-file)
-    (define-key map (kbd "C-c a C-j") #'prot-eshell-ffap-dired-jump)
-    (define-key map (kbd "C-c a C-w") #'prot-eshell-ffap-kill-save)
-    (define-key map (kbd "C-c a C-r") #'prot-eshell-redirect-to-buffer)
-    (define-key map (kbd "C-c a C-e") #'prot-eshell-export)
-    (define-key map (kbd "C-c a C-r") #'prot-eshell-root-dir))
-  (let ((map eshell-cmpl-mode-map))
-    (define-key map (kbd "C-c a TAB") #'prot-eshell-ffap-insert) ; C-c C-i
-    (define-key map (kbd "C-c a C-h") #'prot-eshell-narrow-output-highlight-regexp))
-  (let ((map eshell-hist-mode-map))
-    (define-key map (kbd "M-s") #'nil) ; I use this prefix for lots of more useful commands
-    ;; (define-key map (kbd "M-r") #'prot-eshell-complete-history)
-    (define-key map (kbd "C-c a C-d") #'prot-eshell-complete-recent-dir)
-    (define-key map (kbd "C-c a C-s") #'prot-eshell-find-subdirectory-recursive)))
 
 ;; I like to sync the $PWD with the buffer name, so an eshell in my home has as buffer name *eshell /home/op*.
 ;; <2021-06-16 Wed> Instead of advice-add I should use the eshell-directory-change-hook hook.
