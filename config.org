@@ -4293,16 +4293,11 @@ Fira Code is amazing, and so is Roboto.
 ;;       ;;doom-variable-pitch-font (font-spec :family "ETBembo" :size 14)
 ;;       doom-variable-pitch-font (font-spec :family "Alegreya" :size 14))
 ;; (add-hook! 'org-mode-hook #'mixed-pitch-mode)
-;; (add-hook! 'org-mode-hook #'solaire-mode)
+(add-hook! 'org-mode-hook #'solaire-mode)
 ;; (setq mixed-pitch-variable-pitch-cursor nil)
-
 
  ;; (setq doom-font (font-spec :family "JetBrainsMono" :size 12 :weight 'light);;lissner's font a/q to his config
  ;;      doom-variable-pitch-font (font-spec :family "DejaVu Sans" :size 13))
-
-;; (setq doom-font (font-spec :family "Iosevka" :size 15)
-;;           doom-variable-pitch-font (font-spec :family "Roboto" :size 16)
-;;           doom-serif-font (font-spec :family "Libre Baskerville"))
 
 (setq doom-font (font-spec :family "JetBrains Mono" :size 16)
       doom-big-font (font-spec :family "JetBrains Mono" :size 24)
@@ -4321,13 +4316,9 @@ Fira Code is amazing, and so is Roboto.
 ;;       doom-unicode-font (font-spec :family "Input Mono Narrow" :size 15)
 ;;       doom-big-font (font-spec :family "Fira Mono" :size 17))
 
-;; (setq  doom-font (font-spec :family "Hack" :size 13)
-;;        doom-variable-pitch-font (font-spec :family "Libre Baskerville")
-;;        doom-serif-font (font-spec :family "Libre Baskerville"))
-
 
 ;; Thin grey line separating windows
-(set-face-background 'vertical-border "grey")
+(set-face-background 'vertical-border "red")
 (set-face-foreground 'vertical-border (face-background 'vertical-border))
 
  ;; (setq doom-font (font-spec :family "Source Code Pro" :size 15)
