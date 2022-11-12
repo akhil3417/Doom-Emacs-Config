@@ -14376,6 +14376,7 @@ Other potentially relevant parts of my dotemacs:
 : t
 
 ** Games
+
 Games
 I also use Emacs to play games and do other fun things. Using swiper means I don’t need too many search functions bound, so I can bind the games prefix to C-c g without breaking too much of my workflow.
 #+begin_src emacs-lisp
@@ -17050,8 +17051,6 @@ so use `emms-next-noerror' in that case."
 
 * Miscellaneous
 
-I'd like some slightly nicer default buffer names
-
 #+begin_src emacs-lisp
 ;; Misc
 (defun my/delete-word (arg)
@@ -17140,7 +17139,6 @@ stored in
 ** General
 *** File Templates
 
-
 For some file types, we overwrite defaults in the [[file:./snippets][snippets]] directory, others
 need to have a template assigned.
 
@@ -17186,6 +17184,9 @@ numbers is stripped away.
 
 #+end_src
 
+#+RESULTS:
+: +setup-text-mode-left-margin
+
 Now we just need to hook this up to all the events which could either indicate a
 change in the conditions or require the setup to be re-applied.
 
@@ -17194,6 +17195,9 @@ change in the conditions or require the setup to be re-applied.
 (add-hook 'display-line-numbers-mode-hook #'+setup-text-mode-left-margin)
 (add-hook 'text-mode-hook #'+setup-text-mode-left-margin)
 #+end_src
+
+#+RESULTS:
+| +spell-remove-run-together-switch-for-aspell-h | er/add-text-mode-expansions | auto-fill-mode | +setup-text-mode-left-margin | (lambda (&rest _) (if (derived-mode-p 'org-mode) nil (let* ((modified (buffer-modified-p)) (buffer-undo-list t) (inhibit-read-only t) (inhibit-modification-hooks t)) (unwind-protect (progn (ansi-color-apply-on-region (point-min) (point-max) t)) (if modified nil (restore-buffer-modified-p nil)))))) | flyspell-mode | auto-revert-mode | text-mode-hook-identify |
 
 There's one little niggle with Doom, as ~doom/toggle-line-numbers~ doesn't run
 ~display-line-numbers-mode-hook~, so some advice is needed.
@@ -17703,7 +17707,6 @@ CLOSED: [2022-10-07 Fri 20:58]
        (sequence "|" "OKAY(o)" "YES(y)" "NO(n)")))
 
 #+end_src
-
 
 ****** Citation
 
@@ -19542,6 +19545,7 @@ Mixed pitch is great. As is ~+org-pretty-mode~, let's use them.
 (add-hook 'org-mode-hook #'+org-pretty-mode)
 #+end_src
 
+
 #+begin_src emacs-lisp :tangle no
 (after! org
 (custom-set-faces!
@@ -19987,6 +19991,7 @@ There's also this lovely equation numbering stuff I'll nick
 (advice-add 'org-create-formula-image :around #'scimax-org-renumber-environment)
 (put 'scimax-org-renumber-environment 'enabled t)
 #+end_src
+
 
 ***** Symbols
 
