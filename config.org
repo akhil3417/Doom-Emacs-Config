@@ -420,8 +420,9 @@ my home machine is pretty safe, and my laptop is shutdown a lot.
 #+RESULTS:
 : t
 
-** Auto-customisations
-
+** DONE Auto-customisations
+CLOSED: [2022-11-12 Sat 10:20]
+- State "DONE"       from              [2022-11-12 Sat 10:20]
 By default changes made via a customisation interface are added to =init.el=.
 I prefer the idea of using a separate file for this. We just need to change a
 setting, and load it if it exists.
@@ -434,7 +435,9 @@ setting, and load it if it exists.
 
 #+RESULTS:
 
-** Rudimentry Settings
+** DONE Rudimentry Settings
+CLOSED: [2022-11-12 Sat 10:21]
+- State "DONE"       from              [2022-11-12 Sat 10:21]
 #+begin_src emacs-lisp
 
 ;; Use visual line motions even outside of visual-line-mode buffers
