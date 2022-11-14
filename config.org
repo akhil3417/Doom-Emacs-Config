@@ -331,7 +331,6 @@ It's useful to have some basic personal information
     (org-crypt-use-before-save-magic)
 #+END_SRC
 
-
 #+begin_src emacs-lisp
 ;; (setq package-native-compile t)
 (setq org-directory "~/org/")
@@ -402,6 +401,7 @@ my home machine is pretty safe, and my laptop is shutdown a lot.
 (load "prot-bookmark.el")
 (load "org-protocol-capture-html.el")
 
+;; (load "corfuv2.el")
 ;; (load "emacs-with-nyxt.el")
 ;; (load "prot-common.el")
 ;; (load "setup-corfu.el")
@@ -2812,6 +2812,7 @@ We can also set up some functions for enabling and disabling notifications at an
 #+RESULTS:
 : efs/dunstctl
 ** movement and window switching
+The default window movement keys are super cumbersome, here are some better defaults.
 #+begin_src emacs-lisp
 
 (use-package! window
@@ -2972,27 +2973,6 @@ to keep track of the information on display.
 
 #+RESULTS:
 : t
-
-** DONE Auth Sources
-CLOSED: [2022-03-31 Thu 20:05]
-
-#+begin_src emacs-lisp :tangle no
-;;; Auth Source
-(use-package! auth-source
-  ;; :ensure nil
-  :custom
-  (auth-source-save-behavior nil)
-  ;; Read credentials from KeepassXC too via the Secret Service API.
-  ;; For this to work, KXC has to have this integration enabled and
-  ;; some password groups shared via SS API. Also, those secrets must
-  ;; expose attributes (advanced tab) like 'host', 'port' and/or
-  ;; 'user' so they can be found by auth-source. Ex:
-  ;; (auth-source-search :type 'secrets :host "irc.libera.chat")
-  (auth-sources '("secrets:Passwords")))
-#+end_src
-
-#+RESULTS:
-: auth-source
 
 ** DONE Systemd
 CLOSED: [2022-03-31 Thu 20:05]
@@ -3308,7 +3288,7 @@ CLOSED: [2022-03-30 Wed 12:23]
 #+RESULTS:
 : my/brightness-decrease
 
-** DONE Windows
+** DONE Windows Split
 CLOSED: [2022-03-30 Wed 00:00]
 
 I find it rather handy to be asked which buffer I want to see after splitting
