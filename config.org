@@ -4439,7 +4439,6 @@ for writeroom mode.
     (let ((mixed-pitch-face 'variable-pitch-serif))
       (mixed-pitch-mode (or arg 'toggle)))))
 #+end_src
-
 #+RESULTS:
 
 Now, as Harfbuzz is currently used in Emacs, we'll be missing out on the
@@ -7458,6 +7457,9 @@ fuck this snippet , wanna know why? well try using this and see your org agenda
   (lambda () (rainbow-mode 1)))
 (global-rainbow-mode 1 )
 #+end_src
+
+#+RESULTS:
+: t
 
 ** DONE Box Quote
 CLOSED: [2022-04-01 Fri 15:43]
