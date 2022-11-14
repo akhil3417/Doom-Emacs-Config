@@ -4915,7 +4915,8 @@ lightened versions --- let's do that.
 
 ** FIXME Screencast
 - State "FIXME"      from "DONE"       [2022-10-14 Fri 15:10] \\
-  fix colors
+  fix colors and quality
+
 In a similar manner to [[Keycast]], [[https://gitlab.com/ambrevar/emacs-gif-screencast][gif-screencast]] may come in handy.
 #+begin_src emacs-lisp :tangle packages.el
 (package! gif-screencast :pin "5517a557a17d8016c9e26b0acb74197550f829b9")
