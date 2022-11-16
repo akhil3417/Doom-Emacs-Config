@@ -7554,6 +7554,24 @@ have the following.
 
 #+RESULTS:
 | +abbrev-file-name |
+** DONE Save Macros
+CLOSED: [2022-11-16 Wed 19:04]
+- State "DONE"       from              [2022-11-16 Wed 19:04]
+#+begin_src emacs-lisp
+  (defun save-macro (name)
+    "save a macro. Take a name as argument
+     and save the last defined macro under
+     this name at the end of your .emacs"
+     (interactive "SName of the macro: ")  ; ask for the name of the macro
+     (kmacro-name-last-macro name)         ; use this name for the macro
+     (find-file custom-file)            ; open ~/.emacs or other user init file
+     (goto-char (point-max))               ; go to the end of the .emacs
+     (newline)                             ; insert a newline
+     (insert-kbd-macro name)               ; copy the macro
+     (newline)                             ; insert a newline
+     (save-buffer)
+     (switch-to-buffer nil))               ; return to the initial buffer
+#+end_src
 
 ** Dabbrev (dynamic word completion)
 ***  Desc
