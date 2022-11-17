@@ -792,7 +792,7 @@ I’ve always been mixed on this behavior but it seems like a good idea.
                 (pcase exwm-class-name
                   ("Vimb" (exwm-workspace-rename-buffer (format "vimb: %s" exwm-title)))
                   ("firefoxdeveloperedition" (exwm-workspace-rename-buffer (format "FirefoxD: %s" exwm-title)))
-                  ("qutebrowser" (exwm-workspace-rename-buffer (format "#F %s" exwm-title))))))
+                  ("qutebrowser" (exwm-workspace-rename-buffer (format "F# %s" exwm-title))))))
 
   (defun exwm/run-in-background (command)
     (let ((command-parts (split-string command "[ ]+")))
