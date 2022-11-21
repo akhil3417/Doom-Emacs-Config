@@ -3353,7 +3353,7 @@ welcomed into Emacs 28. However, he is also rather attentive with updates, and
 so I'd like to make sure we have a recent version.
 
 #+begin_src emacs-lisp :tangle packages.el
-(package! modus-themes :pin "59422c05e00d65582a005ccb06c3767622d14e03")
+(package! modus-themes :pin "57599b1d73fe33b324be9358991114222a0a63f7")
 #+end_src
 
 ** DONE transparency
@@ -3807,7 +3807,7 @@ CLOSED: [2022-03-30 Wed 12:23]
 What's even the point of using Emacs unless you're constantly telling everyone
 about it?
 #+begin_src emacs-lisp :tangle packages.el
-(package! elcord :pin "eb4ae2e7e03a5fc26b054ba2fa9a1d308e239c76")
+(package! elcord :pin "a0fe08dac6417a7a0c4e48dc6f43fd65dbeb41dd")
 #+end_src
 
 #+begin_src emacs-lisp
@@ -7369,7 +7369,7 @@ CLOSED: [2022-04-01 Fri 15:43]
 Sometimes pressing =TAB= is just too much.
 #+begin_src emacs-lisp :tangle packages.el
 (package! aas :recipe (:host github :repo "ymarco/auto-activating-snippets")
-  :pin "1699bec4d244a1f62af29fe4eb8b79b6d2fccf7d")
+  :pin "e92b5cffa4e87c221c24f3e72ae33959e1ec2b68")
 #+end_src
 
 #+begin_src emacs-lisp
@@ -8337,11 +8337,11 @@ Mainly useful in C and derived, and only when ACTION is insert."
 ** String inflection
 
 For when you want to change the case pattern for a symbol.
-#+begin_src emacs-lisp :tangle no
-(package! string-inflection :pin "fd7926ac17293e9124b31f706a4e8f38f6a9b855")
+#+begin_src emacs-lisp :tangle packages.el
+(package! string-inflection :pin "50ad54970b3cc79b6b83979bde9889ad9a9e1a9c")
 #+end_src
 
-#+begin_src emacs-lisp :tangle no
+#+begin_src emacs-lisp
 (use-package! string-inflection
   :commands (string-inflection-all-cycle
              string-inflection-toggle
@@ -13857,14 +13857,14 @@ Which do you think I want?
 Slightly improve the look and feel of Info pages, might actually encourage me to /read/ them.
 
 #+begin_src elisp :tangle packages.el
-(package! info-colors)
+(package! info-colors :pin "2e237c301ba62f0e0286a27c1abe48c4c8441143")
 #+end_src
 
 #+begin_src emacs-lisp
 (use-package! info-colors
-  :after info
-  :commands (info-colors-fontify-node)
-  :hook (Info-selection . info-colors-fontify-node))
+  :commands (info-colors-fontify-node))
+
+(add-hook 'Info-selection-hook 'info-colors-fontify-node)
 #+end_src
 
 ** qutebrowser session save and restore
@@ -15113,8 +15113,7 @@ Then for reading them, the only currently viable options seems to be [[https://d
 PS: If sqlite3 and calibredb is in not in your system path, set them with
 
 #+begin_src emacs-lisp :tangle packages.el
- ;; (package! nov :pin "2b4a7231aff6211a5a2f28719d830887aec6cc57")
- (package! nov)
+(package! nov :pin "cb5f45cbcfbcf263cdeb2d263eb15edefc8b07cb")
 #+end_src
 
 #+begin_src emacs-lisp
@@ -17349,7 +17348,7 @@ Fontifying =org-mode= buffers to be as pretty as possible is of paramount import
 and Minad's lovely =org-modern= goes a long way in this regard.
 
 #+begin_src emacs-lisp :tangle packages.el
-(package! org-modern :pin "537e6b75e38bc0eff083c390c257098c9fc9ab49")
+(package! org-modern :pin "59b2e3c94756b4e37b2cf7b9f81028c6d4758672")
 #+end_src
 
 ...with a touch of configuration...
@@ -17670,7 +17669,7 @@ further. This mostly consists of tweaking settings, but there is one extra
 package I'll grab for prettier in-buffer citations.
 
 #+begin_src emacs-lisp :tangle packages.el
-(package! org-cite-csl-activate :recipe (:host github :repo "andras-simonyi/org-cite-csl-activate") :pin "4fdb61c0f83b5d6db0d07dfd64d2a177fd46e931")
+(package! org-cite-csl-activate :recipe (:host github :repo "andras-simonyi/org-cite-csl-activate") :pin "9e68d9204469c674f49a20bdf7ea85da4f4bf720")
 #+end_src
 
 In particular, by setting ~org-cite-csl-activate-use-document-style~, we can have
@@ -18214,7 +18213,7 @@ https://orgmode.org/manual/Tracking-your-habits.html
 
 The agenda is nice, but a souped up version is nicer.
 #+begin_src emacs-lisp :tangle packages.el
-(package! org-super-agenda :pin "fb5e2ef277bc811a3b061106c99e4c47b6b86f80")
+(package! org-super-agenda :pin "f4f528985397c833c870967884b013cf91a1da4a")
 #+end_src
 
 #+begin_src emacs-lisp :tangle yes
@@ -18580,7 +18579,7 @@ the [[*Window title][Window title]].
 Org-roam is nice by itself, but there are so /extra/ nice packages which integrate
 with it.
 #+begin_src emacs-lisp :tangle packages.el
-(package! org-roam-ui :recipe (:host github :repo "org-roam/org-roam-ui" :files ("*.el" "out")) :pin "309fe3c58c7081de4e2c9c64f7b40ea291926048")
+(package! org-roam-ui :recipe (:host github :repo "org-roam/org-roam-ui" :files ("*.el" "out")) :pin "6bf6a5eecc1fa7ddbb1fcda85e08fe9c393f9298")
 (package! websocket :pin "fda4455333309545c0787a79d73c19ddbeb57980") ; dependency of `org-roam-ui'
 #+end_src
 
@@ -19689,7 +19688,7 @@ What's better than syntax-highlighted LaTeX is /rendered/ LaTeX though, and we c
 have this be performed automatically with =org-fragtog=.
 
 #+begin_src emacs-lisp :tangle packages.el
-(package! org-fragtog :pin "680606189d5d28039e6f9301b55ec80517a24005")
+(package! org-fragtog :pin "c675563af3f9ab5558cfd5ea460e2a07477b0cfd")
 #+end_src
 
 #+RESULTS:
@@ -21271,7 +21270,7 @@ elements (a lot of them). So ~ox-gfm~ is handy for exporting markdown with all t
 features that GitHub has.
 
 #+begin_src emacs-lisp :noweb-ref none :tangle packages.el
-(package! ox-gfm :pin "99f93011b069e02b37c9660b8fcb45dab086a07f")
+(package! ox-gfm :pin "46faa67dbb3fb0cd7a76c3fe518f16e4195c22c7")
 #+end_src
 
 #+begin_src emacs-lisp
@@ -22166,7 +22165,7 @@ Of course, there's an Emacs mode for this.
 
 #+begin_src emacs-lisp :tangle packages.el
 (package! beancount :recipe (:host github :repo "beancount/beancount-mode")
-  :pin "ea8257881b7e276e8d170d724e3b2e179f25cb77")
+  :pin "e8a5bce28c796320fa0c83f169d518aba330fd3d")
 #+end_src
 
 #+begin_src emacs-lisp
