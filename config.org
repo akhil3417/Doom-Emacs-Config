@@ -7494,7 +7494,7 @@ have the following.
 (add-hook 'doom-first-buffer-hook
           (defun +abbrev-file-name ()
             (setq-default abbrev-mode t)
-            (setq abbrev-file-name (expand-file-name "abbrev.el" doom-private-dir))))
+            (setq abbrev-file-name (expand-file-name "abbrev_defs" doom-private-dir))))
 #+end_src
 
 #+RESULTS:
