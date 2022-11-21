@@ -5931,7 +5931,7 @@ By default, Doom Emacs does not use 'SPC v', so the format I use for these bindi
   (defun my/ivy-switch-buffer-firefox ()
     "Use ivy to select a Firefox window (buffer)."
     (interactive)
-    (my/ivy-switch-buffer-by-prefix "F"))
+    (my/ivy-switch-buffer-by-prefix "f")) ;; use F for case sensitive matching with buffer name
   (defun my/ivy-switch-buffer-urxvt ()
     "Use ivy to select an URXVT window (buffer)."
     (interactive)
