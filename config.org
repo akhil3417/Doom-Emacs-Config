@@ -1882,6 +1882,10 @@ type = internal/cpu
 interval = 2
 format = <label> <ramp-coreload>
 format-foreground = ${colors.draculacpu}
+; format-background = ${colors.background}
+;   
+; format-prefix = " "
+; format-prefix-foreground = #cd1f3f
 format-underline = ${colors.draculacpu}
 click-right = exec htop
 click-left = emacsclient -e "(proced)"
