@@ -1978,6 +1978,7 @@ animation-charging-3 = 
 animation-charging-4 = 
 animation-charging-foreground = #a3c725
 animation-charging-framerate = 750
+
 [module/battery]
 type = internal/battery
 battery = BAT1
@@ -2012,21 +2013,8 @@ animation-charging-4 = 
 animation-charging-foreground = ${colors.draculagreen}
 animation-charging-framerate = 750
 
+
 [module/temperature]
-type = internal/temperature
-thermal-zone = 0
-warn-temperature = 60
-
-format = <label>
-format-underline = ${colors.underline-1}
-format-warn = <label-warn>
-format-warn-underline = ${self.format-underline}
-
-label = %temperature-c%
-label-warn = %temperature-c%!
-label-warn-foreground = ${colors.secondary}
-
-[module/temperature1]
 ;https://github.com/jaagr/polybar/wiki/Module:-temperature
 type = internal/temperature
 ; Thermal zone to use
