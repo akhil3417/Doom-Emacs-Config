@@ -37,6 +37,8 @@
  '(doom-modeline-buffer-modified ((t (:foreground "orange"))))
  '(font-lock-comment-face ((t (:slant italic))))
  '(font-lock-keyword-face ((t (:slant italic))))
+ '(keycast-command ((t (:inherit doom-modeline-debug :height 0.9))))
+ '(keycast-key ((t (:inherit custom-modified :height 1.1 :weight bold))))
  '(markdown-header-face-1 ((t (:height 1.25 :weight extra-bold :inherit markdown-header-face))))
  '(markdown-header-face-2 ((t (:height 1.15 :weight bold :inherit markdown-header-face))))
  '(markdown-header-face-3 ((t (:height 1.08 :weight bold :inherit markdown-header-face))))
