@@ -16382,15 +16382,15 @@ canonical.
 ** DONE Which-key
 CLOSED: [2022-03-30 Wed 10:22]
 
-#+begin_src emacs-lisp
+#+begin_src emacs-lisp :tangle no
 
 (setq which-key-idle-delay 0.3) ;; I need the help, I really do
 (setq which-key-idle-secondary-delay 0.05)
-(setq which-key-max-description-length 20)
+(setq which-key-max-description-length 27)
 
 (setq which-key-add-column-padding 0)
 
-(setq which-key-max-display-columns nil)
+(setq which-key-max-display-columns 7)
 
 (setq which-key-separator " " )
 (setq which-key-unicode-correction 2)
@@ -16398,7 +16398,7 @@ CLOSED: [2022-03-30 Wed 10:22]
 (setq which-key-prefix-prefix "+" )
 
 (setq which-key-special-keys '("SPC" "TAB" "RET" "ESC" "DEL"))
-(setq which-key-special-keys nil)
+;; (setq which-key-special-keys nil)
 
 (setq which-key-show-prefix 'left)
 
