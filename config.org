@@ -2306,14 +2306,27 @@ format-prefix-foreground = #fefefe
 format-underline = #FFBB00
 
 [module/filesystem1]
+type = internal/fs
+interval = 25
+
+mount-0 = /
+
+label-mounted = %{F#F0C674}%mountpoint%%{F-} %{F#5af78e}%percentage_used%%{F-}
+label-mounted-foreground = ${colors.draculagreen}
+label-mounted-underline = ${colors.draculagreen}
+label-unmounted = %mountpoint% not mounted
+label-unmounted-foreground = ${colors.draculagreen}
+
+[module/filesystem]
 ;https://github.com/jaagr/polybar/wiki/Module:-filesystem
 type = internal/fs
 
 ; Mountpoints to display
 mount-0 = /
-mount-1 = /home
-;mount-2 = /var
-
+; mount-1 = /home
+; mount-2 = /var
+; mount-3= /media/New_Volume
+; mount-4= /media/hdd_home
 ; Seconds to sleep between updates
 ; Default: 30
 interval = 30
@@ -2349,21 +2362,26 @@ format-mounted-underline = #fe0000
 ; Default: %mountpoint% %percentage_free%%
 ; label-mounted = %mountpoint% : %used% used of %total%
 label-mounted = %mountpoint% : %used%/%total%
+; label-mounted = %mountpoint%: %percentage_free%% of %total%
 
 ; Available tokens:
 ;   %mountpoint%
 ; Default: %mountpoint% is not mounted
 label-unmounted = %mountpoint% not mounted
-format-unmounted-foreground = ${colors.foreground}
-format-unmounted-background = ${colors.background}
+;format-unmounted-foreground = ${colors.foreground}
+; format-unmounted-background = ${colors.background}
 ;format-unmounted-underline = ${colors.alert}
+
+;label-mounted = %{F#F0C674}%mountpoint%%{F-} %{F#5af78e}%percentage_used%%{F-}
+label-mounted-foreground = ${colors.draculagreen}
+label-mounted-underline = ${colors.draculagreen}
+label-unmounted-foreground = ${colors.draculagreen}
 
 [module/kernel]
 type = custom/script
 exec = uname -r
 tail = false
 interval = 1024
-
 format-foreground = ${colors.foreground}
 format-background = ${colors.background}
 format-prefix = "  "
