@@ -2374,22 +2374,22 @@ format-underline = #4B5665
 type = custom/script
 exec = uptime | grep -ohe 'load average[s:][: ].*' | awk '{ print $3" "$4" "$5"," }' | sed 's/,//g'
 interval = 100
-
 ;HOW TO SET IT MINIMAL 10 CHARACTERS - HIDDEN BEHIND SYSTEM ICONS
 ;label = %output%
 label = %output:10%
-
 format-foreground = ${colors.foreground}
 format-background = ${colors.background}
 format-prefix = "  "
 format-prefix-foreground = #62FF00
 format-underline = #62FF00
+
 [module/mpd]
 ;https://github.com/jaagr/polybar/wiki/Module:-mpd
 type = internal/mpd
 ;format-online =  "<label-song>   <icon-prev>  <icon-stop>  <toggle>  <icon-next>"
-format-online =  "<label-song>  <bar-progress>"
-;format-online =  "<label-song>  <bar-progress> <icon-prev>  <icon-stop>  <toggle>  <icon-next>"
+;format-online =  "<label-song>  <bar-progress>"
+;format-online = "<icon-prev> <icon-seekb> <icon-stop> <toggle> <icon-seekf> <icon-next>  <icon-repeat> <icon-random>  <bar-progress> <label-time>  <label-song>"
+format-online =  "<label-song>  <bar-progress> <icon-prev>  <icon-stop>  <toggle>  <icon-next>"
 icon-prev = 
 icon-stop = 
 icon-play = 
@@ -2406,6 +2406,27 @@ bar-progress-fill-background = ${colors.background}
 bar-progress-indicator-foreground = ${colors.foreground}
 format-online-foreground = ${colors.foreground}
 format-online-background = ${colors.background}
+; Available tokens:
+;   %artist%
+;   %album-artist%
+;   %album%
+;   %date%
+;   %title%
+; Default: %artist% - %title%
+label-song = 𝄞 %artist% - %title%
+
+;format-playing = ${self.format-online}
+;format-paused = ${self.format-online}
+;format-stopped = ${self.format-online}
+; Available tokens:
+;   None
+label-offline = 🎜 mpd is offline
+
+
+; Used to display the state of random/repeat/repeatone/single
+; Only applies if <icon-[random|repeat|repeatone|single]> is used
+toggle-on-foreground = #ff
+toggle-off-foreground = #55
 
 ; [module/release]
 ; type = custom/script
