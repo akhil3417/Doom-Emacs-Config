@@ -189,7 +189,6 @@ To install ~some-package~ from MELPA, ELPA or emacsmirror:
 (package! dashboard)
 (package! dired-open)
 (package! dmenu)
-;; (package! elfeed-goodies)
 ;; (package! emojify)
 (package! evil-tutor)
 (package! ivy-posframe)
