@@ -2201,17 +2201,6 @@ format-prefix = " "
 format-prefix-foreground = #98be65
 format-underline = #98be65
 
-[module/filesystem]
-type = internal/fs
-interval = 25
-
-mount-0 = /
-
-label-mounted = %{F#F0C674}%mountpoint%%{F-} %{F#5af78e}%percentage_used%%{F-}
-label-mounted-foreground = ${colors.draculagreen}
-label-mounted-underline = ${colors.draculagreen}
-label-unmounted = %mountpoint% not mounted
-label-unmounted-foreground = ${colors.draculagreen}
 
 [module/pulseaudio]
 type = internal/pulseaudio
@@ -2289,29 +2278,6 @@ format-connected-prefix-foreground = ${colors.underline-1}
 ; format-connected-foreground = #fefefe
 format-connected-foreground = ${colors.draculanet}
 ; format-connected-background = #8d62ad
-
-[module/networkspeedup1]
-type = internal/network
-interface = wlp2s0
-label-connected = "%upspeed:7%"
-format-connected = <label-connected>
-format-connected-prefix = ""
-format-connected-prefix-foreground = #cb410b
-format-connected-foreground = ${colors.foreground}
-format-connected-background = ${colors.background}
-format-connected-underline = #006600
-; ip link show =interface
-
-[module/networkspeeddown1]
-type = internal/network
-interface = wlp2s0
-label-connected = "%downspeed:7%"
-format-connected = <label-connected>
-format-connected-prefix = ""
-format-connected-prefix-foreground = #7c0a02
-format-connected-foreground = ${colors.foreground}
-format-connected-background = ${colors.background}
-format-connected-underline = #006600
 
 [module/arch-aur-updates]
 type = custom/script
