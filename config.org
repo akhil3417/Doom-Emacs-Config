@@ -1809,9 +1809,9 @@ font-3 = "Fira Mono:size=6;-3"
 modules-left = exwm exwm-path exwm-workspace
 modules-center = spotify mpd
 ; modules-left = exwm-workspace
-modules-right =  wireless-network networkspeedup networkspeeddown cpu memory uptime arch-aur-updates battery temperature date pulseaudio
+modules-right =  wireless-network networkspeedup networkspeeddown cpu memory filesystem uptime arch-aur-updates battery temperature date pulseaudio
 
-; exwm-workspace exwm exwm-path spotify mu4e telegram xkeyboard cpu cpu1 date battery1 battery temperture temperature1 xbacklight wireless-network wired-network
+; exwm-workspace exwm exwm-path spotify mu4e telegram xkeyboard cpu date battery1 battery temperture temperature1 xbacklight wireless-network wired-network
 ; weathe volume uptime filesystem pulseaudio memory wlan eth network networkspeedup networkspeeddown networkspeedup1 networkspeeddown1 arch-aur-updates aur-updates
 ; filesystem1 kernel load-average mpd release pub-ip pavolume  ;; was at the end volume pavolume
 tray-position = right
