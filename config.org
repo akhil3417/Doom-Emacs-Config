@@ -11805,6 +11805,7 @@ active region use it instead."
 EWW is the Emacs Web Wowser, the builtin browser in Emacs.  Below I set urls to open in a specific browser (eww) with browse-url-browser-function.  By default, Doom Emacs does not use 'SPC e' for anything, so I choose to use the format 'SPC e' plus 'key' for these (I also use 'SPC e' for 'eval' keybindings).  I chose to use 'SPC s w' for eww-search-words because Doom Emacs uses 'SPC s' for 'search' commands.
 
 #+begin_src emacs-lisp
+;; To open .onion links from eww, run ‘torsocks emacs’ from the commandline. From then, you should be able to load .onion addresses from within ERC and eww.
 ;; (setq browse-url-browser-function 'eww-browse-url)
 ;; (map! :leader
 ;;       :desc "Search web for text between BEG/END"
@@ -11925,8 +11926,6 @@ EWW is the Emacs Web Wowser, the builtin browser in Emacs.  Below I set urls to 
   (defengine archlinux
 "https://wiki.archlinux.org/index.php?search=%s"
 :keybinding "W")
-
-
 
 ;; websearch[gitlab]="https://gitlab.com/search?search="
   (defengine gitlab
