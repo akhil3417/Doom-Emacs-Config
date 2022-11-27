@@ -555,7 +555,7 @@ The following line
 : t
 
 ** Defvar exwm
-#+begin_src emacs-lisp :tangle yes
+#+begin_src emacs-lisp :tangle no
 
      ;; (exwm :variables
      ;;       exwm-enable-systray t
@@ -610,7 +610,7 @@ The following line
   outside of current frame." )
 #+end_src
 ** misc
-#+begin_src emacs-lisp :tangle yes
+#+begin_src emacs-lisp :tangle no
 
 (defun exwm/init-framemove ()
   (use-package framemove
@@ -675,7 +675,7 @@ The following line
 : exwm/init-exwm
 
 ** funcs
-#+begin_src emacs-lisp :tangle yes
+#+begin_src emacs-lisp :tangle no
 
 (defun exwm/exwm-buffers-info ()
   (interactive)
@@ -710,7 +710,7 @@ The following line
 XDG compliance and WM settings
 I have to set a few environment variables for the sake of compliance with various specifications, most notably the XDG Base Directory Specification. Also in this block I set an environment variable signaling to Java applications that the window manager is not a reparenting window manager.
 
-#+begin_src emacs-lisp :tangle yes
+#+begin_src emacs-lisp :tangle no
 
 (setenv "XDG_CURRENT_DESKTOP" "emacs")
 ;; (setenv "GTK2_RC_FILES" (expand-file-name "~/.config/gtk-2.0/gtkrc"))
