@@ -11839,7 +11839,7 @@ EWW is the Emacs Web Wowser, the builtin browser in Emacs.  Below I set urls to 
 (use-package! engine-mode
   :config
   (defengine duckduckgo
-    "https://duckduckgo.com/html?q=%s"
+    "https://lite.duckduckgo.com/lite/?q=%s&kf=-1&kz=-1&kq=-1&kv=-1&k1=-1&kp=-2&kaf=1&kd=-1"
     :keybinding "d")
   (defengine github
     "https://github.com/search?ref=simplesearch&q=%s"
@@ -12187,7 +12187,6 @@ some of the above.
   :config
   (setq browse-url-browser-function 'eww-browse-url)
   ;; (setq browse-url-secondary-browser-function 'browse-url-default-browser))
-
 
   (setq browse-url-secondary-browser-function 'browse-url-generic
       browse-url-generic-program "qutebrowser"))
@@ -13531,7 +13530,6 @@ Usage:
 +  Hit A to enqueue the file in emms.
 +  Start listening to media with M-x emms-start.
 +  Keep queueing up further interesting entries from elfeed.
-+  Do something else while listening :-)
 +  Pause emms with M-x emms-pause when needed.
 
  #+BEGIN_SRC emacs-lisp :tangle no
