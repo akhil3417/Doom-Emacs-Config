@@ -12455,7 +12455,7 @@ buffer."
   :config
   (when IS-LINUX
     (defun browse-url-umpv (url &optional single)
-      (start-process "mpv" nil (if single "mpv" "umpv")
+      (start-process "mpv" nil (if single "mpv" "mpv")
                      (shell-quote-wildcard-pattern url)))
 
     (defun browse-url-mpv (url)
