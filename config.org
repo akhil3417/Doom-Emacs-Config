@@ -2893,6 +2893,7 @@ I'd like to have just the buffer name, then if applicable the project folder
 
 For example when I open my config file it the window will be titled =config.org ●
 doom= then as soon as I make a change it will become =config.org ◉ doom=.
+
 * services
 ** DONE Proced (process monitor, similar to `top')
 CLOSED: [2022-03-31 Thu 20:05]
@@ -4271,7 +4272,7 @@ Fira Code is amazing, and so is Roboto.
 #+END_SRC
 
 #+RESULTS:
-| doom--customize-themes-h-2300 | doom--customize-themes-h-2320 | doom--customize-themes-h-2321 | doom--customize-themes-h-2323 | doom--customize-themes-h-2330 |
+| doom--customize-themes-h-1854 | doom--customize-themes-h-1855 | doom--customize-themes-h-1875 | doom--customize-themes-h-1876 | doom--customize-themes-h-1878 | doom--customize-themes-h-1885 |
 
 In addition to these fonts, Merriweather is used with =nov.el=, and Alegreya as a
 serifed proportional font used by =mixed-pitch-mode= for =writeroom-mode= with Org
@@ -8374,9 +8375,6 @@ For when you want to change the case pattern for a symbol.
       (setq evil-repeat-info '([?g ?~])))
     (define-key evil-normal-state-map (kbd "g~") 'evil-operator-string-inflection)))
 #+end_src
-
-#+RESULTS:
-: #s(hash-table size 65 test eql rehash-size 1.5 rehash-threshold 0.8125 data (:use-package! (25089 58776 6422 553000) :init (25089 58776 6410 943000) :init-secs (0 0 1563 35000) :use-package-secs (0 0 1618 168000)))
 
 ** Auto insert
 #+begin_src emacs-lisp :tangle no
@@ -13614,6 +13612,8 @@ module. Let's just try to patch on the main things I like the look of.
       :nm "y" #'elfeed-show-yank)
 #+end_src
 
+#+RESULTS:
+
 *** Usability enhancements
 
 #+begin_src emacs-lisp
@@ -13745,6 +13745,9 @@ module. Let's just try to patch on the main things I like the look of.
   )
 #+end_src
 
+#+RESULTS:
+: +rss/elfeed-show-refresh--better-style
+
 *** Functionality enhancements
 
 #+begin_src emacs-lisp
@@ -13794,6 +13797,9 @@ module. Let's just try to patch on the main things I like the look of.
   )
 #+end_src
 
+#+RESULTS:
+: elfeed-show-pdf
+
 *** easier tagging
 By default you can tag an entry from the search results by typing “+” followed by the tag name. This is too much work for a central organizational feature, so a little helper sorts things out.
 
@@ -13822,6 +13828,10 @@ MYTAG"
   (start-process "mpv" nil "mpv" (shell-quote-argument url)))
 
 #+end_src
+
+#+RESULTS:
+: browse-url-mpv
+
 * Applications and utilities
 
 This section includes configurations for programs like email clients,
@@ -13877,7 +13887,6 @@ Which do you think I want?
 
 #+RESULTS:
 : t
-
 ** generate password
 
 #+BEGIN_SRC emacs-lisp
@@ -20259,7 +20268,7 @@ It's also nice to make use of the Unicode characters for check boxes, and other 
 #+end_src
 
 #+RESULTS:
-| :name | ⁍  | :src_block | » | :src_block_end | « | :quote | “ | :quote_end | ” | :lambda | λ | :def | ƒ | :composition | ∘ | :map | ↦ | :null | ∅ | :true | 𝕋 | :false | 𝔽  | :int | ℤ | :float | ℝ  | :str | 𝕊  | :bool | 𝔹 | :list | 𝕃 | :not | ￢ | :in | ∈ | :not-in | ∉ | :and | ∧ | :or | ∨ | :for | ∀ | :some | ∃ | :return | ⟼ | :yield | ⟻ | :union | ⋃ | :intersect | ∩ | :diff | ∖  | :tuple | ⨂ | :pipe |  | :dot | • | :checkbox | ☐ | :pending | ◼  | :checkedbox | ☑ | :list_property | ∷ | :em_dash | — | :ellipses | … | :arrow_right | → | :arrow_left | ← | :title | 𝙏  | :subtitle | 𝙩  | :author | 𝘼  | :date | 𝘿  | :property | ☸ | :options | ⌥ | :startup | ⏻ | :macro | 𝓜 | :html_head | 🅷 | :html | 🅗 | :latex_class | 🄻 | :latex_header | 🅻 | :beamer_header | 🅑 | :latex | 🅛 | :attr_latex | 🄛 | :attr_html | 🄗 | :attr_org | ⒪ | :begin_quote | ❝ | :end_quote | ❞ | :caption | ☰ | :header | › | :results | 🠶 | :begin_export | ⏩ | :end_export | ⏪ | :properties | ⚙ | :end | ∎ | :priority_a | ⚑  | :priority_b | ⬆ | :priority_c | ■ | :priority_d | ⬇ | :priority_e | ❓ | :checkbox | ☐ | :pending | ◼  | :checkedbox | ☑ | :list_property | ∷ | :em_dash | — | :ellipses | … | :arrow_right | → | :arrow_left | ← | :title | 𝙏  | :subtitle | 𝙩  | :author | 𝘼  | :date | 𝘿  | :property | ☸ | :options | ⌥ | :startup | ⏻ | :macro | 𝓜 | :html_head | 🅷 | :html | 🅗 | :latex_class | 🄻 | :latex_header | 🅻 | :beamer_header | 🅑 | :latex | 🅛 | :attr_latex | 🄛 | :attr_html | 🄗 | :attr_org | ⒪ | :begin_quote | ❝ | :end_quote | ❞ | :caption | ☰ | :header | › | :results | 🠶 | :begin_export | ⏩ | :end_export | ⏪ | :properties | ⚙ | :end | ∎ | :priority_a | ⚑  | :priority_b | ⬆ | :priority_c | ■ | :priority_d | ⬇ | :priority_e | ❓ |
+| :name | ⁍  | :src_block | » | :src_block_end | « | :quote | “ | :quote_end | ” | :lambda | λ | :def | ƒ | :composition | ∘ | :map | ↦ | :null | ∅ | :true | 𝕋 | :false | 𝔽 | :int | ℤ | :float | ℝ | :str | 𝕊  | :bool | 𝔹 | :list | 𝕃 | :not | ￢ | :in | ∈ | :not-in | ∉ | :and | ∧ | :or | ∨ | :for | ∀ | :some | ∃ | :return | ⟼ | :yield | ⟻ | :union | ⋃ | :intersect | ∩ | :diff | ∖  | :tuple | ⨂ | :pipe |  | :dot | • | :checkbox | ☐ | :pending | ◼  | :checkedbox | ☑ | :list_property | ∷ | :em_dash | — | :ellipses | … | :arrow_right | → | :arrow_left | ← | :title | 𝙏  | :subtitle | 𝙩  | :author | 𝘼 | :date | 𝘿 | :property | ☸ | :options | ⌥ | :startup | ⏻ | :macro | 𝓜 | :html_head | 🅷 | :html | 🅗 | :latex_class | 🄻 | :latex_header | 🅻 | :beamer_header | 🅑 | :latex | 🅛 | :attr_latex | 🄛 | :attr_html | 🄗 | :attr_org | ⒪ | :begin_quote | ❝ | :end_quote | ❞ | :caption | ☰ | :header | › | :results | 🠶 | :begin_export | ⏩ | :end_export | ⏪ | :properties | ⚙ | :end | ∎ | :priority_a | ⚑  | :priority_b | ⬆ | :priority_c | ■ | :priority_d | ⬇ | :priority_e | ❓ | :checkbox | ☐ | :pending | ◼  | :checkedbox | ☑ | :list_property | ∷ | :em_dash | — | :ellipses | … | :arrow_right | → | :arrow_left | ← | :title | 𝙏  | :subtitle | 𝙩  | :author | 𝘼 | :date | 𝘿 | :property | ☸ | :options | ⌥ | :startup | ⏻ | :macro | 𝓜 | :html_head | 🅷 | :html | 🅗 | :latex_class | 🄻 | :latex_header | 🅻 | :beamer_header | 🅑 | :latex | 🅛 | :attr_latex | 🄛 | :attr_html | 🄗 | :attr_org | ⒪ | :begin_quote | ❝ | :end_quote | ❞ | :caption | ☰ | :header | › | :results | 🠶 | :begin_export | ⏩ | :end_export | ⏪ | :properties | ⚙ | :end | ∎ | :priority_a | ⚑  | :priority_b | ⬆ | :priority_c | ■ | :priority_d | ⬇ | :priority_e | ❓ |
 
 ~org-superstar-mode~ is great. While we're at it we may as well make tags prettier as well 🙂
 #+begin_src emacs-lisp :tangle packages.el
