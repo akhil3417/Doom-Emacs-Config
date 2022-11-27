@@ -3130,7 +3130,7 @@ anything to be run.
           (defun +config-run-setup ()
             (when (yes-or-no-p (format "%s The setup script has content. Check and run the script?"
                                        (propertize "Warning!" 'face '(bold warning))))
-              (find-file (expand-file-name "setup.sh" doom-private-dir))
+              (find-file (expand-file-name "setup.sh" doom-user-dir))
               (when (yes-or-no-p "Would you like to run this script?")
                 (async-shell-command "./setup.sh"))))
           (add-hook! 'doom-init-ui-hook
@@ -7498,7 +7498,7 @@ have the following.
 (add-hook 'doom-first-buffer-hook
           (defun +abbrev-file-name ()
             (setq-default abbrev-mode t)
-            (setq abbrev-file-name (expand-file-name "abbrev_defs" doom-private-dir))))
+            (setq abbrev-file-name (expand-file-name "abbrev_defs" doom-user-dir))))
 #+end_src
 
 #+RESULTS:
@@ -7728,7 +7728,7 @@ the above.
 It seems reasonable to want to keep an eye on my personal dict, let's have it
 nearby (also means that if I change the 'main' dictionary I keep my addition).
 #+begin_src emacs-lisp
-(setq ispell-personal-dictionary (expand-file-name ".ispell_personal" doom-private-dir))
+(setq ispell-personal-dictionary (expand-file-name ".ispell_personal" doom-user-dir))
 #+end_src
 
 #+RESULTS:
@@ -20625,11 +20625,11 @@ Suffice to say I've snatched it, with a few of my own tweaks applied.
 (defun org-html-reload-fancy-style ()
   (interactive)
   (setq org-html-style-fancy
-        (concat (f-read-text (expand-file-name "misc/org-export-header.html" doom-private-dir))
+        (concat (f-read-text (expand-file-name "misc/org-export-header.html" doom-user-dir))
                 "<script>\n"
-                (f-read-text (expand-file-name "misc/org-css/main.js" doom-private-dir))
+                (f-read-text (expand-file-name "misc/org-css/main.js" doom-user-dir))
                 "</script>\n<style>\n"
-                (f-read-text (expand-file-name "misc/org-css/main.min.css" doom-private-dir))
+                (f-read-text (expand-file-name "misc/org-css/main.min.css" doom-user-dir))
                 "</style>"))
   (when org-fancy-html-export-mode
     (setq org-html-style-default org-html-style-fancy)))
