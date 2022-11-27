@@ -4724,7 +4724,7 @@ From the =:ui zen= module.
 #+end_quote
 
 For starters, I think Doom is a bit over-zealous when zooming in
-#+begin_src emacs-lisp
+#+begin_src emacs-lisp :tangle no
 (setq +zen-text-scale 0.8)
 #+end_src
 
@@ -4741,7 +4741,7 @@ tweaks. Namely:
 + Centring the text
 + Turning on ~org-pretty-table-mode~
 
-#+begin_src emacs-lisp
+#+begin_src emacs-lisp :tangle no
 (defvar +zen-serif-p t
   "Whether to use a serifed font with `mixed-pitch-mode'.")
 (after! writeroom-mode
