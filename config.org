@@ -5045,7 +5045,7 @@ are just waiting to be saved!
   (setq company-idle-delay 0.1
         company-selection-wrap-around t
         company-minimum-prefix-length 2)
-  (setq company-show-numbers t))
+  (setq company-show-quick-access t))
    ;;(add-hook 'evil-normal-state-entry-hook #'company-abort)) ;; make aborting less annoying. currently disable caues dabbrev closes company -yasnipper automatically-but i use SPC i s
 #+end_src
 
@@ -15189,7 +15189,7 @@ something through Emacs?
         :ne "s" #'calibredb-set-metadata-dispatch
         :ne "e" #'calibredb-export-dispatch
         :ne "q" #'calibredb-entry-quit
-        :ne "." #'calibredb-open-dired
+        :ne "." #'calibredb-dired-open
         :ne [tab] #'calibredb-toggle-view-at-point
         :ne "M-t" #'calibredb-set-metadata--tags
         :ne "M-a" #'calibredb-set-metadata--author_sort
@@ -15219,7 +15219,7 @@ something through Emacs?
         :ne "O" #'calibredb-find-file-other-frame
         :ne "v" #'calibredb-view
         :ne "V" #'calibredb-open-file-with-default-tool
-        :ne "." #'calibredb-open-dired
+        :ne "." #'calibredb-dired-open
         :ne "b" #'calibredb-catalog-bib-dispatch
         :ne "e" #'calibredb-export-dispatch
         :ne "r" #'calibredb-search-refresh-and-clear-filter
@@ -16502,7 +16502,7 @@ One of the media players available for Emacs is emms, which stands for Emacs Mul
 (require 'emms-mode-line)
 (emms-mode-line 1)
 (require 'emms-playing-time)
-(emms-playing-time 1)
+(emms-playing-time-mode 1)
 (use-package! versuri
   :config
   (defun my/versuri-select ()
@@ -16852,7 +16852,7 @@ rather than the whole path."
 ;; just in case above config breaks
 (emms-all)
 (emms-default-players)
-(emms-mode-line 1)
+(emms-mode-line-mode 1)
 (emms-playing-time 1)
 (setq emms-source-file-default-directory "~/Music/"
       emms-playlist-buffer-name "*Music*"
