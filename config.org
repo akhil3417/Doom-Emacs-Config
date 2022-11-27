@@ -13507,6 +13507,19 @@ lots of options and commands: make sure to read its official manual.
     (define-key map (kbd "U") #'ebdb-unmark-all-records)))
 #+end_src
 
+** simple httpd
+#+begin_src emacs-lisp :tangle yes
+(use-package simple-httpd
+  :ensure t)
+#+end_src
+
+#+RESULTS:
+: simple-httpd
+
+Now you can run M-x httpd-serve-directory. It will prompt you for a directory to serve from within Emacs.
+Select the path of your public/ directory and then open your browser to http://localhost:8080 to see the preview of your site! Set httpd-port to change the default port if necessary.
+Any time you regenerate the site files, you can just reload the page to see the result of changes you made!
+
 ** Elfeed goodies
 An RSS newsfeed reader for Emacs.
 Elfeed enables the nicest podcast integration I know: Treat podcast entries as regular RSS entries, but hit A to enqueue them in emms.
@@ -13561,25 +13574,11 @@ Usage:
 
 #+END_SRC
 
-** simple httpd
-#+begin_src emacs-lisp :tangle yes
-(use-package simple-httpd
-  :ensure t)
-#+end_src
-
-#+RESULTS:
-: simple-httpd
-
-Now you can run M-x httpd-serve-directory. It will prompt you for a directory to serve from within Emacs.
-Select the path of your public/ directory and then open your browser to http://localhost:8080 to see the preview of your site! Set httpd-port to change the default port if necessary.
-Any time you regenerate the site files, you can just reload the page to see the result of changes you made!
-
 ** Newsfeed
 
 RSS feeds are still a thing. Why not make use of them with =elfeed=.
 I really like what [[https://github.com/fuxialexander/doom-emacs-private-xfu/tree/master/modules/app/rss][fuxialexander]] has going on, but I don't think I need a custom
 module. Let's just try to patch on the main things I like the look of.
-
 
 *** Keybindings
 
