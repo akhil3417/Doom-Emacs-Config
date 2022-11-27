@@ -18037,35 +18037,6 @@ functionality as in LaTeX. Let's try viewing possible output files with this.
 (defvar org-view-external-file-extensions '("html")
   "File formats that should be opened externally.")
 #+end_src
-***** getting things done
-
-   Getting things done package to make my life work.
-
-  #+begin_src emacs-lisp :tangle no
-(use-package! org-gtd
-  :after org
-  :config
-  ;; where org-gtd will put its files. This value is also the default one.
-  (setq org-gtd-directory "~/org/Daily/")
-  ;; package: https://github.com/Malabarba/org-agenda-property
-  ;; this is so you can see who an item was delegated to in the agenda
-  (setq org-agenda-property-list '("DELEGATED_TO"))
-  ;; I think this makes the agenda easier to read
-  (setq org-agenda-property-position 'next-line)
-  ;; package: https://www.nongnu.org/org-edna-el/
-  ;; org-edna is used to make sure that when a project task gets DONE,
-  ;; the next TODO is automatically changed to NEXT.
-  (setq org-edna-use-inheritance t)
-  (org-edna-load)
-  :bind
-  (("C-c d c" . org-gtd-capture) ;; add item to inbox
-  ("C-c d a" . org-agenda-list) ;; see what's on your plate today
-  ("C-c d p" . org-gtd-process-inbox) ;; process entire inbox
-  ("C-c d n" . org-gtd-show-all-next) ;; see all NEXT items
-  ("C-c d s" . org-gtd-show-stuck-projects)) ;; see projects that don't have a NEXT item
-  :init
-  (bind-key "C-c c" 'org-gtd-clarify-finalize)) ;; the keybinding to hit when you're done editing an item in the processing phase
-#+end_src
 ***** Org Capture
 Let's setup some org-capture templates, and make them visually nice to access.
 
