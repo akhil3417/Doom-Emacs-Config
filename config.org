@@ -427,7 +427,7 @@ I prefer the idea of using a separate file for this. We just need to change a
 setting, and load it if it exists.
 
 #+begin_src emacs-lisp
-(setq-default custom-file (expand-file-name ".custom.el" doom-private-dir))
+(setq-default custom-file (expand-file-name ".custom.el" doom-user-dir))
 (when (file-exists-p custom-file)
   (load custom-file))
 #+end_src
