@@ -86,6 +86,9 @@ Doom requires these, and disabling them may have terrible side effects.
 To install ~some-package~ from MELPA, ELPA or emacsmirror:
 #+begin_src emacs-lisp :tangle packages.el
 
+(package! w3m)
+(package! mpv)
+(package! emms-player-simple-mpv)
 (package! yaml)
 (package! aio)
 ;;shell setup
@@ -371,6 +374,8 @@ my home machine is pretty safe, and my laptop is shutdown a lot.
 (load "elfeed-tube-mpv.el")
 (load "elfeed-tube-test.el")
 (load "elfeed-tube-utils.el")
+(load "w3m-type-ahead.el")
+(load "w3m-config.el")
 
 (load "setup-ui.el")
 (load "setup-minibuffer.el")
@@ -386,6 +391,7 @@ my home machine is pretty safe, and my laptop is shutdown a lot.
 ;; makes this flaky, but anything's better than the browser interface to
 ;; Youtube.
 (load "setup-ytel.el");; youttuuube
+(load "ytdl-downloader.el")
 (load "setup-shell.el")
 (load "exwm-paste.el")
 (load "lock-screen.el")
