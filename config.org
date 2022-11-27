@@ -12198,6 +12198,7 @@ some of the above.
   (setq shr-use-fonts nil)              ; t is not for me
   (setq shr-max-image-proportion 0.6)
   (setq shr-image-animate nil)          ; No GIFs, thank you!
+  (setq shr-indentation 2)                           ; Left-side margin
   (setq shr-width nil)                  ; check `prot-eww-readable'
   (setq shr-discard-aria-hidden t)
   (setq shr-cookie-policy nil))
