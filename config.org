@@ -17459,7 +17459,7 @@ spell-check face ignore list
       org-list-allow-alphabetical t               ; have a. A. a) A) list bullets
       org-export-in-background t                  ; run export processes in external emacs process
       org-export-allow-bind-keywords t     ; Bind keywords can be handy
-      org-catch-invisible-edits 'smart            ; try not to accidently do weird stuff in invisible regions
+      org-fold-catch-invisible-edits 'smart            ; try not to accidently do weird stuff in invisible regions
       org-export-with-sub-superscripts '{})       ; don't treat lone _ / ^ as sub/superscripts, require _{} / ^{}
 
 
