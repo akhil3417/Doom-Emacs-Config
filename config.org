@@ -17324,7 +17324,7 @@ Display-wise, somehow I don't mind code buffers without any margin on the left,
 but it feels a bit off with text buffers once the padding provided by line
 numbers is stripped away.
 
-#+begin_src emacs-lisp
+#+begin_src emacs-lisp :tangle no
 (defvar +text-mode-left-margin-width 1
   "The `left-margin-width' to be used in `text-mode' buffers.")
 
@@ -17345,7 +17345,7 @@ numbers is stripped away.
 Now we just need to hook this up to all the events which could either indicate a
 change in the conditions or require the setup to be re-applied.
 
-#+begin_src emacs-lisp
+#+begin_src emacs-lisp :tangle no
 (add-hook 'window-configuration-change-hook #'+setup-text-mode-left-margin)
 (add-hook 'display-line-numbers-mode-hook #'+setup-text-mode-left-margin)
 (add-hook 'text-mode-hook #'+setup-text-mode-left-margin)
@@ -17357,7 +17357,7 @@ change in the conditions or require the setup to be re-applied.
 There's one little niggle with Doom, as ~doom/toggle-line-numbers~ doesn't run
 ~display-line-numbers-mode-hook~, so some advice is needed.
 
-#+begin_src emacs-lisp
+#+begin_src emacs-lisp :tangle no
 (defadvice! +doom/toggle-line-numbers--call-hook-a ()
   :after #'doom/toggle-line-numbers
   (run-hooks 'display-line-numbers-mode-hook))
@@ -17368,12 +17368,10 @@ There's one little niggle with Doom, as ~doom/toggle-line-numbers~ doesn't run
 Lastly, I think I actually like this enough that I'll go ahead and remove line
 numbers in text mode.
 
-#+begin_src emacs-lisp
+#+begin_src emacs-lisp :tangle no
 (remove-hook 'text-mode-hook #'display-line-numbers-mode)
 #+end_src
 
-#+RESULTS:
-| +spell-remove-run-together-switch-for-aspell-h | er/add-text-mode-expansions | auto-fill-mode | +setup-text-mode-left-margin | (lambda (&rest _) (if (derived-mode-p 'org-mode) nil (let* ((modified (buffer-modified-p)) (buffer-undo-list t) (inhibit-read-only t) (inhibit-modification-hooks t)) (unwind-protect (progn (ansi-color-apply-on-region (point-min) (point-max) t)) (if modified nil (restore-buffer-modified-p nil)))))) | flyspell-mode | auto-revert-mode | text-mode-hook-identify |
 
 ** ORG MODE
 *** Org
