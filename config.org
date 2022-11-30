@@ -1157,10 +1157,10 @@ configured to use @ (at symbol) as separator."
 (exwm-input-set-key (kbd "C-.") #'execute-extended-command)
 (global-set-key (kbd "C-?") #'execute-extended-command)
 (define-key evil-normal-state-map (kbd "C-.") nil)
-(define-key evil-normal-state-map (kbd "C-n") nil)
+;; (define-key evil-normal-state-map (kbd "C-n") nil)
 (global-set-key (kbd "C-.") #'execute-extended-command)
-(global-set-key (kbd "C-n") #'my/ivy-switch-buffer-firefox)
-(global-set-key (kbd "C-N") #'my/ivy-switch-buffer-urxvt)
+;; (global-set-key (kbd "C-n") #'my/ivy-switch-buffer-firefox)
+;; (global-set-key (kbd "C-N") #'my/ivy-switch-buffer-urxvt)
 
 (setq exwm-input-simulation-keys
 
@@ -7838,6 +7838,9 @@ Escape from insert state and everything else.
 "back". =evil-mode= by default binds those to rather rarely used
 functions =evil-repeat-pop-next= and =xref-pop-marker-stack=, for some reason.
 
+#+begin_src emacs-lisp :tangle yes
+  (define-key evil-normal-state-map (kbd "C-?") #'execute-extended-command)
+#+end_src
 #+BEGIN_SRC emacs-lisp :tangle no
   (define-key evil-normal-state-map (kbd "M-.") nil)
   (define-key evil-normal-state-map (kbd "M-,") nil)
