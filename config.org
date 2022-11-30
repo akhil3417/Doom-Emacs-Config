@@ -317,7 +317,9 @@ Specify a ~:branch~ to install a package from a particular branch or tag.
 * Desktop Configuration
 ** Personal Information
 It's useful to have some basic personal information
+
 #+begin_src emacs-lisp :tangle no
+
 ;;; $DOOMDIR/config.el -*- lexical-binding: t; -*-
 ;;    let's get encryption established
     (setenv "GPG_AGENT_INFO" nil)  ;; use emacs pinentry
@@ -331,7 +333,8 @@ It's useful to have some basic personal information
 
     (require 'org-crypt)
     (org-crypt-use-before-save-magic)
-#+END_SRC
+
+#+end_src
 
 #+begin_src emacs-lisp
 ;; (setq package-native-compile t)
