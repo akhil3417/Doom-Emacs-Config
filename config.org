@@ -7842,6 +7842,9 @@ functions =evil-repeat-pop-next= and =xref-pop-marker-stack=, for some reason.
 #+begin_src emacs-lisp :tangle yes
   (define-key evil-normal-state-map (kbd "C-?") #'execute-extended-command)
 #+end_src
+
+#+RESULTS:
+
 #+BEGIN_SRC emacs-lisp :tangle no
   (define-key evil-normal-state-map (kbd "M-.") nil)
   (define-key evil-normal-state-map (kbd "M-,") nil)
