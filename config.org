@@ -4247,6 +4247,7 @@ Fira Code is amazing, and so is Roboto.
  ;; (setq doom-font (font-spec :family "JetBrainsMono" :size 12 :weight 'light);;lissner's font a/q to his config
  ;;      doom-variable-pitch-font (font-spec :family "DejaVu Sans" :size 13))
 
+;; (setq doom-font (font-spec :family "B612" :size 16)
 (setq doom-font (font-spec :family "JetBrains Mono" :size 16)
       doom-big-font (font-spec :family "JetBrains Mono" :size 24)
       doom-variable-pitch-font (font-spec :family "Overpass" :size 18)
