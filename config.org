@@ -4099,7 +4099,7 @@ Relative line numbers are fantastic for knowing how far away line numbers are,
 then =ESC 12 <UP>= gets you exactly where you think.
 #+BEGIN_SRC emacs-lisp
 ;; (setq display-line-numbers-type 'relative)
-;; (setq display-line-numbers-type nil)
+(setq display-line-numbers-type nil)
 (map! :leader
       :desc "Comment or uncomment lines" "TAB TAB" #'comment-line
       (:prefix ("t" . "toggle")
