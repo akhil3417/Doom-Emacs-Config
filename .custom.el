@@ -26,7 +26,7 @@
  '(org-agenda-files
    '("~/org/org-agenda/daily" "~/org/org-agenda/incubate.org" "~/org/org-agenda/openquestions.org" "~/org/org-agenda/todo.org" "~/org/org-agenda/agenda.org" "~/org/org-capture/todo.org" "~/org/org-capture/webnotes.org" "~/org/org-roam2/daily/" "~/org/org-roam2/todo/todo.org"))
  '(package-selected-packages
-   '(mentor pacmacs w3m org-noter-pdftools visual-fill-column calfw elfeed-tube-mpv elfeed-tube dash miniedit pdf-tools all-the-icons-completion all-the-icons-dired recursion-indicator edwina trashed rcirc-notify emojify all-the-icons olivetti gameoflife cape exwm))
+   '(mentor pacmacs org-noter-pdftools visual-fill-column calfw elfeed-tube-mpv elfeed-tube dash miniedit pdf-tools all-the-icons-completion all-the-icons-dired recursion-indicator edwina trashed rcirc-notify emojify all-the-icons olivetti gameoflife cape exwm))
  '(rmh-elfeed-org-files '("~/.config/doom/elfeed.org"))
  '(warning-suppress-types '((org-element-cache) (comp) (defvaralias))))
 (custom-set-faces
