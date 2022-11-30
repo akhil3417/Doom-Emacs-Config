@@ -6931,10 +6931,10 @@ not have a modeline, such as what happens when I enable my custom
 information to the tab bar (in effect, it creates a universal status
 line---see [[#h:63ad472f-c9c2-40ad-9675-1dc529487788][Tabs for window layouts (tab-bar.el and prot-tab.el)]]).
 
-#+begin_src emacs-lisp
-  (setq outline-minor-mode-highlight 'override) ; emacs28
-  (setq outline-minor-mode-cycle t)             ; emacs28
-;;; Window divider mode
+#+begin_src emacs-lisp :tangle yes
+ ;; (setq outline-minor-mode-highlight 'override) ; emacs28
+ (setq outline-minor-mode-cycle t)             ; emacs28
+;;Window divider mode
 (setq window-divider-default-right-width 1)
 (setq window-divider-default-bottom-width 1)
 (setq window-divider-default-places 'right-only)
