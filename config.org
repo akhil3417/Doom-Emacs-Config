@@ -258,7 +258,6 @@ To install a package directly from a particular repo, you'll need to specify
 a ~:recipe~. You'll find documentation on what ~:recipe~ accepts [[https://github.com/raxod502/straight.el#the-recipe-format][here]]:
 #+begin_src emacs-lisp :tangle packages.el
 ;; Make Elisp files in that directory available to the user.
-(add-to-list 'load-path "~/.config/doom/lisp/")
 
 
 (package! ytel-show
@@ -393,27 +392,6 @@ my home machine is pretty safe, and my laptop is shutdown a lot.
 ** load some configs.el
 #+begin_src emacs-lisp :tangle yes
 ;; -*- lexical-binding: t -*-
-(add-to-list 'load-path "~/.config/doom/lisp/")
-(add-to-list 'load-path "~/.config/doom/lisp/elfeed-tube/")
-(add-to-list 'load-path "~/.config/doom/lisp/bon-app-launcher")
-
-(load "elfeed-tube.el")
-(load "elfeed-tube-contrib.el")
-(load "elfeed-tube-fill.el")
-(load "elfeed-tube-mpv.el")
-(load "elfeed-tube-test.el")
-(load "elfeed-tube-utils.el")
-(load "w3m-type-ahead.el")
-(load "w3m-config.el")
-
-(load "setup-ui.el")
-(load "setup-minibuffer.el")
-(load "better-buffers.el");;essential
-(load "setup-orderless.el");;configured in doom already but...
-(load "setup-vertico.el")
-(load "setup-embark.el")
-(load "utilities.el");;essential
-(load "setup-isearch")
 (add-to-list 'load-path "~/.config/doom/lisp/tab-bar/")
 (load "~/.config/doom/lisp/tab-bar/prot-tab.el")
 (load "~/.config/doom/lisp/tab-bar/prot-emacs-window.el")
