@@ -10577,13 +10577,14 @@ module. Let's just try to patch on the main things I like the look of.
 
 *** Visual enhancements
 
-#+begin_src emacs-lisp
+#+begin_src emacs-lisp :tangle yes
 (after! elfeed
 
-  (elfeed-org)
+  ;; (elfeed-org)
   (use-package! elfeed-link)
 
-  (setq elfeed-search-filter "@1-week-ago +unread"
+  ;; (setq elfeed-search-filter "@1-week-ago +unread"
+  (setq
         elfeed-search-print-entry-function '+rss/elfeed-search-print-entry
         elfeed-search-title-min-width 80
         elfeed-show-entry-switch #'pop-to-buffer
@@ -10698,7 +10699,7 @@ module. Let's just try to patch on the main things I like the look of.
 
 *** Functionality enhancements
 
-#+begin_src emacs-lisp
+#+begin_src emacs-lisp :tangle yes
 (after! elfeed-show
   (require 'url)
 
@@ -10751,7 +10752,7 @@ module. Let's just try to patch on the main things I like the look of.
 *** easier tagging
 By default you can tag an entry from the search results by typing “+” followed by the tag name. This is too much work for a central organizational feature, so a little helper sorts things out.
 
-#+begin_src emacs-lisp :tangle no
+#+begin_src emacs-lisp :tangle yes
 
 (defun elfeed-tag-selection-as (mytag)
     "Returns a function that tags an elfeed entry or selection as
