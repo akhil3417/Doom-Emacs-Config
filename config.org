@@ -10241,6 +10241,14 @@ some of the above.
 #+end_src
 
 #+RESULTS:
+(defun my-open-link-at-point-in-external-browser ()
+  (interactive)
+  (link-hint-copy-link-at-point)
+  (let ((url (current-kill 0)))
+    (browse-url-generic url)))
+
+
+#+end_src
 
 **** langauge detection in eww
 #+begin_src emacs-lisp :tangle packages.el
