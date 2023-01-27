@@ -5181,7 +5181,7 @@ If the current buffer is not writable, ask if it should be saved with
 
 Happily taken from Pascals configuration: https://github.com/SirPscl/emacs.d#sudo-save
 
-#+BEGIN_SRC emacs-lisp
+#+BEGIN_SRC emacs-lisp :tangle no
   (defun ph/sudo-file-name (filename)
     "Prepend '/sudo:root@`system-name`:' to FILENAME if appropriate.
   This is, when it doesn't already have a sudo-prefix."
@@ -5449,7 +5449,7 @@ configurations and documentation for [[#h:6c6759c8-3ae3-40b0-8356-05cc0975e12a][
 #+RESULTS:
 : t
 
-#+begin_src emacs-lisp :tangle yes
+#+begin_src emacs-lisp :tangle no
 
 ;;;----------------------------------------------------------------
 ;; ** DABBREV Karthiks
@@ -5695,11 +5695,22 @@ functions =evil-repeat-pop-next= and =xref-pop-marker-stack=, for some reason.
 
 #+begin_src emacs-lisp :tangle yes
   (define-key evil-normal-state-map (kbd "C-?") #'execute-extended-command)
+  (define-key evil-normal-state-map (kbd "C-.") #'embark-act)
+  (define-key evil-normal-state-map (kbd "C-n") nil)
+  (define-key evil-normal-state-map (kbd "M-<right>") #'sp-backward-barf-sexp)
+  (define-key evil-normal-state-map (kbd "M-<left>") #'sp-backward-slurp-sexp)
+  ;; (define-key org-mode-map (kbd "C-'") nil) ;; need that for avy
+  ;; (evil-define-key 'normal org-mode-map (kbd "M-j") nil) ;; avvvy
+
+  ;; (define-key org-super-agenda-header-map (kbd "j") nil) ;; its irrtating to be prompted when in custom org-agenda heading , can just use gd
+  ;; (define-key org-super-agenda-header-map (kbd "k") nil) ;; just use SPC-X , for capture
+
 #+end_src
 
 #+RESULTS:
+: avy-goto-char-timer
 
-#+BEGIN_SRC emacs-lisp :tangle no
+#+BEGIN_SRC emacs-lisp :tangle yes
   (define-key evil-normal-state-map (kbd "M-.") nil)
   (define-key evil-normal-state-map (kbd "M-,") nil)
 #+END_SRC
@@ -5725,7 +5736,7 @@ need it, I'd use evil for that.
 
 =TAB= is =evil-jump-forward=: Go to newer position in jump list.
 
-#+begin_src emacs-lisp :tangle no
+#+begin_src emacs-lisp :tangle yes
   (define-key global-map (kbd "<tab>") nil)
   (define-key evil-insert-state-map (kbd "<tab>") nil)
   (evil-define-key 'normal org-mode-map (kbd "<tab>") #'org-cycle)
@@ -6169,14 +6180,14 @@ Mainly useful in C and derived, and only when ACTION is insert."
   (undo-tree-visualizer-relative-timestamps t))
 #+end_src
 ** expand region
-#+begin_src emacs-lisp :tangle no
+#+begin_src emacs-lisp :tangle yes
 ;;;----------------------------------------------------------------
 ;; ** EXPAND-REGION
 ;;;----------------------------------------------------------------
 (use-package! expand-region
   :ensure t
   :commands expand-region
-  :bind ("M-[" . 'er/expand-region)
+  :bind ("C-@" . 'er/expand-region)
      ("C--" . 'er/contract-region)
          ("C-(" . 'er/mark-outside-pairs))
 
@@ -6538,18 +6549,14 @@ Set hardware-specific delay. Tweak this if:
 there are false keychords triggered when typing fast (delay too large)
 if expected keychords don’t register (delay too small)
 there’s a noticable lag when typing normally (delay too large)
+
 #+begin_src emacs-lisp :tangle no
+
 (use-package! key-chord
   :config
   ;; (key-chord-mode 1)
   (setq key-chord-one-key-delay 0.10 ; same key (e.g. xx) 20 delay
         key-chord-two-keys-delay 0.05))
-#+end_src
-
-#+RESULTS:
-: t
-
-#+begin_src emacs-lisp :tangle no
 
   (key-chord-define-global ",." 'end-of-buffer)
   ;; FIXME: accidentally triggered too often
@@ -6636,14 +6643,16 @@ LSP auto format is nice, but not as configurable as prettier, better let prettie
 The /very large files/ mode loads large files in chunks, allowing one to open
 ridiculously large files.
 
-#+begin_src emacs-lisp :tangle packages.el
+#+begin_src emacs-lisp :tangle no
+;; #+begin_src emacs-lisp :tangle packages.el
 (package! vlf :recipe (:host github :repo "emacs-straight/vlf" :files ("*.el"))
   :pin "cacdb359f8c37c6e7e4c7937462b632d22462130")
 #+end_src
 
 To make VLF available without delaying startup, we'll just load it in quiet moments.
 
-#+begin_src emacs-lisp :noweb no-export :noweb-prefix no
+#+begin_src emacs-lisp :tangle no
+;; #+begin_src emacs-lisp :noweb no-export :noweb-prefix no
 (use-package! vlf-setup
   :defer-incrementally vlf-tune vlf-base vlf-write
   vlf-search vlf-occur vlf-follow vlf-ediff vlf
