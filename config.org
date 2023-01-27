@@ -577,7 +577,9 @@ The default window movement keys are super cumbersome, here are some better defa
   :ensure nil
   :bind (("<f8>" . other-window)
          ("C-<f8>" . window-swap-states)
+         ("<C-escape>" . consult-buffer)
          ("C-x 1" . my/toggle-single-window))
+
   :init
   (defun my/toggle-single-window ()
   "Toggles between a single window configuration and
@@ -604,7 +606,7 @@ the previously multi-windowed one"
 
 (map! "C-w" nil)
 (global-set-key  (kbd "C-<tab>") #'evil-window-next)
- (global-set-key             (kbd "C-<iso-lefttab>") #'evil-window-prev)
+ (global-set-key  (kbd "C-<iso-lefttab>") #'evil-window-prev)
      (global-set-key   (kbd "C-w") #'ace-window)
 
 (map!
