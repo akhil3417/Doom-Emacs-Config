@@ -2467,6 +2467,56 @@ icon. Then we'll redefine two functions used to generate the modeline.
 #+RESULTS:
 | doom--setq-evil-shift-width-for-after-change-major-mode-h | clean-mode-line | solaire-global-mode-enable-in-buffers | global-evil-surround-mode-enable-in-buffers | yas-global-mode-enable-in-buffers | better-jumper-mode-enable-in-buffers | global-company-mode-enable-in-buffers | evil-snipe-override-mode-enable-in-buffers | evil-snipe-mode-enable-in-buffers | +ligatures-init-buffer-h | persp-after-change-major-mode-h | doom-modeline-auto-set-modeline | global-hl-line-mode-enable-in-buffers | smartparens-global-mode-enable-in-buffers | doom-disable-smartparens-navigate-skip-match-h | ws-butler-global-mode-enable-in-buffers | global-undo-fu-session-mode-enable-in-buffers | global-flycheck-mode-enable-in-buffers | git-commit-setup-font-lock-in-buffer | global-emojify-mode-enable-in-buffers | doom-modeline-conditional-buffer-encoding | doom-modeline-update-buffer-file-icon | pulsar-global-mode-enable-in-buffers | global-subword-mode-enable-in-buffers | evil-mode-enable-in-buffers | global-eldoc-mode-enable-in-buffers | global-font-lock-mode-enable-in-buffers | doom-highlight-non-default-indentation-h | +company-init-backends-h | which-func-ff-hook | doom-run-local-var-hooks-h |
 
+*** Toggle modeline
+
+#+begin_src emacs-lisp
+(defun toggle-modeline (arg)
+  "Toggle the visibility of the modeline.
+If ARG is non-nil, hide the modeline globally. Otherwise, hide it
+only for the current buffer."
+  (interactive "P")
+  (if (eq mode-line-format nil)
+      (if arg
+          (setq-default mode-line-format
+                        '((:eval (propertize " %b " 'face
+                                            (if (buffer-modified-p)
+                                                'mode-line-modified
+                                              'mode-line-buffer-id)))
+                          (:eval (when (buffer-modified-p)
+                                   (concat " ["
+                                           (propertize "Modified"
+                                                       'face 'mode-line-modified)
+                                           "]")))
+                          (:propertize " %p " 'face 'mode-line-position-face)
+                          (:propertize mode-name
+                                       face mode-line-mode-face)
+                          (:propertize mode-line-misc-info
+                                       face mode-line-misc-face)
+                          (:propertize mode-line-end-spaces
+                                       face mode-line-position-face)))
+        (setq mode-line-format
+              '((:eval (propertize " %b " 'face
+                                  (if (buffer-modified-p)
+                                      'mode-line-modified
+                                    'mode-line-buffer-id)))
+                (:eval (when (buffer-modified-p)
+                         (concat " ["
+                                 (propertize "Modified"
+                                             'face 'mode-line-modified)
+                                 "]")))
+                (:propertize " %p " 'face 'mode-line-position-face)
+                (:propertize mode-name
+                             face mode-line-mode-face)
+                (:propertize mode-line-misc-info
+                             face mode-line-misc-face)
+                (:propertize mode-line-end-spaces
+                             face mode-line-position-face))))
+    (if arg
+        (setq-default mode-line-format nil)
+      (setq mode-line-format nil))))
+
+#+end_src
+
 ** Writeroom
 #+begin_quote
 From the =:ui zen= module.
