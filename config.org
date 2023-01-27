@@ -2198,7 +2198,7 @@ Setting the theme to doom-vibrant.  To try out new themes, I set a keybinding fo
 (map! :leader
       :desc "Load new theme" "h t" #'load-theme)
 
-(setq doom-theme 'modus-vivendi)
+;; (setq doom-theme 'modus-vivendi)
 (remove-hook 'window-setup-hook #'doom-init-theme-h)
 (add-hook 'after-init-hook #'doom-init-theme-h 'append)
 (delq! t custom-theme-load-path)
