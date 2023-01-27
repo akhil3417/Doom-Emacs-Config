@@ -17362,6 +17362,89 @@ It's also nice to make use of the Unicode characters for check boxes, and other 
 ;;          ("emacs"      . ,(all-the-icons-fileicon "emacs"          :face 'all-the-icons-lpurple :v-adjust 0.01))))
 ;;  (org-pretty-tags-global-mode))
 #+end_src
+***** Symbols org -modern
+
+It's also nice to change the character used for collapsed items (by default ~…~),
+I think ~▾~ is better for indicating 'collapsed section'.
+and add an extra ~org-bullet~ to the default list of four.
+
+#+begin_src emacs-lisp
+(setq org-ellipsis " ▾ "
+      org-hide-leading-stars t
+      org-priority-highest ?A
+      org-priority-lowest ?E
+      org-priority-faces
+      '((?A . 'all-the-icons-red)
+        (?B . 'all-the-icons-orange)
+        (?C . 'all-the-icons-yellow)
+        (?D . 'all-the-icons-green)
+        (?E . 'all-the-icons-blue)))
+#+end_src
+
+It's also nice to make use of the =prettify-symbols-mode= for a few Org syntactic
+tokens which we'd like to prettify that aren't covered by =org-modern= or any
+other settings.
+
+#+begin_src emacs-lisp
+(appendq! +ligatures-extra-symbols
+          (list :list_property "∷"
+                :em_dash       "—"
+                :ellipses      "…"
+                :arrow_right   "→"
+                :arrow_left    "←"
+                :arrow_lr      "↔"
+                :properties    "⚙"
+                :end           "∎"
+                :priority_a    #("⚑" 0 1 (face all-the-icons-red))
+                :priority_b    #("⬆" 0 1 (face all-the-icons-orange))
+                :priority_c    #("■" 0 1 (face all-the-icons-yellow))
+                :priority_d    #("⬇" 0 1 (face all-the-icons-green))
+                :priority_e    #("❓" 0 1 (face all-the-icons-blue))))
+
+(defadvice! +org-init-appearance-h--no-ligatures-a ()
+  :after #'+org-init-appearance-h
+  (set-ligatures! 'org-mode nil)
+  (set-ligatures! 'org-mode
+    :list_property "::"
+    :em_dash       "---"
+    :ellipsis      "..."
+    :arrow_right   "->"
+    :arrow_left    "<-"
+    :arrow_lr      "<->"
+    :properties    ":PROPERTIES:"
+    :end           ":END:"
+    :priority_a    "[#A]"
+    :priority_b    "[#B]"
+    :priority_c    "[#C]"
+    :priority_d    "[#D]"
+    :priority_e    "[#E]"))
+#+end_src
+
+While we're at it we may as well make tags prettier as well 🙂
+#+begin_src emacs-lisp :tangle packages.el
+;; (package! org-pretty-tags :pin "5c7521651b35ae9a7d3add4a66ae8cc176ae1c76")
+#+end_src
+
+#+begin_src emacs-lisp
+;; (use-package org-pretty-tags
+;; :config
+;;  (setq org-pretty-tags-surrogate-strings
+;;        `(("uni"        . ,(all-the-icons-faicon   "graduation-cap" :face 'all-the-icons-purple  :v-adjust 0.01))
+;;          ("ucc"        . ,(all-the-icons-material "computer"       :face 'all-the-icons-silver  :v-adjust 0.01))
+;;          ("assignment" . ,(all-the-icons-material "library_books"  :face 'all-the-icons-orange  :v-adjust 0.01))
+;;          ("test"       . ,(all-the-icons-material "timer"          :face 'all-the-icons-red     :v-adjust 0.01))
+;;          ("lecture"    . ,(all-the-icons-fileicon "keynote"        :face 'all-the-icons-orange  :v-adjust 0.01))
+;;          ("email"      . ,(all-the-icons-faicon   "envelope"       :face 'all-the-icons-blue    :v-adjust 0.01))
+;;          ("read"       . ,(all-the-icons-octicon  "book"           :face 'all-the-icons-lblue   :v-adjust 0.01))
+;;          ("article"    . ,(all-the-icons-octicon  "file-text"      :face 'all-the-icons-yellow  :v-adjust 0.01))
+;;          ("web"        . ,(all-the-icons-faicon   "globe"          :face 'all-the-icons-green   :v-adjust 0.01))
+;;          ("info"       . ,(all-the-icons-faicon   "info-circle"    :face 'all-the-icons-blue    :v-adjust 0.01))
+;;          ("issue"      . ,(all-the-icons-faicon   "bug"            :face 'all-the-icons-red     :v-adjust 0.01))
+;;          ("someday"    . ,(all-the-icons-faicon   "calendar-o"     :face 'all-the-icons-cyan    :v-adjust 0.01))
+;;          ("idea"       . ,(all-the-icons-octicon  "light-bulb"     :face 'all-the-icons-yellow  :v-adjust 0.01))
+;;          ("emacs"      . ,(all-the-icons-fileicon "emacs"          :face 'all-the-icons-lpurple :v-adjust 0.01))))
+;;  (org-pretty-tags-global-mode))
+#+end_src
 ***** Org Plot
 We can use some of the variables in =org-plot= to use the current doom theme
 colours.
