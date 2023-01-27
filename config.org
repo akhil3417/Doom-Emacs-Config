@@ -5992,12 +5992,12 @@ Emacs registers are compartments where you can save text, rectangles and positio
         "C-M-d" #'sp-down-sexp
         "C-M-p" #'sp-backward-down-sexp
         "C-M-n" #'sp-up-sexp
-        "C-M-s" #'sp-splice-sexp
+        "C-M-s" #'sp-split-sexp
+        "M-s" #'sp-splice-sexp
         "C-)" #'sp-forward-slurp-sexp
-        "C-}" #'sp-forward-barf-sexp
+        "C-M-)" #'sp-forward-barf-sexp
         "C-(" #'sp-backward-slurp-sexp
-        "C-M-)" #'sp-backward-slurp-sexp
-        "C-M-)" #'sp-backward-barf-sexp))
+        "C-M-(" #'sp-backward-barf-sexp))
 #+end_src
 ** SmartParens
 #+begin_src emacs-lisp :tangle no
@@ -6010,29 +6010,35 @@ Emacs registers are compartments where you can save text, rectangles and positio
 #+begin_src emacs-lisp :tangle no
 
 (use-package! smartparens
-  :bind (:map smartparens-mode-map
-              ("C-M-f" . sp-forward-sexp)
-              ("C-M-b" . sp-backward-sexp)
+  ;; :bind (:map smartparens-mode-map
+  ;;             ("C-M-f" . sp-forward-sexp)
+  ;;             ("C-M-b" . sp-backward-sexp)
 
-              ("C-M-a" . sp-beginning-of-sexp)
-              ("C-M-e" . sp-end-of-sexp)
-              ("C-M-n" . sp-next-sexp)
-              ("C-M-p" . sp-previous-sexp)
+  ;;             ("C-M-a" . sp-beginning-of-sexp)
+  ;;             ("C-M-e" . sp-end-of-sexp)
+  ;;             ("C-M-n" . sp-next-sexp)
+  ;;             ("C-M-p" . sp-previous-sexp)
 
-              ("C-(" . sp-forward-barf-sexp)
-              ("C-)" . sp-forward-slurp-sexp)
-              ("C-{" . sp-backward-barf-sexp)
-              ("C-}" . sp-backward-slurp-sexp)
+  ;;             ("C-)" . sp-forward-slurp-sexp)
+  ;;             ("C-M-)" . sp-forward-barf-sexp)
+  ;;             ("C-(" . sp-backward-slurp-sexp)
+  ;;             ("C-M-(" . sp-backward-barf-sexp)
 
-              ("C-k" . sp-kill-hybrid-sexp)
+  ;;             ("C-{" . sp-backward-barf-sexp)
+  ;;             ("C-}" . sp-backward-slurp-sexp)
 
-              ("C-," . sp-rewrap-sexp)
+  ;;             ("C-k" . sp-kill-hybrid-sexp)
 
-              :map emacs-lisp-mode-map
-              (";" . sp-comment)
+  ;;             ("C-," . sp-rewrap-sexp)
 
-              :map lisp-mode-map
-              (";" . sp-comment))
+  ;;             ("C-M-s" . sp-split-sexp)
+  ;;             ("M-s" . sp-splice-sexp)
+
+  ;;             :map emacs-lisp-mode-map
+  ;;             (";" . sp-comment)
+
+  ;;             :map lisp-mode-map
+  ;;             (";" . sp-comment))
   :hook ((prog-mode . turn-on-smartparens-strict-mode)
          (web-mode . op/sp-web-mode)
          (LaTeX-mode . turn-on-smartparens-strict-mode))
