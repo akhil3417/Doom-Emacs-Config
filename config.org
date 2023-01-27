@@ -392,6 +392,8 @@ my home machine is pretty safe, and my laptop is shutdown a lot.
 ** load some configs.el
 #+begin_src emacs-lisp :tangle yes
 ;; -*- lexical-binding: t -*-
+;; (add-to-list 'load-path "~/.config/doom/lisp/")
+;; (add-to-list 'load-path "~/.config/doom/lisp/elfeed-tube/")
 (add-to-list 'load-path "~/.config/doom/lisp/tab-bar/")
 (load "~/.config/doom/lisp/tab-bar/prot-tab.el")
 (load "~/.config/doom/lisp/tab-bar/prot-emacs-window.el")
