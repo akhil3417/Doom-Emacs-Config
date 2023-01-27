@@ -10792,6 +10792,29 @@ MYTAG"
 
 #+RESULTS:
 : elfeed-tube-mpv-where
+** chatgpt
+#+begin_src emacs-lisp :tangle packages.el
+(package! epc)
+#+end_src
+
+#+begin_src emacs-lisp
+
+(require 'python)
+(load "~/.config/doom/lisp/ChatGPT.el/chatgpt.el")
+(setq chatgpt-repo-path "~/.config/doom/lisp/ChatGPT.el/")
+(global-set-key (kbd "C-c q") #'chatgpt-query)
+
+(setq chatgpt-query-format-string-map '(
+                                        ;; ChatGPT.el defaults
+                                        ("doc" . "Please write the documentation for the following function.\n\n%s")
+                                        ("bug" . "There is a bug in the following function, please help me fix it.\n\n%s")
+                                        ("understand" . "What does the following function do?\n\n%s")
+                                        ("improve" . "Please improve the following code.\n\n%s")
+                                        ;; your new prompt
+                                        ("shell-script" . "Write a shell script .\n\n%s")
+                                        ("emacs-fucn" . "Write emacs-lisp code .\n\n%s")))
+
+#+end_src
 
 * Applications and utilities
 
