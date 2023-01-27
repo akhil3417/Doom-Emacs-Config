@@ -6832,6 +6832,30 @@ Including indent-buffer, which should not be called automatically on save."
 (add-hook 'sgml-mode-hook 'zencoding-mode) ;; Auto-start on any markup modes
 #+end_src
 
+** org-skeleton
+Taken form https://orgmode.org/worg/org-contrib/babel/how-to-use-Org-Babel-for-R.html
+-   The #+INFOJS_OPT option will generat a HTML document that is foldable and follows the style of GNU/INFO document.
+-   The :session *R* option makes sure all the R code is run in the same session so objects generated in one code block can be accessed from other code blocks.
+-   the :cache yes option is used to avoid re-evaluating unchanged code blocks. This can save significant time when you revise a document with a lot of R code frequently.
+-   The :results output graphics :exports both option will put both the R code and its text and graphics output in the generated document.
+-   The :tangle yes option allows the document to be "tangled" to generate pure code file. The short-cut key for tangling is C-c C-v t, which generates a .R file with all the R code extracted.
+-   Note the "–—" string will generate a horizontal line in HTML file.
+-   Finally, a hotkey C-S-f4 (while pressing Ctrl and Shift keys, press F4 key) is assigned to invoke this skeleton quickly.
+
+#+begin_src emacs-lisp
+(define-skeleton org-skeleton
+  "Header info for a emacs-org file."
+  "Title: "
+  "#+TITLE:" str " \n"
+  "#+AUTHOR: Your Name\n"
+  "#+email: your-email@server.com\n"
+  "#+INFOJS_OPT: \n"
+  "#+BABEL: :session *R* :cache yes :results output graphics :exports both :tangle yes \n"
+  "-----"
+ )
+(global-set-key [C-S-f4] 'org-skeleton)
+#+end_src
+
 * SHELLS
 ** desc
 Eshell is a strictly line-oriented command prompt written in Emacs Lisp.
