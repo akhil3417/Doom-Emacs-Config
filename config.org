@@ -7798,7 +7798,7 @@ in the manual of the themes.  If you are using them, evaluate this form:
  (setq pdf-view-resize-factor 1.1)
  (define-key pdf-view-mode-map (kbd "h") 'pdf-annot-add-highlight-markup-annotation)
  (define-key pdf-view-mode-map (kbd "t") 'pdf-annot-add-text-annotation)
- (define-key pdf-view-mode-map (kbd "D") 'pdf-annot-delete)
+ (define-key pdf-view-mode-map (kbd "D") 'pdf-annot-delete))
 
 
   ;; Those functions and hooks are adapted from the manual of my
@@ -7815,7 +7815,7 @@ in the manual of the themes.  If you are using them, evaluate this form:
       (if (eq (car custom-enabled-themes) 'modus-vivendi)
           (pdf-view-midnight-minor-mode 1)
         (pdf-view-midnight-minor-mode -1))
-      (prot/pdf-tools-backdrop)))
+      (prot/pdf-tools-backdrop))
 
   (add-hook 'pdf-view-mode-hook (lambda () (cua-mode 0)))
   (add-hook 'pdf-tools-enabled-hook #'prot/pdf-tools-midnight-mode-toggle)
@@ -7861,8 +7861,11 @@ in the manual of the themes.  If you are using them, evaluate this form:
 (setq org-noter-property-doc-file "INTERLEAVE_PDF"
       org-noter-property-note-location "INTERLEAVE_PAGE_NOTE")
 
+;; (add-hook 'org-noter-insert-heading-hook #'org-id-get-create)
+
 ;; (use-package! org-pdftools
-;;   :hook (org-load . org-pdftools-setup-link))
+;;    :hook (with-eval-after-load 'org-pdftools-setup-link))
+
 ;; (use-package! org-noter-pdftools
 ;;   :after org-noter
 ;;   :config
