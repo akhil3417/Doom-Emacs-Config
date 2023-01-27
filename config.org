@@ -432,34 +432,6 @@ my home machine is pretty safe, and my laptop is shutdown a lot.
 ;; youtube videos. Phew. The churn rate of Invidious urls is quite high, which
 ;; makes this flaky, but anything's better than the browser interface to
 ;; Youtube.
-(load "setup-ytel.el");; youttuuube
-(load "ytdl-downloader.el")
-(load "setup-shell.el")
-(load "exwm-paste.el")
-(load "lock-screen.el")
-(load "correct-previous-word-and-create-abbrev")
-(load "lookup-on-github")
-(load "show-diffs-before-killing-buffers")
-(load "switch-window-patches")
-(load "pulseaudio.el")
-(load "auto-scroll.el")
-(load "prot-common.el")
-(load "prot-comment.el")
-(load "prot-bookmark.el")
-(load "org-protocol-capture-html.el")
-
-;; (load "corfuv2.el")
-;; (load "emacs-with-nyxt.el")
-;; (load "prot-common.el")
-;; (load "setup-corfu.el")
-;; (load "setup-consult.el")
-;; (load "sweet-kill.el") ;;overide doom session kill messages
-;; (load "setup-dired.el")
-;; (load "setup-email.el")
-;; (load "setup-elfeed.el")
-;; (load "setup-email.el")
-;; (load "dunst.el")
-;; (load "chromium")
 
 
 #+end_src
