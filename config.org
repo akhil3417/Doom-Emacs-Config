@@ -7911,7 +7911,7 @@ in the manual of the themes.  If you are using them, evaluate this form:
   ;; :ensure t
   :defer 0.1
   :init
-  (bind-key "\\" 'hydra-master/body)
+  ;; (bind-key "\\" 'hydra-master/body)
   :config
   (setq lv-use-separator t)
   (set-face-attribute 'hydra-face-blue nil :foreground "deep sky blue" :weight 'bold)
