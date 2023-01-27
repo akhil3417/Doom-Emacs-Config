@@ -19339,6 +19339,16 @@ This makes use of =aas= (/Auto Activating Snippets/) for CDLaTeX-like symbol inp
 
 #+end_src
 
+#+begin_src emacs-lisp
+(use-package! laas
+  :hook (LaTeX-mode . laas-mode)
+  :config
+  (defun laas-tex-fold-maybe ()
+    (unless (equal "/" aas-transient-snippet-key)
+      (+latex-fold-last-macro-a)))
+  (add-hook 'aas-post-snippet-expand-hook #'laas-tex-fold-maybe))
+#+end_src
+
 #+begin_src emacs-lisp :tangle no
 (use-package! laas
   :hook (LaTeX-mode . laas-mode)
