@@ -14887,10 +14887,12 @@ CLOSED: [2022-10-07 Fri 20:58]
 #+begin_src emacs-lisp
 
 (setq org-todo-keywords
-      '((sequence "TODO(t!)" "PROJ(p)" "LOOP(l)" "CLAR(L@)" "READ(R@/!)" "WAIT(w@/!)" "FIXME(f@/!)" "IDEA(i)" "STRT(s)" "NEXT(n)" "DUPLICATE(u@)" "|" "DONE(d!)" "KILL(k@/!)"  "HOLD(h@/!)" "BLOCKED(B@)")
-       (sequence "BACKLOG(b)" "SOMEDAY(S)" "PLAN(P)" "READY(r)" "FOUND(F@/!)" "ACTIVE(a@)" "REVIEW(v!)" "|" "COMPLETED(c)" "CANC(C@)")
-       (sequence "[ ](T)" "[-](B)" "[?](W)" "|" "[X](D)")
-       (sequence "|" "OKAY(o)" "YES(y)" "NO(n)")))
+      '((sequence "TODO(t)" "PROJ(p)" "LOOP(r)" "STRT(s)" "WAIT(w@/!)" "HOLD(h)" "IDEA(i)" "FIXME(f@/!)" "REVIEW(v!)" "|" "DONE(d)" "KILL(k)" "BLOCKED(B@)")
+        (sequence "BACKLOG(b)" "SOMEDAY(s)" "PLAN(P)" "READY(r)" "FOUND(F@/!)" "ACTIVE(a@)"  "|" "COMPLETED(c)" "CANC(C@)")
+        (sequence "[ ](T)" "[-](S)" "[?](W)" "|" "[X](D)")
+        (sequence "|" "OKAY(o)" "YES(y)" "NO(n)")))
+
+;; (setq org-todo-keywords-for-agenda '("TODO(t)" "PROJ(p)" "LOOP(r)" "STRT(s)" "WAIT(w@/!)" "HOLD(h)" "IDEA(i)" "FIXME(f@/!)" "DONE(d)" "KILL(k)" "BLOCKED(B@) BACKLOG(b)" "SOMEDAY(s)" "PLAN(P)" "READY(r)" "FOUND(F@/!)" "ACTIVE(a@)" "REVIEW(v!)" "COMPLETED(c)" "CANC(C@)" "[ ](T)" "[-](S)" "[?](W)" "[X](D)"  "OKAY(o)" "YES(y)" "NO(n)"))
 
 #+end_src
 
