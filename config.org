@@ -4101,17 +4101,18 @@ well somehow, so let's switch to 'P22 Underground Book'; it looks much nicer.
 (setq centaur-tabs-set-bar 'over
       centaur-tabs-set-icons t
       centaur-tabs-gray-out-icons 'buffer
-      centaur-tabs-height 24
+      ;; centaur-tabs-height 18
+      ;; centaur-tabs-bar-height 18
       centaur-tabs-set-modified-marker t
         ;; centaur-tabs-modified-marker "o"
         centaur-tabs-close-button "×"
       centaur-tabs-style "bar"
         centaur-tabs-set-bar 'above
-      centaur-tabs-modified-marker "•")
-  (centaur-tabs-change-fonts "P22 Underground Book" 160))
+      centaur-tabs-modified-marker "•"))
+  ;; (centaur-tabs-change-fonts "P22 Underground Book" 100))
 (map! :leader
-      :desc "Toggle tabs globally" "t c" #'centaur-tabs-mode
-      :desc "Toggle tabs local display" "t C" #'centaur-tabs-local-mode)
+      :desc "Toggle tabs globally" "t a" #'centaur-tabs-mode
+      :desc "Toggle tabs local display" "t A" #'centaur-tabs-local-mode)
 (evil-define-key 'normal centaur-tabs-mode-map (kbd "g <right>") 'centaur-tabs-forward        ; default Doom binding is 'g t'
                                                (kbd "g <left>")  'centaur-tabs-backward       ; default Doom binding is 'g T'
                                                (kbd "g <down>")  'centaur-tabs-forward-group
