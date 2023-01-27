@@ -430,9 +430,6 @@ my home machine is pretty safe, and my laptop is shutdown a lot.
 
 #+end_src
 
-#+RESULTS:
-: t
-
 ** DONE Auto-customisations
 CLOSED: [2022-11-12 Sat 10:20]
 - State "DONE"       from              [2022-11-12 Sat 10:20]
@@ -10238,9 +10235,7 @@ some of the above.
 (evil-define-key 'normal prot-eww-history-mode-map  (kbd "RET") #'prot-eww-history-browse
                                                (kbd "o") #'prot-eww-open-in-other-window)
 
-#+end_src
 
-#+RESULTS:
 (defun my-open-link-at-point-in-external-browser ()
   (interactive)
   (link-hint-copy-link-at-point)
@@ -14661,12 +14656,9 @@ and Minad's lovely =org-modern= goes a long way in this regard.
           ("name" . "⁍")
           ("header" . "›")
           ("caption" . "☰")
-          ("RESULTS" . "🠶")))
+          ("results" . "🠶")))
   (custom-set-faces! '(org-modern-statistics :inherit org-checkbox-statistics-todo)))
 #+end_src
-
-#+RESULTS:
-| org-modern-mode | mixed-pitch-mode | org-fragtog-mode | locally-defer-font-lock | +org-pretty-mode | org-ref-org-menu | er/add-org-mode-expansions | turn-on-org-cdlatex | org-appear-mode | elpher-org-mode-integration | auto-revert-mode | #[0 \301\211\207 [imenu-create-index-function org-imenu-get-tree] 2] | beginend-org-mode | +lookup--init-org-mode-handlers-h | (closure ((hook . org-mode-hook) (--dolist-tail--) t) (&rest _) (add-hook 'before-save-hook 'org-encrypt-entries nil t)) | #[0 \300\301\302\303\304$\207 [add-hook change-major-mode-hook org-fold-show-all append local] 5] | #[0 \300\301\302\303\304$\207 [add-hook change-major-mode-hook org-babel-show-result-all append local] 5] | org-babel-result-hide-spec | org-babel-hide-all-hashes | doom-disable-show-paren-mode-h | doom-disable-show-trailing-whitespace-h | +org-enable-auto-reformat-tables-h | +org-enable-auto-update-cookies-h | +org-make-last-point-visible-h | org-fancy-priorities-mode | org-superstar-mode | evil-org-mode | toc-org-enable | flyspell-mode | embrace-org-mode-hook | org-eldoc-load | +literate-enable-recompile-h |
 
 Since =org-modern='s tag face supplants Org's tag face, we need to adjust the
 spell-check face ignore list
@@ -16869,12 +16861,9 @@ Doom theme's extra fontification is more problematic than helpful.
 ****** Prettier highlighting
 
 First off, we want those fragments to look good.
-#+begin_src emacs-lisp :tangle yes
+#+begin_src emacs-lisp
 (setq org-highlight-latex-and-related '(native script entities))
 #+end_src
-
-#+RESULTS:
-| native | script | entities |
 
 However, by using =native= highlighting the =org-block= face is added, and that
 doesn't look too great --- particularly when the fragments are previewed.
@@ -16885,16 +16874,12 @@ can avoid advising that entire function by just adding another face with
 
 Inspecting ~org-do-latex-and-related~ shows that ="latex"= is the language argument
 passed, and so we can override the background as discussed above.
-#+begin_src emacs-lisp :tangle yes
+#+begin_src emacs-lisp
 (require 'org-src)
 (add-to-list 'org-src-block-faces '("latex" (:inherit default :extend t)))
 #+end_src
 
-#+RESULTS:
-| latex | (:inherit default :extend t) |
-
 ****** More eager rendering
-
 
 What's better than syntax-highlighted LaTeX is /rendered/ LaTeX though, and we can
 have this be performed automatically with =org-fragtog=.
@@ -16903,16 +16888,10 @@ have this be performed automatically with =org-fragtog=.
 (package! org-fragtog :pin "c675563af3f9ab5558cfd5ea460e2a07477b0cfd")
 #+end_src
 
-#+RESULTS:
-| org-fragtog | :modules | ((:user) (:user . modules)) | :pin | 680606189d5d28039e6f9301b55ec80517a24005 |
-
-#+begin_src emacs-lisp :tangle yes
+#+begin_src emacs-lisp
 (use-package! org-fragtog
   :hook (org-mode . org-fragtog-mode))
 #+end_src
-
-#+RESULTS:
-| org-fragtog-mode | locally-defer-font-lock | +org-pretty-mode | org-ref-org-menu | er/add-org-mode-expansions | turn-on-org-cdlatex | org-appear-mode | elpher-org-mode-integration | auto-revert-mode | #[0 \301\211\207 [imenu-create-index-function org-imenu-get-tree] 2] | beginend-org-mode | +lookup--init-org-mode-handlers-h | (closure ((hook . org-mode-hook) (--dolist-tail--) t) (&rest _) (add-hook 'before-save-hook 'org-encrypt-entries nil t)) | #[0 \300\301\302\303\304$\207 [add-hook change-major-mode-hook org-fold-show-all append local] 5] | #[0 \300\301\302\303\304$\207 [add-hook change-major-mode-hook org-babel-show-result-all append local] 5] | org-babel-result-hide-spec | org-babel-hide-all-hashes | doom-disable-show-paren-mode-h | doom-disable-show-trailing-whitespace-h | +org-enable-auto-reformat-tables-h | +org-enable-auto-update-cookies-h | +org-make-last-point-visible-h | org-fancy-priorities-mode | org-superstar-mode | evil-org-mode | toc-org-enable | embrace-org-mode-hook | org-eldoc-load | +literate-enable-recompile-h |
 
 ****** Prettier rendering
 
@@ -17278,7 +17257,7 @@ It's also nice to make use of the Unicode characters for check boxes, and other 
 #+end_src
 
 #+RESULTS:
-| :name | ⁍  | :src_block | » | :src_block_end | « | :quote | “ | :quote_end | ” | :lambda | λ | :def | ƒ | :composition | ∘ | :map | ↦ | :null | ∅ | :true | 𝕋 | :false | 𝔽 | :int | ℤ | :float | ℝ | :str | 𝕊  | :bool | 𝔹 | :list | 𝕃 | :not | ￢ | :in | ∈ | :not-in | ∉ | :and | ∧ | :or | ∨ | :for | ∀ | :some | ∃ | :return | ⟼ | :yield | ⟻ | :union | ⋃ | :intersect | ∩ | :diff | ∖  | :tuple | ⨂ | :pipe |  | :dot | • | :checkbox | ☐ | :pending | ◼  | :checkedbox | ☑ | :list_property | ∷ | :em_dash | — | :ellipses | … | :arrow_right | → | :arrow_left | ← | :title | 𝙏  | :subtitle | 𝙩  | :author | 𝘼 | :date | 𝘿 | :property | ☸ | :options | ⌥ | :startup | ⏻ | :macro | 𝓜 | :html_head | 🅷 | :html | 🅗 | :latex_class | 🄻 | :latex_header | 🅻 | :beamer_header | 🅑 | :latex | 🅛 | :attr_latex | 🄛 | :attr_html | 🄗 | :attr_org | ⒪ | :begin_quote | ❝ | :end_quote | ❞ | :caption | ☰ | :header | › | :results | 🠶 | :begin_export | ⏩ | :end_export | ⏪ | :properties | ⚙ | :end | ∎ | :priority_a | ⚑  | :priority_b | ⬆ | :priority_c | ■ | :priority_d | ⬇ | :priority_e | ❓ | :checkbox | ☐ | :pending | ◼  | :checkedbox | ☑ | :list_property | ∷ | :em_dash | — | :ellipses | … | :arrow_right | → | :arrow_left | ← | :title | 𝙏  | :subtitle | 𝙩  | :author | 𝘼 | :date | 𝘿 | :property | ☸ | :options | ⌥ | :startup | ⏻ | :macro | 𝓜 | :html_head | 🅷 | :html | 🅗 | :latex_class | 🄻 | :latex_header | 🅻 | :beamer_header | 🅑 | :latex | 🅛 | :attr_latex | 🄛 | :attr_html | 🄗 | :attr_org | ⒪ | :begin_quote | ❝ | :end_quote | ❞ | :caption | ☰ | :header | › | :results | 🠶 | :begin_export | ⏩ | :end_export | ⏪ | :properties | ⚙ | :end | ∎ | :priority_a | ⚑  | :priority_b | ⬆ | :priority_c | ■ | :priority_d | ⬇ | :priority_e | ❓ |
+| :name | ⁍  | :src_block | » | :src_block_end | « | :quote | “ | :quote_end | ” | :lambda | λ | :def | ƒ | :composition | ∘ | :map | ↦ | :null | ∅ | :true | 𝕋 | :false | 𝔽 | :int | ℤ | :float | ℝ | :str | 𝕊  | :bool | 𝔹 | :list | 𝕃 | :not | ￢ | :in | ∈ | :not-in | ∉ | :and | ∧ | :or | ∨ | :for | ∀ | :some | ∃ | :return | ⟼ | :yield | ⟻ | :union | ⋃ | :intersect | ∩ | :diff | ∖  | :tuple | ⨂ | :pipe |  | :dot | • | :checkbox | ☐ | :pending | ◼  | :checkedbox | ☑ | :list_property | ∷ | :em_dash | — | :ellipses | … | :arrow_right | → | :arrow_left | ← | :title | 𝙏 | :subtitle | 𝙩 | :author | 𝘼 | :date | 𝘿 | :property | ☸ | :options | ⌥ | :startup | ⏻ | :macro | 𝓜 | :html_head | 🅷 | :html | 🅗 | :latex_class | 🄻 | :latex_header | 🅻 | :beamer_header | 🅑 | :latex | 🅛 | :attr_latex | 🄛 | :attr_html | 🄗 | :attr_org | ⒪ | :begin_quote | ❝ | :end_quote | ❞ | :caption | ☰ | :header | › | :results | 🠶 | :begin_export | ⏩ | :end_export | ⏪ | :properties | ⚙ | :end | ∎ | :priority_a | ⚑ | :priority_b | ⬆ | :priority_c | ■ | :priority_d | ⬇ | :priority_e | ❓ | :checkbox | ☐ | :pending | ◼  | :checkedbox | ☑ | :list_property | ∷ | :em_dash | — | :ellipses | … | :arrow_right | → | :arrow_left | ← | :title | 𝙏 | :subtitle | 𝙩 | :author | 𝘼 | :date | 𝘿 | :property | ☸ | :options | ⌥ | :startup | ⏻ | :macro | 𝓜 | :html_head | 🅷 | :html | 🅗 | :latex_class | 🄻 | :latex_header | 🅻 | :beamer_header | 🅑 | :latex | 🅛 | :attr_latex | 🄛 | :attr_html | 🄗 | :attr_org | ⒪ | :begin_quote | ❝ | :end_quote | ❞ | :caption | ☰ | :header | › | :results | 🠶 | :begin_export | ⏩ | :end_export | ⏪ | :properties | ⚙ | :end | ∎ | :priority_a | ⚑ | :priority_b | ⬆ | :priority_c | ■ | :priority_d | ⬇ | :priority_e | ❓ |
 
 ~org-superstar-mode~ is great. While we're at it we may as well make tags prettier as well 🙂
 #+begin_src emacs-lisp :tangle packages.el
