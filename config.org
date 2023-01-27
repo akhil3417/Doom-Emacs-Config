@@ -3404,27 +3404,6 @@ the minibuffer-specific setup.
 #+RESULTS:
 : t
 
-** CAPE (extra completion-at-point backends)
-
-The =cape= package, by Daniel Mendler (developer of Consult, Vertico,
-Corfu, ...), adds more backends to the =completion-at-point-functions=
-(CAPF) facility.  This practically means that you can use in-buffer
-completion in more scenaria and with relevant candidates.
-
-A package such as Daniel's own Corfu is used to visualise in-buffer
-completion.
-
-#+begin_src emacs-lisp :tangle no
-;;; CAPE (extra completion-at-point backends)
-(use-package! cape
-  :config
-  (setq cape-dabbrev-min-length 3)
-  (dolist (backend '( cape-symbol cape-keyword cape-file cape-dabbrev))
-  ;; (dolist (backend '( cape-keyword cape-file cape-dict cape-history cape-symbol cape-abbrev))
-    (add-to-list 'completion-at-point-functions backend)))
-
-#+end_src
-
 ** IVY
 Ivy is a generic completion mechanism for Emacs.
 *** IVY-POSFRAME
