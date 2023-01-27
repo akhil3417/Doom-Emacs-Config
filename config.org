@@ -637,7 +637,7 @@ to keep track of the information on display.
   (setq proced-descend t)
   (setq proced-filter 'user))
 
-(load "prot-proced")
+(load "~/.config/doom/lisp/prot-proced")
 (use-package! prot-proced
   :config
   (prot-proced-extra-keywords 1))
@@ -4399,7 +4399,7 @@ The following functions helps achieve this:
 ;;;----------------------------------------------------------------
 
 ;; Setup-windows defines window rules for displaying various kinds of buffers.
-(load "setup-windows")
+(load "~/.config/doom/lisp/setup-windows")
 (use-package! setup-windows
   :demand t
   :hook ((help-mode . visual-line-mode)
@@ -4703,7 +4703,7 @@ Also kill this window, tab or frame if necessary."
          ("RET" . reb-replace-regexp))
   :config
   ;; reb-fix modifies reb-update-overlays to restrict matches to region
-  (load "reb-fix")
+  (load "~/.config/doom/lisp/reb-fix")
   (use-package! reb-fix)
   (defvar my/re-builder-positions nil
     "Store point and region bounds before calling re-builder")
@@ -4868,7 +4868,7 @@ To disable the effect, just do =M-x prot-prism-disable=.
   :config
   (setq prism-comments 't))
 
-(load "prot-prism.el")
+(load "~/.config/doom/lisp/prot-prism.el")
 (use-package! prot-prism
   :config
   (setq prot-prism-negative-space-sensitive-modes
@@ -4891,7 +4891,7 @@ is reproduced right after the following package configurations.
 
 #+begin_src emacs-lisp
 ;;; Cursor appearance and tweaks (prot-cursor.el)
-(load "prot-cursor")
+(load "~/.config/doom/lisp/prot-cursor.el")
 (use-package! prot-cursor
   :config
   (setq prot-cursor-presets
@@ -7210,7 +7210,7 @@ ecosystem:
   (setq dired-bind-info nil)
   (define-key dired-mode-map (kbd "I") #'dired-info))
 
-(load "prot-dired")
+(load "~/.config/doom/lisp/prot-dired.el")
 (use-package! prot-dired
   :config
   (setq prot-dired-image-viewers '("feh" "sxiv"))
@@ -10123,7 +10123,7 @@ some of the above.
 
 (use-package! elpher)    ; NOTE 2021-07-24: work-in-progress
 
-(load "prot-eww")
+(load "~/.config/doom/lisp/prot-eww.el")
 (use-package! prot-eww
   :config
   (setq prot-eww-save-history-file
