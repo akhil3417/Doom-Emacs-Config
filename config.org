@@ -452,7 +452,8 @@ setting, and load it if it exists.
 CLOSED: [2022-11-12 Sat 10:21]
 - State "DONE"       from              [2022-11-12 Sat 10:21]
 #+begin_src emacs-lisp
-
+(global-set-key (kbd "C-@") 'er/expand-region)
+(setq delete-selection-mode t)
 ;; Use visual line motions even outside of visual-line-mode buffers
 (evil-global-set-key 'motion "j" 'evil-next-visual-line)
 (evil-global-set-key 'motion "k" 'evil-previous-visual-line)
