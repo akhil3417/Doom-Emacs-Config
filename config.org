@@ -10088,15 +10088,43 @@ Also watch [[https://protesilaos.com/codelog/2021-03-25-emacs-eww/][EWW and my e
 some of the above.
 
 **** code
-#+begin_src emacs-lisp
+#+begin_src emacs-lisp :tangle yes
+;; To open .onion links from eww, run ‘torsocks emacs’ from the commandline. From then, you should be able to load .onion addresses from within ERC and eww.
+;; (map! :leader
+;;       :desc "Search web for text between BEG/END"
+;;       "s w" #'eww-search-words
+;;       (:prefix ("e" . "evaluate/EWW")
+;;        :desc "Eww web browser" "w" #'eww
+;;        :desc "Eww reload page" "R" #'eww-reload))
+
+
 ;;; Simple HTML Renderer (shr), Emacs Web Wowser (eww), Elpher, and prot-eww.el
 (use-package! browse-url
   :config
   (setq browse-url-browser-function 'eww-browse-url)
+  (setq engine/browser-function 'eww-browse-url);;  browse-url-default-browser open firefox
+  ;; (setq engine/browser-function 'browse-url-default-browser);;  browse-url-default-browser open firefox
   ;; (setq browse-url-secondary-browser-function 'browse-url-default-browser))
+
+ ;; (setq browse-url-browser-function 'w3m-browse-url)
+;;Open a url embedded in any buffer
+ ;; (setq browse-url-browser-function  'w3m-goto-url-new-session)
+ ;; (setq browse-url-browser-function  'w3m-new-buffer)
+ ;; (autoload 'w3m-browse-url  "w3m"  "Ask a WWW browser to show a URL." t)
+
+  ;; (setq engine/browser-function 'w3m-browse-url);;  browse-url-default-browser open firefox
+  ;; (setq engine/browser-function 'eww-browse-url);;  browse-url-default-browser open firefox
 
   (setq browse-url-secondary-browser-function 'browse-url-generic
       browse-url-generic-program "qutebrowser"))
+
+;; (setq browse-url-handlers
+;;       '(("https:\\/\\/www\\.youtu\\.*be." . browse-url-mpv)
+;;         ("." . browse-url-generic)))
+;; (defun browse-url-mpv (url &optional single)
+;;   (start-process "mpv" nil "mpv" (shell-quote-argument url)))
+
+
 (use-package! goto-addr
   :config
   (setq goto-address-url-face 'link)
