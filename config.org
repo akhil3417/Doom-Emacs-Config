@@ -15142,6 +15142,7 @@ set up org-capture.
 
   (defvar +org-capture-recipies  "~/org/org-capture/recipies.org")
   (setq +org-capture-todo-file  "~/org/org-capture/todo.org")
+  ;; (setq +org-capture-todo-file  "~/org/org-agenda/agenda.org")
   ;; (defvar +org-capture-notes-file  "~/org/org-capture/notes.org")
   ;; (defvar +org-capture-journal-file  "~/org/org-capture/journal.org")
   ;; (defvar +org-capture-projects-file  "~/org/org-capture/project.org")
@@ -15173,7 +15174,7 @@ set up org-capture.
                    :headline ""
                    :type entry
                    :template ("* %?\n%c\n%:initial"))
-                  
+
                   ("Email" :keys "e"
                    :icon ("envelope" :set "faicon" :color "blue")
                    :file +org-capture-todo-file
@@ -15184,7 +15185,7 @@ set up org-capture.
                               "Send an email %^{urgancy|soon|ASAP|anon|at some point|eventually} to %^{recipiant}"
                               "about %^{topic}"
                               "%U %i %a"))
-                  
+
                   ("Appointment" :keys "a"
                    :icon ("eye" :set "faicon" :color "lcyan")
                    :file +org-capture-todo-file
@@ -15192,7 +15193,7 @@ set up org-capture.
                    :headline "Appointment"
                    :type entry
                    :template ("* %? \n:PROPERTIES:\n:calendar-id: akhilpratapsingh3417@gmail.com\n:LOCATION:\n:END:\n\n:org-gcal:\n%^T\n:END:\nLink: %a"))
-                  
+
                   ("Interesting" :keys "i"
                    :icon ("eye" :set "faicon" :color "lcyan")
                    :file +org-capture-todo-file
@@ -15222,7 +15223,7 @@ set up org-capture.
                                :icon ("bubble_chart" :set "material" :color "silver")
                                :desc ""
                                :i-type "idea")))
-                  
+
                   ("Tasks" :keys "k"
                    :icon ("inbox" :set "octicon" :color "yellow")
                    :file +org-capture-todo-file
@@ -15240,7 +15241,7 @@ set up org-capture.
                               ("Scheduled Task" :keys "s"
                                :icon ("calendar" :set "octicon" :color "orange")
                                :extra "\nSCHEDULED: %^{Start time:}t")))
-                  
+
                   ("Project" :keys "p"
                    :icon ("repo" :set "octicon" :color "silver")
                    :prepend t
@@ -15264,7 +15265,7 @@ set up org-capture.
                                :time-or-todo "%U"
                                :heading "Unreleased"
                                :file +org-capture-project-changelog-file)))
-                  
+
                   ("\tCentralised project templates"
                    :keys "o"
                    :type entry
