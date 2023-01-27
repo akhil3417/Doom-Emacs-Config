@@ -9202,7 +9202,6 @@ prompt and everyone in the channel can see it.  Some things I learnt:
 #+end_src
 ** telega
 #+begin_src emacs-lisp :tangle yes
-
 (setq telega-use-docker t)
 (use-package! telega
     :commands (telega)
@@ -10177,6 +10176,8 @@ some of the above.
   ;; '("wget" "--quiet" "--output-document=-")
   ;; '("chromium" "--headless" "--dump-dom")
   ;; (setq eww-retrieve-command nil)
+
+
 
 ;; list buffers gt
 
