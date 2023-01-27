@@ -5463,15 +5463,12 @@ configurations and documentation for [[#h:6c6759c8-3ae3-40b0-8356-05cc0975e12a][
 (use-package! dabbrev
   :commands (dabbrev-expand dabbrev-completion)
   :config
-  (setq dabbrev-abbrev-char-regexp "\\sw\\|\\s_")
   (setq dabbrev-abbrev-skip-leading-regexp "\\$\\|\\*\\|/\\|=")
-  (setq dabbrev-backward-only nil)
   (setq dabbrev-case-distinction nil)
   (setq dabbrev-case-fold-search t)
   (setq dabbrev-case-replace nil)
   (setq dabbrev-check-other-buffers t)
-  (setq dabbrev-eliminate-newlines nil)
-  (setq dabbrev-upcase-means-case-search t))
+  (setq dabbrev-eliminate-newlines nil))
 #+end_src
 
 #+RESULTS:
