@@ -15457,34 +15457,14 @@ The agenda is nice, but a souped up version is nicer.
 (use-package! org-super-agenda
   :commands org-super-agenda-mode)
 
-#+end_src
+;; (use-package! org-super-agenda
+;;   :hook (org-agenda-mode . org-super-agenda-mode)
+;; )
 
-#+begin_src emacs-lisp :tangle no 
-(after! org
-  (setq org-agenda-files '("~/org/org-agenda/daily"
-                           "~/org/org-agenda/incubate.org"
-                           "~/org/org-agenda/openquestions.org"
-                           "~/org/org-agenda/todo.org/"
-                           "~/org/org-agenda/agenda.org"
-                           "~/org/org-capture/todo.org"
-                           "~/org/org-roam2/daily/"
-                           "~/org/org-roam2/todo.org/")))
-
-(custom-set-variables
- '(org-agenda-files
-   '("~/org/org-agenda/daily"
-     "~/org/org-agenda/incubate.org"
-     "~/org/org-agenda/openquestions.org"
-     "~/org/org-agenda/todo.org/"
-     "~/org/org-agenda/agenda.org"
-     "~/org/org-capture/todo.org"
-     "~/org/org-roam2/daily/"
-     "~/org/org-roam2/todo.org/")))
- (setq org-default-notes-file "~/org/notes/notes.org")
 #+end_src
 
 #+RESULTS:
-| ~/org/notes/ |
+: #s(hash-table size 65 test eql rehash-size 1.5 rehash-threshold 0.8125 data (:use-package (25554 27531 393074 978000) :init (25554 27531 393072 207000) :init-secs (0 0 20 843000) :use-package-secs (0 0 26 54000) :config (25554 27531 393065 361000) :config-secs (0 0 2 792000)))
 
 #+begin_src emacs-lisp :tangle yes
 (after! org
@@ -15493,8 +15473,7 @@ The agenda is nice, but a souped up version is nicer.
  (setq org-agenda-files '("~/org/org-agenda/" "~/org/org-capture/todo.org")))
  (setq org-default-notes-file "~/org/notes/notes.org")
 
-#+RESULTS:
-
+#+end_src
 #+begin_src emacs-lisp :tangle no
 
 (setq org-super-agenda-groups
@@ -15510,15 +15489,6 @@ The agenda is nice, but a souped up version is nicer.
                      :order 1)))
 #+end_src
 
-#+RESULTS:
-| :name       | Next Items  | :time-grid | t      | :tag   | (NEXT outbox) |
-| :name       | Important   | :priority  | A      |        |               |
-| :name       | Quick Picks | :effort<   | 0:30   |        |               |
-| :priority<= | B           | :scheduled | future | :order |             1 |
-
-
-#+RESULTS:
-: prot-org-custom-daily-agenda
 
 #+begin_src emacs-lisp :tangle yes
 ;; (after! org-agenda
