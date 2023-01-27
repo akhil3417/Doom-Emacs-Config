@@ -11503,6 +11503,36 @@ being it has no notion of multiple timers---just the last one.
   (let ((map global-map))
     (define-key map (kbd "C-c n t") #'tmr)
     (define-key map (kbd "C-c n c") #'tmr-cancel)))
+;; do some changes as I don't like the way notification is clutterd with usless stuff
+(defun tmr-notification-notify (timer)
+  "Dispatch a notification for TIMER.
+
+Read: (info \"(elisp) Desktop Notifications\") for details."
+  (if (featurep 'dbusbind)
+      (let ((title (tmr--long-description-for-finished-timer timer))
+            (body ""))
+        (notifications-notify
+         :title title
+         :body body
+         :app-name "GNU Emacs"
+         :urgency tmr-notification-urgency
+         :sound-file tmr-sound-file))
+    (warn "Emacs has no DBUS support, TMR notifications unavailable")))
+
+(defun tmr--long-description-for-finished-timer (timer)
+  "Return a human-readable description of finished TIMER.
+This includes the creation and completion dates as well as the
+optional `tmr--timer-description'."
+  (let ((start (tmr--format-creation-date timer))
+        (end (tmr--format-end-date timer))
+        (description (tmr--timer-description timer)))
+    ;; For the TMR prefix, see comment in `tmr--long-description'.
+    (format "Hey Akhil Time is up!\n%s%s %s\n%s %s"
+            (if description (format "%s\n" description) "")
+            (propertize "Started" 'face 'success)
+            start
+            (propertize "Ended" 'face 'error)
+            end)))
 #+end_src
 
 #+RESULTS:
