@@ -19460,6 +19460,25 @@ update-mime-database ~/.local/share/mime
 #+end_src
 
 ** PDF
+***** MuPDF
+
+=pdf-tools= is nice, but a =mupdf=-based solution is nicer.
+
+#+begin_src emacs-lisp :tangle no
+(package! paper :recipe (:host github :repo "ymarco/paper-mode"
+                         :files ("*.el" ".so")
+                         :pre-build ("make")))
+#+end_src
+
+#+begin_src emacs-lisp
+;; (use-package paper
+;;   ;; :mode ("\\.pdf\\'"  . paper-mode)
+;;   ;; :mode ("\\.epub\\'"  . paper-mode)
+;;   :config
+;;   (require 'evil-collection-paper)
+;;   (evil-collection-paper-setup))
+#+end_src
+
 ***** Terminal viewing
 
 Sometimes I'm in a terminal and I still want to see the content. Additionally,
