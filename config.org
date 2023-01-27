@@ -7272,7 +7272,8 @@ ecosystem:
   ;; And this is for Emacs 28
   (setq dired-do-revert-buffer (lambda (dir) (not (file-remote-p dir))))
   (defun dired-find-file-other-window ()
-  "In Dired, visit this file or directory in another window. If `ace-window' is available, use it to select window for visiting this file.`"
+  "In Dired, visit this file or directory in another window. If `ace-window' is
+available, use it to select window for visiting this file.`"
   (interactive)
   (let ((file (dired-get-file-for-visit))
         (window
