@@ -15990,32 +15990,8 @@ with it.
 :END:
 
 #+end_example
-****** org roam agenda
-#+begin_src emacs-lisp
-
-;; The buffer you put this code in must have lexical-binding set to t!
-;; See the final configuration at the end for more details.
-
-(defun my/org-roam-filter-by-tag (tag-name)
-  (lambda (node)
-    (member tag-name (org-roam-node-tags node))))
-
-(defun my/org-roam-list-notes-by-tag (tag-name)
-  (mapcar #'org-roam-node-file
-          (seq-filter
-           (my/org-roam-filter-by-tag tag-name)
-           (org-roam-node-list))))
-
-(defun my/org-roam-refresh-agenda-list ()
-  (interactive)
-  (setq org-agenda-files (my/org-roam-list-notes-by-tag "Project")))
-
-;; Build the agenda list the first time for the session
-(my/org-roam-refresh-agenda-list)
-#+end_src
-
-#+RESULTS:
 ***** Nicer generated heading IDs
+
 Thanks to alphapapa's [[https://github.com/alphapapa/unpackaged.el#export-to-html-with-useful-anchors][unpackaged.el]].
 
 By default, Org generated heading IDs like =#org80fc2a5= which ... works, but has
