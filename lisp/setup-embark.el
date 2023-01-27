@@ -5,14 +5,18 @@
   :ensure t
   :after minibuffer
   :bind (("M-s RET"  . embark-act)
-         ("s-o"      . embark-act)
+         ("s-a"      . embark-act)
+         ("C-."      . embark-act)
          ("s-C-a"    . embark-act-noexit)
+         ("C-:"    . embark-act-noexit)
          ("H-SPC" . embark-act)
          ("C-h b" . embark-bindings)
          ("C-h C-b" . describe-bindings)
          :map minibuffer-local-completion-map
-         ("s-o"      . embark-act)
-         ("s-C-o"    . embark-act-noexit)
+         ("s-a"      . embark-act)
+         ("C-."      . embark-act)
+         ("C-:"    . embark-act-noexit)
+         ("s-C-a"    . embark-act-noexit)
          ("C-o"      . embark-minimal-act)
          ("C-M-o"    . embark-minimal-act-noexit)
          ("C-c C-o"  . embark-export)
@@ -46,9 +50,10 @@
          :map embark-url-map
          ("f"        . browse-url-firefox)
          ("m"        . browse-url-umpv)
-         ("M"        . browse-url-mpv))
+         ;; ("M"        . browse-url-mpv))
+         ("M"        . open-link-with-mpv ))
   :config
-  (setq embark-cycle-key (kbd "s-o"))
+  (setq embark-cycle-key (kbd "C-c"))
   (setq embark-quit-after-action t)
   ;; Use Embark instead of `describe-prefix-bindings'
   (setq prefix-help-command #'embark-prefix-help-command)
