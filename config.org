@@ -10182,7 +10182,7 @@ some of the above.
   ;; (define-key global-map (kbd "C-c w") 'prot-eww-map)
   (define-key global-map (kbd "s-B") 'prot-eww-map)
   (let ((map prot-eww-map))
-    (define-key map (kbd "B") #'prot-eww-visit-bookmark)
+    (define-key map (kbd "b") #'prot-eww-visit-bookmark)
     (define-key map (kbd "e") #'prot-eww-browse-dwim)
     (define-key map (kbd "s") #'prot-eww-search-engine)
     (define-key map (kbd "h") #'prot-eww-list-history)))
@@ -10193,7 +10193,8 @@ some of the above.
                                                (kbd "D") #'prot-eww-download-html
                                                (kbd "C-F") #'prot-eww-find-feed
                                               (kbd ".") #'prot-eww-list-history ;key fine
-                                              (kbd "H") #'eww-back-url ;key fine
+
+                                            (kbd "H") #'eww-back-url ;key fine
                                               (kbd "L") #'eww-forward-url ;key fine
                                                (kbd "O") #'prot-eww-visit-bookmark
                                                (kbd "o") #'eww-search-words
