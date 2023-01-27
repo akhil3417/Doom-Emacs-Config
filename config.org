@@ -15517,8 +15517,8 @@ The agenda is nice, but a souped up version is nicer.
       calendar-latitude 34.034520
       calendar-longitude -84.456010
       calendar-location-name "Marietta, GA"
-      org-agenda-compact-blocks t
-      org-agenda-include-diary t)
+      org-agenda-compact-blocks t)
+      ;; org-agenda-include-diary t) ;; TODO fix diary
 ;; org-agenda-start-with-log-mode t)
 
 (setq org-agenda-custom-commands
@@ -15567,44 +15567,30 @@ The agenda is nice, but a souped up version is nicer.
                            :order 14)
                           (:name "Research"
                            :tag "Research"
-                           :tag ("FOUND")
+                           :todo "FOUND"
                            :order 15)
-                          (:name "To read"
+                          (:name "Ongoing"
+                           :tag "ongoing"
+                           :todo "[-]"
+                           :order 16)
+                          (:name "To read & Learn"
                            :tag ("Read" "learn")
-                           :todo "READ"
                            :order 30)
                           (:name "Waiting"
-                           :todo ("WAIT" "HOLD" "LOOP")
+                           :todo "WAIT"
+                           :tag "waiting"
                            :order 20)
-                          (:name "In Review"
-                           :todo ("REVIEW" "DUPLICATE")
-                           :order 21)
-                          (:name "In Planning"
-                           :todo ("PLAN" "IDEA")
-                           :order 22)
-                          (:name "Project Backlog"
-                           :todo "BACKLOG"
-                           :order 23)
-                          (:name "Ready For Work"
-                           :todo "READY"
-                           :order 24)
-                          (:name "Active Projects"
-                           :todo ("ACTIVE" "STRT")
-                           :order 25)
-                          (:name "Completed Projects"
-                           :todo ("COMPLETED" "KILL" "BLOCKED")
-                           :order 26)
                           (:name "University"
                            :tag "uni"
                            :order 32)
                           (:name "Binge Watch"
                            :tag ("tvshow" "movie" "documentry")
-                           :order 33)
+                           :order 90)
                           (:name "Trivial"
                            :priority<= "E"
                            :tag ("Trivial" "Unimportant")
                            :todo ("SOMEDAY" )
-                           :order 90)
+                           :order 36)
                           (:discard (:tag ("Chore" "Routine" "Daily")))))))))
         ("d" "Dashboard"
           ((agenda "" ((org-deadline-warning-days 7)))
