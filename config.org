@@ -414,6 +414,9 @@ my home machine is pretty safe, and my laptop is shutdown a lot.
 (load "setup-embark.el")
 (load "utilities.el");;essential
 (load "setup-isearch")
+(add-to-list 'load-path "~/.config/doom/lisp/tab-bar/")
+(load "~/.config/doom/lisp/tab-bar/prot-tab.el")
+(load "~/.config/doom/lisp/tab-bar/prot-emacs-window.el")
 
 (load "~/.config/doom/lisp/elfeed-tube/elfeed-tube.el")
 (load "~/.config/doom/lisp/elfeed-tube/elfeed-tube-contrib.el")
