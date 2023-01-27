@@ -1977,16 +1977,26 @@ Fira Code is amazing, and so is Roboto.
  ;;      doom-variable-pitch-font (font-spec :family "DejaVu Sans" :size 13))
 
 ;; (setq doom-font (font-spec :family "B612" :size 16)
-(setq doom-font (font-spec :family "JetBrains Mono" :size 16)
-      doom-big-font (font-spec :family "JetBrains Mono" :size 24)
-      doom-variable-pitch-font (font-spec :family "Overpass" :size 18)
-      doom-unicode-font (font-spec :family "JuliaMono")
-      doom-serif-font (font-spec :family "IBM Plex Mono" :size 14 :weight 'light))
 
-;; (setq doom-font (font-spec :family "Fira Mono" :size 12)
-;;       doom-variable-pitch-font (font-spec :family "Fira Sans")
-;;       doom-unicode-font (font-spec :family "DejaVu Sans Mono")
-;;       doom-big-font (font-spec :family "Fira Mono" :size 19))
+;; (setq doom-font (font-spec :family "JetBrains Mono" :size 16)
+;;       doom-big-font (font-spec :family "JetBrains Mono" :size 24)
+;;       doom-variable-pitch-font (font-spec :family "Overpass" :size 18)
+;;       doom-unicode-font (font-spec :family "JuliaMono")
+;;       doom-serif-font (font-spec :family "IBM Plex Mono" :size 14 :weight 'light))
+
+(setq doom-font (font-spec :family "JetBrains Mono" :size 18)
+      doom-big-font (font-spec :family "JetBrains Mono" :size 27)
+      doom-variable-pitch-font (font-spec :family "Overpass" :size 20)
+      doom-unicode-font (font-spec :family "JuliaMono")
+      doom-serif-font (font-spec :family "IBM Plex Mono" :size 17 :weight 'light))
+
+
+;; (setq doom-font (font-spec :family "Fira Code" :size 18 :weight 'light :slant 'italic)
+;;       doom-variable-pitch-font (font-spec :family "Overpass" :size 20)
+;;       doom-big-font (font-spec :family "JetBrains Mono" :size 22 :weight 'light)
+;;       doom-serif-font (font-spec :family "IBM Plex Mono" :size 18 :weight 'light)
+;;       doom-unicode-font (font-spec :family "DejaVu Sans Mono" :size 18))
+
 
 ;;
 ;; (setq doom-font (font-spec :family "Input Mono Narrow" :size 15 :weight 'semi-light)
