@@ -3031,16 +3031,18 @@ all three of the above is easier to learn and more consistent overall.
                                    (?t "Types"     font-lock-type-face)
                                    (?v "Variables" font-lock-variable-name-face)))))
   ;; Search C-h f for more "bookmark jump" handlers.
-  (setq consult-bookmark-narrow
-        `((?d "Docview" ,#'doc-view-bookmark-jump)
-          (?e "Eshell" ,#'eshell-bookmark-jump)
-          (?f "File" ,#'bookmark-default-handler)
-          (?h "Help" ,#'help-bookmark-jump)
-          (?i "Info" ,#'Info-bookmark-jump)
-          (?m "Man" ,#'Man-bookmark-jump)
-          ;; (?p "PDF" ,#'pdf-view-bookmark-jump)
-          (?v "VC Dir" ,#'vc-dir-bookmark-jump)
-          (?w "EWW" ,#'prot-eww-bookmark-jump)))
+  ;; C-x r b then press ?
+  ;; doom already define these plus a few more
+  ;; (setq consult-bookmark-narrow
+  ;;       `((?d "Docview" ,#'doc-view-bookmark-jump)
+  ;;         (?e "Eshell" ,#'eshell-bookmark-jump)
+  ;;         (?f "File" ,#'bookmark-default-handler)
+  ;;         (?h "Help" ,#'help-bookmark-jump)
+  ;;         (?i "Info" ,#'Info-bookmark-jump)
+  ;;         (?m "Man" ,#'Man-bookmark-jump)
+  ;;         ;; (?p "PDF" ,#'pdf-view-bookmark-jump)
+  ;;         (?v "VC Dir" ,#'vc-dir-bookmark-jump)
+  ;;         (?w "EWW" ,#'prot-eww-bookmark-jump)))
   (setq register-preview-delay 0.8
         register-preview-function #'consult-register-format)
   (setq consult-find-args "find . -not ( -wholename */.* -prune )")
