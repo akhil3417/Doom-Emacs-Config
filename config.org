@@ -5788,11 +5788,11 @@ functions =evil-repeat-pop-next= and =xref-pop-marker-stack=, for some reason.
   (define-key evil-normal-state-map (kbd "C-n") nil)
   (define-key evil-normal-state-map (kbd "M-<right>") #'sp-backward-barf-sexp)
   (define-key evil-normal-state-map (kbd "M-<left>") #'sp-backward-slurp-sexp)
-  ;; (define-key org-mode-map (kbd "C-'") nil) ;; need that for avy
-  ;; (evil-define-key 'normal org-mode-map (kbd "M-j") nil) ;; avvvy
 
   ;; (define-key org-super-agenda-header-map (kbd "j") nil) ;; its irrtating to be prompted when in custom org-agenda heading , can just use gd
   ;; (define-key org-super-agenda-header-map (kbd "k") nil) ;; just use SPC-X , for capture
+  (define-key org-mode-map (kbd "C-'") nil) ;; need that for avy
+  (evil-define-key 'normal org-mode-map (kbd "M-j") nil) ;; avvvy
 
 #+end_src
 
