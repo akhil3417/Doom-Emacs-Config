@@ -10770,11 +10770,11 @@ MYTAG"
 
 ;; We can take this idea further. The following snippet will ensure that Emacs (and thus Elfeed) defaults to opening Youtube links in mpv (or the video player of your choice), cutting the browser out of the loop entirely. 3
 
-(setq browse-url-handlers
-      '(("https:\\/\\/www\\.youtu\\.*be." . browse-url-mpv)
-        ("." . browse-url-generic)))
-(defun browse-url-mpv (url &optional single)
-  (start-process "mpv" nil "mpv" (shell-quote-argument url)))
+;; (setq browse-url-handlers
+;;       '(("https:\\/\\/www\\.youtu\\.*be." . browse-url-mpv)
+;;         ("." . browse-url-generic)))
+;; (defun browse-url-mpv (url &optional single)
+;;   (start-process "mpv" nil "mpv" (shell-quote-argument url)))
 
 #+end_src
 
