@@ -14302,6 +14302,14 @@ then press capital O in mpv to show the time
 * Miscellaneous
 
 #+begin_src emacs-lisp
+
+(defun tangle-and-make-executable ()
+  "Tangle the current org-mode file and make the resulting script executable."
+  (interactive)
+  (org-babel-tangle)
+  (let ((tangled-file (concat (file-name-sans-extension (buffer-file-name)) ".sh")))
+    (chmod tangled-file #o755)))
+
 ;; Misc
 (defun my/delete-word (arg)
   "Delete characters forward until encountering the end of a word.
@@ -14466,7 +14474,6 @@ numbers in text mode.
 #+begin_src emacs-lisp :tangle no
 (remove-hook 'text-mode-hook #'display-line-numbers-mode)
 #+end_src
-
 
 ** ORG MODE
 *** Org
