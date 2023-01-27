@@ -15486,6 +15486,12 @@ The agenda is nice, but a souped up version is nicer.
 #+RESULTS:
 | ~/org/notes/ |
 
+#+begin_src emacs-lisp :tangle yes
+(after! org
+ ;; '(org-agenda-files
+ ;;   '( "~/org/org-capture/todo.org" "~/org/org-capture/webnotes.org" "~/org/org-roam2/daily/" "~/org/org-roam2/todo/todo.org"))
+ (setq org-agenda-files '("~/org/org-agenda/" "~/org/org-capture/todo.org")))
+ (setq org-default-notes-file "~/org/notes/notes.org")
 
 #+RESULTS:
 
