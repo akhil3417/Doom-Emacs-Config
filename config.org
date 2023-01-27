@@ -10780,6 +10780,18 @@ MYTAG"
 
 #+RESULTS:
 : browse-url-mpv
+*** elfeed tube
+#+begin_src emacs-lisp
+(require 'elfeed-tube)
+(elfeed-tube-setup)
+(define-key elfeed-search-mode-map (kbd "F") 'elfeed-tube-fetch)
+(define-key elfeed-search-mode-map [remap save-buffer] 'elfeed-tube-save)
+(define-key elfeed-show-mode-map (kbd "C-c C-f") 'elfeed-tube-mpv-follow-mode)
+(define-key elfeed-show-mode-map (kbd "C-c C-w") 'elfeed-tube-mpv-where)
+#+end_src
+
+#+RESULTS:
+: elfeed-tube-mpv-where
 
 * Applications and utilities
 
