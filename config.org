@@ -10395,7 +10395,7 @@ buffer."
 #+RESULTS:
 
 ** browse url
-#+begin_src emacs-lisp
+#+begin_src emacs-lisp :tangle yes
 
 ;;;----------------------------------------------------------------
 ;; ** BROWSE-URL
@@ -10572,7 +10572,7 @@ module. Let's just try to patch on the main things I like the look of.
 
 *** Usability enhancements
 
-#+begin_src emacs-lisp
+#+begin_src emacs-lisp :tangle yes
 (after! elfeed-search
   (set-evil-initial-state! 'elfeed-search-mode 'normal))
 (after! elfeed-show-mode
@@ -12132,7 +12132,7 @@ definition functionality (like ~+lookup/dictionary-definition~).
 #+RESULTS:
 
 Now let's use this instead of wordnet.
-#+begin_src emacs-lisp :tangle (if (executable-find "sdcv") "yes" "no")
+#+begin_src emacs-lisp
 (defadvice! +lookup/dictionary-definition-lexic (identifier &optional arg)
   "Look up the definition of the word at point (or selection) using `lexic-search'."
   :override #'+lookup/dictionary-definition
@@ -12166,9 +12166,9 @@ fi
 For managing my ebooks, I'll hook into the well-established ebook library
 manager [[https://calibre-ebook.com/][calibre]]. A number of Emacs clients for this exist, but this seems like a
 good option.
-
+*** Packages
 Then for reading them, the only currently viable options seems to be [[https://depp.brause.cc/nov.el/][nov.el]].
-#+begin_src emacs-lisp :tangle packages.el
+#+begin_src emacs-lisp :tangle no
  ;; (package! calibredb :pin "cb93563d0ec9e0c653210bc574f9546d1e7db437")
  (package! calibredb)
 #+end_src
@@ -12178,8 +12178,8 @@ PS: If sqlite3 and calibredb is in not in your system path, set them with
 #+begin_src emacs-lisp :tangle packages.el
 (package! nov :pin "cb5f45cbcfbcf263cdeb2d263eb15edefc8b07cb")
 #+end_src
-
-#+begin_src emacs-lisp
+*** Setting binary and dirs
+#+begin_src emacs-lisp :tangle no
 
 (setq sql-sqlite-program "/usr/bin/sqlite3")
 (setq calibredb-program "/usr/bin/calibredb")
@@ -12195,14 +12195,16 @@ PS: If sqlite3 and calibredb is in not in your system path, set them with
 Together these should give me a rather good experience reading ebooks.
 
 Virtual libraries are some convenient shortcuts for quick filtering the Ebooks by setting the calibredb-search-filter.
-#+begin_src emacs-lisp
+#+begin_src emacs-lisp :tangle no
 (setq calibredb-virtual-library-alist '(("1. Development - work" . "work \\(pdf\\|epub\\)")
                                         ("2. Read it later" . "Readit epub")
                                         ("3. Development - rust" . "rust")))
 #+end_src
+*** calibre config
+
 =calibredb= lets us use calibre through Emacs, because who wouldn't want to use
 something through Emacs?
-#+begin_src emacs-lisp
+#+begin_src emacs-lisp :tangle no
 
 (use-package! calibredb
   :commands calibredb
@@ -13522,8 +13524,9 @@ One of the media players available for Emacs is emms, which stands for Emacs Mul
 | emms-previous         | /Play previous track in playlist/ | SPC a p    |
 | emms-next             | /Play next track in playlist/     | SPC a n    |
 
-#+begin_src emacs-lisp
+#+begin_src emacs-lisp :tangle yes
 
+(require 'emms-setup)
 (emms-all)
 (emms-default-players)
 (require 'emms-mode-line)
@@ -14352,7 +14355,7 @@ Display-wise, somehow I don't mind code buffers without any margin on the left,
 but it feels a bit off with text buffers once the padding provided by line
 numbers is stripped away.
 
-#+begin_src emacs-lisp :tangle no
+#+begin_src emacs-lisp :tangle yes
 (defvar +text-mode-left-margin-width 1
   "The `left-margin-width' to be used in `text-mode' buffers.")
 
@@ -14373,7 +14376,7 @@ numbers is stripped away.
 Now we just need to hook this up to all the events which could either indicate a
 change in the conditions or require the setup to be re-applied.
 
-#+begin_src emacs-lisp :tangle no
+#+begin_src emacs-lisp :tangle yes
 (add-hook 'window-configuration-change-hook #'+setup-text-mode-left-margin)
 (add-hook 'display-line-numbers-mode-hook #'+setup-text-mode-left-margin)
 (add-hook 'text-mode-hook #'+setup-text-mode-left-margin)
@@ -14385,7 +14388,7 @@ change in the conditions or require the setup to be re-applied.
 There's one little niggle with Doom, as ~doom/toggle-line-numbers~ doesn't run
 ~display-line-numbers-mode-hook~, so some advice is needed.
 
-#+begin_src emacs-lisp :tangle no
+#+begin_src emacs-lisp :tangle yes
 (defadvice! +doom/toggle-line-numbers--call-hook-a ()
   :after #'doom/toggle-line-numbers
   (run-hooks 'display-line-numbers-mode-hook))
@@ -14459,12 +14462,13 @@ Org tables aren't the prettiest thing to look at. This package is supposed to
 redraw them in the buffer with box-drawing characters. Sounds like an
 improvement to me! We'll make use of this with =writeroom-mode=.
 
-#+begin_src emacs-lisp :tangle packages.el
+Disabling cz of org-modern
+#+begin_src emacs-lisp :tangle no
 (package! org-pretty-table
   :recipe (:host github :repo "Fuco1/org-pretty-table") :pin "7bd68b420d3402826fea16ee5099d04aa9879b78")
 #+end_src
 
-#+begin_src emacs-lisp :tangle yes
+#+begin_src emacs-lisp :tangle no
 (use-package! org-pretty-table
   :commands (org-pretty-table-mode global-org-pretty-table-mode))
 #+end_src
@@ -14577,16 +14581,17 @@ Copied from =Thomas Journa='s config to move around org-buffers.
 #+end_src
 ***** Org Modern
 
+
 Fontifying =org-mode= buffers to be as pretty as possible is of paramount importance,
 and Minad's lovely =org-modern= goes a long way in this regard.
 
 #+begin_src emacs-lisp :tangle packages.el
-(package! org-modern :pin "59b2e3c94756b4e37b2cf7b9f81028c6d4758672")
+(package! org-modern :pin "7d037569bc4a05f40262ea110c4cda05c69b5c52")
 #+end_src
 
 ...with a touch of configuration...
 
-#+begin_src emacs-lisp :tangle no
+#+begin_src emacs-lisp
 (use-package! org-modern
   :hook (org-mode . org-modern-mode)
   :config
