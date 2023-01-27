@@ -7249,11 +7249,8 @@ ecosystem:
   (setq dired-create-destination-dirs 'ask)
   (setq dired-vc-rename-file t)
   ;; And this is for Emacs 28
-  (setq dired-do-revert-buffer (lambda (dir) (not (file-remote-p dir))))
+  (setq dired-do-revert-buffer (lambda (dir) (not (file-remote-p dir)))))
 
-  (let ((map dired-mode-map))
-    (define-key map (kbd "C-+") #'dired-create-empty-file)
-    (define-key map (kbd "C-x v v") #'dired-vc-next-action))) ; Emacs 28
 
 ;; ;; NOTE 2021-05-10: I do not use `find-dired' and related commands
 ;; ;; because there are other tools that offer a better interface, such
@@ -7270,8 +7267,7 @@ ecosystem:
   (setq dired-clean-confirm-killing-deleted-buffers t)
   (setq dired-x-hands-off-my-keys t)    ; easier to show the keys I use
   (setq dired-bind-man nil)
-  (setq dired-bind-info nil)
-  (define-key dired-mode-map (kbd "I") #'dired-info))
+  (setq dired-bind-info nil))
 
 (load "~/.config/doom/lisp/prot-dired.el")
 (use-package! prot-dired
@@ -7279,42 +7275,21 @@ ecosystem:
   (setq prot-dired-image-viewers '("feh" "sxiv"))
   (setq prot-dired-media-players '("mpv" "vlc"))
   (setq prot-dired-media-extensions
-        "\\.\\(mp[34]\\|ogg\\|flac\\|webm\\|mkv\\)")
+        "\\.\\(mp[34]\\|ogg\\|flac\\|webm\\|mkv\\|3gp\\)")
   (setq prot-dired-image-extensions
         "\\.\\(png\\|jpe?g\\|tiff\\)")
   (setq dired-guess-shell-alist-user ; those are the defaults for ! and & in Dired
         `((,prot-dired-image-extensions (prot-dired-image-viewer))
           (,prot-dired-media-extensions (prot-dired-media-player))))
 
-  (add-hook 'dired-mode-hook #'prot-dired-setup-imenu)
-
-  (let ((map dired-mode-map))
-    (define-key map (kbd "i") #'prot-dired-insert-subdir) ; override `dired-maybe-insert-subdir'
-    (define-key map (kbd "/") #'prot-dired-limit-regexp)
-    (define-key map (kbd "C-c C-l") #'prot-dired-limit-regexp)
-    ;; (define-key map (kbd "M-n") #'prot-dired-subdirectory-next)
-    ;; (define-key map (kbd "C-c C-n") #'prot-dired-subdirectory-next)
-    ;; (define-key map (kbd "M-p") #'prot-dired-subdirectory-previous)
-    ;; (define-key map (kbd "C-c C-p") #'prot-dired-subdirectory-previous)
-    (define-key map (kbd "M-s G") #'prot-dired-grep-marked-files))) ; M-s g is `prot-search-grep'
-
-;; (use-package! dired-subtree
-;;   :config
-;;   (setq dired-subtree-use-backgrounds nil)
-;;   (let ((map dired-mode-map))
-;;     (define-key map (kbd "<tab>") #'dired-subtree-toggle)
-;;     (define-key map (kbd "<backtab>") #'dired-subtree-remove))) ; S-TAB
+  (add-hook 'dired-mode-hook #'prot-dired-setup-imenu))
 
 (use-package! dired-subtree
   :ensure t
   :after dired
   :config
-  (setq dired-subtree-use-backgrounds nil)
-  :bind (:map dired-mode-map
-              ("<tab>" . dired-subtree-toggle)
-              ("<s-tab>" . dired-subtree-cycle)
-              ("<backtab>" . dired-subtree-remove)
-              ))
+  (setq dired-subtree-use-backgrounds nil))
+
 (use-package! wdired
   :config
   (setq wdired-allow-to-change-permissions t)
@@ -7345,7 +7320,7 @@ ecosystem:
     (dired-rainbow-define document "#9561e2" ("docm" "doc" "docx" "odb" "odt" "pdb" "pdf" "ps" "rtf" "djvu" "epub" "odp" "ppt" "pptx"))
     (dired-rainbow-define markdown "#ffed4a" ("org" "etx" "info" "markdown" "md" "mkd" "nfo" "pod" "rst" "tex" "textfile" "txt"))
     (dired-rainbow-define database "#6574cd" ("xlsx" "xls" "csv" "accdb" "db" "mdb" "sqlite" "nc"))
-    (dired-rainbow-define media "#de751f" ("webm" "mp3" "mp4" "mkv" "MP3" "MP4" "avi" "mpeg" "mpg" "flv" "ogg" "mov" "mid" "midi" "wav" "aiff" "flac"))
+    (dired-rainbow-define media "#de751f" ("webm" "mp3" "mp4" "mkv" "MP3" "MP4" "avi" "mpeg" "mpg" "flv" "ogg" "mov" "mid" "midi" "wav" "aiff" "flac" "3gp"))
     (dired-rainbow-define image "#f66d9b" ("tiff" "tif" "cdr" "gif" "ico" "jpeg" "jpg" "png" "psd" "eps" "svg"))
     (dired-rainbow-define log "#c17d11" ("log"))
     (dired-rainbow-define shell "#f6993f" ("awk" "bash" "bat" "sed" "sh" "zsh" "vim"))
@@ -7441,13 +7416,29 @@ ecosystem:
   (kbd "p") 'dired-ranger-paste
   (kbd "Y") 'dired-copy-filename-as-kill ; copies filename to kill ring.
   (kbd "+") 'dired-create-directory
+  (kbd "C-+") 'dired-create-empty-file
   (kbd "F") 'dired-do-find-marked-files ;;open all marked files at once
+  (kbd "C-x v v") 'dired-vc-next-action ; Emacs 28
+  ;; (kbd "/") 'prot-dired-limit-regexp
+  (kbd "C-c C-l") 'prot-dired-limit-regexp
+  (kbd "M-s G") 'prot-dired-grep-marked-files ;searches whole dir when one file is marked , provied C-u to search one marked file M-s g is `prot-search-grep'
+  (kbd "<tab>") 'dired-subtree-toggle
+  (kbd "<s-tab>") 'dired-subtree-cycle
+  (kbd "<backtab>") 'dired-subtree-remove ; Shift-TAB
   (kbd "-") 'dired-up-directory
   (kbd "% l") 'dired-downcase
   (kbd "% u") 'dired-upcase
   (kbd "@") 'emms-play-dired
   (kbd "; d") 'epa-dired-do-decrypt
   (kbd "; e") 'epa-dired-do-encrypt))
+
+
+    ;; (define-key map (kbd "M-n") #'prot-dired-subdirectory-next)
+    ;; (define-key map (kbd "C-c C-n") #'prot-dired-subdirectory-next)
+    ;; (define-key map (kbd "M-p") #'prot-dired-subdirectory-previous)
+    ;; (define-key map (kbd "C-c C-p") #'prot-dired-subdirectory-previous)
+
+
   ;; (evil-collection-define-key 'normal 'dired-mode-map
   ;;   "h" 'dired-single-up-directory
   ;;   "H" 'dired-omit-mode
