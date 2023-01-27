@@ -432,6 +432,8 @@ my home machine is pretty safe, and my laptop is shutdown a lot.
 ;; youtube videos. Phew. The churn rate of Invidious urls is quite high, which
 ;; makes this flaky, but anything's better than the browser interface to
 ;; Youtube.
+(load "~/.config/doom/lisp/setup-ytel.el");; youttuuube
+(load "~/.config/doom/lisp/ytdl-downloader.el")
 
 
 #+end_src
