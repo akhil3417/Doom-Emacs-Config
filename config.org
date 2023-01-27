@@ -7486,11 +7486,13 @@ ecosystem:
     "<backspace>" 'peep-dired-scroll-page-up
     "j" 'peep-dired-next-file
     "k" 'peep-dired-prev-file)
-  ;; (evil-define-key 'normal peep-dired-mode-map (kbd "<SPC>") 'peep-dired-scroll-page-down
-  ;;   (kbd "C-<SPC>") 'peep-dired-scroll-page-up
-  ;;   (kbd "<backspace>") 'peep-dired-scroll-page-up
-  ;;   (kbd "j") 'peep-dired-next-file
-  ;;   (kbd "k") 'peep-dired-prev-file)
+
+;; (evil-define-key 'normal peep-dired-mode-map
+;;   (kbd "j") 'peep-dired-next-file
+;;   (kbd "k") 'peep-dired-prev-file)
+
+(add-hook 'peep-dired-hook 'evil-normalize-keymaps)
+
 (setq peep-dired-cleanup-on-disable t)
 (setq peep-dired-cleanup-eagerly nil)
 (setq peep-dired-enable-on-directories nil)
@@ -7520,10 +7522,6 @@ ecosystem:
 ;;   "d."  `(,(dw/dired-link "~/.dotfiles") :which-key "dotfiles")
 ;;   "de"  `(,(dw/dired-link "~/.emacs.d") :which-key ".emacs.d"))
 
-(evil-define-key 'normal peep-dired-mode-map
-  (kbd "j") 'peep-dired-next-file
-  (kbd "k") 'peep-dired-prev-file)
-(add-hook 'peep-dired-hook 'evil-normalize-keymaps)
 
 (setq delete-by-moving-to-trash t
       trash-directory "~/.local/share/Trash/files/")
