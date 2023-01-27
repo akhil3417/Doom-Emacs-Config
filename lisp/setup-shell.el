@@ -570,7 +570,7 @@ If no universal argument is passed, assume only one output"
     (define-key map (kbd "C-c a C-f") #'prot-eshell-ffap-find-file)
     (define-key map (kbd "C-c a C-j") #'prot-eshell-ffap-dired-jump)
     (define-key map (kbd "C-c a C-w") #'prot-eshell-ffap-kill-save)
-    (define-key map (kbd "C-c a C-r") #'prot-eshell-redirect-to-buffer)
+    (define-key map (kbd "C-c a C-R") #'prot-eshell-redirect-to-buffer)
     (define-key map (kbd "C-c a C-e") #'prot-eshell-export)
     (define-key map (kbd "C-c a C-r") #'prot-eshell-root-dir))
   (let ((map eshell-cmpl-mode-map))
