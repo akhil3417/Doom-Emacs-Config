@@ -1,4 +1,3 @@
-;; [[file:../config.org::*better buffers.ui][better buffers.ui:1]]
 ;; -*- lexical-binding: t -*-
 ;;######################################################################
 ;; * BETTER BUFFERS
@@ -196,7 +195,7 @@ User buffers are those not starting with *."
                 (< i 50))
       (setq i (1+ i)) (previous-buffer) )))
 
-(global-set-key (kbd "s-n") 'next-buffer)
+;; (global-set-key (kbd "s-n") 'next-buffer)
 ;; (global-set-key (kbd "s-p") 'previous-buffer)
 ;;; scroll-buffer: Functions to do exactly that.
 
