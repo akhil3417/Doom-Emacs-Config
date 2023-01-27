@@ -3835,33 +3835,34 @@ Regarding /buffers/, the text you are editing in Emacs resides in an object call
 | ibuffer-do-kill-lines             | Hide marked buffers                    | g h        |
 | ibuffer-update                    | Restore hidden buffers                 | g H        |
 
-#+begin_src emacs-lisp
+#+begin_src emacs-lisp :tangle yes
 
 (use-package! ibuffer
   :config
   (setq ibuffer-expert t)
   (setq ibuffer-display-summary nil)
   (setq ibuffer-use-other-window nil)
-  (setq ibuffer-show-empty-filter-groups nil)
+  ;; (setq ibuffer-show-empty-filter-groups nil)
   (setq ibuffer-movement-cycle nil)
   (setq ibuffer-default-sorting-mode 'filename/process)
   (setq ibuffer-use-header-line t)
   (setq ibuffer-default-shrink-to-minimum-size nil)
-  (setq ibuffer-formats
-        '((mark modified read-only locked " "
-                (name 40 40 :left :elide)
-                " "
-                (size 9 -1 :right)
-                " "
-                (mode 16 16 :left :elide)
-                " " filename-and-process)
-          (mark " "
-                (name 16 -1)
-                " " filename)))
-  (setq ibuffer-saved-filter-groups nil)
+  ;; (setq ibuffer-formats
+  ;;       '((mark modified read-only locked " "
+  ;;               (name 40 40 :left :elide)
+  ;;               " "
+  ;;               (size 9 -1 :right)
+  ;;               " "
+  ;;               (mode 16 16 :left :elide)
+  ;;               " " filename-and-process)
+  ;;         (mark " "
+  ;;               (name 16 -1)
+  ;;               " " filename)))
+  ;; (setq ibuffer-saved-filter-groups nil)
   (setq ibuffer-old-time 48)
   (add-hook 'ibuffer-mode-hook #'hl-line-mode)
   (define-key global-map (kbd "C-x C-b") #'ibuffer)
+
 (evil-define-key 'normal ibuffer-mode-map
   (kbd "f c") 'ibuffer-filter-by-content
   (kbd "f d") 'ibuffer-filter-by-directory
@@ -3871,10 +3872,72 @@ Regarding /buffers/, the text you are editing in Emacs resides in an object call
   (kbd "f x") 'ibuffer-filter-disable
   (kbd "g h") 'ibuffer-do-kill-lines
   (kbd "g H") 'ibuffer-update))
+
+
 #+end_src
 
 #+RESULTS:
 : t
+
+** group buffers
+
+#+begin_src emacs-lisp
+
+(setq ibuffer-saved-filter-groups
+      '(("Home"
+         ;; ("Modified" (predicate buffer-modified-p (current-buffer)))
+         ("EXWM" (mode . exwm-mode))
+         ("dired" (mode . dired-mode))
+         ("Web Development" (or (mode . css-mode)
+                                (mode . html-mode)
+                                (mode . mhtml-mode)
+                                (mode . web-mode)
+                                (mode . less-mode)
+                                (mode . scss-mode)
+                                (mode . android-mode)))
+         ("Clojure Development" (or (mode . clojure-mode)
+                                    (mode . clojurescript-mode)))
+         ("perl" (mode . cperl-mode))
+         ("erc" (mode . erc-mode))
+         ;; ("Dev" (or (filename . ".+\\\\.css\\\\'")
+         ;;            (filename . ".+\\\\.html?\\\\'")
+         ;;            (mode . android-mode)
+         ;;            (mode . clojure-mode)))
+         ("Mail" (or (mode . mu4e-headers-mode)
+                     (mode . mu4e-view-mode)
+                     (mode . mu4e-compose-mode)
+                     (name . ".*Mail*.")
+                     (name . ".*draft*.")
+                     (filename . "/home/shiva/doom.org")))
+         ("planner" (or
+                     (name . "^\\*Calendar\\*$")
+                     (name . "^diary$")
+                     ;; (filename . "(.*agenda.*|.*todo.*)") ;; should'nt it work?
+                     (filename . ".*agenda.*")
+                     (filename . ".*todo.*")
+                     (mode . muse-mode)))
+
+         ("org-roam" (filename . ".*2022.*\.org$"))
+         ("org" (mode . org-mode))
+
+         ("Feeds" (or (mode . elfeed-search-mode)
+                      (mode . elfeed-show-mode)
+                      (name . "*elfeed-log*")))
+         ("svg" (name . "\\.svg")) ; group by file extension
+         ("emacs" (or
+                   (name . "^\\*scratch\\*$")
+                   ;; (filename . "~/.config/doom/config.org")
+                   (name . "^\\*Messages\\*$")))
+        ("Telegram" (or (mode . telega-root-mode)
+                        (mode . telega-chat-mode)
+                        (mode . telega-image-mode)))
+        ("Special" (or (mode . special-mode)
+                       (name . "^\\*.\\*$"))))))
+
+#+end_src
+
+#+RESULTS:
+| Home | (EXWM (mode . exwm-mode)) | (dired (mode . dired-mode)) | (Web Development (or (mode . css-mode) (mode . html-mode) (mode . mhtml-mode) (mode . web-mode) (mode . less-mode) (mode . scss-mode) (mode . android-mode))) | (Clojure Development (or (mode . clojure-mode) (mode . clojurescript-mode))) | (perl (mode . cperl-mode)) | (erc (mode . erc-mode)) | (Mail (or (mode . mu4e-headers-mode) (mode . mu4e-view-mode) (mode . mu4e-compose-mode) (name . .*Mail*.) (name . .*draft*.) (filename . /home/shiva/doom.org))) | (planner (or (name . ^\*Calendar\*$) (name . ^diary$) (filename . .*agenda.*) (filename . .*todo.*) (mode . muse-mode))) | (org-roam (filename . .*2022.*.org$)) | (org (mode . org-mode)) | (Feeds (or (mode . elfeed-search-mode) (mode . elfeed-show-mode) (name . *elfeed-log*))) | (svg (name . \.svg)) | (emacs (or (name . ^\*scratch\*$) (name . ^\*Messages\*$))) | (Telegram (or (mode . telega-root-mode) (mode . telega-chat-mode) (mode . telega-image-mode))) | (Special (or (mode . special-mode) (name . ^\*.\*$))) |
 
 ** DONE Helper functions to clean up the gazillion buffers
 CLOSED: [2022-04-15 Fri 14:04]
