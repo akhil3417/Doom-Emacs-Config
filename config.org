@@ -10142,6 +10142,7 @@ some of the above.
   (setq eww-history-limit 150)
   (setq eww-use-external-browser-for-content-type
         "\\`\\(video/\\|audio\\)") ; On GNU/Linux check your mimeapps.list
+   ;; "\\`\\(video/\\|audio/\\|application/ogg\\|application/pdf\\)"))
   (setq eww-browse-url-new-window-is-tab nil)
   (setq eww-form-checkbox-selected-symbol "[X]")
   (setq eww-form-checkbox-symbol "[ ]")
