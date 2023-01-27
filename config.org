@@ -8729,11 +8729,11 @@ buffer (see [[#h:c110e399-3f43-4555-8427-b1afe44c0779][Minibuffer configurations
   :commands (avy-goto-word-1 avy-goto-char-2 avy-goto-char-timer)
   :config
   (setq avy-timeout-seconds 0.24)
-  (setq avy-keys '(?a ?s ?d ?f ?g ?j ?l ;?x
-                   ?v ?b ?n ?, ?/ ?u ?p ?e ?.
-                   ?c ?q ?2 ?3 ?' ?\;))
+  (setq avy-keys '(?a ?h ?e ?t ?o ?d ?c ;?x
+                   ?n ?b ?g ?, r/ ?j ?k ?, ?.
+                   ?l ?q ?2 ?3 ?' ?\;))
   (setq avy-dispatch-alist '((?m . avy-action-mark)
-                             (?  . avy-action-mark-to-char)
+                             (?   . avy-action-mark-to-char)
                              (?i . avy-action-ispell)
                              (?z . avy-action-zap-to-char)
                              (?o . avy-action-embark)
