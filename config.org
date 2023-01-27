@@ -16862,6 +16862,18 @@ Let's make headings a bit bigger
     '(org-checkbox nil :inherit 'fixed-pitch))
 #+end_src
 
+#+begin_src emacs-lisp :tangle no
+(custom-set-faces!
+  '(outline-1 :weight extra-bold :height 1.25)
+  '(outline-2 :weight bold :height 1.15)
+  '(outline-3 :weight bold :height 1.12)
+  '(outline-4 :weight semi-bold :height 1.09)
+  '(outline-5 :weight semi-bold :height 1.06)
+  '(outline-6 :weight semi-bold :height 1.03)
+  '(outline-8 :weight semi-bold)
+  '(outline-9 :weight semi-bold))
+#+end_src
+
 #+RESULTS:
 | doom--customize-themes-h-1854 | doom--customize-themes-h-1855 | doom--customize-themes-h-1875 | doom--customize-themes-h-1876 | doom--customize-themes-h-1878 | doom--customize-themes-h-1885 |
 
