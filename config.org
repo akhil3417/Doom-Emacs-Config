@@ -6791,10 +6791,11 @@ can implement this behaviour fairly easily.
                                  (count-lines (point-min) (point-max))))
             +vlf-cumulative-linenum))))
 
-(add-hook 'vlf-after-chunk-update-hook #'+vlf-log-poses-a)) ;;look here if end of file
+(add-hook 'vlf-after-chunk-update-hook #'+vlf-log-poses-a) ;;look here if end of file
+;; (add-hook 'vlf-after-chunk-update-hook #'+vlf-log-poses-a)) ;;look here if end of file
 
 ;; Since this only works with absolute line numbers, let's make sure we use them.
-;; gadd-hook! 'vlf-mode-hook (setq-local display-line-numbers t)
+(add-hook! 'vlf-mode-hook (setq-local display-line-numbers t))
 #+end_src
 
 #+RESULTS: vlf-linenum-offset
