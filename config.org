@@ -9203,6 +9203,7 @@ prompt and everyone in the channel can see it.  Some things I learnt:
 ** telega
 #+begin_src emacs-lisp :tangle yes
 
+(setq telega-use-docker t)
 (use-package! telega
     :commands (telega)
     :init
