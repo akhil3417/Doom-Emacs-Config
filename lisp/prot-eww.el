@@ -728,14 +728,21 @@ result in a new buffer."
   (eww-open-in-new-buffer))
 
 (defun default-browser-eww()
+  "Set eww to be default browser."
   (interactive)
-  (setq browse-url-browser-function 'eww-browse-url
+  (setq engine/browser-function 'eww-browse-url;;  browse-url-default-browser open firefox
+       browse-url-browser-function 'eww-browse-url
         browse-url-secondary-browser-function 'browse-url-generic))
 
 (defun default-browser-qutebrowser()
   (interactive)
-  (setq browse-url-browser-function 'browse-url-generic))
+  (setq engine/browser-function 'browse-url-generic;;  browse-url-default-browser open firefox
+        browse-url-browser-function 'browse-url-generic))
 
+(defun default-browser-firefox()
+  (interactive)
+  (setq engine/browser-function 'browse-url-default-browser;;  browse-url-default-browser open firefox
+        browse-url-browser-function 'browse-url-default-browser))
 ;;;###autoload
 (defun eww-search-in-other-window ()
   "Use `eww-open-in-new-buffer' in another window."
