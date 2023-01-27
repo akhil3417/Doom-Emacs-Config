@@ -19912,3 +19912,929 @@ Everything is mapped to SPC-R because doom is not using it and R stands for roam
   )
 
 #+end_src
+
+* Mail Setup
+** Mu4e
+Thanks to System Crafters and Tecosaur for helping me configure this .
+
+Webmail clients are nice and all, but I still don't believe that SPAs in my
+browser can replaced desktop apps ... sorry Gmail. I'm also liking google less
+and less.
+
+Mailspring is a decent desktop client, quite lightweight for electron
+(apparently the backend is in =C=, which probably helps), however I miss Emacs
+stuff.
+
+While =Notmuch= seems very promising, and I've heard good things about it, it
+doesn't seem to make any changes to the emails themselves. All data is stored in
+Notmuch's database. While this is a very interesting model, occasionally I need
+to pull up an email on say my phone, and so not I want the tagging/folders etc.
+to be applied to the mail itself --- not stored in a database.
+
+On the other hand =Mu4e= is also talked about a lot in positive terms, and seems
+to possess a similarly strong feature set --- and modifies the mail itself (I.e.
+information is accessible without the database). =Mu4e= also seems to have a large
+user base, which tends to correlate with better support and attention.
+*** Make it works on dooom stuffffff
+
+#+begin_src emacs-lisp
+(add-load-path! "/usr/local/share/emacs/site-lisp/mu4e/")
+(setq mu4e-mu-binary "/usr/local/bin/mu")
+(load "mu4e.el")
+(load "mu4e-actions.el")
+(load "mu4e-bookmarks.el")
+(load "mu4e-compose.el")
+(load "mu4e-config.el")
+(load "mu4e-contacts.el")
+(load "mu4e-context.el")
+(load "mu4e-contrib.el")
+(load "mu4e-draft.el")
+(load "mu4e-folders.el")
+(load "mu4e-headers.el")
+(load "mu4e-helpers.el")
+(load "mu4e-icalendar.el")
+(load "mu4e-lists.el")
+(load "mu4e-main.el")
+(load "mu4e-mark.el")
+(load "mu4e-message.el")
+(load "mu4e-org.el")
+(load "mu4e-search.el")
+(load "mu4e-server.el")
+(load "mu4e-speedbar.el")
+(load "mu4e-update.el")
+(load "mu4e-vars.el")
+(load "mu4e-view.el")
+(load "mu4e.elc")
+(load "org-mu4e.el")
+#+end_src
+*** General Config
+#+begin_src emacs-lisp
+
+;; (define-obsolete-function-alias 'mu4e-search-bookmark 'mu4e-headers-search-bookmark nil)
+;; (define-obsolete-function-alias 'mu4e-search 'mu4e-headers-search nil)
+;; (define-obsolete-function-alias 'mu4e-search-narrow 'mu4e-headers-search-narrow nil)
+
+;; (after! evil-collection
+;;   (after! mu4e
+;;     (setq evil-collection-mu4e-end-region-misc "\\[q\\]uit")))
+
+;; (defconst mu4e-mu-version "1.8.13"
+;;   "Required mu binary version; mu4e's version must agree with this.")
+
+    ;; This is set to 't' to avoid mail syncing issues when using mbsync
+  (setq mu4e-change-filenames-when-moving t)
+  (setq +mu4e-backend 'mbsync)
+
+;; =mu= *<1.4* only requires one command:
+;; mu init --maildir ~/.mail --my-address email@example.com
+;; mu index --maildir $HOME/.mail
+;; or mu index
+
+ ;; xapian-core-devel meson gmime-devel are needed to build the mu binary in void
+;; Each path is relative to the path of the maildir you passed to mu
+(set-email-account! "gmail"
+  '((mu4e-sent-folder       . "/Gmail/[Gmail]/Sent Mail")
+    (mu4e-drafts-folder     . "/Gmail/[Gmail]/Drafts")
+    (mu4e-trash-folder      . "/Gmail/[Gmail]/Trash")
+    (mu4e-refile-folder     . "/Gmail/[Gmail]/All Mail")
+    (smtpmail-smtp-server  . "smtp.gmail.com")
+    (smtpmail-smtp-service . 465)
+    (smtpmail-stream-type  . ssl)
+    (smtpmail-smtp-user . "akhilpratapsingh3417@gmail.com")
+    (user-full-name    . "Akhil Pratap Singh")
+    (user-mail-address      . "akhilpratapsingh3417@gmail.com")    ;; only needed for mu < 1.4
+    (mu4e-compose-signature . "---\nYours truly\nThe Baz"))
+  t)
+
+
+                  ;; (smtpmail-smtp-server  . "smtp.gmail.com")
+                  ;; (smtpmail-smtp-service . 465)
+                  ;; (smtpmail-stream-type  . ssl)
+
+;; - =smtpmail-smtp-server= - The host where we connect to send mail
+;; - =smtpmail-smtp-service= - The port number of the SMTP service (defaults to 25)
+;; - =smtpmail-stream-type= - Determines whether SSL or TLS should be used when connecting
+
+;; If you use multiple email accounts, defining them with ~set-email-account!~ will
+;; automatically set the appropriate account context when replying to emails in
+;; that account's maildir. ~mu4e-context-policy~ and ~mu4e-compose-context-policy~
+;; can be modified to change context behavior when opening mu4e and composing
+;; email:
+
+
+;; if "gmail" is missing from the address or maildir, the account must be listed here
+;; (setq +mu4e-gmail-accounts '(("hlissner@gmail.com" . "/hlissner")
+;;                              ("example@example.com" . "/example")))
+
+;; When using multiple contexts, you might want to define which context gets picked automatically for sending email (similar to =mu4e-context-policy=):
+    ;; Only ask if a context hasn't been previously picked
+    ;; (setq mu4e-compose-context-policy 'ask-if-none)
+
+;; You can change how the default context is picked by setting =mu4e-context-policy= to one of the following values:
+;; - =ask-if-none= - Ask the first time you enter the view (default)
+;; - =pick-first= - Pick the first context in the =mu4e-contexts= list
+;; - =always-ask= - Always ask when entering the main view
+
+
+    ;; Refresh mail using isync every 10 minutes
+    (setq mu4e-update-interval (* 10 60))
+    (setq mu4e-get-mail-command "mbsync gmail")
+    (setq mu4e-maildir "~/Mail/")
+
+  ;; Run mu4e in the background to sync mail periodically
+  (mu4e t)
+
+    ;; (setq mu4e-maildir-shortcuts
+    ;;     '(("/Inbox"             . ?i)
+    ;;       ("/Gmail/[Gmail]/Sent Mail" . ?s)
+    ;;       ("/Gmail/[Gmail]/Trash"     . ?t)
+    ;;       ("/Gmail/[Gmail]/Drafts"    . ?d)
+    ;;       ("/Gmail/[Gmail]/All Mail"  . ?a)))
+;; already setup in doom
+
+;; Run =M-x org-mime-edit-mail-in-org-mode=
+
+;; You can use the following functions to send an existing org-mode document as an e-mail message:
+;; - =org-mime-org-buffer-htmlize= - Send an entire org-mode buffer as an e-mail message
+;; - =org-mime-org-subtree-htmlize= - Send a subtree of the current org-mode buffer as an e-mail message
+;; As you might have noticed, the exported e-mail has section numbers for headings.  We can turn that off!
+
+  ;; (setq org-mime-export-options '(:section-numbers nil
+  ;;                                 :with-author nil
+  ;;                                 :with-toc nil))
+
+;; =org-mime= starts with Org's configured export options for HTML so your defaults may be different.
+;; We can also customize the styling of individual HTML elements inside of the message using =org-mime-html-hook=.  Here's an example of making all code blocks have a dark background and light text:
+  ;; (add-hook 'org-mime-html-hook
+  ;;           (lambda ()
+  ;;             (org-mime-change-element-style
+  ;;             "pre" (format "color: %s; background-color: %s; padding: 0.5em;"
+  ;;                           "#E6E1DC" "#232323"))))
+
+  ;; (add-hook 'message-send-hook 'org-mime-htmlize)
+
+;; Alternatively if you just want be reminded when you didn't use HTML, use =org-mime-confirm-when-no-multipart=:
+  ;; (add-hook 'message-send-hook 'org-mime-confirm-when-no-multipart)
+
+
+
+;; By default all e-mails are sent as plain text. This can lead to strange
+;; wrapping in other email clients when reading your messages. You can improve
+;; this by setting the following variable:
+
+  ;; Make sure plain text mails flow correctly for recipients
+  (setq mu4e-compose-format-flowed t)
+
+;; *NOTE:* I made a mistake in mentioning that Gmail and other modern mail
+;; *clients support =format=flowed=! Check out
+;; *[[https://useplaintext.email/#other-clients][this website]] to see a list of
+;; *clients that support it. Thanks to *boticelli* in the System Crafters
+;; *Discord for pointing it out!
+
+;; You can use the =mml-secure-message-sign-pgpmime= function while composing a
+;; mail to mark it to be signed once you send it. When you press ~C-c C-c~ to
+;; send the mail, you will be prompted for your passphrase and then the mail
+;; will be signed!
+
+  ;; Use a specific key for signing by referencing its thumbprint
+  ;; (setq mml-secure-openpgp-signers '("53C41E6E41AAFE55335ACA5E446A2ED4D940BF14"))
+
+;; You can automatically sign every e-mail using the =message-send-hook=:
+  ;; (add-hook 'message-send-hook 'mml-secure-message-sign-pgpmime)
+
+
+#+end_src
+
+#+RESULTS:
+: t
+
+*** Viewing Mail
+:PROPERTIES:
+:header-args:emacs-lisp: :noweb-ref mu4e-conf
+:END:
+
+There seem to be some advantages with using Gnus' article view (such as inline
+images), and judging from [[https://github.com/djcb/mu/pull/1442#issuecomment-591695814][djcb/mu!1442 (comment)]] this seems to be the 'way of
+the future' for mu4e.
+
+There are some all-the-icons font related issues, so we need to redefine the
+fancy chars, and make sure they get the correct width.
+
+To account for the increase width of each flag character, and make perform a
+few more visual tweaks, we'll tweak the headers a bit
+#+begin_src emacs-lisp
+(setq mu4e-headers-fields
+      '((:flags . 6)
+        (:account-stripe . 2)
+        (:from-or-to . 25)
+        (:folder . 10)
+        (:recipnum . 2)
+        (:subject . 80)
+        (:human-date . 8))
+      +mu4e-min-header-frame-width 142
+      mu4e-headers-date-format "%d/%m/%y"
+      mu4e-headers-time-format "⧖ %H:%M"
+      mu4e-headers-results-limit 1000
+      mu4e-index-cleanup t)
+
+(add-to-list 'mu4e-bookmarks
+             '(:name "Yesterday's messages" :query "date:2d..1d" :key ?y) t)
+
+(defvar +mu4e-header--folder-colors nil)
+(appendq! mu4e-header-info-custom
+          '((:folder .
+             (:name "Folder" :shortname "Folder" :help "Lowest level folder" :function
+              (lambda (msg)
+                (+mu4e-colorize-str
+                 (replace-regexp-in-string "\\`.*/" "" (mu4e-message-field msg :maildir))
+                 '+mu4e-header--folder-colors))))))
+#+end_src
+
+We'll also use a nicer alert icon
+#+begin_src emacs-lisp
+(setq mu4e-alert-icon "/usr/share/icons/Papirus/64x64/apps/evolution.svg")
+#+end_src
+
+*** Sending Mail
+:PROPERTIES:
+:header-args:emacs-lisp: :noweb-ref mu4e-conf
+:END:
+
+Let's send emails too.
+#+begin_src emacs-lisp
+(setq sendmail-program "/usr/bin/msmtp"
+      send-mail-function #'smtpmail-send-it  ;; Configure the function to use for sending mail
+      message-sendmail-f-is-evil t
+      message-sendmail-extra-arguments '("--read-envelope-from"); , "--read-recipients")
+      message-send-mail-function #'message-send-mail-with-sendmail)
+#+end_src
+
+It's also nice to avoid accidentally sending emails with the wrong account. If
+we can send from the address in the ~To~ field, let's do that. Opening a prompt
+otherwise also seems sensible.
+
+We can register Emacs as a potential email client with a desktop file. We could
+put an =emacsclient ...= entry in the =Exec= field, but I've found this a bit dodgy.
+Instead let's package the =emacslient= behaviour in a little executable
+=~/.local/bin/emacsmail=.
+
+#+begin_src shell :tangle ~/.local/bin/emacsmail :shebang "#!/usr/bin/env sh" :mkdirp yes :tangle-mode (identity #o755) :comments no
+emacsclient -create-frame --alternate-editor='' --no-wait --eval \
+"(progn (x-focus-frame nil) (mu4e-compose-from-mailto \"$1\" t))"
+#+end_src
+
+Now we can just call that in a desktop file.
+
+#+begin_src conf :tangle ~/.local/share/applications/emacsmail.desktop :mkdirp yes
+[Desktop Entry]
+Name=Mu4e
+GenericName=Compose a new message with Mu4e in Emacs
+Comment=Open mu4e compose window
+MimeType=x-scheme-handler/mailto;
+Exec=emacsmail %u
+Icon=emacs
+Type=Application
+Terminal=false
+Categories=Network;Email;
+StartupWMClass=Emacs
+#+end_src
+
+To register this, just call
+#+begin_src shell :tangle (if (or (not (executable-find "mu")) (string= (shell-command-to-string "xdg-mime query default x-scheme-handler/mailto") "emacsmail.desktop\n")) "no" "setup.sh")
+update-desktop-database ~/.local/share/applications
+#+end_src
+
+We also want to define ~mu4e-compose-from-mailto~.
+#+begin_src emacs-lisp
+(defun mu4e-compose-from-mailto (mailto-string &optional quit-frame-after)
+  (require 'mu4e)
+  (unless mu4e--server-props (mu4e t) (sleep-for 0.1))
+  (let* ((mailto (message-parse-mailto-url mailto-string))
+         (to (cadr (assoc "to" mailto)))
+         (subject (or (cadr (assoc "subject" mailto)) ""))
+         (body (cadr (assoc "body" mailto)))
+         (headers (-filter (lambda (spec) (not (-contains-p '("to" "subject" "body") (car spec)))) mailto)))
+    (when-let ((mu4e-main (get-buffer mu4e-main-buffer-name)))
+      (switch-to-buffer mu4e-main))
+    (mu4e~compose-mail to subject headers)
+    (when body
+      (goto-char (point-min))
+      (if (eq major-mode 'org-msg-edit-mode)
+          (org-msg-goto-body)
+        (mu4e-compose-goto-bottom))
+      (insert body))
+    (goto-char (point-min))
+    (cond ((null to) (search-forward "To: "))
+          ((string= "" subject) (search-forward "Subject: "))
+          (t (if (eq major-mode 'org-msg-edit-mode)
+                 (org-msg-goto-body)
+               (mu4e-compose-goto-bottom))))
+    (font-lock-ensure)
+    (when evil-normal-state-minor-mode
+      (evil-append 1))
+    (when quit-frame-after
+      (add-hook 'kill-buffer-hook
+                `(lambda ()
+                   (when (eq (selected-frame) ,(selected-frame))
+                     (delete-frame)))))))
+#+end_src
+
+It would also be nice to change the name pre-filled in =From:= when drafting.
+#+begin_src emacs-lisp
+(defvar mu4e-from-name "Akhil"
+  "Name used in \"From:\" template.")
+(defadvice! mu4e~draft-from-construct-renamed (orig-fn)
+  "Wrap `mu4e~draft-from-construct-renamed' to change the name."
+  :around #'mu4e~draft-from-construct
+  (let ((user-full-name mu4e-from-name))
+    (funcall orig-fn)))
+#+end_src
+
+We can also use this a signature,
+#+begin_src emacs-lisp
+(setq message-signature mu4e-from-name)
+#+end_src
+
+I've got a few extra addresses I'd like ~+mu4e-set-from-address-h~ to be aware of.
+
+#+begin_src emacs-lisp
+(defun +mu4e-update-personal-addresses ()
+  (let ((primary-address
+         (car (cl-remove-if-not
+               (lambda (a) (eq (mod (apply #'* (cl-coerce a 'list)) 600) 0))
+               (mu4e-personal-addresses)))))
+    (setq +mu4e-personal-addresses
+          (and primary-address
+               (append (mu4e-personal-addresses)
+                       (mapcar
+                        (lambda (subalias)
+                          (concat subalias "@"
+                                  (subst-char-in-string ?@ ?. primary-address)))
+                        '("orgmode"))
+                       (mapcar
+                        (lambda (alias)
+                          (replace-regexp-in-string
+                           "\\`\\(.*\\)@" alias primary-address t t 1))
+                        '("contact" "akhil")))))))
+
+(add-transient-hook! 'mu4e-compose-pre-hook
+  (+mu4e-update-personal-addresses))
+#+end_src
+
+Speaking of, it would be good to put emails sent from =@tecosaur.net= in the
+account-specific sent directory, not the catch-all.
+
+#+begin_src emacs-lisp :tangle no
+(defun +mu4e-account-sent-folder (&optional msg)
+  (let ((from (if msg
+                  (plist-get (car (plist-get msg :from)) :email)
+                (save-restriction
+                  (mail-narrow-to-head)
+                  (mail-fetch-field "from")))))
+    (if (and from (string-match-p "@tecosaur\\.net>?\\'" from))
+        "/tecosaur-net/Sent"
+      "/sent")))
+(setq mu4e-sent-folder #'+mu4e-account-sent-folder)
+#+end_src
+
+When composing an email, I think it would make more sense to start off in =insert=
+mode than =normal= mode, which can be accomplished via a compose hook.
+
+#+begin_src emacs-lisp
+(defun +mu4e-evil-enter-insert-mode ()
+  (when (eq (bound-and-true-p evil-state) 'normal)
+    (call-interactively #'evil-append)))
+
+(add-hook 'mu4e-compose-mode-hook #'+mu4e-evil-enter-insert-mode 90)
+#+end_src
+
+*** Working with the Org mailing list
+:PROPERTIES:
+:header-args:emacs-lisp: :noweb-ref mu4e-conf
+:END:
+**** Adding =X-Woof= headers
+
+I'm fairly active on the Org mailing list (ML). The Org ML has a linked
+bug/patch tracker, https://updates.orgmode.org/ managed by [[https://github.com/bzg/woof][Woof]]. However, I feel
+like I spend too much time looking up what the appropriate headers are for
+updating the status of bugs and patches. What I need, is some sort of convenient
+tool. Let's write one.
+
+First, a function that asks what I want to do and returns the appropriate =X-Woof=
+header.
+#+begin_src emacs-lisp :tangle no
+(defun +mu4e-get-woof-header ()
+  (pcase (read-char
+          (format "\
+%s
+  %s Declare %s Applied %s Aborted
+%s
+  %s Confirm %s Fixed
+%s
+  %s Request %s Resolved
+
+%s remove X-Woof header"
+                  (propertize "Patch" 'face 'outline-3)
+                  (propertize "p" 'face '(bold consult-key))
+                  (propertize "a" 'face '(bold consult-key))
+                  (propertize "c" 'face '(bold consult-key))
+                  (propertize "Bug" 'face 'outline-3)
+                  (propertize "b" 'face '(bold consult-key))
+                  (propertize "f" 'face '(bold consult-key))
+                  (propertize "Help" 'face 'outline-3)
+                  (propertize "h" 'face '(bold consult-key))
+                  (propertize "r" 'face '(bold consult-key))
+                  (propertize "x" 'face '(bold error))))
+    (?p "X-Woof-Patch: confirmed")
+    (?a "X-Woof-Patch: applied")
+    (?c "X-Woof-Patch: cancelled")
+    (?b "X-Woof-Bug: confirmed")
+    (?f "X-Woof-Bug: fixed")
+    (?h "X-Woof-Help: confirmed")
+    (?r "X-Woof-Help: cancelled")
+    (?x 'delete)))
+#+end_src
+
+Now we just need a function which will add such a header to a buffer
+#+begin_src emacs-lisp :tangle no
+(defun +mu4e-insert-woof-header ()
+  "Insert an X-Woof header into the current message."
+  (interactive)
+  (when-let ((header (+mu4e-get-woof-header)))
+    (save-excursion
+      (goto-char (point-min))
+      (search-forward "--text follows this line--")
+      (unless (eq header 'delete)
+        (beginning-of-line)
+        (insert header "\n")
+        (forward-line -1))
+      (when (re-search-backward "^X-Woof-" nil t)
+        (kill-whole-line)))))
+
+(map! :map mu4e-compose-mode-map
+      :localleader
+      :desc "Insert X-Woof Header" "w" #'+mu4e-insert-woof-header)
+
+(map! :map org-msg-edit-mode-map
+      :after org-msg
+      :localleader
+      :desc "Insert X-Woof Header" "w" #'+mu4e-insert-woof-header)
+#+end_src
+
+Lovely! That should make adding these headers a breeze.
+
+**** Patch workflow
+
+Testing patches from the ML is currently more hassle than it needs to be. Let's
+change that.
+
+#+begin_src emacs-lisp :tangle no
+(after! mu4e
+  (defvar +org-ml-target-dir
+    (expand-file-name "lisp/org/" doom-user-dir))
+  (defvar +org-ml-max-age 600
+    "Maximum permissible age in seconds.")
+  (defvar +org-ml--cache-timestamp 0)
+  (defvar +org-ml--cache nil)
+
+  (define-minor-mode +org-ml-patchy-mood-mode
+    "Apply patches to Org in bulk."
+    :global t
+    (let ((action (cons "apply patch to org" #'+org-ml-apply-patch)))
+      (if +org-ml-patchy-mood-mode
+          (add-to-list 'mu4e-view-actions action)
+        (setq mu4e-view-actions (delete action mu4e-view-actions)))))
+
+  (defun +org-ml-apply-patch (msg)
+    "Apply the patch in the current message to Org."
+    (interactive)
+    (unless msg (setq msg (mu4e-message-at-point)))
+    (with-current-buffer (get-buffer-create "*Shell: Org apply patches*")
+      (erase-buffer)
+      (let* ((default-directory +org-ml-target-dir)
+             (exit-code (call-process "git" nil t nil "am" (mu4e-message-field msg :path))))
+        (magit-refresh)
+        (when (not (= 0 exit-code))
+          (+popup/buffer)))))
+
+  (defun +org-ml-current-patches ()
+    "Get the currently open patches, as a list of alists.
+Entries of the form (subject . id)."
+    (delq nil
+          (mapcar
+           (lambda (entry)
+             (unless (plist-get entry :fixed)
+               (cons
+                (format "%-8s  %s"
+                        (propertize
+                         (replace-regexp-in-string "T.*" ""
+                                                   (plist-get entry :date))
+                         'face 'font-lock-doc-face)
+                        (propertize
+                         (replace-regexp-in-string "\\[PATCH\\] ?" ""
+                                                   (plist-get entry :summary))
+                         'face 'font-lock-keyword-face))
+                (plist-get entry :id))))
+           (with-current-buffer (url-retrieve-synchronously "https://updates.orgmode.org/data/patches")
+             (goto-char url-http-end-of-headers)
+             (json-parse-buffer :object-type 'plist)))))
+
+  (defun +org-ml-select-patch-thread ()
+    "Find and apply a proposed Org patch."
+    (interactive)
+    (let* ((current-workspace (+workspace-current))
+           (patches (progn
+                      (when (or (not +org-ml--cache)
+                                (> (- (float-time) +org-ml--cache-timestamp)
+                                   +org-ml-max-age))
+                        (setq +org-ml--cache (+org-ml-current-patches)
+                              +org-ml--cache-timestamp (float-time)))
+                      +org-ml--cache))
+           (msg-id (cdr (assoc (completing-read
+                                "Thread: " (mapcar #'car patches))
+                               patches))))
+      (+workspace-switch +mu4e-workspace-name)
+      (mu4e-view-message-with-message-id msg-id)
+      (unless +org-ml-patchy-mood-mode
+        (add-to-list 'mu4e-view-actions
+                     (cons "apply patch to org" #'+org-ml-transient-mu4e-action)))))
+
+  (defun +org-ml-transient-mu4e-action (msg)
+    (setq mu4e-view-actions
+          (delete (cons "apply patch to org" #'+org-ml-transient-mu4e-action)
+                  mu4e-view-actions))
+    (+workspace/other)
+    (magit-status +org-ml-target-dir)
+    (+org-ml-apply-patch msg)))
+#+end_src
+
+**** Mail list archive links
+
+The other thing which it's good to be easily able to do is grab a link to the
+current message on https://list.orgmode.org.
+
+#+begin_src emacs-lisp :tangle no
+(after! mu4e
+  (defun +mu4e-ml-message-link (msg)
+    "Copy the link to MSG on the mailing list archives."
+    (let* ((list-addr (or (mu4e-message-field msg :list)
+                          (thread-last (append (mu4e-message-field-raw msg :list-post)
+                                               (mu4e-message-field msg :to)
+                                               (mu4e-message-field msg :cc))
+                                       (mapcar (lambda (e) (plist-get e :email)))
+                                       (mapcar (lambda (addr)
+                                                 (when (string-match-p "emacs.*@gnu\\.org$" addr)
+                                                   (replace-regexp-in-string "@" "." addr))))
+                                       (delq nil)
+                                       (car))))
+           (msg-url
+            (pcase list-addr
+              ("emacs-orgmode.gnu.org"
+               (format "https://list.orgmode.org/%s" (mu4e-message-field msg :message-id)))
+              (_ (user-error "Mailing list %s not supported" list-addr)))))
+      (message "Link %s copied to clipboard"
+               (propertize (gui-select-text msg-url) 'face '((:weight normal :underline nil) link)))
+      msg-url))
+
+  (add-to-list 'mu4e-view-actions (cons "link to message ML" #'+mu4e-ml-message-link) t))
+#+end_src
+
+In a similar manner, when clicking on such a link (say when someone uses a link
+to the archive to refer to an earlier email) I'd much rather look at it in mu4e.
+
+#+begin_src emacs-lisp
+(defun +browse-url-orgmode-ml (url &optional _)
+  "Open an orgmode list url using notmuch."
+  (let ((id (and (or (string-match "^https?://orgmode\\.org/list/\\([^/]+\\)" url)
+                     (string-match "^https?://list\\.orgmode\\.org/\\([^/]+\\)" url))
+                 (match-string 1 url))))
+    (mu4e-view-message-with-message-id id)))
+
+(add-to-list 'browse-url-handlers (cons "^https?://orgmode\\.org/list" #'+browse-url-orgmode-ml))
+(add-to-list 'browse-url-handlers (cons "^https?://list\\.orgmode\\.org/" #'+browse-url-orgmode-ml))
+#+end_src
+
+**** Setup when composing a new email
+
+Thanks to having a dedicated address for my interactions with the Org ML, and
+Doom's ~+mu4e-set-from-address-h~, we can tell at the end of compose setup whether
+I'm composing an email to the Org ML and then do a little setup for convenience,
+namely:
++ Pre-fill the =To= address
++ Ensure that =org-msg= is set up to send plaintext only
++ Set ~default-directory~ to my local Org repository (where patch files are
+  generated)
++ Move ~(point)~ to the =Subject:= line
++ Use a special Org-ML-specific signature
+
+#+begin_src emacs-lisp :tangle no
+(defun +mu4e-compose-org-ml-setup ()
+  (when (string-match-p "\\`orgmode@" user-mail-address)
+    (goto-char (point-min))
+    (save-restriction
+      (mail-narrow-to-head)
+      (when (string-empty-p (mail-fetch-field "to"))
+        (re-search-forward "^To: .*$")
+        (replace-match "To: emacs-orgmode@gnu.org")
+        (advice-add 'message-goto-to :after #'+mu4e-goto-subject-not-to-once)))
+    (when (and org-msg-mode
+               (re-search-forward "^:alternatives: (\\(utf-8 html\\))" nil t))
+      (replace-match "utf-8" t t nil 1))
+    (if org-msg-mode
+        (let ((final-elem (org-element-at-point (point-max))))
+          (when (equal (org-element-property :type final-elem) "signature")
+            (goto-char (org-element-property :contents-begin final-elem))
+            (delete-region (org-element-property :contents-begin final-elem)
+                           (org-element-property :contents-end final-elem))
+            (setq-local org-msg-signature
+                        (format "\n\n#+begin_signature\n%s\n#+end_signature"
+                                (cdr +mu4e-org-ml-signature)))
+            (insert (cdr +mu4e-org-ml-signature) "\n")))
+      (goto-char (point-max))
+      (insert (car +mu4e-org-ml-signature)))
+    (setq default-directory
+          (replace-regexp-in-string
+           (regexp-quote straight-build-dir)
+           "repos"
+           (file-name-directory (locate-library "org"))))))
+
+(defun +mu4e-goto-subject-not-to-once ()
+  (message-goto-subject)
+  (advice-remove 'message-goto-to #'+mu4e-goto-subject-not-to-once))
+#+end_src
+
+Now let's set up that signature.
+
+#+begin_src emacs-lisp
+(defvar +mu4e-org-ml-signature
+  (cons
+   "All the best,
+Timothy
+
+-- \
+Timothy (‘tecosaur’/‘TEC’), Org mode contributor.
+Learn more about Org mode at <https://orgmode.org/>.
+Support Org development at <https://liberapay.com/org-mode>,
+or support my work at <https://liberapay.com/tec>.
+"
+   "All the best,\\\\
+@@html:<b>@@Timothy@@html:</b>@@
+
+-\u200b- \\\\
+Timothy (‘tecosaur’/‘TEC’), Org mode contributor.\\\\
+Learn more about Org mode at https://orgmode.org/.\\\\
+Support Org development at https://liberapay.com/org-mode,\\\\
+or support my work at https://liberapay.com/tec.")
+  "Plain and Org version of the org-ml specific signature.")
+#+end_src
+
+Now to make this take effect, we can just add it a bit later on in
+~mu4e-compose-mode-hook~ (after ~org-msg-post-setup~) by setting a hook depth of 1.
+
+#+begin_src emacs-lisp
+(add-hook 'mu4e-compose-mode-hook #'+mu4e-compose-org-ml-setup 1)
+#+end_src
+
+** Org Msg
+
+Doom does a fantastic stuff with the defaults with this, so we only make a few
+minor tweaks. First, some stylistic things:
+
+#+begin_src emacs-lisp
+(setq org-msg-greeting-fmt "\nHi%s,\n\n"
+      org-msg-signature "\n\n#+begin_signature\nAll the best,\\\\\n@@html:<b>@@Timothy@@html:</b>@@\n#+end_signature")
+#+end_src
+
+We also want to set the accent colour used in the Doom =mu4e= module's
+construction of the default org-msg style.
+
+# Noweb ref set to enable use with confpkg pre.
+#+begin_src emacs-lisp :noweb-ref org-msg-accent
+(setq +org-msg-accent-color "#1a5fb4")
+#+end_src
+
+Now, it would be nice to easily jump to and between the ends of the message
+body, so let's make a function for this.
+
+#+begin_src emacs-lisp
+(defun +org-msg-goto-body (&optional end)
+  "Go to either the beginning or the end of the body.
+END can be the symbol top, bottom, or nil to toggle."
+  (interactive)
+  (let ((initial-pos (point)))
+    (org-msg-goto-body)
+    (when (or (eq end 'top)
+              (and (or (eq initial-pos (point)) ; Already at bottom
+                       (<= initial-pos ; Above message body
+                           (save-excursion
+                             (message-goto-body)
+                             (point))))
+                   (not (eq end 'bottom))))
+      (message-goto-body)
+      (search-forward (format org-msg-greeting-fmt
+                              (concat " " (org-msg-get-to-name)))))))
+#+end_src
+
+We can replace the evil binding of =mu4e-compose-goto-bottom= with this function.
+
+#+begin_src emacs-lisp
+(map! :map org-msg-edit-mode-map
+      :after org-msg
+      :n "G" #'+org-msg-goto-body)
+#+end_src
+
+It would also be good to call this when replying to a message. This has to be
+implemented as advice as the compose hooks are run before ~mu4e~compose-handler~
+moves the point with ~message-goto-<location>~.
+
+#+begin_src emacs-lisp
+(defun +org-msg-goto-body-when-replying (compose-type &rest _)
+  "Call `+org-msg-goto-body' when the current message is a reply."
+  (when (and org-msg-edit-mode (eq compose-type 'reply))
+    (+org-msg-goto-body)))
+
+(advice-add 'mu4e~compose-handler :after #'+org-msg-goto-body-when-replying)
+#+end_src
+
+** Adding a signature to your emails
+
+You can set the =mu4e-compose-signature= variable to a string for the signature to include in your e-mails!
+
+#+begin_src emacs-lisp :tangle no
+
+  (setq mu4e-compose-signature "David")
+
+#+end_src
+
+This can also be set per-context.
+
+#+begin_src emacs-lisp :tangle no
+
+ ;; ... clipped from full context config ...
+
+  :vars '((user-mail-address . "systemcrafterstest@fastmail.com")
+          (user-full-name    . "System Crafters Fastmail")
+          (mu4e-compose-signature . "- David")
+          (smtpmail-smtp-server  . "smtp.fastmail.com"))
+
+#+end_src
+
+If you want the signature to be multi-line, use the =\n= character to denote the line breaks:
+
+#+begin_src emacs-lisp :tangle no
+
+  "David Wilson\nSystem Crafters on YouTube"
+
+  ;; or if you want it to be more readable in your config:
+
+  (concat
+    "David Wilson\n"
+    "System Crafters on YouTube")
+
+#+end_src
+
+** Tips
+*** Search queries
+- =something= - General text search for "something"
+- =from:stallman= - Emails from a particular sender
+- =date:today..now= - Date range
+- =flag:attach= - Emails with an attachment
+- ="maildir:/Inbox"= - Search in a specific mail directory
+
+You can also use logic statements like =and= , =not=:
+
+  ="maildir:/Inbox" and from:eli and docs=
+
+*** Bookmarking queries
+You can create your own bookmarked queries!
+
+Run these from anywhere in Emacs with =M-x mu4e-headers-search-bookmark=
+
+      check ~mu4e-bookmarks~ value for more
+*** Encrypting Emails
+
+Similarly to signing emails, you can also encrypt them with
+=mml-secure-message-encrypt-pgpmine=! Anyone with your public key will be able to
+decrypt the message.
+
+*** File Attachments
+
+To add an attachment to your e-mail, press ~C-c C-a~ in the message buffer and then select the file to be attached.
+
+It will ask you a few things about the file you're attaching, most importantly the type of the attachment.  It will usually pick the right one for you based on the file extension!
+
+Drag and drop also works!
+
+*** Message Drafts
+
+If you save a message as a draft while editing it (~C-c C-d~), you can find it in the Drafts folder you configured for that context.
+
+Select the message in the headers list or open the email and press ~E~ (or ~c e~ with evil-mode bindings).  You will now be placed back into the message editor!
+
+*** Managing and reading mail
+
+Run =mu4e=, see the landing page.
+
+When reading mail, you start out in the Headers buffer.  When you select an email with ~RET~, the View buffer is displayed in a window below the Headers buffer window.
+
+**** Headers Mode
+
+Key Bindings:
+
+| Key | Evil  | Command                             | Description                          |
+|-----+-------+-------------------------------------+--------------------------------------|
+|     |       | *Movement*                            |                                      |
+| ~C-n~ | ~j~     | =next-line=                           | Moves to the next header line        |
+| ~C-p~ | ~k~     | =previous-line=                       | Moves to the previous header line    |
+| ~[[~  | ~[[~    | =mu4e-headers-prev-unread=            | Moves to previous unread message     |
+| ~]]~  | ~]]~    | =mu4e-headers-next-unread=            | Moves to next unread message         |
+| ~j~   | ~J~     | =mu4e~headers-jump-to-maildir=        | Jump to another mail directory       |
+|     |       |                                     |                                      |
+|     |       | *Toggles*                             |                                      |
+| ~P~   | ~zt~    | =mu4e-headers-toggle-threading=       | Toggles threaded message display     |
+| ~W~   | ~zr~    | =mu4e-headers-toggle-include-related= | Toggles related message display      |
+|     |       |                                     |                                      |
+|     |       | *Marking*                             |                                      |
+| ~d~   | ~d~     | =mu4e-headers-mark-for-trash=         | Marks message for deletion           |
+| ~m~   | ~m~     | =mu4e-headers-mark-for-move=          | Marks message for move to folder     |
+| ~+~   | ~+~     | =mu4e-headers-mark-for-flag=          | Marks message for flagging           |
+| ~-~   | ~-~     | =mu4e-headers-mark-for-unflag=        | Marks message for unflagging         |
+| ~%~   | ~%~     | =mu4e-headers-mark-pattern=           | Marks based on a regex pattern       |
+| ~u~   | ~u~     | =mu4e-headers-mark-for-unmark=        | Removes mark for message             |
+| ~U~   | ~U~     | =mu4e-mark-unmark-all=                | Unmarks all marks in the view        |
+| ~x~   | ~x~     | =mu4e-mark-execute-all=               | Executes all marks in the view       |
+|     |       |                                     |                                      |
+|     |       | *Searching*                           |                                      |
+| ~s~   | ~s~     | =mu4e-headers-search=                 | Search all e-mails                   |
+| ~S~   | ~S~     | =mu4e-headers-search-edit=            | Edit current search (useful!)        |
+| ~/~   | ~/~     | =mu4e-headers-search-narrow=          | Narrow down the current results      |
+| ~b~   | ~b~     | =mu4e-headers-search-bookmark=        | Select a bookmark to search with     |
+| ~B~   | ~B~     | =mu4e-headers-search-bookmark-edit=   | Edit bookmark before search          |
+| ~g~   | ~gr~    | =mu4e-rerun-search=                   | Rerun the current search             |
+|     |       |                                     |                                      |
+|     |       | *Composing*                           |                                      |
+| ~C~   | ~C~, ~cc~ | =mu4e-compose-new=                    | Compose a new e-mail                 |
+| ~R~   | ~R~, ~cr~ | =mu4e-compose-reply=                  | Compose a reply to selected email    |
+| ~F~   | ~F~, ~cf~ | =mu4e-compose-forward=                | Compose a forward for selected email |
+| ~E~   | ~E~, ~ce~ | =mu4e-compose-edit=                   | Edit selected draft message          |
+|     |       |                                     |                                      |
+|     |       | *Other Actions*                       |                                      |
+| ~q~   | ~q~     | =mu4e~headers-quit-buffer=            | Quit the headers view                |
+
+Controlling the number of messages visible:
+
+- =mu4e-headers-results-limit=: The number of messages to display in mail listings (default 500)
+- =mu4e-headers-full-search=: If =t=, shows all messages, ignoring limit
+
+You can toggle =mu4e-headers-full-search= with =M-x mu4e-headers-toggle-full-search=!
+
+**** View Mode
+
+Many of the same keybindings work!  Marking keys work on the currently viewed message.
+
+| Key | Evil | Command                  | Description                            |
+|-----+------+--------------------------+----------------------------------------|
+|     |      | *Movement*                 |                                        |
+| ~C-n~ | ~j~    | =next-line=                | Moves to the next line in message      |
+| ~C-p~ | ~k~    | =previous-line=            | Moves to the previous line in message  |
+| ~n~   | ~C-j~  | =mu4e-view-headers-next=   | Moves to next email in header list     |
+| ~p~   | ~C-k~  | =mu4e-view-headers-prev=   | Moves to previous email in header list |
+| ~[[~  | ~[[~   | =mu4e-headers-prev-unread= | Moves to previous unread message       |
+| ~]]~  | ~]]~   | =mu4e-headers-next-unread= | Moves to next unread message           |
+
+*** Composing Email
+
+Let's try to compose an e-mail!
+
+Run =M-x mu4e= to get to the mail dashboard and then press =C= (capital C)
+
+If you have configured multiple contexts (which we have), it will ask you which context to use.
+
+Now we have some fields to fill in:
+
+- =From= - This should be automatically populated from your =user-full-name= and =user-full-address=
+- =To= - Enter recipients separated by comma or semicolon.  You can press ~TAB~ to complete recipient names!
+- =Subject= - The subject of the message (may be pre-populated in replies or forwards)
+
+Now we can move our cursor below the line "text follows this line" to write the message!
+
+There are three things you can do from here:
+
+- ~C-c C-c~ - Send the message
+- ~C-c C-k~ - Discard the message
+- ~C-c C-d~ - Save the message in your Drafts folder
+
+Since we want to send this e-mail, let's press ~C-c C-c~!
+
+We can check our Sent Mail folder to verify that the mail was placed there.
+
+https://www.djcbsoftware.nl/code/mu/mu4e/Writing-messages.html
+
+**** Other ways to get to the compose screen
+
+You can follow a few other paths to compose e-mail:
+
+- Press =C= while in the mail list
+- Press =R= while selecting a mail in the mail list or while viewing an e-mail to compose a reply
+- Press =F= while selecting a mail in the mail list or while viewing an e-mail to compose a forwarded mail
+- Run =M-x mu4e-compose-new= or bind that command to a key!
