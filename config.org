@@ -14575,19 +14575,30 @@ Allows you to jump in and out of latex fragments without using `C-c C-x C-l` all
 #+end_src
 ****** Emphasis faces
 
+You can change what face is used to display bold (or any other)
+markup by adding a new entry to org-emphasis-alist. For example,
+to make *bold* display in red, use
+#+begin_example emacs-lisp
+
+ (add-to-list 'org-emphasis-alist
+              '("=" (:foreground "red")
+                ))
+#+end_example
+
+
 Custom Highlighting -  so = becomes =red=.
 #+begin_src emacs-lisp :tangle no
 (after! org
   (setq org-emphasis-alist
-        '(("*" (bold))
-          ("/" italic)
-          ("_" underline)
-          ("=" org-verbatim verbatim)
-          ("~" org-code verbatim)
-          ("=" redd)
-          ("~" code)
-          ("+"
-           (:strike-through t)))))
+        '(("=" (:foreground "red"))
+         ("*" (bold))
+         ("/" italic)
+         ("_" underline)
+         ("=" org-verbatim verbatim)
+         ("~" org-code verbatim)
+         ("~" code)
+         ("+"
+          (:strike-through t)))))
 
 #+end_src
 
