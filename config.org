@@ -1253,11 +1253,13 @@ CLOSED: [2022-10-14 Fri 16:22]
   ;; the shell script called "delight", which handles system-wide theme
   ;; switching (as I bind the `modus-themes-toggle' to <f5>, delight is
   ;; bound to s-<f5> in the desktop's own custom key bindings).
-  (if (string-match-p
-       "dark"
-       (shell-command-to-string "gsettings get org.gnome.desktop.interface color-scheme"))
-      (modus-themes-load-vivendi)
-    (modus-themes-load-operandi))
+
+(let ((current-hour (string-to-number (format-time-string "%H" (current-time)))))
+  (if (and (>= current-hour 6) (< current-hour 18))
+      (modus-themes-load-operandi)
+    (modus-themes-load-vivendi))
+)
+
 
   (define-key global-map (kbd "<f5>") #'modus-themes-toggle)
 
@@ -1657,7 +1659,7 @@ tweaks of my own.
     (force-mode-line-update t))
 
   (dolist (cmd '(embark-act embark-become))
-    
+
     (advice-add cmd :before #'force-keycast-update))
 
   (setq keycast-mode-line-window-predicate 'moody-window-active-p) ; assumes `moody.el'
