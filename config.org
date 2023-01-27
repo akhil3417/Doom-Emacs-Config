@@ -434,6 +434,18 @@ my home machine is pretty safe, and my laptop is shutdown a lot.
 ;; Youtube.
 (load "~/.config/doom/lisp/setup-ytel.el");; youttuuube
 (load "~/.config/doom/lisp/ytdl-downloader.el")
+;; (load "~/.config/doom/lisp/corfuv2.el")
+;; (load "~/.config/doom/lisp/emacs-with-nyxt.el")
+;; (load "~/.config/doom/lisp/prot-common.el")
+;; (load "~/.config/doom/lisp/setup-corfu.el")
+;; (load "~/.config/doom/lisp/setup-consult.el")
+;; (load "~/.config/doom/lisp/sweet-kill.el") ;;overide doom session kill messages
+;; (load "~/.config/doom/lisp/setup-dired.el")
+;; (load "~/.config/doom/lisp/setup-email.el")
+;; (load "~/.config/doom/lisp/setup-elfeed.el")
+;; (load "~/.config/doom/lisp/setup-email.el")
+;; (load "~/.config/doom/lisp/dunst.el")
+;; (load "~/.config/doom/lisp/chromium")
 
 
 #+end_src
