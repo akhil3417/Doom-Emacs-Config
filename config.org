@@ -87,7 +87,22 @@ Doom requires these, and disabling them may have terrible side effects.
 To install ~some-package~ from MELPA, ELPA or emacsmirror:
 #+begin_src emacs-lisp :tangle packages.el
 
-(package! w3m)
+(package! exwm)
+(when (featurep! :editor evil)
+  (package! exwm-evil
+    :recipe (:host github :repo "LemonBreezes/exwm-evil"))
+  (package! exwm-firefox-evil))
+(package! exwm-edit)
+(package! language-detection)
+(package! exwm-mff)
+(package! app-launcher :recipe
+  (:host github :repo "SebastienWae/app-launcher"))
+
+(package! exwm-mff)
+(package! elfeed)
+(package! elfeed-goodies)
+(package! elfeed-org)
+;; (package! w3m)
 (package! mpv)
 (package! emms-player-simple-mpv)
 (package! yaml)
@@ -131,10 +146,19 @@ To install ~some-package~ from MELPA, ELPA or emacsmirror:
 (package! system-packages)
 (package! kind-icon)
 (package! define-word)
+
 (package! dired-sidebar)
+(package! dired-rainbow)
 (package! diredfl)
 (package! dired-rsync)
 (package! dired-filter)
+(package! peep-dired)
+(package! dired-open)
+(package! dired-subtree)
+(package! dired-single)
+(package! dired-collapse)
+(package! dired-ranger)
+
 (package! ibuffer-sidebar)
 (package! easy-kill)
 (package! exotica-theme)
@@ -167,9 +191,6 @@ To install ~some-package~ from MELPA, ELPA or emacsmirror:
 (package! ranger)
 (package! minions)
 (package! diminish)
-(package! dired-single)
-(package! dired-collapse)
-(package! dired-ranger)
 (package! corfu)
 (package! flx)
 (package! simpleclip)
@@ -182,7 +203,7 @@ To install ~some-package~ from MELPA, ELPA or emacsmirror:
 (package! transpose-frame)
 (package! bookmark)
 (package! beginend)
-(package! dired-subtree)
+
 (package! eshell-bookmark)
 (package! eshell-prompt-extras)
 (package! engine-mode)
@@ -191,14 +212,14 @@ To install ~some-package~ from MELPA, ELPA or emacsmirror:
 (package! calfw)
 (package! calfw-org)
 (package! dashboard)
-(package! dired-open)
+
 (package! dmenu)
-;; (package! emojify)
+(package! emojify)
 (package! evil-tutor)
 (package! ivy-posframe)
 (package! ox-gemini)
 (package! pacmacs)
-(package! peep-dired)
+
 (package! rainbow-mode)
 (package! resize-window)
 (package! tldr)
@@ -247,6 +268,10 @@ a ~:recipe~. You'll find documentation on what ~:recipe~ accepts [[https://githu
 (package! kbd-mode
   :recipe (:host github
            :repo "kmonad/kbd-mode"))
+
+(package! elfeed-tube
+  :recipe (:host github
+           :repo "karthink/elfeed-tube"))
 
 
 (package! tmr
