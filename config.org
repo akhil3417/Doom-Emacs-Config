@@ -10502,9 +10502,30 @@ RSS feeds are still a thing. Why not make use of them with =elfeed=.
 I really like what [[https://github.com/fuxialexander/doom-emacs-private-xfu/tree/master/modules/app/rss][fuxialexander]] has going on, but I don't think I need a custom
 module. Let's just try to patch on the main things I like the look of.
 
+*** unsubscribe feeds
+#+begin_src emacs-lisp :tangle yes
+(defun my-display-current-entry-feed ()
+  (interactive)
+  (let ((entry (elfeed-search-selected t)))
+    (when entry
+      (let ((feed (elfeed-entry-feed entry)))
+        (message "%s" (elfeed-feed-url feed))))))
+
+(defun my-unsubscribe-current-feed ()
+  (interactive)
+  (let ((entry (elfeed-search-selected t)))
+    (when entry
+      (let* ((feed (elfeed-entry-feed entry))
+             (url (elfeed-feed-url feed)))
+        (setf elfeed-feeds
+              (cl-remove url elfeed-feeds
+                         :test #'equal
+                         :key (lambda (e) (if (listp e) (car e) e)))))
+      (customize-save-variable 'elfeed-feeds elfeed-feeds))))
+#+end_src
 *** Keybindings
 
-#+begin_src emacs-lisp
+#+begin_src emacs-lisp :tangle yes
 (map! :map elfeed-search-mode-map
       :after elfeed-search
       [remap kill-this-buffer] "q"
