@@ -12012,7 +12012,7 @@ Finally, note that I control the placement of those buffers in the
 
   (run-at-time 10 nil #'appt-activate 1))
 
-(load "prot-diary")
+(load "~/.config/doom/lisp/prot-diary")
 (use-package! appt
   :config
   ;; The idea is to get a reminder via email when I launch Emacs in the
@@ -12591,9 +12591,8 @@ the variable =display-buffer-alist=).
   ;; The following is further controlled by
   ;; `prot-diff-modus-themes-diffs'
   (setq diff-font-lock-syntax 'hunk-also))
-(add-to-list 'load-path "~/.config/doom/lisp/")
 
-(load "prot-diff")
+(load "~/.config/doom/lisp/prot-diff.el")
  (use-package! prot-diff
    :config
    ;; (prot-diff-modus-themes-diffs)
