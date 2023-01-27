@@ -1890,7 +1890,6 @@ This setting ensures that emacsclient always opens on *dashboard* rather than *s
 : ► Doom
 
 ** Prettier page breaks
-CLOSED: [2022-03-31 Thu 20:59]
 
 In some files, =^L= appears as a page break character. This isn't that visually
 appealing, and Steve Purcell has been nice enough to make a package to display
