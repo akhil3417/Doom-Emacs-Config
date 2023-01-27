@@ -9618,12 +9618,12 @@ command tuxi on it."
     (interactive (list (read-string "Google: " nil
                                     google-search-history
                                     (thing-at-point 'sexp))))
-    (unless (executable-find "tuxi")
-      (user-error "Cannot find shell command: tuxi"))
+    (unless (executable-find "ls");; m dumb,
+      (user-error "Cannot find shell command: tuxipy"))
     (let ((search-output (string-trim-right
                           (shell-command-to-string
                            (concat
-                            "tuxi -r "
+                            "python3 -m tuxipy "
                             (shell-quote-argument search-string))))))
       (with-current-buffer (get-buffer-create "*Tuxi Output*")
         (goto-char (point-max))
