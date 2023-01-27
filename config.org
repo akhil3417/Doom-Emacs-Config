@@ -13470,7 +13470,7 @@ What you can do inside such a buffer (with minor tweaks by me):
 + Hit =RET= while over a referenced manpage to produce a new buffer with
   its contents.
 + =s= takes you directly to the familiar "See Also" section.
-+ Use =m= or =j= to search for another manpage using your completion framework.
++ Use =C-f= to search for another manpage using your completion framework.
   If you invoke this command while point is over a referenced manpage,
   it becomes the default choice (same concept as with common help
   commands, =C-h f=, =C-h v=, and with many others like =find-library=).
