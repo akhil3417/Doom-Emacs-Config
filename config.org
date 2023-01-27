@@ -415,6 +415,12 @@ my home machine is pretty safe, and my laptop is shutdown a lot.
 (load "utilities.el");;essential
 (load "setup-isearch")
 
+(load "~/.config/doom/lisp/elfeed-tube/elfeed-tube.el")
+(load "~/.config/doom/lisp/elfeed-tube/elfeed-tube-contrib.el")
+(load "~/.config/doom/lisp/elfeed-tube/elfeed-tube-fill.el")
+(load "~/.config/doom/lisp/elfeed-tube/elfeed-tube-mpv.el")
+(load "~/.config/doom/lisp/elfeed-tube/elfeed-tube-test.el")
+(load "~/.config/doom/lisp/elfeed-tube/elfeed-tube-utils.el")
 ;; ytel provides an elfeed-like interface to search invidious instances for
 ;; youtube videos. Phew. The churn rate of Invidious urls is quite high, which
 ;; makes this flaky, but anything's better than the browser interface to
