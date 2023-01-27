@@ -10458,9 +10458,9 @@ Usage:
 +  Pause emms with M-x emms-pause when needed.
 
  #+BEGIN_SRC emacs-lisp :tangle no
-;; (use-package! elfeed-goodies)
-;; (elfeed-goodies/setup)
-;; (setq elfeed-goodies/entry-pane-size 0.5)
+(use-package! elfeed-goodies)
+(elfeed-goodies/setup)
+(setq elfeed-goodies/entry-pane-size 0.7)
 (add-hook 'elfeed-show-mode-hook 'visual-line-mode)
 (evil-define-key 'normal elfeed-show-mode-map
   (kbd "J") 'elfeed-goodies/split-show-next
