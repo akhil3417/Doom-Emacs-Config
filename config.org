@@ -13612,7 +13612,8 @@ One of the media players available for Emacs is emms, which stands for Emacs Mul
         emms-browser-covers 'emms-browser-cache-thumbnail-async
         emms-player-list '(emms-player-mpv)
         emms-player-mpv-environment '("PULSE_PROP_media.role=music")
-        emms-player-mpv-parameters '("--quiet" "--really-quiet" "--no-audio-display" "--force-window=no" "--vo=null")
+        ;; emms-player-mpv-parameters '("--quiet" "--really-quiet" "--no-audio-display" "--force-window=no" "--vo=null")
+        emms-player-mpv-parameters '("--quiet" "--really-quiet" "--no-audio-display" "--force-window=no" "--vo=xv")
         emms-browser-thumbnail-small-size 64
         emms-browser-thumbnail-medium-size 128)
        (emms-browser-make-filter "all" #'ignore)
@@ -13625,8 +13626,8 @@ One of the media players available for Emacs is emms, which stands for Emacs Mul
        ;; libre-fm
        ;; (emms-librefm-scrobbler-enable)
 
-  (require 'emms-setup)
-  (emms-all)
+  ;; (require 'emms-setup)
+  ;; (emms-all)
   ;; (emms-default-players)
   (emms-playing-time-disable-display)
 
@@ -13670,7 +13671,6 @@ One of the media players available for Emacs is emms, which stands for Emacs Mul
 ;;To get track information from MusicPD, invoke the following:
 
 ;; (add-to-list 'emms-info-functions 'emms-info-mpd)
-
 
   ;; (setq emms-info-libtag-known-extensions
   ;;       (regexp-opt '("opus" "mp3" "mp4" "m4a" "ogg" "flac" "spx" "wma")))
@@ -13939,6 +13939,7 @@ rather than the whole path."
 
 #+BEGIN_SRC emacs-lisp :tangle no
 ;; just in case above config breaks
+(require 'emms-setup)
 (emms-all)
 (emms-default-players)
 (emms-mode-line-mode 1)
@@ -13954,6 +13955,10 @@ rather than the whole path."
        :desc "Emms stop track" "s" #'emms-stop
        :desc "Emms play previous track" "p" #'emms-previous
        :desc "Emms play next track" "n" #'emms-next))
+
+(require 'emms-player-mpd)
+(add-to-list 'emms-info-functions 'emms-info-mpd)
+(add-to-list 'emms-player-list 'emms-player-mpd)
 #+END_SRC
 
 ** emms dbus notification
@@ -14272,7 +14277,7 @@ then press capital O in mpv to show the time
   "
   ^Seek^                    ^Actions^                ^General^
   ^^^^^^^^---------------------------------------------------------------------------
-  A__: seek back -5         _,_: back frame          _i_: insert playback position
+  a__: seek back -5         _,_: back frame          _i_: insert playback position
   A__: seek back -60        _._: forward frame       _n_: insert a newline
   H__: seek forward 60      _SPC_: pause             _s_: take a screenshot
   h__: seek forward 5       _q_: quit mpv            _o_: show the osd
@@ -14280,7 +14285,7 @@ then press capital O in mpv to show the time
   "
   ("a" mpv-seek-backward "-5")
   ("A" mpv-seek-backward "-60")
-  ("h" mpv-seek-forward "60")
+  ("H" mpv-seek-forward "60")
   ("h" mpv-seek-forward "5")
   ("," mpv-frame-back-step)
   ("." mpv-frame-step)
