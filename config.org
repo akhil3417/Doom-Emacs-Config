@@ -6824,6 +6824,14 @@ Including indent-buffer, which should not be called automatically on save."
   "Perform cleanup-buffer after sgml-delete-tag , very helpful in html"
   (cleanup-buffer))
 #+end_src
+** zencoding
+#+begin_src emacs-lisp
+;; https://github.com/rooney/zencoding
+(add-to-list 'load-path "~/.config/doom/lisp/zencoding/")
+(require 'zencoding-mode)
+(add-hook 'sgml-mode-hook 'zencoding-mode) ;; Auto-start on any markup modes
+#+end_src
+
 * SHELLS
 ** desc
 Eshell is a strictly line-oriented command prompt written in Emacs Lisp.
