@@ -472,6 +472,7 @@ CLOSED: [2022-11-12 Sat 10:21]
 (global-set-key (kbd "<C-wheel-up>") 'text-scale-increase)
 (global-set-key (kbd "<C-wheel-down>") 'text-scale-decrease)
 
+;; (define-key evil-normal-state-map (kbd "M-SPC") #'set-mark-command)
 (defhydra hydra-text-scale (:timeout 4) ; Change the size of text
   "scale text"
   ("j" text-scale-increase "inc")
@@ -5252,12 +5253,16 @@ functions =evil-repeat-pop-next= and =xref-pop-marker-stack=, for some reason.
   (define-key evil-normal-state-map (kbd "C-n") nil)
   (define-key evil-normal-state-map (kbd "M-<right>") #'sp-backward-barf-sexp)
   (define-key evil-normal-state-map (kbd "M-<left>") #'sp-backward-slurp-sexp)
+  (define-key evil-normal-state-map (kbd "C-<right>") #'sp-forward-slurp-sexp)
+  (define-key evil-normal-state-map (kbd "C-<left>") #'sp-forward-barf-sexp)
+
   (define-key org-mode-map (kbd "C-'") nil) ;; need that for avy
   (evil-define-key 'normal org-mode-map (kbd "M-j") nil) ;; avvvy
 ;; for org-agenda-custom
-  (define-key org-super-agenda-header-map (kbd "j") nil) ;; its irrtating to be prompted when in custom org-agenda heading , can just use gd
-  (define-key org-super-agenda-header-map (kbd "k") nil) ;; just use SPC-X , for capture
+  ;; (define-key org-super-agenda-header-map (kbd "j") nil) ;; its irrtating to be prompted when in custom org-agenda heading , can just use gd
+  ;; (define-key org-super-agenda-header-map (kbd "k") nil) ;; just use SPC-X , for capture
 
+  (define-key evil-normal-state-map (kbd "C-M-d") nil) ;;change default evil-multiedit-restore in favor of sp-down-sexp
 #+end_src
 
 #+RESULTS:
