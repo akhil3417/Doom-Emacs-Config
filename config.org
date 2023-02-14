@@ -9417,34 +9417,6 @@ Sometimes you want to be able to do fancy things with the text that you're enter
 
 #+RESULTS:
 : my-org-insert-youtube-video-with-transcript
-** org roam qutebrowser
-#+begin_src emacs-lisp :tangle yes
-(require 'org-roam-protocol)
-(setq org-roam-capture-ref-templates
-        '(("r" "ref" plain (function org-roam-capture--get-point)
-           "%?"
-           :file-name "${slug}"
-           :head "#+TITLE: ${title}
-#+ROAM_KEY: ${ref}"
-           :unnarrowed t)))
-
-#+end_src
-
-#+RESULTS:
-| r | ref | plain | #'org-roam-capture--get-point | %? | :file-name | ${slug} | :head | #+TITLE: ${title} |
-**
-#+begin_src python :tangle ~/.config/doom/org-roam-protocol-handler.py
-import os
-import sys
-import urllib.parse
-
-url   = urllib.parse.quote(sys.argv[1])
-title = urllib.parse.quote(sys.argv[2])
-
-command = "emacsclient \"org-protocol://roam-ref?template=r&ref="+url+"&title="+title+"\""
-os.system(command)
-#+end_src
-
 ** CLIPPY
 Gives us a popup box with "Clippy, the paper clip". You can make him say various things by calling 'clippy-say' function.  But the more useful functions of clippy are the two describe functions provided: 'clippy-describe-function' and 'clippy-describe-variable'.  Hit the appropriate keybinding while the point is over a function/variable to call it.  A popup with helpful clippy will appear, telling you about the function/variable (using describe-function and describe-variable respectively).
 
