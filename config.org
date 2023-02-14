@@ -141,7 +141,6 @@ To install ~some-package~ from MELPA, ELPA or emacsmirror:
 (package! sdcv)
 (package! clippy)
 (package! wordnut)
-(package! telega)
 (package! smart-mode-line)
 (package! system-packages)
 (package! kind-icon)
@@ -175,7 +174,6 @@ To install ~some-package~ from MELPA, ELPA or emacsmirror:
 (package! osm)
 (package! olivetti)
 (package! framemove)
-(package! monkeytype)
 (package! hacker-typer)
 (package! pinentry)
 (package! openwith)
@@ -194,9 +192,7 @@ To install ~some-package~ from MELPA, ELPA or emacsmirror:
 (package! corfu)
 (package! flx)
 (package! simpleclip)
-(package! webpaste)
 (package! versuri)
-(package! google-translate)
 (package! mw-thesaurus)
 (package! elpher)
 (package! all-the-icons-ivy-rich)
@@ -228,7 +224,6 @@ To install ~some-package~ from MELPA, ELPA or emacsmirror:
 (package! desktop-environment)
 (package! browse-url)
 (package! youtube-dl)
-(package! speed-type)
 (package! boxquote)
 ;; (package! impatient-mode)
 (package! pdf-tools)
@@ -394,9 +389,6 @@ my home machine is pretty safe, and my laptop is shutdown a lot.
 ;; -*- lexical-binding: t -*-
 ;; (add-to-list 'load-path "~/.config/doom/lisp/")
 ;; (add-to-list 'load-path "~/.config/doom/lisp/elfeed-tube/")
-(add-to-list 'load-path "~/.config/doom/lisp/tab-bar/")
-(load "~/.config/doom/lisp/tab-bar/prot-tab.el")
-(load "~/.config/doom/lisp/tab-bar/prot-emacs-window.el")
 
 (load "~/.config/doom/lisp/elfeed-tube/elfeed-tube.el")
 (load "~/.config/doom/lisp/elfeed-tube/elfeed-tube-contrib.el")
@@ -415,8 +407,6 @@ my home machine is pretty safe, and my laptop is shutdown a lot.
 (load "~/.config/doom/lisp/setup-embark.el")
 (load "~/.config/doom/lisp/utilities.el");;essential
 (load "~/.config/doom/lisp/setup-isearch")
-;;exwm
-;; (load "~/.config/doom/exwmmain.el")
 ;; ytel provides an elfeed-like interface to search invidious instances for
 ;; youtube videos. Phew. The churn rate of Invidious urls is quite high, which
 ;; makes this flaky, but anything's better than the browser interface to
