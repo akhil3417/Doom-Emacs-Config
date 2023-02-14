@@ -4437,6 +4437,10 @@ built-in variables for the cursor.  Check the =prot-cursor.el= code, which
 is reproduced right after the following package configurations.
 
 #+begin_src emacs-lisp
+
+;; Adding mouse support in the terminal version of Emacs.
+(xterm-mouse-mode 1)
+
 ;;; Cursor appearance and tweaks (prot-cursor.el)
 (load "~/.config/doom/lisp/prot-cursor.el")
 (use-package! prot-cursor
