@@ -9634,7 +9634,7 @@ Other potentially relevant parts of my dotemacs:
 : t
 ** Auto git clone
 #+begin_src emacs-lisp :tangle yes
-
+(load "~/.config/doom/lisp/auto-git-clone.el")
 #+end_src
 
 #+RESULTS:
