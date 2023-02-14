@@ -4695,14 +4695,6 @@ Bookmarks are somewhat like registers in that they record positions you can jump
 
 #+RESULTS:
 : bookmark-save
-** DONE MOUSE SUPPORT
-CLOSED: [2022-04-01 Fri 15:37]
-Adding mouse support in the terminal version of Emacs.
-
-#+begin_src emacs-lisp
-(xterm-mouse-mode 1)
-#+end_src
-
 ** DONE EMOJIS
 CLOSED: [2022-04-01 Fri 15:37]
 Emojify is an Emacs extension to display emojis. It can display github style emojis like :smile: or plain ascii ones like :).
