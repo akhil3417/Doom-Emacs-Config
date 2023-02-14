@@ -13102,8 +13102,8 @@ CLOSED: [2022-10-07 Fri 20:58]
 #+begin_src emacs-lisp :tangle yes
 
 (setq org-todo-keywords
-      '((sequence "TODO(t)" "PROJ(p)" "LOOP(r)" "STRT(s)" "WAIT(w@/!)" "HOLD(h)" "IDEA(i)" "FIXME(f@/!)" "REVIEW(v!)" "|" "DONE(d)" "KILL(k)" "BLOCKED(B@)")
-        (sequence "BACKLOG(b)" "SOMEDAY(s)" "PLAN(P)" "READY(r)" "FOUND(F@/!)" "ACTIVE(a@)"  "|" "COMPLETED(c)" "CANC(C@)")
+      '((sequence "TODO(t)" "PROJ(p)" "LOOP(r)" "STRT(s)" "WAIT(w@/!)" "HOLD(h)" "IDEA(i)" "FIXME(f@/!)" "REVIEW(v!)" "NEXT(N)" "FOUND(F@/!)" "|" "DONE(d)" "KILL(k@)")
+        (sequence "BACKLOG(b)" "PLAN(P)" "READY(r)"   "|" "COMPLETED(c)" "CANC(C@)")
         (sequence "[ ](T)" "[-](S)" "[?](W)" "|" "[X](D)")
         (sequence "|" "OKAY(o)" "YES(y)" "NO(n)")))
 
