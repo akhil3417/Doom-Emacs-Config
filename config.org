@@ -4753,12 +4753,25 @@ Happily taken from Pascals configuration: https://github.com/SirPscl/emacs.d#sud
 
 #+RESULTS:
 
-** DONE Speed type
+** DONE Speed type and Monkeytype
 CLOSED: [2022-04-01 Fri 15:39]
+#+begin_src emacs-lisp :tangle packages.el
+(package! speed-type)
+(package! monkeytype)
+#+end_src
 #+begin_src emacs-lisp
 ;; Speed-type: Type a text and measure your speed
 (use-package! speed-type
   :defer t)
+
+(use-package! monkeytype
+  :defer t)
+(defun my/monkeytype-mode-hook ()
+  "Hooks for monkeytype-mode."
+  ;; (centered-cursor-mode)
+  ;; (evil-escape-mode -1)
+  (evil-insert -1))
+(add-hook 'monkeytype-mode-hook #'my/monkeytype-mode-hook)
 #+end_src
 ** DONE Selectric
 CLOSED: [2022-04-01 Fri 15:39]
@@ -5417,15 +5430,6 @@ counterpart on =M-Z= (=M-S-z=).
 (setq server-window #'dw/show-server-edit-buffer)
 #+end_src
 
-** monkeytype
-#+begin_src emacs-lisp :tangle no
-(defun my/monkeytype-mode-hook ()
-  "Hooks for monkeytype-mode."
-  ;; (centered-cursor-mode)
-  ;; (evil-escape-mode -1)
-  (evil-insert -1))
-(add-hook 'monkeytype-mode-hook #'my/monkeytype-mode-hook)
-#+end_src
 ** INSERT DATE
 Some custom functions to insert the date.  The function 'insert-todays-date' can be used one of three different ways: (1) just the keybinding without the universal argument prefix, (2) with one universal argument prefix, or (3) with two universal argument prefixes.  The universal argument prefix is 'SPC-u' in Doom Emacs (C-u in standard GNU Emacs).  The function 'insert-any-date' only outputs to one format, which is the same format as 'insert-todays-date' without a prefix.
 
