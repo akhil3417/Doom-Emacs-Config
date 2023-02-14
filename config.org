@@ -12242,18 +12242,16 @@ so use `emms-next-noerror' in that case."
 ** pipewire start
 #+begin_src emacs-lisp
 
-(defun my/pipewire-start()
+(defun my/pipewire-start-or-kill ()
   (interactive)
-    (save-window-excursion
-      (shell-command
-       (format "pipewire & pipewire-pulse &" ))))
+  (if (string-equal (shell-command-to-string "pgrep pipewire") "")
+      (progn
+        (shell-command (format "pipewire & pipewire-pulse &"))
+        (message "PipeWire started"))
+    (progn
+      (shell-command (format "killall pipewire & killall pipewire-pulse &"))
+      (message "PipeWire killed"))))
 
-
-(defun my/pipewire-kill()
-  (interactive)
-    (save-window-excursion
-      (shell-command
-       (format "killall pipewire & killall pipewire-pulse  &" ))))
 #+end_src
 
 #+RESULTS:
