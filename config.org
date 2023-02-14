@@ -5032,7 +5032,7 @@ configurations and documentation for [[#h:6c6759c8-3ae3-40b0-8356-05cc0975e12a][
 #+RESULTS:
 : t
 
-** Abberviation
+** Abbreviation
 #+begin_src emacs-lisp :tangle no
 ;; Where I store the abbreviation I need.
 
@@ -8171,7 +8171,8 @@ _d_: subtree
       (evil-local-mode (if git-timemachine-mode -1 1)))))
 #+end_src
 * Avy
-** general avy
+**  desc
+
 I definitely need to use it more. It allows to quickly jump around, both in the same and in other buffers.
 
 The =avy= package by Oleh Krehel lets you select a location on the screen
@@ -8321,11 +8322,7 @@ CLOSED: [2022-04-01 Fri 15:59]
   :commands (0x0-upload 0x0-dwim)
   :bind ("C-x U" . 0x0-dwim))
 #+end_src
-** DONE OpenStreetMap viewer (osm.el)
-CLOSED: [2022-04-01 Fri 16:01]
-:PROPERTIES:
-:CUSTOM_ID: h:db40bd63-fe98-42b2-a10d-83966a59be4e
-:END:
+** OpenStreetMap viewer (osm.el)
 
 This is yet another brilliant package by Daniel Mendler.  It uses Emacs'
 image viewing facilities in combination with asynchronous =curl= calls
@@ -9165,6 +9162,8 @@ MYTAG"
 #+RESULTS:
 : elfeed-tube-mpv-where
 ** chatgpt
+*** v1
+
 #+begin_src emacs-lisp :tangle no
 (package! epc)
 #+end_src
