@@ -25,7 +25,7 @@
         (git-auto-commit-mode 1)
         (setq-local gac-automatically-push-p t)))))
  '(package-selected-packages
-   '(vertico-posframe exwm-mff epc mentor pacmacs org-noter-pdftools visual-fill-column calfw elfeed-tube-mpv dash miniedit pdf-tools all-the-icons-completion all-the-icons-dired recursion-indicator edwina trashed rcirc-notify emojify all-the-icons olivetti gameoflife cape exwm))
+   '(exwm-mff epc mentor pacmacs org-noter-pdftools visual-fill-column calfw elfeed-tube-mpv dash miniedit pdf-tools all-the-icons-completion all-the-icons-dired recursion-indicator edwina trashed rcirc-notify emojify all-the-icons olivetti gameoflife cape exwm))
  '(rmh-elfeed-org-files '("~/.config/doom/elfeed.org") t)
  '(warning-suppress-log-types '((emacs) (org-element-cache) (comp) (defvaralias)))
  '(warning-suppress-types '((org-element-cache) (comp) (defvaralias))))
