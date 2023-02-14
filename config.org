@@ -440,7 +440,6 @@ my home machine is pretty safe, and my laptop is shutdown a lot.
 ;; (load "~/.config/doom/lisp/dunst.el")
 ;; (load "~/.config/doom/lisp/chromium")
 
-
 #+end_src
 
 ** DONE Auto-customisations
@@ -6030,8 +6029,6 @@ REGION are passed to `fill-paragraph'."
 (advice-add 'fill-paragraph :around #'op/fill-or-unfill)
 #+end_src
 
-#+RESULTS:
-
 ** keychord
 In case  I  don’t use Evil (Vim emulation), which would add an extra layer of complexity to everything. Instead, I heavily leverage key-chord.el, which enables binding simultaneous key presses (chords) to commands.
 I have some custom code to bind chords to Doom’s leaders. Many commonly used commands are bound in these “key chord maps”.
@@ -8169,8 +8166,6 @@ buffer (see [[#h:c110e399-3f43-4555-8427-b1afe44c0779][Minibuffer configurations
 (load "~/.config/doom/lisp/setup-avy.el")
 #+end_src
 
-#+RESULTS:
-: my/avy-isearch
 * Internet & services
 ** DONE Network Manager
 CLOSED: [2022-03-30 Wed 09:36]
@@ -8400,9 +8395,6 @@ prompt and everyone in the channel can see it.  Some things I learnt:
 (load "~/.config/doom/lisp/setup-telega.el")
 #+end_src
 
-
-#+RESULTS:
-| telega-mnz-mode--maybe | telega-url-shorten-mode--maybe | my/telega/company-backends |
 ** DONE Google Translate
 CLOSED: [2022-09-22 Thu 12:05]
 #+begin_src emacs-lisp :tangle packages.el
@@ -8772,8 +8764,6 @@ some of the above.
   :ensure t)
 #+end_src
 
-#+RESULTS:
-: simple-httpd
 
 Now you can run M-x httpd-serve-directory. It will prompt you for a directory to serve from within Emacs.
 Select the path of your public/ directory and then open your browser to http://localhost:8080 to see the preview of your site! Set httpd-port to change the default port if necessary.
@@ -9151,7 +9141,6 @@ MYTAG"
                                         ("emacs-fucn" . "Write emacs-lisp code .\n\n%s")))
 
 #+end_src
-
 * Applications and utilities
 
 This section includes configurations for programs like email clients,
@@ -9637,9 +9626,6 @@ Other potentially relevant parts of my dotemacs:
 (load "~/.config/doom/lisp/auto-git-clone.el")
 #+end_src
 
-#+RESULTS:
-: t
-
 ** Games
 
 Games
@@ -9647,8 +9633,6 @@ I also use Emacs to play games and do other fun things. Using swiper means I don
 #+begin_src emacs-lisp
 (load "~/.config/doom/lisp/setup-games.el")
 #+end_src
-
-#+RESULTS:
 
 ** TODO tmr.el (TMR Must Recur)
 
@@ -13913,6 +13897,9 @@ The agenda is nice, but a souped up version is nicer.
 
 #+end_src
 
+#+RESULTS:
+: my-org-check-agenda
+
 #+begin_src emacs-lisp :tangle no
 
 ;; The buffer you put this code in must have lexical-binding set to t!
@@ -15526,7 +15513,7 @@ It's also nice to make use of the Unicode characters for check boxes, and other 
 #+end_src
 
 #+RESULTS:
-| :name | ⁍  | :src_block | » | :src_block_end | « | :quote | “ | :quote_end | ” | :lambda | λ | :def | ƒ | :composition | ∘ | :map | ↦ | :null | ∅ | :true | 𝕋 | :false | 𝔽 | :int | ℤ | :float | ℝ | :str | 𝕊  | :bool | 𝔹 | :list | 𝕃 | :not | ￢ | :in | ∈ | :not-in | ∉ | :and | ∧ | :or | ∨ | :for | ∀ | :some | ∃ | :return | ⟼ | :yield | ⟻ | :union | ⋃ | :intersect | ∩ | :diff | ∖  | :tuple | ⨂ | :pipe |  | :dot | • | :checkbox | ☐ | :pending | ◼  | :checkedbox | ☑ | :list_property | ∷ | :em_dash | — | :ellipses | … | :arrow_right | → | :arrow_left | ← | :title | 𝙏 | :subtitle | 𝙩 | :author | 𝘼 | :date | 𝘿 | :property | ☸ | :options | ⌥ | :startup | ⏻ | :macro | 𝓜 | :html_head | 🅷 | :html | 🅗 | :latex_class | 🄻 | :latex_header | 🅻 | :beamer_header | 🅑 | :latex | 🅛 | :attr_latex | 🄛 | :attr_html | 🄗 | :attr_org | ⒪ | :begin_quote | ❝ | :end_quote | ❞ | :caption | ☰ | :header | › | :results | 🠶 | :begin_export | ⏩ | :end_export | ⏪ | :properties | ⚙ | :end | ∎ | :priority_a | ⚑ | :priority_b | ⬆ | :priority_c | ■ | :priority_d | ⬇ | :priority_e | ❓ | :checkbox | ☐ | :pending | ◼  | :checkedbox | ☑ | :list_property | ∷ | :em_dash | — | :ellipses | … | :arrow_right | → | :arrow_left | ← | :title | 𝙏 | :subtitle | 𝙩 | :author | 𝘼 | :date | 𝘿 | :property | ☸ | :options | ⌥ | :startup | ⏻ | :macro | 𝓜 | :html_head | 🅷 | :html | 🅗 | :latex_class | 🄻 | :latex_header | 🅻 | :beamer_header | 🅑 | :latex | 🅛 | :attr_latex | 🄛 | :attr_html | 🄗 | :attr_org | ⒪ | :begin_quote | ❝ | :end_quote | ❞ | :caption | ☰ | :header | › | :results | 🠶 | :begin_export | ⏩ | :end_export | ⏪ | :properties | ⚙ | :end | ∎ | :priority_a | ⚑ | :priority_b | ⬆ | :priority_c | ■ | :priority_d | ⬇ | :priority_e | ❓ |
+| :name | ⁍  | :src_block | » | :src_block_end | « | :quote | “ | :quote_end | ” | :lambda | λ | :def | ƒ | :composition | ∘ | :map | ↦ | :null | ∅ | :true | 𝕋 | :false | 𝔽 | :int | ℤ | :float | ℝ | :str | 𝕊 | :bool | 𝔹 | :list | 𝕃 | :not | ￢ | :in | ∈ | :not-in | ∉ | :and | ∧ | :or | ∨ | :for | ∀ | :some | ∃ | :return | ⟼ | :yield | ⟻ | :union | ⋃ | :intersect | ∩ | :diff | ∖ | :tuple | ⨂ | :pipe |  | :dot | • | :checkbox | ☐ | :pending | ◼  | :checkedbox | ☑ | :list_property | ∷ | :em_dash | — | :ellipses | … | :arrow_right | → | :arrow_left | ← | :title | 𝙏 | :subtitle | 𝙩 | :author | 𝘼 | :date | 𝘿 | :property | ☸ | :options | ⌥ | :startup | ⏻ | :macro | 𝓜 | :html_head | 🅷 | :html | 🅗 | :latex_class | 🄻 | :latex_header | 🅻 | :beamer_header | 🅑 | :latex | 🅛 | :attr_latex | 🄛 | :attr_html | 🄗 | :attr_org | ⒪ | :begin_quote | ❝ | :end_quote | ❞ | :caption | ☰ | :header | › | :results | 🠶 | :begin_export | ⏩ | :end_export | ⏪ | :properties | ⚙ | :end | ∎ | :priority_a | ⚑ | :priority_b | ⬆ | :priority_c | ■ | :priority_d | ⬇ | :priority_e | ❓ | :checkbox | ☐ | :pending | ◼  | :checkedbox | ☑ | :list_property | ∷ | :em_dash | — | :ellipses | … | :arrow_right | → | :arrow_left | ← | :title | 𝙏 | :subtitle | 𝙩 | :author | 𝘼 | :date | 𝘿 | :property | ☸ | :options | ⌥ | :startup | ⏻ | :macro | 𝓜 | :html_head | 🅷 | :html | 🅗 | :latex_class | 🄻 | :latex_header | 🅻 | :beamer_header | 🅑 | :latex | 🅛 | :attr_latex | 🄛 | :attr_html | 🄗 | :attr_org | ⒪ | :begin_quote | ❝ | :end_quote | ❞ | :caption | ☰ | :header | › | :results | 🠶 | :begin_export | ⏩ | :end_export | ⏪ | :properties | ⚙ | :end | ∎ | :priority_a | ⚑ | :priority_b | ⬆ | :priority_c | ■ | :priority_d | ⬇ | :priority_e | ❓ |
 
 ~org-superstar-mode~ is great. While we're at it we may as well make tags prettier as well 🙂
 #+begin_src emacs-lisp :tangle packages.el
