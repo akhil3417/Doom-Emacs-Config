@@ -4216,7 +4216,9 @@ well somehow, so let's switch to 'P22 Underground Book'; it looks much nicer.
 
 ** Transpose Frame
 
-This is an idea that I stole from prot' dotemacs. It augments the various transpose-* commands so they respect the region: if (use-region-p) then transpose the thing at the extremes of the region, otherwise operates as usual.
+This is an idea that I stole from prot' dotemacs. It augments the various
+transpose-* commands so they respect the region: if (use-region-p) then
+transpose the thing at the extremes of the region, otherwise operates as usual.
 
 (the code is somewhat different from prot, but the idea is the same)
 
