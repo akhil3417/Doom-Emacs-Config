@@ -17614,6 +17614,8 @@ Since I'm using =mypyls=, as suggested in [[file:~/.emacs.d/modules/lang/python/
 priority of =mypyls=
 
 #+begin_src emacs-lisp
+(setq lsp-python-ms-executable "~/gitclones/emacsrepos/mspyls/python-language-server/output/bin/Release/linux-x64/publish/Microsoft.Python.LanguageServer")
+
 (after! lsp-python-ms
   (set-lsp-priority! 'mspyls 1))
 #+end_src
