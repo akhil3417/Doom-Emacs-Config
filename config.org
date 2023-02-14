@@ -9645,6 +9645,7 @@ Other potentially relevant parts of my dotemacs:
 Games
 I also use Emacs to play games and do other fun things. Using swiper means I don’t need too many search functions bound, so I can bind the games prefix to C-c g without breaking too much of my workflow.
 #+begin_src emacs-lisp
+(load "~/.config/doom/lisp/setup-games.el")
 #+end_src
 
 #+RESULTS:
