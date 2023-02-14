@@ -12227,7 +12227,7 @@ rather than the whole path."
 #+RESULTS:
 : my/pipewire-restart
 
-** mpv and emacs
+** mpv and emacs for video editing
 
 mpv.el and org-timers modified to work with milliseconds
 
