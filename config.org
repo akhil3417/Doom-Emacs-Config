@@ -12453,6 +12453,25 @@ then press capital O in mpv to show the time
 
 #+begin_src emacs-lisp
 
+
+;; This is a useful function copied from somewhere I don't remember, sorry unknown author!
+
+;; It makes fill-paragraph "toggable": M-q once to fill, M-q again to un-fill!
+
+(defun op/fill-or-unfill (fn &optional justify region)
+  "Meant to be an adviced :around `fill-paragraph'.
+FN is the original `fill-column'.  If `last-command' is
+`fill-paragraph', unfill it, fill it otherwise.  Inspired from a
+post on endless parentheses.  Optional argument JUSTIFY and
+REGION are passed to `fill-paragraph'."
+  (let ((fill-column
+         (if (eq last-command 'fill-paragraph)
+             (progn (setq this-command nil)
+                    (point-max))
+           fill-column)))
+    (funcall fn justify region)))
+(advice-add 'fill-paragraph :around #'op/fill-or-unfill)
+
 (defun tangle-and-make-executable ()
   "Tangle the current org-mode file and make the resulting script executable."
   (interactive)
