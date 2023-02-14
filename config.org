@@ -8257,6 +8257,9 @@ CLOSED: [2022-03-30 Wed 09:32]
 
 ** DONE Webpaste
 CLOSED: [2022-04-01 Fri 16:00]
+#+begin_src emacs-lisp :tangle packages.el
+(package! webpaste)
+#+end_src
 #+begin_src emacs-lisp
 ;; It's useful to send a buffer, or part of it, to a bin online and then send the corresponding link to someone. The clbin package does that, in a DWIM manner: send the current region (if any) or the whole buffer, and save the corresponding url in the kill-ring.
 ;; (use-package! clbin
