@@ -13010,9 +13010,13 @@ or put a currency symbol immediately before an inline source block.
 There is a solution to this, it just sounds slightly hacky --- zero width spaces.
 Because this is Emacs, we can make this feel much less hacky by making a minor
 addition to the Org key map 🙂.
-#+begin_src emacs-lisp
-(map! :map org-mode-map
-      :nie "M-SPC M-SPC" (cmd! (insert "\u200B")))
+#+begin_src emacs-lisp 
+;; (map! :map org-mode-map
+;;       :nie "M-SPC M-SPC" (cmd! (insert "\u200B"))) ;; cz I can't use C-SPC in my computere in need this to set mark
+
+(map! :leader
+      (:prefix "i"
+      :nie "z" (cmd! (insert "\u200B"))))
 #+end_src
 
 We ​then want to stop the space from being included in exports, which can be done
