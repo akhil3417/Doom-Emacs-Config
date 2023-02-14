@@ -4775,6 +4775,10 @@ CLOSED: [2022-04-01 Fri 15:39]
   (evil-insert -1))
 (add-hook 'monkeytype-mode-hook #'my/monkeytype-mode-hook)
 #+end_src
+
+#+RESULTS:
+| my/monkeytype-mode-hook |
+
 ** DONE Selectric
 CLOSED: [2022-04-01 Fri 15:39]
 
@@ -8462,7 +8466,6 @@ CLOSED: [2022-09-22 Thu 12:05]
 
 ** Youtube
 #+begin_src emacs-lisp
-
 ;; YouTube Download
 ;; yt-dlp
 ;; python-pycryptodome
@@ -9417,8 +9420,6 @@ Sometimes you want to be able to do fancy things with the text that you're enter
 
 #+end_src
 
-#+RESULTS:
-: my-org-insert-youtube-video-with-transcript
 ** CLIPPY
 Gives us a popup box with "Clippy, the paper clip". You can make him say various things by calling 'clippy-say' function.  But the more useful functions of clippy are the two describe functions provided: 'clippy-describe-function' and 'clippy-describe-variable'.  Hit the appropriate keybinding while the point is over a function/variable to call it.  A popup with helpful clippy will appear, telling you about the function/variable (using describe-function and describe-variable respectively).
 
