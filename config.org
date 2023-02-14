@@ -6044,27 +6044,6 @@ Changing some keybindings from their defaults to better fit with Doom Emacs, and
        :desc "Evaluate elisp in region" "r" #'eval-region))
 #+END_SRC
 
-** Fillng
-This is a useful function copied from somewhere I don't remember, sorry unknown author!
-
-It makes fill-paragraph "toggable": M-q once to fill, M-q again to un-fill!
-
-#+begin_src emacs-lisp :tangle no
-(defun op/fill-or-unfill (fn &optional justify region)
-  "Meant to be an adviced :around `fill-paragraph'.
-FN is the original `fill-column'.  If `last-command' is
-`fill-paragraph', unfill it, fill it otherwise.  Inspired from a
-post on endless parentheses.  Optional argument JUSTIFY and
-REGION are passed to `fill-paragraph'."
-  (let ((fill-column
-         (if (eq last-command 'fill-paragraph)
-             (progn (setq this-command nil)
-                    (point-max))
-           fill-column)))
-    (funcall fn justify region)))
-(advice-add 'fill-paragraph :around #'op/fill-or-unfill)
-#+end_src
-
 ** keychord
 In case  I  don’t use Evil (Vim emulation), which would add an extra layer of complexity to everything. Instead, I heavily leverage key-chord.el, which enables binding simultaneous key presses (chords) to commands.
 I have some custom code to bind chords to Doom’s leaders. Many commonly used commands are bound in these “key chord maps”.
