@@ -5502,24 +5502,32 @@ Emacs registers are compartments where you can save text, rectangles and positio
 #+RESULTS:
 : point-to-register
 
-** smartparens
-#+begin_src emacs-lisp :tangle no
+** Smartparens
+#+begin_src emacs-lisp :tangle yes
+;;             ("C-k" . sp-kill-hybrid-sexp)
+;;             ("C-," . sp-rewrap-sexp)
+;;             ("C-M-s" . sp-split-sexp)
 
-(use-package! smartparens
-  :init
-  (map! :map smartparens-mode-map
-        "C-M-b" #'sp-backward-sexp
-        "C-M-u" #'sp-backward-up-sexp
-        "C-M-d" #'sp-down-sexp
-        "C-M-p" #'sp-backward-down-sexp
-        "C-M-n" #'sp-up-sexp
-        "C-M-s" #'sp-split-sexp
-        "M-s" #'sp-splice-sexp
-        "C-)" #'sp-forward-slurp-sexp
-        "C-M-)" #'sp-forward-barf-sexp
-        "C-(" #'sp-backward-slurp-sexp
-        "C-M-(" #'sp-backward-barf-sexp))
-
+(map!
+(:after smartparens
+ :map smartparens-mode-map
+ "C-M-a"           #'sp-beginning-of-sexp
+ "C-M-e"           #'sp-end-of-sexp
+ "C-M-f"           #'sp-forward-sexp
+ "C-M-b"           #'sp-backward-sexp
+ "C-M-n"           #'sp-next-sexp
+ "C-M-p"           #'sp-previous-sexp
+ "C-M-u"           #'sp-up-sexp
+ "C-M-d"           #'sp-down-sexp
+ "C-M-k"           #'sp-kill-sexp
+ "C-M-t"           #'sp-transpose-sexp
+ "C-M-s"           #'sp-split-sexp
+ ;; "M-s"             #'sp-splice-sexp
+ "C-)"             #'sp-forward-slurp-sexp
+ "C-M-)"           #'sp-forward-barf-sexp
+ "C-("             #'sp-backward-slurp-sexp
+ "C-M-("           #'sp-backward-barf-sexp
+ "C-M-<backspace>" #'sp-splice-sexp))
 
 #+end_src
 ** SmartParens
