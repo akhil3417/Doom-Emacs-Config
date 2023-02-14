@@ -9329,6 +9329,34 @@ date heading that contains list of urls."
 
 #+RESULTS:
 : qbs
+** org roam qutebrowser
+#+begin_src emacs-lisp :tangle yes
+(require 'org-roam-protocol)
+(setq org-roam-capture-ref-templates
+        '(("r" "ref" plain (function org-roam-capture--get-point)
+           "%?"
+           :file-name "${slug}"
+           :head "#+TITLE: ${title}
+#+ROAM_KEY: ${ref}"
+           :unnarrowed t)))
+
+#+end_src
+
+#+RESULTS:
+| r | ref | plain | #'org-roam-capture--get-point | %? | :file-name | ${slug} | :head | #+TITLE: ${title} |
+**
+#+begin_src python :tangle ~/.config/doom/org-roam-protocol-handler.py
+import os
+import sys
+import urllib.parse
+
+url   = urllib.parse.quote(sys.argv[1])
+title = urllib.parse.quote(sys.argv[2])
+
+command = "emacsclient \"org-protocol://roam-ref?template=r&ref="+url+"&title="+title+"\""
+os.system(command)
+#+end_src
+
 ** Mini-buffer editing more space
 Sometimes you want to be able to do fancy things with the text that you're entering into the minibuffer. Sometimes you just want to be able to read it, especially when it comes to lots of text. This binds C-M-e in a minibuffer) so that you can edit the contents of the minibuffer before submitting it.
 #+begin_src emacs-lisp :tangle packages.el
