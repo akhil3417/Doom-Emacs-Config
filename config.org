@@ -12162,29 +12162,6 @@ rather than the whole path."
 #+RESULTS:
 : emms-start
 
-** emms kdialog notification (not the pleasing)
-
-#+begin_src emacs-lisp :tangle no
-;;;   Tested on void
-(when (and window-system (executable-find "kdialog"))
-  (setq emms-player-next-function
-        (lambda ()
-          (emms-next)
-          (call-process "kdialog" nil nil nil "--title" "Emacs - EMMS"
-                        "--passivepopup" (emms-show) "5"))))
-
-(defun emms-next ()
-  "Start playing the next track in the EMMS playlist.
-This might behave funny if called from `emms-player-next-function',
-so use `emms-next-noerror' in that case."
-  (interactive)
-  (when emms-player-playing-p
-    (emms-stop))
-  (emms-playlist-current-select-next)
-  (emms-start)
-          (call-process "kdialog" nil nil nil "--title" "Emacs - EMMS"
-                        "--passivepopup" (emms-show) "5"))
-#+end_src
 ** volume
 #+begin_src emacs-lisp
 (setq my/volume-min 1)
