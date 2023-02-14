@@ -585,7 +585,7 @@ The following line
 
 ** movement and window switching
 The default window movement keys are super cumbersome, here are some better defaults.
-#+begin_src emacs-lisp
+#+begin_src emacs-lisp :tangle yes
 
 (use-package! window
   :ensure nil
@@ -3696,7 +3696,7 @@ By default, Doom Emacs does not use 'SPC v', so the format I use for these bindi
 : ivy-switch-view
 
 *** Davivil ivy mode
-#+begin_src emacs-lisp :tangle yes
+#+begin_src emacs-lisp :tangle no
 ;; Better Completions with Ivy
 ;; I currently use Ivy, Counsel, and Swiper to navigate around files, buffers, and projects super quickly. Here are some workflow notes on how to best use Ivy:
 
@@ -4656,7 +4656,7 @@ to control.
 All we do here is enable the package and add a hook to insert a time
 stamp upon save, where relevant.  It works seamlessly.
 
-#+begin_src emacs-lisp
+#+begin_src emacs-lisp :tangle no
 ;;; Automatic time stamps for files (time-stamp.el)
 (use-package! time-stamp
   :config
@@ -9121,11 +9121,11 @@ MYTAG"
 #+RESULTS:
 : elfeed-tube-mpv-where
 ** chatgpt
-#+begin_src emacs-lisp :tangle packages.el
+#+begin_src emacs-lisp :tangle no
 (package! epc)
 #+end_src
 
-#+begin_src emacs-lisp
+#+begin_src emacs-lisp :tangle no
 
 (require 'python)
 (load "~/.config/doom/lisp/ChatGPT.el/chatgpt.el")
@@ -9184,7 +9184,7 @@ via a local CLI.
 
 Which do you think I want?
 
-#+begin_src elisp :tangle packages.el
+#+begin_src elisp :tangle no
 (package! exercism
   :recipe (:host github :repo "elken/exercism.el"))
 #+end_src
@@ -9192,7 +9192,7 @@ Which do you think I want?
 #+RESULTS:
 | exercism | :modules | ((:user) (:user . modules)) | :recipe | (:host github :repo elken/exercism.el) |
 
-#+begin_src emacs-lisp :tangle yes
+#+begin_src emacs-lisp :tangle no
 (load "~/.emacs.d/.local/straight/repos/exercism.el/exercism-modern.el")
 #+end_src
 
