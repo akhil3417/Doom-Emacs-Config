@@ -8405,6 +8405,9 @@ prompt and everyone in the channel can see it.  Some things I learnt:
 | telega-mnz-mode--maybe | telega-url-shorten-mode--maybe | my/telega/company-backends |
 ** DONE Google Translate
 CLOSED: [2022-09-22 Thu 12:05]
+#+begin_src emacs-lisp :tangle packages.el
+(package! google-translate)
+#+end_src
 #+begin_src emacs-lisp
 
      (use-package! google-translate
