@@ -6282,7 +6282,8 @@ moving to the next chunk.
 
 Unfortunately, since evil-search doesn't have an analogue to
 ~isearch-wrap-function~, we can't easily add support to it.
-** Smart Move to beginning of line
+** DONE Smart Move to beginning of line
+CLOSED: [2023-02-01 Wed 19:54]
 #+begin_src emacs-lisp
 
 (defun my-smarter-move-beginning-of-line (arg)
