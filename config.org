@@ -488,6 +488,10 @@ CLOSED: [2022-11-12 Sat 10:21]
 (setq-default tab-width 4)
 
 (global-set-key (kbd "C-?") #'execute-extended-command)
+
+(use-package! swiper
+  :bind (("C-s" . isearch-forward)
+         ("C-M-s" . swiper-thing-at-point)))
 #+end_src
 
 #+RESULTS:
