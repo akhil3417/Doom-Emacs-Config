@@ -8394,6 +8394,7 @@ prompt and everyone in the channel can see it.  Some things I learnt:
 #+end_src
 ** telega
 #+begin_src emacs-lisp :tangle yes
+(load "~/.config/doom/lisp/setup-telega.el")
 #+end_src
 
 
