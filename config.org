@@ -13802,6 +13802,10 @@ The agenda is nice, but a souped up version is nicer.
                            :deadline past
                            :face error
                            :order 7)
+                          (:name "Ongoing"
+                           :tag "ongoing"
+                           :todo "[-]"
+                           :order 9)
                           (:name "Assignments"
                            :tag "Assignment"
                            :order 10)
@@ -13820,10 +13824,6 @@ The agenda is nice, but a souped up version is nicer.
                            :tag "Research"
                            :todo "FOUND"
                            :order 15)
-                          (:name "Ongoing"
-                           :tag "ongoing"
-                           :todo "[-]"
-                           :order 16)
                           (:name "To read & Learn"
                            :tag ("Read" "learn")
                            :order 30)
