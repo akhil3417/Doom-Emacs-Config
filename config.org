@@ -4670,6 +4670,7 @@ stamp upon save, where relevant.  It works seamlessly.
 #+begin_src emacs-lisp :tangle no
 ;;; Automatic time stamps for files (time-stamp.el)
 (use-package! time-stamp
+  :defer t
   :config
   (add-hook 'before-save-hook #'time-stamp))
 #+end_src
@@ -4785,6 +4786,7 @@ amuse oneself. Introducing: typewriter sounds!
 
 #+begin_src emacs-lisp
 (use-package! selectic-mode
+  :defer t
   :commands selectic-mode)
 #+end_src
 
@@ -4799,6 +4801,7 @@ Sometimes pressing =TAB= is just too much.
 
 #+begin_src emacs-lisp
 (use-package! aas
+  :defer t
   :commands aas-mode)
 #+end_src
 
@@ -8794,7 +8797,7 @@ some of the above.
 ** simple httpd
 #+begin_src emacs-lisp :tangle yes
 (use-package simple-httpd
-  :ensure t)
+  :defer t)
 #+end_src
 
 
@@ -9466,7 +9469,6 @@ This one is a pleasant surprise to have honestly. Having Emacs handle system pac
 #+begin_src emacs-lisp :tangle no
 (require 'system-packages)
 (use-package! system-packages
-  :ensure t
   :defer t
   :init
   (when (executable-find "yay")
@@ -9524,7 +9526,6 @@ This one is a pleasant surprise to have honestly. Having Emacs handle system pac
 #+begin_src emacs-lisp
 (require 'system-packages)
 (use-package! system-packages
-  :ensure t
   :defer t
   :init
   (when (executable-find "xbps-install")
@@ -10417,6 +10418,7 @@ something through Emacs?
 
 (use-package! calibredb
   :commands calibredb
+  :defer t
   :config
   (setq calibredb-root-dir "~/Documents/Ebooks/"
         calibredb-db-dir (expand-file-name "metadata.db" calibredb-root-dir))
