@@ -9378,6 +9378,7 @@ Sometimes you want to be able to do fancy things with the text that you're enter
 (package! dash)
 #+end_src
 #+begin_src emacs-lisp
+(load "~/.config/doom/lisp/yt-org.el")
 
 #+end_src
 
