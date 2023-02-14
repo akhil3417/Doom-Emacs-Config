@@ -8216,6 +8216,7 @@ buffer (see [[#h:c110e399-3f43-4555-8427-b1afe44c0779][Minibuffer configurations
 ** code
 #+begin_src emacs-lisp
 
+(load "~/.config/doom/lisp/setup-avy.el")
 #+end_src
 
 #+RESULTS:
