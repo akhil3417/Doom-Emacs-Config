@@ -7103,7 +7103,7 @@ Basically, its interaction model is as follows:
 - =r= to mark for restoration.
 - =x= to execute these special marks.
 
-#+begin_src emacs-lisp :tangle no
+#+begin_src emacs-lisp :tangle yes
 ;;; dired-like mode for the trash (trashed.el)
 (use-package! trashed
   :config
