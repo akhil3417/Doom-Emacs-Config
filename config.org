@@ -398,6 +398,8 @@ my home machine is pretty safe, and my laptop is shutdown a lot.
 (load "~/.config/doom/lisp/elfeed-tube/elfeed-tube-utils.el")
 ;; (load "w3m-type-ahead.el")
 ;; (load "w3m-config.el")
+;;window-mangement
+(load "~/.config/doom/lisp/window-managment.el")
 
 (load "~/.config/doom/lisp/setup-ui.el")
 (load "~/.config/doom/lisp/setup-minibuffer.el")
