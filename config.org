@@ -8618,7 +8618,14 @@ active region use it instead."
 
 ;; EWW is the Emacs Web Wowser, the builtin browser in Emacs.  Below I set urls to open in a specific browser (eww) with browse-url-browser-function.  By default, Doom Emacs does not use 'SPC e' for anything, so I choose to use the format 'SPC e' plus 'key' for these (I also use 'SPC e' for 'eval' keybindings).  I chose to use 'SPC s w' for eww-search-words because Doom Emacs uses 'SPC s' for 'search' commands.
 
+(load "~/.config/doom/lisp/setup-engine-mode.el")
+(load "~/.config/doom/lisp/setup-eww.el")
+(load "~/.config/doom/lisp/language-detection-eww.el")
 
+(load "~/.config/doom/lisp/browse-url.el")
+ ;; eww toggle  images
+(load "~/.config/doom/lisp/eww-image-toggle.el")
+#+end_src
 *** Simple HTML Renderer (shr), Emacs Web Wowser (eww), Elpher, and prot-eww.el
 **** desc
 TODO 2021-09-08: This section needs to be expanded to cover the
