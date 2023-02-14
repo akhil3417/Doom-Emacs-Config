@@ -12067,7 +12067,7 @@ rather than the whole path."
 #+END_SRC
 
 ** emms dbus notification
-#+begin_src emacs-lisp :tangle no
+#+begin_src emacs-lisp :tangle yes
 ; choose D-Bus to disseminate messages, if it is running.
 (cond
  ;; test to see if D-Bus notifications are available
