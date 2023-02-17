@@ -2835,6 +2835,9 @@ CLOSED: [2022-09-22 Thu 11:48]
 : t
 * Completions framework
 ** Company
+#+begin_src emacs-lisp :tangle packages.el
+(package! devdocs)
+#+end_src
 #+begin_quote
 From the =:completion company= module.
 #+end_quote
