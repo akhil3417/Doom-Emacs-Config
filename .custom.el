@@ -4,7 +4,6 @@
  ;; Your init file should contain only one such instance.
  ;; If there is more than one, they won't work right.
  '(Man-notify-method 'aggressive)
- '(org-agenda-files '("~/org/org-agenda/" "~/org/org-capture/todo.org"))
  '(custom-safe-themes
    '("cf922a7a5c514fad79c483048257c5d8f242b21987af0db813d3f0b138dfaf53" "4f1d2476c290eaa5d9ab9d13b60f2c0f1c8fa7703596fa91b235db7f99a9441b" "835868dcd17131ba8b9619d14c67c127aa18b90a82438c8613586331129dda63" "e87f48ec4aebdca07bb865b90088eb28ae4b286ee8473aadb39213d361d0c45f" "046e442b73846ae114d575a51be9edb081a1ef29c05ae5e237d5769ecfd70c2e" "7397cc72938446348521d8061d3f2e288165f65a2dbb6366bb666224de2629bb" "e2c926ced58e48afc87f4415af9b7f7b58e62ec792659fcb626e8cba674d2065" "9f1d0627e756e58e0263fe3f00b16d8f7b2aca0882faacdc20ddd56a95acb7c2" default))
  '(elfeed-feeds
@@ -24,6 +23,7 @@
           (require 'git-auto-commit-mode nil t)
         (git-auto-commit-mode 1)
         (setq-local gac-automatically-push-p t)))))
+ '(org-agenda-files '("~/org/org-agenda/" "~/org/org-capture/todo.org"))
  '(package-selected-packages
    '(exwm-mff epc mentor pacmacs org-noter-pdftools visual-fill-column calfw elfeed-tube-mpv dash miniedit pdf-tools all-the-icons-completion all-the-icons-dired recursion-indicator edwina trashed rcirc-notify emojify all-the-icons olivetti gameoflife cape exwm))
  '(rmh-elfeed-org-files '("~/.config/doom/elfeed.org") t)
@@ -65,7 +65,8 @@
  '(org-modern-statistics ((t (:inherit org-checkbox-statistics-todo))))
  '(org-special-keyword (nil :inherit '(font-lock-comment-face fixed-pitch)))
  '(org-table (nil :inherit '(shadow fixed-pitch)))
- '(org-verbatim (nil :inherit '(shadow fixed-pitch))))
+ '(org-verbatim (nil :inherit '(shadow fixed-pitch)))
+ '(ts-fold-replacement-face ((t (:foreground nil :box nil :inherit font-lock-comment-face :weight light)))))
 
 (fset 'test\
    (kmacro-lambda-form [?i ?- ?  ?  escape ?  ?n ?r ?i ?# ?a ?i up up return ?o ?\C-? ?- ?  backspace ?\C-? escape] 0 "%d"))
