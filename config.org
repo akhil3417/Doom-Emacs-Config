@@ -4702,6 +4702,9 @@ CLOSED: [2022-04-01 Fri 15:43]
 #+begin_quote
 From the =:editor snippets= module.
 #+end_quote
+#+begin_src emacs-lisp :tangle packages.el
+(package! yasnippet-snippets)
+#+end_src
 
 Nested snippets are good, so let's enable that.
 #+begin_src emacs-lisp
