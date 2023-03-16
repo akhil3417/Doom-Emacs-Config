@@ -5389,12 +5389,24 @@ Emacs registers are compartments where you can save text, rectangles and positio
  "C-M-k"           #'sp-kill-sexp
  "C-M-t"           #'sp-transpose-sexp
  "C-M-s"           #'sp-split-sexp
+ "M-'"           #'sp-wrap-round
+ "C-,"           #'sp-rewrap-sexp
+ "M-k"           #'sp-kill-sexp
+ "C-k"           #'sp-kill-hybrid-sexp
+ "C-<backspace>"           #'backward-kill-sexp
+ ;; "C-M-<backspace>"           #'sp-backward-copy-sexp
+ "C-M-w"           #'sp-copy-sexp
+ "C-<down>"           #'sp-select-next-thing
+ "M-<down>"           #'sp-splice-sexp-killing-forward
+ "M-<up>"           #'sp-splice-sexp-killing-backward
+ ;; "M-DEL"           #'sp-backward-kill-word
  ;; "M-s"             #'sp-splice-sexp
  "C-)"             #'sp-forward-slurp-sexp
  "C-M-)"           #'sp-forward-barf-sexp
  "C-("             #'sp-backward-slurp-sexp
  "C-M-("           #'sp-backward-barf-sexp
  "C-M-<backspace>" #'sp-splice-sexp))
+(evil-define-key 'insert smartparens-mode-map (kbd "M-DEL") #'sp-backward-kill-word)
 
 #+end_src
 ** SmartParens
