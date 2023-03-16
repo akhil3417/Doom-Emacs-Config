@@ -1,0 +1,6 @@
+# -*- mode: snippet -*-
+# name: import urlib.request,urllib.parse,urllib.error
+# key: ulrpe
+# --
+
+import urllib.request, urllib.error, urllib.parse

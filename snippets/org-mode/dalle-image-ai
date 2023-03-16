@@ -1,0 +1,8 @@
+# -*- mode: snippet -*-
+# name: dalle-image-ai
+# key: <dai
+# condition: t
+# --
+#+begin_ai :image :size 256x256 :n 1
+`%`$0
+#+end_ai

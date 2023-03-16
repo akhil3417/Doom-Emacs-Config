@@ -1,0 +1,9 @@
+# -*- mode: snippet -*-
+# name: chatgpt ai
+# key: <ai
+# condition: t
+# --
+
+#+begin_ai
+`%`$0
+#+end_ai

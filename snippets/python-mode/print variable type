@@ -1,0 +1,6 @@
+# -*- mode: snippet -*-
+# name: print variable type
+# key: pvt
+# --
+
+print(type($1))

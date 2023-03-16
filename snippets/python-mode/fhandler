@@ -1,0 +1,5 @@
+# -*- mode: snippet -*-
+# name: fhandler
+# key: fhand
+# --
+$1=open("$2")
