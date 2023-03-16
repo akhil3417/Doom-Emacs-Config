@@ -2722,7 +2722,7 @@ are just waiting to be saved!
   (setq tab-always-indent 'complete))
 
 (after! company
-  (setq company-idle-delay 0.1
+  (setq-default company-idle-delay 0.05
         company-selection-wrap-around t
         company-minimum-prefix-length 2)
   (setq company-show-quick-access t))
