@@ -1,16 +1,24 @@
+- [Table of Contents](#table-contents)
+- [Description](#description)
+  - [Maintainers](#maintainers)
+- [Prerequisites](#prerequisites)
+- [Features](#features)
+- [Configuration](#configuration)
+- [Troubleshooting](#troubleshooting)
+
+
+<a id="table-contents"></a>
 
 # Table of Contents
 
-1.  [Description](#orgc003bed)
-    1.  [Maintainers](#org784703b)
-2.  [Prerequisites](#org72bd4ba)
-3.  [Features](#org94801ed)
-4.  [Configuration](#org961c28c)
-5.  [Troubleshooting](#orgf0c9951)
+1.  1.
+2.  
+3.  
+4.  
+5.  
 
 
-
-<a id="orgc003bed"></a>
+<a id="description"></a>
 
 # Description
 
@@ -23,40 +31,50 @@
     -   tecosaur
     -   System Crafters
     -   Karthik
-    -   and many more which I can&rsquo;t recall at the moment
+    -   and many more which I can't recall at the moment
 
 
-<a id="org784703b"></a>
+<a id="maintainers"></a>
 
 ## Maintainers
 
--   @akhil3417(Author)
+-   ?? (????)(Author)
 
 
-<a id="org72bd4ba"></a>
+<a id="prerequisites"></a>
 
 # Prerequisites
 
 Doom-Emacs
 
 
-<a id="org94801ed"></a>
+<a id="features"></a>
 
 # Features
 
 -   Includes everything to make your life easy
 
 
-<a id="org961c28c"></a>
+<a id="configuration"></a>
 
 # Configuration
 
--   You Already Know What to do
+```bash
+# clone doom emacs repo
+git clone --depth 1 --single-branch https://github.com/doomemacs/doomemacs ~/.emacs.d/
+#get this config
+git clone https://github.com/akhil3417/Doom-Emacs-Config ~/.config/doom/
+#install doom emacs
+~/.emacs.d/bin/doom install
+#run doom sync afterwards
+~/.emacs.d/bin/doom sync
+```
+
+-   consider adding ~/.emacs.d/bin/doom as an alias to doom in your .bashrc(to your user shell)
 
 
-<a id="orgf0c9951"></a>
+<a id="troubleshooting"></a>
 
 # Troubleshooting
 
--   I was lost in the rabbit hole of Emacs customization for months, Now my Main focus is to optimize the Code
-
+-   Feel free to open any issue.
