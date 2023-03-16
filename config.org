@@ -6912,6 +6912,7 @@ available, use it to select window for visiting this file.`"
   ("jpg" . "sxiv")
   ("png" . "sxiv")
   ("mkv" . "mpv")
+  ("avi" . "mpv")
   ("webm" . "mpv")
   ("3gp" . "mpv")
   ("mp4" . "mpv")))
