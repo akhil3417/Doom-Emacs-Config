@@ -1,0 +1,1701 @@
+#+title: W3m
+#+author: Akhil Pratap Singh
+#+date: 2022-11-24
+#+PROPERTY: header-args :tangle
+
+
+ repo:   https://github.com/emacs-w3m/emacs-w3m ,
+
+* article
+** DONE [[https://www.emacswiki.org/emacs/emacs-w3m][EmacsWiki: emacs-w3m]]
+CLOSED: [2022-11-24 Thu 21:15]
+- State "DONE"       from              [2022-11-24 Thu 21:15]
+***** Description
+   :PROPERTIES:
+   :CUSTOM_ID: description
+   :END:
+*emacs-w3m*, also known on this wiki as [[https://www.emacswiki.org/emacs?search=%22WThreeM%22][WThreeM]], is an emacs internet browser and interface to the [[https://www.emacswiki.org/emacs/w3m][w3m]] text browser. It supports tabs (ie. multiple buffers), images, https, cookies, history, bookmarks, asynchronous operation, session management, a form of “filtering” similar to firefox's greasemonkey, and more. Note that it has nothing to do with the [[https://www.emacswiki.org/emacs/w3][w3]] or the [[https://www.emacswiki.org/emacs/eww][eww]] web browsers written entirely in [[https://www.emacswiki.org/emacs/EmacsLisp][EmacsLisp]]. Using the Emacs interface to w3m is much faster than using w3, since the parsing and displaying is done by the external w3m process.
+
+***** Basic Setup
+   :PROPERTIES:
+   :CUSTOM_ID: basic-setup
+   :END:
+
+#+begin_src emacs-lisp :tangle yes
+;;set w3m as def browser
+;; (setq browse-url-browser-function 'w3m-browse-url)
+
+;;Open a url embedded in any buffer
+ ;; (setq browse-url-browser-function  'w3m-goto-url-new-session)
+
+ ;; (autoload 'w3m-browse-url  "w3m"  "Ask a WWW browser to show a URL." t)
+  ;; optional keyboard short-cut
+ ;; (global-set-key  " \C-xm" 'browse-url-at-point)
+
+#+end_src
+
+** DONE [[https://www.emacswiki.org/emacs/WThreeMFilters][EmacsWiki: W Three M Filters]]
+CLOSED: [2022-11-24 Thu 15:01]
+- State "DONE"       from              [2022-11-24 Thu 15:01]
+Emacs-w3m allows you to customize how any web page displays, using what it calls ‘filters'. This is kind of like what the greasemonkey extension to firefox allows you to do.
+
+Filters can be turned on or off globally ( =f= by default) or individually (by default =C-u f=, and then navigate to a selection using =M-p= / =M-n=).
+
+The package comes with a few filters installed as examples. They are just elisp functions that do things like search and replace html tags or regions. Each filter function is then associated with one or more regular expressions scoping the urls on which it is to be applied (see variable =w3m-filter-configuration=.
+
+This page is a good a place as any for people to share their filters or links...
+
+See page [[https://www.emacswiki.org/emacs/WThreeMReadability][WThreeMReadability]].
+ Customize H1, H2 tags etc
+
+** DONE [[https://www.emacswiki.org/emacs/WThreeMAuthentication][EmacsWiki: W Three M Authentication]]
+CLOSED: [2022-11-24 Thu 15:05]
+- State "DONE"       from              [2022-11-24 Thu 15:05]
+[[https://www.emacswiki.org/emacs/WThreeM][WThreeM]] has a problem when you don't get the username/password right for http authentication. It basically ends up in la-la land. If you try to C-g at the username/password prompt it ends up in la-la-land.
+
+Hers's some code I wrote that will allow w3m.el to “forget” authentication info so that you can try to authenticate again with a different username/password:
+
+#+begin_src emacs-lisp :tangle yes
+;;[[https://www.emacswiki.org/emacs/WThreeM][WThreeM]] has a problem when you don't get the username/password right for http authentication. It basically ends up in la-la land. If you try to C-g at the username/password prompt it ends up in la-la-land.
+
+;;Hers's some code I wrote that will allow w3m.el to “forget” authentication info so that you can try to authenticate again with a different username/password:
+
+(defun w3m-erase-authinfo-root (root)
+  (setq w3m-process-authinfo-alist
+        (assq-delete-all
+         nil (mapcar
+              (lambda (elem) (if (not (equal root (car elem))) elem))
+              w3m-process-authinfo-alist))))
+
+(defun w3m-forget-authinfo ()
+  (interactive)
+  (let* ((roots (mapcar
+                 (lambda (elem) (list (car elem) (car elem)))
+                 w3m-process-authinfo-alist))
+         (root (completing-read "URL: " roots nil t)))
+    (w3m-erase-authinfo-root root)))
+#+end_src
+
+** DONE [[https://www.emacswiki.org/emacs/WThreeMTabsAndDisplayModes][EmacsWiki: W Three M Tabs And Display Modes]]
+CLOSED: [2022-11-24 Thu 21:19]
+- State "DONE"       from              [2022-11-24 Thu 21:19]
+Emacs-w3m supports asynchronous operations on as many tabs, buffers, windows and frames that your cpu can handle. And they can be organized in several different ways.
+
+***** Display Modes
+   :PROPERTIES:
+   :CUSTOM_ID: display-modes
+   :END:
+There exist five display modes for emacs-w3m when called interactively: Plain, Tabbed, Dual-Pane, Dedicated-Frames, and Tabbed-Dedicated-Frames. When emacs-w3m is run in batch mode or non-interactively, only the Plain or Tabbed display modes are available. In the past, these modes had been set by a combination of three variables, =‘w3m-use-tab’=, =‘w3m-pop-up-windows’= and =‘w3m-pop-up-frames’=, but can now be set with this single setting =‘w3m-display-mode’=. When this variable is set, the other three are ignored. Interactively, you can control this setting by =M-x w3m-display-mode=.
+****** PLAIN
+    :PROPERTIES:
+    :CUSTOM_ID: plain
+    :END:
+Each emacs-w3m buffer exists on its own and can appear in any window in any frame, although a reasonable attempt will be made to re-use an existing window. There is no tab bar. In the past, this had been set by the combination: =‘w3m-use-tab’= nil, =‘w3m-pop-up-windows’= nil, and =‘w3m-pop-up-frames’= nil.
+
+****** TABBED
+    :PROPERTIES:
+    :CUSTOM_ID: tabbed
+    :END:
+A reasonable attempt is made to keep only one window displaying emacs-w3m buffers. That window has a cliackable tab bar along the top. Users can manually subvert this by explicitly opening an emacs-w3m buffer in any number of other windows. In the past, this had been set by the combination: =‘w3m-use-tab’= t =‘w3m-pop-up-windows’= ignored, and =‘w3m-pop-up-frames’= nil.
+
+****** DUAL-PANE
+    :PROPERTIES:
+    :CUSTOM_ID: dual-pane
+    :END:
+Once more than one emacs-w3m buffer exists, a reasonable attempt is made to present emacs-w3m in two windows on the same frame. Any action to open a new emacs-w3m buffer, such as =‘w3m-goto-url-new-session’= or =‘w3m-search-new-session’= displays the new buffer in the unfocused pane, and transfers focus there. In the past, this had been set by the combination: =‘w3m-use-tab’= nil =‘w3m-pop-up-windows’= t, and =‘w3m-pop-up-frames’= nil.
+
+****** DEDICATED-FRAMES
+    :PROPERTIES:
+    :CUSTOM_ID: dedicated-frames
+    :END:
+Each new emacs-w3m buffer is opened in a new single-window frame. In the past, this had been set by the combination: =‘w3m-use-tab’= nil =‘w3m-pop-up-windows’= ignored, and =‘w3m-pop-up-frames’= t.
+
+****** TABBED-DEDICATED-FRAMES
+    :PROPERTIES:
+    :CUSTOM_ID: tabbed-dedicated-frames
+    :END:
+Each new emacs-w3m buffer is opened in the same window of the frame from which it was spawned, and is not easily visible to emacs-w3m buffers associated with other frames. The window includes a clickable tab bar along the top. In the past, this had been set by the combination: =‘w3m-use-tab’= t =‘w3m-pop-up-windows’= ignored, and =‘w3m-pop-up-frames’= t.”
+
+***** Navigating between emacs-w3m buffers
+   :PROPERTIES:
+   :CUSTOM_ID: navigating-between-emacs-w3m-buffers
+   :END:
+Much of the following is a re-hash of content found in the emacs-w3m [[https://www.emacswiki.org/emacs/InfoMode][InfoMode]] manual, at node =(emacs-w3m) Working with buffers=.
+
+From any emacs-w3m buffer, you can issue command =w3m-select-buffer= (default keybiding: =C-c C-s=), which will display a popup window listing all open w3m buffers. The display is very user-friendly in that instead of listing a buffer's emacs name, which would be something like “(23)”, it lists just the number followed by the title of the html page that the buffer is displaying. It also adds “(u)” for unread buffers. From that popup window, you can navigate the list and select a buffer to display (press ‘RETURN' on it), or delete (press ‘d'). ‘q', or =C-g= exit the popup buffer without doing anything.
+
+If you don't want to use the popup window, you can directly navigate to the sequentially next and previous emacs-w3m buffers using =w3m-next-buffer= and =w3m-previous-buffer= ( =C-c C-n= and =C-c C-p= by default) to hop among them.
+
+Another method is =w3m-switch-buffer= ( =C-c C-a=). That command prompts you for an HTML window title to switch to, and lets you use =M-p= and =M-n= keys to navigate a list of available options.
+
+Of course, if you are using a tabbed display mode and have mouse support, you can always just click on a tab ...
+
+***** Spawning a new buffer
+   :PROPERTIES:
+   :CUSTOM_ID: spawning-a-new-buffer
+   :END:
+You have a few choices:
+
+1. =w3m-goto-url-new-session=, bound by default to =G=. You will then be prompted for a URL, but if your cursor is on a URL, that will be the default.
+
+2. You can explicitly make a copy of the current buffer with =w3m-copy-buffer= ( =C-c C-t= by default).
+
+3. Here's a tiny-weeny function to create a new, empty buffer.
+
+#+begin_src emacs-lisp :tangle yes
+(defun  w3m-new-buffer nil
+    "Opens a new, empty w3m buffer."
+    "As opposed to `w3m-copy-buffer', which opens a non-empty buffer.
+ This ought to be snappier, as the old buffer needs not to be render To be quite honest, this new function doesn't open a buffer completely
+ empty, but visits the about: pseudo-URI that is going to have to
+ suffice for now."
+   (interactive)
+   (w3m-goto-url-new-session  "about://"))
+#+end_src
+
+#+RESULTS:
+: w3m-new-buffer
+
+***** Killing a buffer
+   :PROPERTIES:
+   :CUSTOM_ID: killing-a-buffer
+   :END:
+You have a few choices:
+
+1. The usual emacs command =C-x k=
+
+2. =w3m-delete-buffer=, bound by default to =C-c C-w=.
+
+3. From within the buffer selection popup window ( =C-c C-s= by default), press ‘d' on a selection.
+
+** DONE [[https://www.emacswiki.org/emacs/WThreeMTypeAhead][EmacsWiki: W Three M Type Ahead]]
+CLOSED: [2022-11-24 Thu 21:20]
+- State "DONE"       from "TODO"       [2022-11-24 Thu 21:20]
+- State "TODO"       from              [2022-11-24 Thu 21:20]
+#+begin_src emacs-lisp :tangle yes
+;;w3m-type-ahead.el  can be used to add type-ahead functionality (as seen, for example, in Mozilla and related browsers) to =w3m-mode=. After loading w3m and w3m-type-ahead, it can be switched on as a minor mode in =w3m-mode= buffers using:
+
+;;By default, this binds / to =w3m-type-ahead= and M-/ to =w3m-type-ahead-regexp=. With these, incremental searching limited to the text associated with links can be done. Use a prefix argument of =C-u 2= or =C-u C-u= to create a new session.
+
+ (add-hook 'w3m-mode-hook 'w3m-type-ahead-mode)
+#+end_src
+
+By default, this binds / to =w3m-type-ahead= and M-/ to =w3m-type-ahead-regexp=. With these, incremental searching limited to the text associated with links can be done. Use a prefix argument of =C-u 2= or =C-u C-u= to create a new session.
+
+** DONE [[https://www.emacswiki.org/emacs/WThreeMSearch][EmacsWiki: W Three M Search]]
+CLOSED: [2022-11-24 Thu 21:21]
+- State "DONE"       from              [2022-11-24 Thu 21:21]
+***** Introduction
+   :PROPERTIES:
+   :CUSTOM_ID: introduction
+   :END:
+=‘w3m-search’= provides a convenient interface to various internet search engines.
+
+=‘s’= Search, fetching results in the current buffer, using your default search engine. =‘S’= Search, fetching results in a new buffer, using your default search engine.
+
+Running either command with the default prefix =‘C-u’= allows you to choose from any of the non-default pre-configured searcg engines (and of course you can always customize and add your own).
+
+***** Customization
+   :PROPERTIES:
+   :CUSTOM_ID: customization
+   :END:
+The default search engine is set in =‘w3m-search-default-engine’=. Its value should match an entry in =‘w3m-search-engine-alist’=. Both are defined using =‘defcustom’= so you can use the emacs customization-group interface to modify them.
+
+****** Make the previous search engine the default for the next search
+    :PROPERTIES:
+    :CUSTOM_ID: make-the-previous-search-engine-the-default-for-the-next-search
+    :END:
+#+begin_src emacs-lisp :tangle yes
+;;Makes the previous search engine to be default for the next search
+(setq w3m-search-default-engine "duckduckgo")
+(defadvice  w3m-search (after change-default activate)
+      (let ((engine (nth 1 minibuffer-history)))
+    (when (assoc engine w3m-search-engine-alist)
+      (setq w3m-search-default-engine engine))))
+#+end_src
+
+#+RESULTS:
+: w3m-search
+
+***** Typing the search engine and query at once like Firefox
+   :PROPERTIES:
+   :CUSTOM_ID: typing-the-search-engine-and-query-at-once-like-firefox
+   :END:
+By default, google and yahoo have uri shortcuts defined, so from any url prompt, you can type `gg:' or `ya:'.
+
+Shortcuts are defined in variable =‘w3m-uri-replace-alist’=, which is defined using defcustom for easy customization.
+
+** [[https://www.emacswiki.org/emacs/WThreeMEditingWikis][EmacsWiki: W Three M Editing Wikis]]
+***** Editing wiki pages
+   :PROPERTIES:
+   :CUSTOM_ID: editing-wiki-pages
+   :END:
+2018-03-30: Much of the prior information on this page was wrong or out-of-date. As of today, editing this wiki and wikipedia using the basic emacs-w3m package was straightforward and required no special settings, functions, or additional packages. It just worked™.
+
+***** Other packages for editing wikis
+   :PROPERTIES:
+   :CUSTOM_ID: other-packages-for-editing-wikis
+   :END:
+****** WikiRemote
+    :PROPERTIES:
+    :CUSTOM_ID: wikiremote
+    :END:
+As of 2013, package [[https://www.emacswiki.org/emacs/WikiRemote][WikiRemote]] is abandonware, in favor of [[https://www.emacswiki.org/emacs/SimpleWikiEditMode][SimpleWikiEditMode]].
+
+The final version of [[https://www.emacswiki.org/emacs/WikiRemote][WikiRemote]] includes the function =‘wiki-remote-get-w3m’=. Call it to edit the wiki page you are currently visiting. Here's an example which allows you to hit =‘e’= to edit the page you are currently browsing.
+
+#+begin_src emacs-lisp :tangle no
+(autoload 'wiki-remote-get-w3m  "wiki-remote"
+    "Edit wiki pages currently visited using w3m." t)
+#+end_src
+
+#+RESULTS:
+: wiki-remote-get-w3m
+
+#+begin_src emacs-lisp :tangle no
+(add-hook 'w3m-mode-hook
+       ( lambda ()
+         (define-key w3m-mode-map  "e"
+           ( lambda ()
+         (interactive)
+         (condition-case nil
+             (wiki-remote-get-w3m)
+           (error (w3m-edit-current-url)))))))
+#+end_src
+Be sure to look at the customizations of [[https://www.emacswiki.org/emacs/WThreeM][WThreeM]] for the w3m-form-input-textarea-mode-hook.
+
+****** Oddmuse mode
+    :PROPERTIES:
+    :CUSTOM_ID: oddmuse-mode
+    :END:
+See the [[https://www.emacswiki.org/emacs/OddmuseMode][OddmuseMode]] page.
+
+***** Generic jumping to Wiki-like Pages
+   :PROPERTIES:
+   :CUSTOM_ID: generic-jumping-to-wiki-like-pages
+   :END:
+The following defun can be used to quickly go to specific pages of a Wiki.
+
+#+begin_src emacs-lisp :tangle no
+( defvar  dka-w3m-wikis
+  '(( "lathi"  "http://www.lathi.net/twiki-bin/view/Main/"  "WebHome")
+    ( "emacs"   "http://www.emacswiki.org/cgi-bin/wiki.pl?"  "RecentChanges")
+    ( "google"  "http://www.google.com/search?q="  "")
+    ( "debian"  "http://wiki.debian.net/"  "")))
+
+ ( defun  dka-w3m-goto-wiki ()
+  (interactive)
+  ( let ((wiki-topic (read-input  "Wiki :Topic? "))
+        topic wiki wiki-list)
+    (message wiki-topic)
+    ( if (string-match  " \\(.* \\): \\(.* \\)" wiki-topic)
+        (setq wiki (match-string 1 wiki-topic)
+              topic (match-string 2 wiki-topic)
+              wiki-list (assoc wiki dka-w3m-wikis))
+      ( error  "Must specify a wiki name and topic (Wiki :TopicName)"))
+    ( unless wiki-list
+      ( error (format  " \"%s \" is not a defined wiki" wiki)))
+    ( unless topic
+      (setq topic (nth 2 wiki-list)))
+    (w3m-goto-url (concat (nth 1 wiki-list) topic))))
+#+end_src
+***** Information re: specific wikis
+   :PROPERTIES:
+   :CUSTOM_ID: information-re-specific-wikis
+   :END:
+****** This wiki (emacswiki)
+    :PROPERTIES:
+    :CUSTOM_ID: this-wiki-emacswiki
+    :END:
+Here's how I performed this edit:
+
+1. Ensure variable =w3m-use-cookies= is non-nil. This is the default setting.
+
+2. Navigate to and click on the “Edit this page” link at the bottom of the page.
+
+3. Navigate to the form and press ENTER for emacs-w3m to create an edit window with the form text.
+
+4. When you have completed your edit, press C-c C-c to exit the edit window.
+
+5. Navigate to the other form fields in order to enter an edit summary, answer the security question, optionally enter your user-name.
+
+6. Click on the link to either preview your edit or submit it.
+
+******* Searching emacswiki
+     :PROPERTIES:
+     :CUSTOM_ID: searching-emacswiki
+     :END:
+Any web site search can be added to emacs-w3m by adding an entry to the variable ='w3m-search-engine-alist=. Here's an example for this wiki:
+
+#+begin_src emacs-lisp :tangle no
+(add-to-list 'w3m-search-engine-alist
+        '( "emacs-wiki"  "http://www.emacswiki.org/cgi-bin/wiki.pl?search=%s"))
+#+end_src
+****** CGI::Kwiki
+    :PROPERTIES:
+    :CUSTOM_ID: cgikwiki
+    :END:
+CGI::Kwiki ( [[http://kwiki.org/]]) pages can be edited simply with [[https://www.emacswiki.org/emacs/WThreeM][WThreeM]]'s form support and some help from [[https://www.emacswiki.org/emacs/LongLines][LongLines]] mode and [[https://www.emacswiki.org/emacs/RefillMode][RefillMode]]. A few customizations are in order:
+
+#+begin_src emacs-lisp :tangle no
+(setq w3m-form-input-textarea-buffer-lines 50
+          w3m-form-input-textarea-mode-hook
+          '(longlines-mode
+            ( lambda () ( save-excursion
+                         (goto-char (point-min))
+                         ( while (search-forward (string 13) nil t)
+                           (replace-match  "" nil t))))
+            flyspell-mode
+            refill-mode)
+          w3m-form-input-textarea-set-hook '(longlines-mode))
+#+end_src
+** [[https://www.emacswiki.org/emacs/WThreeMKeymap][EmacsWiki: W Three M Keymap]]
+I found the default keymap somewhat confusing. The point of doing web browsing in emacs is to use familiar keys for navigation. So, here's the keymap I use that feels more “emacs-like” for me. Sweeten to taste.
+
+#+begin_src emacs-lisp :tangle no
+( let ((map (make-keymap)))
+   (suppress-keymap map)
+   (define-key map [backspace] 'w3m-scroll-down-or-previous-url)
+   (define-key map [delete] 'w3m-scroll-down-or-previous-url)
+   (define-key map  "\C-?" 'w3m-scroll-down-or-previous-url)
+   (define-key map  "\t" 'w3m-next-anchor)
+   (define-key map [(shift tab)] 'w3m-previous-anchor)
+   (define-key map [(shift iso-left-tab)] 'w3m-previous-anchor)
+   (define-key map  "\C-m" 'w3m-view-this-url)
+   (define-key map [(shift return)] 'w3m-view-this-url-new-session)
+   (define-key map [(shift kp-enter)] 'w3m-view-this-url-new-session)
+   (define-key map [(button2)] 'w3m-mouse-view-this-url)
+   (define-key map [(shift button2)] 'w3m-mouse-view-this-url-new-session)
+   (define-key map  " " 'scroll-up)
+   (define-key map  "a" 'w3m-bookmark-add-current-url)
+   (define-key map  "\M-a" 'w3m-bookmark-add-this-url)
+   (define-key map  "+" 'w3m-antenna-add-current-url)
+   (define-key map  "A" 'w3m-antenna)
+   (define-key map  "c" 'w3m-print-this-url)
+   (define-key map  "C" 'w3m-print-current-url)
+   (define-key map  "d" 'w3m-download)
+   (define-key map  "D" 'w3m-download-this-url)
+    ;; (define-key map  "D" 'w3m-download-with-wget)
+    ;; (define-key map  "D" 'w3m-download-with-curl)
+   (define-key map  "g" 'w3m-goto-url)
+   (define-key map  "G" 'w3m-goto-url-new-session)
+   (define-key map  "h" 'describe-mode)
+   (define-key map  "H" 'w3m-gohome)
+   (define-key map  "I" 'w3m-toggle-inline-images)
+   (define-key map  "\M-i" 'w3m-save-image)
+   (define-key map  "M" 'w3m-view-url-with-external-browser)
+   (define-key map  "n" 'w3m-view-next-page)
+   (define-key map  "N" 'w3m-namazu)
+   (define-key map  "o" 'w3m-history)
+   (define-key map  "O" 'w3m-db-history)
+   (define-key map  "p" 'w3m-view-previous-page)
+   (define-key map  "q" 'w3m-close-window)
+   (define-key map  "Q" 'w3m-quit)
+   (define-key map  "R" 'w3m-reload-this-page)
+   (define-key map  "s" 'w3m-search)
+   (define-key map  "S" ( lambda ()
+              (interactive)
+              ( let ((current-prefix-arg t))
+                (call-interactively 'w3m-search))))
+   (define-key map  "u" 'w3m-view-parent-page)
+   (define-key map  "v" 'w3m-bookmark-view)
+   (define-key map  "W" 'w3m-weather)
+   (define-key map  "=" 'w3m-view-header)
+   (define-key map  "\\" 'w3m-view-source)
+   (define-key map "? " 'describe-mode)
+   (define-key map "> " 'scroll-left)
+   (define-key map "< " 'scroll-right)
+   (define-key map ". " 'beginning-of-buffer)
+   (define-key map "^ " 'w3m-view-parent-page)
+   (define-key map "] " 'w3m-next-form)
+   (define-key map "[ " 'w3m-previous-form)
+   (define-key map "} " 'w3m-next-image)
+   (define-key map "{ " 'w3m-previous-image)
+   (define-key map "\C-c\C-c" 'w3m-submit-form)
+   (setq dka-w3m-map map))
+#+end_src
+
+#+begin_src emacs-lisp :tangle no
+(add-hook 'w3m-mode-hook '( lambda () (use-local-map dka-w3m-map)))
+#+end_src
+
+** [[https://www.emacswiki.org/emacs/WThreeMReportedProblems][EmacsWiki: W Three M Reported Problems]]
+Problems, questions and hopefully some answers too
+***** Weird Characters
+   :PROPERTIES:
+   :CUSTOM_ID: weird-characters
+   :END:
+If you are seeing some Japanese characters or nothing at all where you expect Umlauts and other characters, customize the w3m group and change all the references of the =‘euc-jp’= coding system options to =‘latin-1’=.
+
+-  :: I've had a little better luck with making pages look right by putting the following into my ~/.emacs file:
+
+#+begin_src emacs-lisp :tangle yes
+(setq w3m-coding-system 'utf-8
+          w3m-file-coding-system 'utf-8
+          w3m-file-name-coding-system 'utf-8
+          w3m-input-coding-system 'utf-8
+          w3m-output-coding-system 'utf-8
+          w3m-terminal-coding-system 'utf-8)
+#+end_src
+-  :: Is there some reason this approach would be worse than using =‘latin-1’=? -- [[https://www.emacswiki.org/emacs/JerameyCrawford][JerameyCrawford]]
+
+You may want to store your w3m bookmark file coding system to =‘emacs-mule’= in order to be able to mix Japanese and Latin-1 names.
+
+I am not sure whether you ever need to fiddle with the w3m charset coding system alist. When I last looked at it, it didn't contain any entries for latin-1 pages.
+
+Some pages contain the evil bullet character that displays as \225 and ought to be a little superscript plus sign. I think. In order to change that to a plus, add the following to your ~/.emacs file:
+
+#+begin_src emacs-lisp :tangle no
+ (standard-display-ascii ? \225 [?+])
+#+end_src
+
+****** "\240" seen with emacs-w3m FreeBSD
+    :PROPERTIES:
+    :CUSTOM_ID: seen-with-emacs-w3m-freebsd
+    :END:
+First make sure your locale is set correctly. In my .bashrc I place this:
+
+#+begin_example
+export LC_ALL=en_US.UTF-8
+export LANG=en_US.UTF-8
+#+end_example
+
+then you will want to make sure you are using the port www/w3m-m17n-img. That should fix the problem
+
+****** Filtering To Downcast To ASCII
+    :PROPERTIES:
+    :CUSTOM_ID: filtering-to-downcast-to-ascii
+    :END:
+emacs-w3m allows users to filter content, and this feature can be used to downcast entities, unicode, and other “?”-spawning characters into something of your choice in ASCII.
+
+*First, use standard-display-ascii where you can. I put this in my .emacs:*
+
+#+begin_src emacs-lisp :tangle no
+(standard-display-ascii ? \225 [?+])
+(standard-display-ascii ? \227 [?-])
+(standard-display-ascii ? \222 [?'])
+#+end_src
+*Now, use w3m-filter-url to do everything else. Add this code to your .emacs-w3m.el:*
+
+#+begin_src emacs-lisp :tangle yes
+(setq w3m-use-filter t)
+ ;; send all pages through one filter
+(setq w3m-filter-rules `(( " \\`.+" w3m-filter-all)))
+
+( defun  w3m-filter-all (url)
+  ( let ((list '(
+                 ;; add more as you see fit!
+                ( "» ;"  " >; >;")
+                ( " «  class="comment">;"  " <;")
+                ( " »  class="comment">;"  " >;")
+                ( " ö  class="comment">;"  "o")
+                ( "… ;"  "...")
+                ( "‘ ;"  "'")
+                ( "’ ;"  "'")
+                ( " &rsquo  class="comment">;"  "'")
+                ( " &lsquo  class="comment">;"  "'")
+                ( " \u2019"  " \'")
+                ( " \u2018"  " \'")
+                ( " \u201c"  " \"")
+                ( " \u201d"  " \"")
+                ( " &rdquo  class="comment">;"  " \"")
+                ( " &ldquo  class="comment">;"  " \"")
+                ( "“ ;"  " \"")
+                ( "” ;"  " \"")
+                ( " \u2013"  "-")
+                ( " \u2014"  "-")
+                ( "– ;"  "-")
+                ( "— ;"  "-")
+                ( " &ndash  class="comment">;"  "-")
+                ( " &mdash  class="comment">;"  "-")
+                )))
+  ( while list
+    ( let ((pat (car (car list)))
+          (rep (car (cdr (car list)))))
+      (goto-char (point-min))
+      ( while (search-forward pat nil t)
+        (replace-match rep))
+      (setq list (cdr list))))))
+#+end_src
+
+#+RESULTS:
+: w3m-filter-all
+
+So far this has helped rid my browser of “?” substitutions. Obviously there are many more I have not felt the need to add here (yet). I will edit this list over time as my needs demand.
+
+- [[https://www.emacswiki.org/emacs/BradClawsie][BradClawsie]] (May 2008)
+
+
+** DONE [[https://www.emacswiki.org/emacs/WThreeMHintsAndTips][EmacsWiki: W Three M Hints And Tips]]
+CLOSED: [2022-11-24 Thu 21:31]
+- State "DONE"       from              [2022-11-24 Thu 21:31]
+***** DONE View a file from within Dired
+CLOSED: [2022-11-24 Thu 21:31]
+   :PROPERTIES:
+   :CUSTOM_ID: view-a-file-from-within-dired
+   :END:
+   - State "DONE"       from              [2022-11-24 Thu 21:31]
+=‘M-x browse-url-of-dired-file’=
+
+***** DONE View the current buffer as rendered HTML
+CLOSED: [2022-11-24 Thu 21:31]
+   :PROPERTIES:
+   :CUSTOM_ID: view-the-current-buffer-as-rendered-html
+   :END:
+   - State "DONE"       from              [2022-11-24 Thu 21:31]
+=‘M-x browse-url-of-buffer’= , bound by default to `C-c C-v` in html-mode.
+
+***** DONE Saving buffers for future emacs sessions
+CLOSED: [2022-11-24 Thu 21:24]
+   :PROPERTIES:
+   :CUSTOM_ID: saving-buffers-for-future-emacs-sessions
+   :END:
+   - State "DONE"       from              [2022-11-24 Thu 21:24]
+emacs-w3m has an extensive ability to save its buffers for future use, for example in future emacs sessions. Note that the nomenclature can be slightly confusing because each collection of emacs-w3m buffers is called a session.
+
+By default, emacs-w3m automatically keeps track of the open buffers and maintains a “crash recovery session”, “automatic saved session” and possibly any number of “removed sessions”, so even if you haven't manually saved anything, you probably have the ability to recover past work. Type =‘M-s’= to see a pop-up window listing the current collection of saved sessions. On any line, the number in brackets is the number of buffers saved for that entry. You can delete entries using the =‘d’= command, and restore an entire session by pressing =‘return’= on an entry. =‘q’= exits the window.
+
+But there's more. You can examine the details of any entry by pressing =‘M-s’= on it. Then, you can use the =‘d’= command to selectively delete its entries, or you can selectively restore single entries by pressing =‘return’= on them.
+
+At any time while using emacs-w3m, you can save your session by pressing =‘M-S’= (capital S for saving a session; lower-case s for viewing the list).
+
+***** DONE Disable default c-x b behaviour
+CLOSED: [2022-11-24 Thu 20:24]
+   :PROPERTIES:
+   :CUSTOM_ID: disable-default-c-x-b-behaviour
+   :END:
+   - State "DONE"       from              [2022-11-24 Thu 20:24]
+#+begin_src emacs-lisp :tangle yes
+;; Disable default c-x b behaviour
+ (add-hook 'w3m-mode-hook ( lambda () (define-key w3m-mode-map (kbd  "C-x b") nil)))
+#+end_src
+
+***** DONE Use isearch for link following
+CLOSED: [2022-11-24 Thu 20:35]
+   :PROPERTIES:
+   :CUSTOM_ID: use-isearch-for-link-following
+   :END:
+   - State "DONE"       from              [2022-11-24 Thu 20:35]
+The following code binds f to a variant of isearch which finds links only. RET will exit isearch and open the new site.
+
+#+begin_src emacs-lisp :tangle yes
+  (defvar w3m-isearch-links-do-wrap nil
+    "Used internally for fast search wrapping.")
+#+end_src
+
+
+#+begin_src emacs-lisp :tangle yes
+  (defun w3m-isearch-links (&optional regexp)
+    (interactive "P")
+    (let ((isearch-wrap-function
+	   #'(lambda ()
+	       (setq w3m-isearch-links-do-wrap nil)
+	       (if isearch-forward
+		   (goto-char (window-start))
+		 (goto-char (window-end)))))
+	  (isearch-search-fun-function
+	   #'(lambda () 'w3m-isearch-links-search-fun))
+	  post-command-hook		;inhibit link echoing
+	  do-follow-link
+	  (isearch-mode-end-hook
+	   (list  #'(lambda nil
+		      (when (and (not isearch-mode-end-hook-quit)
+				 (w3m-anchor))
+			(setq do-follow-link t))))))
+      (setq w3m-isearch-links-do-wrap t)
+      (isearch-mode t
+		    regexp
+		    ;; fast wrap
+		    #'(lambda nil
+			(if isearch-success
+			    (setq w3m-isearch-links-do-wrap t)
+			  (when w3m-isearch-links-do-wrap
+			    (setq w3m-isearch-links-do-wrap nil)
+			    (setq isearch-forward
+				  (not isearch-forward))
+			    (isearch-repeat isearch-forward))))
+		    t)
+      (when do-follow-link
+	(w3m-view-this-url))))
+    #+end_src
+
+
+#+begin_src emacs-lisp :tangle yes
+  (defun w3m-isearch-links-search-fun (string &optional bound no-error)
+    (let* (isearch-search-fun-function
+	   (search-fun  (isearch-search-fun))
+	   error
+	   (bound  (if isearch-forward
+		       (max (or bound 0)
+			    (window-end))
+		     (min (or bound (window-start))
+			  (window-start)))))
+      (condition-case err
+	  (while (and (apply search-fun (list string bound))
+		      (not (w3m-anchor (point)))))
+	(error (setq error err)))
+      (if error
+	  (if (not no-error)
+	      (signal (car error) (cadr error)))
+	(point))))
+#+end_src
+
+
+#+begin_src emacs-lisp :tangle yes
+  (require ' w3m)
+  (define-key w3m-mode-map [?f] 'w3m-isearch-links)
+#+end_src
+
+#+RESULTS:
+: w3m-isearch-links
+
+***** DONE Removing trailing whitespace
+CLOSED: [2022-11-24 Thu 20:35]
+   :PROPERTIES:
+   :CUSTOM_ID: removing-trailing-whitespace
+   :END:
+   - State "DONE"       from              [2022-11-24 Thu 20:35]
+Sometimes, it's annoying when the w3m buffer has lots of trailing whitespaces. I do the following to remove trailing whitespace.
+
+#+begin_src emacs-lisp :tangle yes
+    (add-hook 'w3m-display-hook
+              ( lambda (url)
+                ( let ((buffer-read-only nil))
+                  (delete-trailing-whitespace))))
+#+end_src
+
+
+-- [[https://www.emacswiki.org/emacs/JaehyunYeom][JaehyunYeom]]
+
+***** DONE Consistent browse-url in buffers/w3m/gnus
+CLOSED: [2022-11-24 Thu 20:37]
+   :PROPERTIES:
+   :CUSTOM_ID: consistent-browse-url-in-buffersw3mgnus
+   :END:
+   - State "DONE"       from              [2022-11-24 Thu 20:37]
+Here I bind a key to rgr/browse-url and the code works out if its an encoded url beneath as in a w3m buffer. If you prefix your key with C-u it launches your system browser as opposed to the one you configured in w3m settings. e.g My default emacs w3m browser is w3m but if I hit C-u prioer to my browse key it launches Iceweasel in Debian. Very handy.
+
+#+begin_src emacs-lisp :tangle yes
+(defun  rgr/browse (url)
+   "If prefix is specified use the system default browser else use the configured emacs one"
+  (if current-prefix-arg
+      (when url (browse-url-default-browser url))
+    (if  url (browse-url url) (call-interactively 'browse-url))
+    ))
+
+(defun  rgr/browse-url ( &optional url)
+   "browse the url passed in"
+  (interactive)
+  (setq url (or url (w3m-url-valid (w3m-anchor)) (browse-url-url-at-point) (region-or-word-at-point)))
+  (setq url (read-string (format  "Url  \"%s \" :" url) url nil url))
+  (rgr/browse url))
+#+end_src
+
+#+RESULTS:
+: rgr/browse-url
+
+[[https://www.emacswiki.org/emacs/RichardRiley][RichardRiley]]
+
+***** DONE Middle click to open url in a new sesstion (tab)
+CLOSED: [2022-11-24 Thu 20:40]
+   :PROPERTIES:
+   :CUSTOM_ID: middle-click-to-open-url-in-a-new-sesstion-tab
+   :END:
+   - State "DONE"       from              [2022-11-24 Thu 20:40]
+
+#+begin_src emacs-lisp :tangle yes
+;; Middle click to open url in a new sesstion (tab)
+    (define-key w3m-mode-map [mouse-2] 'w3m-mouse-view-this-url-new-session)
+#+end_src
+
+But it also changes the action of mouse-1. Ideas?
+
+***** DONE Improving w3m-browse-*
+CLOSED: [2022-11-24 Thu 20:41]
+   :PROPERTIES:
+   :CUSTOM_ID: improving-w3m-browse-
+   :END:
+   - State "DONE"       from              [2022-11-24 Thu 20:41]
+Some w3m-browse-* functions (e.g. w3m-browse-generic) rely on finding urls via browse-url-url-at-point, which in turn relies on (thing-at-point ‘url). However, thing-at-point does not seem to find urls for w3m's links. That's because a w3m link contains the url in the w3m-href-anchor text property. I use the following piece of advice to make sure that browse-url finds w3m's own links.
+
+#+begin_src emacs-lisp :tangle yes
+ ;; make browse-url-url-at-point use w3m links if they exist
+(defadvice  browse-url-url-at-point (after w3m-anchor-at-point activate)
+     "Browse the url at point. If w3m-anchor finds a url, use it."
+    (setq ad-return-value
+                (or
+                 (w3m-anchor)
+                 (ad-return-value))))
+#+end_src
+
+-ghf
+
+
+** later
+***** Import/merge bookmarks from Firefox
+   :PROPERTIES:
+   :CUSTOM_ID: importmerge-bookmarks-from-firefox
+   :END:
+A Python script to transfer bookmarks exported from Firefox in the JSON format to the html format used by emacs-w3m, optionally merging them with an existing emacs-w3m bookmarks file (normally ~/.w3m/bookmark.html): [[http://jim.sdf-eu.org/etc/ffox2w3m.py]] . Written for my own purposes and not heavily tested, let me know if you have problems. [[https://www.emacswiki.org/emacs/JimBurton][JimBurton]]
+
+Firefox can export his bookmarks to an html file, no need to use complex code to parse JSON. You can do that by using about:config or adding this to your user.js file:
+
+#+begin_example
+// Export bookmarks form places.sqlite ==> bookmark.html
+user_pref( "browser.bookmarks.autoExportHTML", true) ;
+#+end_example
+
+When that done, you can see these bookmarks with bookmark-extensions.el (See [[https://www.emacswiki.org/emacs/BookmarkExtension][BookmarkExtension]]) and/or you will find sources in [[/emacs/anything-config.el][Lisp : anything-config.el]] to show firefox bookmarks.
+
+-- [[https://www.emacswiki.org/emacs/ThierryVolpiatto][ThierryVolpiatto]]
+
+***** REVIEW Conkeror/Vimperator functionality
+   :PROPERTIES:
+   :CUSTOM_ID: conkerorvimperator-functionality
+   :END:
+   - State "REVIEW"     from              [2022-11-24 Thu 21:26]
+If you like Conkeror/Vimperator style element selection/search, try w3m-lnum.el (part of emacs-w3m).
+
+It enhances many point commands beyond current point. For example, if you're not over link and invoke the enhanced version of w3m-print-this-url (w3m-lnum-this-url), you'll be asked to select a link to be copied by entering number, where entering letters will filter currently visible links on their text part (+ will add to the search string and + adds space).
+
+The swiss-army knives are w3m-lnum-universal and w3m-lnum-follow. w3m-lnum-universal: select whatever element and get a list of applicable actions over it. w3m-lnum-follow: depending on selected element may visit link, activate form field, toggle image or push a button. With prefix arguments its behaviour may be further controlled.
+
+For full list of such commands try =‘L C-h’= within emacs-w3m buffer.
+
+To customize some lnum options, just search for =‘w3m lnum’= within the Emacs customization interface.
+
+You may replace original point commands with their enhanced versions (and also put w3m-lnum-universal at =‘w’=, w3m-lnum-follow at =‘f’= as in Conkeror and w3m-linknum-goto at =‘F’= for quickly moving cursor to some link, image, form field or button) by activating the w3m-lnum-mode minor mode ( =‘M-x w3m-lnum-mode’= toggles it). You can automatically activate it by adding
+
+
+to your .emacs-w3m file or
+
+#+begin_src emacs-lisp :tangle yes
+
+(w3m-lnum-mode 1)
+(add-hook 'w3m-mode-hook 'w3m-lnum-mode)
+#+end_src
+
+before loading w3m.
+
+For making arbitrary use of result of link numbering selection within Elisp, take a look at =‘w3m-lnum-get-action’=. It takes a prompt and type of elements, does a selection and returns list of properties of the selection.
+
+-- Andrey Kotlarski
+
+***** Copy html links to org-mode
+   :PROPERTIES:
+   :CUSTOM_ID: copy-html-links-to-org-mode
+   :END:
+You can copy a selection of text, including html links, from an emacs-w3m buffer into an org-mode buffer and have the html links automatically converted into org-mode links, so you don't lose the url information.
+
+Function =‘org-w3m-copy-for-org-mode’= is bound by default to “C-c C-x M-w” in emacs-w3m buffers for this purpose.
+
+***** Bookmarking
+   :PROPERTIES:
+   :CUSTOM_ID: bookmarking
+   :END:
+In addition to emacs-w3m native support for bookmarking, the following external extensions are available:
+
+- [[https://www.emacswiki.org/emacs/Anything][Anything]] -- =‘M-x anything-w3m-bookmarks’=, narrow the list by typing some patterns(multiple patterns are space-delimited string), select with up/down/pgup/pgdown/C-p/C-n/C-v/M-v, choose with enter, With =‘TAB’= actions can be selected if the selected bookmark has more than one possible action. With =‘C-z’= the contents of bookmark is displayed without quitting anything session.
+- Regular Emacs bookmarks to URLs, for W3M.
+  - [[https://www.emacswiki.org/emacs/Bookmark%2b][Bookmark+]]
+  - [[https://www.emacswiki.org/emacs/BookmarkExtension][BookmarkExtension]]
+
+****** Bookmark to delicious
+    :PROPERTIES:
+    :CUSTOM_ID: bookmark-to-delicious
+    :END:
+The following uses =‘curl’= and [[/emacs/anything-delicious.el][Lisp : anything-delicious.el]] (see =‘auth-source’= to configure).
+
+#+begin_example
+        (defun w3m-add-delicious-bookmark (description tag)
+          "Add a bookmark to delicious from w3m"
+          (interactive (list (read-from-minibuffer "Description: "
+                                                   nil nil nil nil
+                                                   w3m-current-title)
+                             (completing-read "Tag: "
+                                              (anything-delicious-get-all-tags-from-cache))))
+          (setq description
+                (replace-regexp-in-string " " "+" description))
+          (let* ((url     w3m-current-url)
+                 (url-api (format anything-c-delicious-api-url-add
+                                  url
+                                  description
+                                  tag))
+                 anything-delicious-user
+                 anything-delicious-password
+                 auth)
+            (unless (and anything-delicious-user anything-delicious-password)
+              (anything-delicious-authentify))
+            (setq auth (concat anything-delicious-user ":" anything-delicious-password))
+            (with-temp-buffer
+              (apply #'call-process "curl" nil t nil
+                     `("-u"
+                       ,auth
+                       ,url-api))
+              (buffer-string)
+              (goto-char (point-min))
+              (if (re-search-forward "" nil t)
+                  (unwind-protect
+                       (progn
+                         (message "%s added to delicious" description)
+                         (when current-prefix-arg
+                           (w3m-bookmark-write-file url
+                                                    (replace-regexp-in-string "\+"
+                                                                              " "
+                                                                              description)
+                                                    tag)
+                           (message "%s added to delicious and to w3m-bookmarks" description)))
+                    (anything-wget-retrieve-delicious))
+                  (message "Fail to add bookmark to delicious")
+                  (when current-prefix-arg
+                    (if (y-or-n-p "Add anyway to w3m-bookmarks?")
+                        (progn
+                          (w3m-bookmark-write-file url
+                                                   (replace-regexp-in-string "\+" " "
+                                                                             description)
+                                                   tag)
+                          (message "%s added to w3m-bookmarks" description))))))))
+
+        (define-key w3m-mode-map "\C-x\C-a" 'w3m-add-delicious-bookmark)
+#+end_example
+
+-- [[https://www.emacswiki.org/emacs/ThierryVolpiatto][ThierryVolpiatto]]
+
+-  :: Not as simple now that OAuth is used; compare [[http://delicious.com/help/api]] and [[http://delicious.com/help/oauthapi]] -- [[https://www.emacswiki.org/emacs/jcorneli][jcorneli]]
+  -  :: Don't know what is OAuth, i will have a look. However the actual above code of [[/emacs/anything-delicious.el][Lisp : anything-delicious.el]] work fine. I have updated it. -- [[https://www.emacswiki.org/emacs/ThierryVolpiatto][ThierryVolpiatto]]
+
+***** Browse url on other window
+   :PROPERTIES:
+   :CUSTOM_ID: browse-url-on-other-window
+   :END:
+add this into the configuraion file of the emacs, it would make the emacs work as *help* buffer. This would help if you use w3m to check document
+
+#+begin_src emacs-lisp :tangle yes
+(setq browse-url-browser-function 'w3m-browse-url-other-window)
+
+(defun w3m-browse-url-other-window (url &optional newwin)
+  (let ((w3m-pop-up-windows t))
+    (if (one-window-p) (split-window))
+    (other-window 1)
+    (w3m-browse-url url newwin)))
+ #+end_src
+
+[[https://www.emacswiki.org/emacs/DennyZhang][DennyZhang]]: Please note, emacs23 has the functions of ffap-other-window/ffap-other-frame. If you always browse url in w3m, I think these functions are good enough.
+
+However, I usually leverage external web browser, and sometimes I may use w3m for some simple web pages.
+
+So my variable of browse-url-browser-function is not set as w3m way. Thus, I define below standalone function, for the case that we want to browse url in a seperate window of *w3m* mode.
+
+#+begin_src emacs-lisp :tangle yes
+(defun ffap-w3m-other-window (url &optional new-session)
+  "Browse url in w3m.
+  If current frame has only one window, create a new window and browse the webpage"
+  (interactive (progn
+                 (require 'browse-url)
+                 (browse-url-interactive-arg "Emacs-w3m URL: ")))
+  (let ((w3m-pop-up-windows t))
+    (if (one-window-p) (split-window))
+    (other-window 1)
+    (w3m-browse-url url new-session)))
+  #+end_src
+
+***** Working with Gmail
+   :PROPERTIES:
+   :CUSTOM_ID: working-with-gmail
+   :END:
+To work with Gmail, w3m requires a one-line [[https://productforums.google.com/forum/#!topic/gmail/EKJfMizvywY][patch]]. After this, emacs-w3m works well with Gmail in Basic HTML mode. In particular, compared e.g. with mu4e, new mail is seen instantaneously, without needing to be fetched first by e.g. offlineimap.
+
+
+***** WAIT Google Suggest
+   :PROPERTIES:
+   :CUSTOM_ID: google-suggest
+   :END:
+   - State "WAIT"       from              [2022-11-24 Thu 20:05]
+Intrigued by the Firefox google bar completion, I hacked the following function for use with emacs-w3m:
+
+#+begin_src emacs-lisp :tangle yes
+    (defun google-suggest ()
+     "Search `w3m-search-default-engine' with google completion canditates."
+     (interactive)
+     (w3m-search w3m-search-default-engine
+		 (completing-read  "Google search: "
+				   (dynamic-completion-table
+				   'google-suggest-aux))))
+#+end_src
+
+#+RESULTS:
+: google-suggest
+
+#+begin_src emacs-lisp :tangle yes
+   (defun google-suggest-aux (input)
+     (with-temp-buffer
+       (insert
+	(shell-command-to-string
+	 (format "w3m -dump_source %s"
+		 (shell-quote-argument
+		  (format
+		   "http://www.google.com/complete/search?hl=en&js=true&qu=%s"
+		   input)))))
+       (read
+	(replace-regexp-in-string "," ""
+				  (progn
+				    (goto-char (point-min))
+				    (re-search-forward "\(" (point-max) t 2)
+				    (backward-char 1)
+				    (forward-sexp)
+				    (buffer-substring-no-properties
+				     (1- (match-end 0)) (point)))))))
+#+end_src
+
+#+RESULTS:
+: google-suggest-aux
+
+[[https://www.emacswiki.org/emacs/RichardRiley][RichardRiley]] : doesn't work for me :- completing-read: Symbol's value as variable is void: google-suggest-aux
+
+[[https://www.emacswiki.org/emacs/DamienProfeta][DamienProfeta]] : should work now with ‘ before google-suggest-aux
+
+***** WAIT Using TextMode for textareas
+   :PROPERTIES:
+   :CUSTOM_ID: using-textmode-for-textareas
+   :END:
+   - State "WAIT"       from              [2022-11-24 Thu 20:05]
+(by [[https://www.emacswiki.org/emacs/DavidEdmondson][DavidEdmondson]])
+
+The default mode for editing textareas is somewhat annoying - I'd much rather use [[https://www.emacswiki.org/emacs/TextMode][TextMode]]. Here's a small addition to your .emacs to make that possible:
+
+#+begin_src emacs-lisp :tangle yes
+ (eval-after-load "w3m-form"
+  '(progn
+     (define-minor-mode dme:w3m-textarea-mode
+       "Minor mode used when editing w3m textareas."
+       nil " dme:w3m-textarea" w3m-form-input-textarea-map)
+#+end_src
+
+#+begin_src emacs-lisp :tangle yes
+     (defun dme:w3m-textarea-hook ()
+       ; protect the form local variables from being killed by `text-mode'
+       (mapcar (lambda (v)
+		 (if (string-match "^w3m-form-input-textarea.*"
+				   (symbol-name (car v)))
+		     (put (car v) 'permanent-local t)))
+	       (buffer-local-variables))
+       (text-mode)
+       (dme:w3m-textarea-mode))
+ #+end_src
+
+ #+RESULTS:
+ : dme:w3m-textarea-hook
+
+#+begin_src emacs-lisp :tangle yes
+  (add-hook 'w3m-form-input-textarea-mode-hook 'dme:w3m-textarea-hook)))
+#+end_src
+
+#+RESULTS:
+
+I just simply use this as my w3m-form-input-textarea-mode-hook:
+
+#+begin_src emacs-lisp :tangle yes
+ (defun dka-w3m-textarea-hook()
+  (save-excursion
+    (while (re-search-forward "\r\n" nil t)
+      (replace-match "\n" nil nil))
+    (delete-other-windows)))
+ #+end_src
+
+ #+RESULTS:
+ : dka-w3m-textarea-hook
+
+After you quit the buffer, it restores your window config nicely. 😊 In other words, the patch previously posted here isn't really needed.
+
+***** Easy forward/back in a new buffer
+   :PROPERTIES:
+   :CUSTOM_ID: easy-forwardback-in-a-new-buffer
+   :END:
+Are you ever in a position when you're browsing a page in emacs-w3m and find yourself wishing you could keep looking at this page, but also open the previous (or next) page in history in the minimum number of keystrokes? Maybe not, but I definitely have.
+
+Therefore, I wrote a couple of revised history navigation functions. They each work by calling the original, but if given an argument of at least 16 (C-u C-u) the page will open in a new buffer.
+
+I find this most useful if bound to the respective keys currently bound to =‘w3m-view-previous-page’= and =‘w3m-view-next-page’=. Anyway, here's the code:
+
+#+begin_src emacs-lisp :tangle yes
+    (defun w3m-view-previous-page-2 (&optional count)
+      "Move back count pages in the history.
+    If `count' is a positive integer, move backward count times in the
+    history.  If `count' is a negative integer, moving forward is performed.
+    `count' is treated as 1 by default if it is omitted.
+
+#+end_src
+
+#+begin_src emacs-lisp :tangle yes
+    If `count' is 16 (C-u C-u), it will open in a new buffer. If it is greater
+    than 16, it will open in a new buffer and move backward `count' - 16 times."
+      (interactive "p")
+      (cond ((not count)
+    	     (setq count 1))
+    	    ((= count 16)
+    	     (setq count 1)
+    	     (w3m-copy-buffer))
+    	    ((> count 16)
+    	     (setq count (- count 16))
+    	     (w3m-copy-buffer)))
+      (w3m-view-previous-page count))
+  #+end_src
+
+#+begin_src emacs-lisp :tangle yes
+    (defun w3m-view-next-page-2 (&optional count)
+      "Move back count pages in the history.
+    If `count' is a positive integer, move forward count times in the
+    history.  If `count' is a negative integer, moving backwards is performed.
+    `count' is treated as 1 by default if it is omitted.
+    #+end_src
+
+#+begin_src emacs-lisp :tangle yes
+    If ` count' is 16 (C-u C-u), it will open in a new buffer. If it is greater
+    than 16, it will open in a new buffer and move forward ` count' - 16 times. "
+      (interactive "p")
+      ( cond ((not count)
+             (setq count 1))
+            ((= count 16)
+             (setq count 1)
+             (w3m-copy-buffer))
+            ((> count 16)
+             (setq count (- count 16))
+             (w3m-copy-buffer)))
+       (w3m-view-next-page count))
+#+end_src
+
+***** lynx-like multiple bookmark files
+   :PROPERTIES:
+   :CUSTOM_ID: lynx-like-multiple-bookmark-files
+   :END:
+w3m-multibookmarks.el provides
+
+#+begin_example
+  * multiple bookmarks files (default is to use the same as lynx)
+#+end_example
+
+#+begin_example
+  * A)dd D)ocument or L)ink keystrokes and url Title munging.
+#+end_example
+
+It is usable, even though it is in an early stage.
+
+Currently, I'm mostly using it with emacs-w3m-1.4.4 and emacs-22.2 under slackware Linux.
+
+[[http://www.well.com/~discover/emacs-w3m-stuff/]]
+
+-- Rediscover
+
+***** Access mobile versions of online services and web apps
+   :PROPERTIES:
+   :CUSTOM_ID: access-mobile-versions-of-online-services-and-web-apps
+   :END:
+The recent proliferation of handheld computing devices and the relatively lo-fi versions of popular online services provided for these can actually benefit users of relatively lo-fi, no-bells-no-whistles web-browsing software, such as [[https://www.emacswiki.org/emacs/emacs-w3m][emacs-w3m]].
+
+This is derived from my own experiments with the mobile versions of popular web-sites and online services.
+
+It was all prompted by [[https://www.emacswiki.org/emacs/SachaChua][SachaChua]]'s discovery of how to access Facebook through Emacs, here:
+
+[[http://sachachua.com/wp/2008/08/12/sweet-facebook-in-emacs/]]
+
+As she says, make sure you set w3m-use-cookies to t.
+
+Then, here goes:
+
+#+begin_example
+ * Google Reader: access [[http://www.google.com/reader/m/view/]], and sign into
+   your account as usual. Not nearly as cool as the full-blown version, but
+   highly usable, this is my preferred method to read my RSS feeds right now.
+#+end_example
+
+#+begin_example
+ * Gmail: The basic HTML version of Gmail is actually quite usable from
+   emacs-w3m. But you can also access the mobile device version of the service,
+   here: [[http://mail.google.com/mail/x]], and, again, sign in as usual. The
+   benefit of this approach is that this provides you with a stripped-down
+   summary buffer of incoming mails.
+#+end_example
+
+#+begin_example
+   And, finally, Google Docs (yes, Google Docs):
+#+end_example
+
+#+begin_example
+ * Google Docs & Spreadsheets: Access the mobile interface to Google Docs here:
+   [[http://docs.google.com/m]]. No, no editing for mobile devices here, obviously,
+   but the interface provides you with a handy and searchable list
+   of the documents in your account, which I find a very practical way to access
+   my data directly from my Emacs buffers.
+#+end_example
+
+Erm, well, so much for AJAX and the singing-and-dancing, drag-and-drop web app interfaces...
+
+If anyone else has had similar success with other online apps and services, this might be a good place to add up a nice list...
+
+[[https://www.emacswiki.org/emacs/KamenNedev][KamenNedev]]
+
+** [[https://www.emacswiki.org/emacs/WThreeMTables][EmacsWiki: W Three M Tables]]
+This page describes how you can get tables in emacs-w3m ( [[https://www.emacswiki.org/emacs/WThreeM][WThreeM]]) to display using the original IBM graphics characters instead of plain ASCII +, -, and |. You can see them in xterm (if you are using the correct fonts).
+
+#+begin_example
+ From: JohnWiegley
+ Subject: Even easier solution for displaying PC graphics characters
+ Newsgroups: comp.emacs
+ Date: 16 Jun 2001 18:36:28 -0400
+#+end_example
+
+By sheer chance, I run into the fact that's Emacs 2x's glyph table lets you access font elements directly. And when I looked at the standard “fixed” font, there were all the graphics characters sitting at the beginning!
+
+So, you don't need Mule or multibyte or Unicode fonts. Just do this:
+
+#+begin_src emacs-lisp :tangle no
+ (standard-display-ascii ? \200 [15])
+ (standard-display-ascii ? \201 [21])
+ (standard-display-ascii ? \202 [24])
+ (standard-display-ascii ? \203 [13])
+ (standard-display-ascii ? \204 [22])
+ (standard-display-ascii ? \205 [25])
+ (standard-display-ascii ? \206 [12])
+ (standard-display-ascii ? \210 [23])
+ (standard-display-ascii ? \211 [14])
+ (standard-display-ascii ? \212 [18])
+ (standard-display-ascii ? \214 [11])
+#+end_src
+
+#+begin_src emacs-lisp :tangle no
+ (standard-display-ascii ? \222 [? \'])
+ (standard-display-ascii ? \223 [? \"])
+ (standard-display-ascii ? \224 [? \"])
+ (standard-display-ascii ? \227  " -- ")
+#+end_src
+
+That will give you line drawing characters for those who browse with w3m.
+
+This is the original posting, slightly edited. It is no longer relevant.
+
+#+begin_example
+ From: JohnWiegley
+ Subject: Displaying PC graphics characters in Emacs (works great with w3m-el)
+ Newsgroups: comp.emacs
+ Date: 13 Jun 2001 18:04:43 -0400
+#+end_example
+
+I missed the pretty graphic characters I was used to under xterm. And so the hunt began. If xterm can do anything, Emacs can do it. 😊
+
+Here are the steps to take:
+
+- Set your font to an iso10646 (unicode) encoded font. XFree86 4.0's “fixed” font supports such an encoding. Just put this in your .Xdefaults:
+
+#+begin_example
+ Emacs*font: -misc-fixed-medium-r-semicondensed--13-*-*-*-*-*-iso10646-1
+#+end_example
+
+-  :: Or something close to it.
+
+- Now that you have a font which contains PC graphics characters, you need to map the appropriate 8-bit control characters to their Unicode equivalents. Put this in your .emacs:
+
+#+begin_src emacs-lisp :tangle no
+ (standard-display-ascii ? \200 (vector (decode-char 'ucs #x253c)))
+ (standard-display-ascii ? \201 (vector (decode-char 'ucs #x251c)))
+ (standard-display-ascii ? \202 (vector (decode-char 'ucs #x252c)))
+ (standard-display-ascii ? \203 (vector (decode-char 'ucs #x250c)))
+ (standard-display-ascii ? \204 (vector (decode-char 'ucs #x2524)))
+ (standard-display-ascii ? \205 (vector (decode-char 'ucs #x2502)))
+ (standard-display-ascii ? \206 (vector (decode-char 'ucs #x2510)))
+ (standard-display-ascii ? \210 (vector (decode-char 'ucs #x2534)))
+ (standard-display-ascii ? \211 (vector (decode-char 'ucs #x2514)))
+ (standard-display-ascii ? \212 (vector (decode-char 'ucs #x2500)))
+ (standard-display-ascii ? \214 (vector (decode-char 'ucs #x2518)))
+#+end_src
+
+-  :: You can use the “xfd” utility to see what all these hex codes mean. Just keep hitting “Next page” until you get to the 0x2500 page, which is where all the graphics characters live. Feel free to chose other characters if you want, perhaps to support rounded corners, for example.
+
+- You must have mule installed (multibyte character support) for any of this to work.
+
+Now you will see pretty tables. Ah.
+
+John
+
+This doesn't worked for me, but setting =‘w3m-default-symbol’= does (I hope the UTF-8 chars don't get screwed anywhere):
+
+#+begin_src emacs-lisp :tangle no
+(setq w3m-default-symbol
+      '( "─┼"  " ├"  "─┬"  " ┌"  "─┤"  " │"  "─┐"  ""
+         "─┴"  " └"  "──"  ""    "─┘"  ""    ""    ""
+         "─┼"  " ┠"  "━┯"  " ┏"  "─┨"  " ┃"  "━┓"  ""
+         "━┷"  " ┗"  "━━"  ""    "━┛"  ""    ""    ""
+         " •"  " □"  " ☆"  " ○"  " ■"  " ★"  " ◎"
+         " ●"  " △"  " ●"  " ○"  " □"  " ●"  "≪ ↑ ↓ "))
+#+end_src
+
+** [[https://www.emacswiki.org/emacs/WThreeMReadability][EmacsWiki: W Three M Readability]]
+***** Headline Readability
+   :PROPERTIES:
+   :CUSTOM_ID: headline-readability
+   :END:
+Here is a patch to improve headline readability. : *Broken links* Screenshot: [[http://dev.ariel-networks.com/Members/matsuyama/images/w3m-old.png/image][Before]]
+
+****** Applying patch
+    :PROPERTIES:
+    :CUSTOM_ID: applying-patch
+    :END:
+Download two patch [[http://dev.ariel-networks.com/Members/matsuyama/stuff/w3m-el-patch/download][w3m-el.patch]] [[http://dev.ariel-networks.com/Members/matsuyama/stuff/w3m-head-patch/download][w3m-head.patch]] and [[http://sourceforge.net/project/showfiles.php?group_id=39518&package_id=31682&release_id=512477][w3m-0.5.2]] sourcecode, then apply patch like:
+
+#+begin_example
+% cd ~/tmp
+% tar xf w3m-0.5.2.tar.gz
+% cd ~/src/w3m-0.5.2
+% patch -p1 < w3m-head.patch
+% ./configure --prefix=$HOME
+% make && make install
+% cd ~/.emacs.d # cd to a directory w3m.el is placed in.
+% patch -p0 < w3m.el
+#+end_example
+
+Now you can customize headline faces by =M-x customize-face RET w3m-h1 RET=.
+
+Please check =w3m-command= is correct if it doesn't work.
+
+** [[https://www.emacswiki.org/emacs/WThreeMFrames][EmacsWiki: W Three M Frames]]
+This page discusses the ability of a single emacs-w3m buffer to render html FRAME elements, ie. .... Don't confuse the content of this page with emacs-w3m ability to display different buffers and buffer groups in dedicated emacs frames (see page [[https://www.emacswiki.org/emacs/WThreeMTabsAndDisplayModes][WThreeMTabsAndDisplayModes]]).
+
+***** Rendering HTML Frames
+   :PROPERTIES:
+   :CUSTOM_ID: rendering-html-frames
+   :END:
+If you want to render html frames within Emacs, you have to use w3mmee rather than w3m -- w3mmee is w3m with multibyte encoding extension. The problem seems to be that w3m and w3mmee behave differently with the -dump_extra flag.
+
+You will also need the utility mbconv (character encoding scheme converter) for this to work out of the box -- this is provided by either the libmoe1.5 or libmoe-dev package on Debian GNU/Linux systems.
+
+To use w3mmee/mbconv:
+
+#+begin_example
+ ( require ' executable)
+#+end_example
+
+#+begin_example
+ ( let ((w3mmee (executable-find  "w3mmee"))
+       (mbconv (executable-find  "mbconv")))
+   ( when (and w3mmee mbconv)
+     (setq w3m-command w3mmee)))
+#+end_example
+
+#+begin_example
+ ( require ' w3m)
+#+end_example
+
+You might also need to configure w3mmee such that “English” is set as the “Language” in the “Character Encoding Settings” section of the “Option Setting Panel”.
+
+** [[https://www.emacswiki.org/emacs/WThreeMShimbun][EmacsWiki: W Three M Shimbun]]
+The Shimbun module is a library set of [[https://www.emacswiki.org/emacs/emacs-w3m][emacs-w3m]] that enables you to read certain web contents using Gnus, Wanderlust, or Mew as if they were email messages. Shimbun means a newspaper in Japanese.
+
+You will need to install the following packages, before installing emacs-w3m:
+
+- [[https://www.emacswiki.org/emacs/FLIM][FLIM]] ( [[ftp://ftp.m17n.org/pub/mule/flim/]])
+- [[https://www.emacswiki.org/emacs/APEL][APEL]] ( [[ftp://ftp.m17n.org/pub/mule/apel/]])
+
+-  :: ftp.m17n.org doesn't seem to allow anonymous access at the moment. There's an unofficial git clone of the CVS tree at [[http://github.com/wanderlust/flim]], last pulled in August 2010 or you could try one of the following alternatives:
+-  :: * [[ftp://ftp.jpl.org/pub/elisp/apel/]]
+-  :: * [[http://www.kanji.zinbun.kyoto-u.ac.jp/~tomo/lemi/dist/flim/]]
+
+Note that, with my config Emacs 21.3, I had to remove the smtp.el and smtpmail.el files that comes with FLIM as they override the files that comes with emacs.
+
+I had to delete some more files from FLIM and APEL. Just use M-x list-load-path-shadows to find packages from FLIM and APEL that shadow other more recent files. ( [[https://www.emacswiki.org/emacs/StefanReichoer][StefanReichoer]])
+
+To add a group to gnus simply put
+
+#+begin_example
+    (autoload 'gnus-group-make-shimbun-group "nnshimbun" nil t)
+#+end_example
+
+in your .gnus and use M-x gnus-group-make-shimbun-group RET asahi RET national RET (asahi and national are examples, you can use completion to see the list of server).
+
+Originally, the defined servers were Japanese servers, but there are a growing number of English language news sources as well (The New York Times, the BBC, The Register, etc.). The library allows to create a new server definition based on an existing server class. For instance there are classes for mhonarc archive, geocrawler.com ...
+
+Here's a [[http://www.physik.fu-berlin.de/~dhansen/screens/bbcshimbun.png][Screenshot]] of the BBC module. (Link down as of 2007-08-14)
+
+You can browse the cvs repository to see all the shimbun currently available:
+
+- [[http://cvs.namazu.org/emacs-w3m/shimbun/]]
+
+***** Contents
+   :PROPERTIES:
+   :CUSTOM_ID: contents
+   :END:
+1. [[#toc1][EmacsWiki]]
+   1.
+      1. [[#toc2][Simple Version]]
+      2. [[#toc3][Showing the diff Page]]
+
+   2. [[#toc4][Heise Online]]
+
+   3. [[#toc5][Spiegel Online]]
+
+   4. [[#toc6][More german news]]
+
+   5. [[#toc7][RSS and Atom Feeds]]
+
+****** EmacsWiki
+    :PROPERTIES:
+    :CUSTOM_ID: toc1
+    :END:
+******* Simple Version
+     :PROPERTIES:
+     :CUSTOM_ID: toc2
+     :END:
+Because [[https://www.emacswiki.org/emacs/EmacsWiki][EmacsWiki]] has a good user interface and a RSS Feed it's quite easy to write a shimbun. This approach takes the URL from the RSS feed and strips the header and footer:
+
+#+begin_example
+    ;; This program is free software; you can redistribute it and/or modify
+    ;; it under the terms of the GNU General Public License as published by
+    ;; the Free Software Foundation; either version 2, or (at your option)
+    ;; any later version.
+
+    (require 'shimbun)
+    (require 'sb-rss)
+
+    (luna-define-class shimbun-emacswiki (shimbun-rss) ())
+
+    (defvar shimbun-emacswiki-url
+      "http://www.emacswiki.org/cgi-bin/wiki.pl?action=rss")
+    (defvar shimbun-emacswiki-groups '("changes"))
+    (defvar shimbun-emacswiki-from-address  "invalid@emacswiki.org")
+    (defvar shimbun-emacswiki-content-start "")
+    (defvar shimbun-emacswiki-content-end "")
+
+    (luna-define-method shimbun-index-url ((shimbun shimbun-emacswiki))
+      shimbun-emacswiki-url)
+
+    (luna-define-method shimbun-rss-build-message-id
+      ((shimbun shimbun-emacswiki) url date)
+      (unless (string-match "id=\\(.*?\\);revision=\\([0-9]+\\)" url)
+        (error "Cannot find message-id base"))
+      (concat "<" (match-string 1 url) (match-string 2 url) "@emacswiki.org>"))
+
+    (provide 'sb-emacswiki)
+#+end_example
+
+To get it work put the file in e.g. ~/.elisp/ and add
+
+#+begin_example
+    (setq shimbun-server-additional-path '("~/.elisp"))
+#+end_example
+
+to your ~/.emacs,
+
+This code is posted mainly for /educational/ reasons [[http://www.emacswiki.org/pics/blink.png]] to show how easy it is to write your own shimbun. Read on for an improved version.
+
+******* Showing the diff Page
+     :PROPERTIES:
+     :CUSTOM_ID: toc3
+     :END:
+This [[https://www.emacswiki.org/emacs/EmacsWiki][EmacsWiki]] shimbun overwrites the =‘shimbun-get-headers’= method to modify the URL. Instead of a specific revision it fetches the page showing the differences to the previous revision.
+
+This Shimbun is now part of the emacs-w3m CVS repository.
+
+- [[http://cvs.namazu.org/*checkout*/emacs-w3m/shimbun/sb-emacswiki.el?rev=HEAD&content-type=text/plain]]
+
+If you don't update you news reader often enough and fear to miss some topics you can set shimbun-emacswiki-url to get a RSS Feed with more items:
+
+#+begin_example
+     (setq shimbun-emacswiki-url "http://www.emacswiki.org/cgi-bin/wiki.pl?action=rss&days=15&rsslimit=all&all=1")
+#+end_example
+
+See [[https://www.emacswiki.org/emacs/GnusRss][GnusRss]] for details.
+
+****** Heise Online
+    :PROPERTIES:
+    :CUSTOM_ID: toc4
+    :END:
+There's Shimbun for the popular German (tech) news site heise online. It supports
+
+- the newsticker [[http://www.heise.de/newsticker/]]
+- and telepolis [[http://www.heise.de/tp/]]
+
+This Shimbun is now part of the emacs-w3m CVS repository.
+
+- [[http://cvs.namazu.org/*checkout*/emacs-w3m/shimbun/sb-heise.el?rev=HEAD&content-type=text/plain]]
+
+****** Spiegel Online
+    :PROPERTIES:
+    :CUSTOM_ID: toc5
+    :END:
+Here's another German shimbun. Read the mainstream news site [[http://www.spiegel.de/]] without the html annoyances.
+
+This Shimbun is now part of the emacs-w3m CVS repository.
+
+- [[http://cvs.namazu.org/*checkout*/emacs-w3m/shimbun/sb-spiegel.el?rev=HEAD&content-type=text/plain]]
+
+****** More german news
+    :PROPERTIES:
+    :CUSTOM_ID: toc6
+    :END:
+I got conditioned by the above two shimbun backends and built some more on top of the rss feeds I have been reading anyway. The more complete and stable of them found their way into emacs-w3m CVS.
+
+- A German TV station: [[http://cvs.namazu.org/*checkout*/emacs-w3m/shimbun/sb-n24-de.el?rev=HEAD]]
+- This feed seems to be directly forwarded from a German press agency, the traffic is quite high: [[http://cvs.namazu.org/*checkout*/emacs-w3m/shimbun/sb-welt-de.el?rev=HEAD]]
+- Some teaser articles of one of the better german newspapers: [[http://cvs.namazu.org/*checkout*/emacs-w3m/shimbun/sb-zeit-de.el?rev=HEAD]]
+- Music news and reviews in German: [[http://cvs.namazu.org/*checkout*/emacs-w3m/shimbun/sb-laut-de.el?rev=HEAD]]
+
+****** RSS and Atom Feeds
+    :PROPERTIES:
+    :CUSTOM_ID: toc7
+    :END:
+While there is great power in writing your own shimbun, the development version of emacs-w3m comes with “generic” shimbun that parse rss and atom feeds:
+
+- rss-hash.el: [[http://cvs.namazu.org/emacs-w3m/shimbun/sb-rss-hash.el?rev=HEAD]]
+- atom-hash.el: [[http://cvs.namazu.org/emacs-w3m/shimbun/sb-atom-hash.el?rev=HEAD]]
+
+You can add feeds for reading in [[https://www.emacswiki.org/emacs/Gnus][Gnus]], [[https://www.emacswiki.org/emacs/Wanderlust][Wanderlust]], and [[https://www.emacswiki.org/emacs/Mew][Mew]] by using the variables shimbun-rss-hash-group-path-alist and shimbun-atom-hash-group-path-alist.
+
+There is also a module rss-blogs.el that will display the full text of articles for blogs that do not publish the full text in a feed. This shimbun module performs automatic html filtering on Wordpress, Blogger, and [[https://www.emacswiki.org/emacs/TypePad][TypePad]] Blogs. Or, one can specify regular expressions that mark the beginning and end of the content.
+
+** WAIT [[https://www.emacswiki.org/emacs/WThreeMDelicious][EmacsWiki: W Three M Delicious]]
+- State "WAIT"       from              [2022-11-24 Thu 15:28] \\
+  will see if i need it
+The following elisp will allow you to place your cursor over a url in w3m and then bookmark it. This has been tested with the *new* delicious.com, migrated from del.icio.us. Note that the delicious.com site uses javascript-generated form submission elements (which obviously are not functional in w3m), but I have had good luck simply entering the fields and then using *w3m-form-submit* to submit the data. Here's the code:
+
+#+begin_src emacs-lisp :tangle yes
+(defun delicious-post-url ()
+  (interactive)
+  (if (null (w3m-anchor))
+      (message "no anchor at point")
+    (let ((url (w3m-anchor)))
+      (if (w3m-url-valid url)
+      (progn
+            (w3m-goto-url (concat "http://delicious.com/save?url=" url)))
+    (message "no URL at point!")))))
+#+end_src
+Note that you will need to sign-in to delicious.com, and you will be redirected to sign-in if you do not have a delicious.com cookie. you will need to set *(setq w3m-use-cookies t)* and once again use *w3m-form-submit* to submit the sign-in form, where the submit element is, once again, generated by javascript.
+
+- [[https://www.emacswiki.org/emacs/BradClawsie][BradClawsie]] (April 2008)
+
+See also [[https://www.emacswiki.org/emacs/DeliciousEl][DeliciousEl]].
+
+*I'm not going to go so far as to delete the entries below (which seems impolite), but suffice to say, as of the migration from del.icio.us to delicious.com, these methods are not valid*
+
+Delicious ( [[http://del.icio.us/]]) is a minimalist social bookmarks manager which is very, very spiffy. Here's how I've convinced emacs-w3m ( [[https://www.emacswiki.org/emacs/WThreeM][WThreeM]]) to let me bookmark sites with Delicious:
+
+Normally, cookie support is disbaled in emacs-w3m, so we need to enable it:
+
+#+begin_src emacs-lisp :tangle yes
+(setq w3m-use-cookies t)
+ (setq w3m-cookie-accept-bad-cookies t)
+#+end_src
+Then you can use a command like this to bookmark pages to Delicious (please change =‘hober’= to your Delicious username):
+
+#+begin_src emacs-lisp :tangle yes
+(defun ted-delicious-url ()
+   "Bookmark this page with del.icio.us."
+   (interactive)
+   (w3m-goto-url
+    (concat "http://del.icio.us/hober?"
+            "url="    (w3m-url-encode-string w3m-current-url)
+            "&title=" (w3m-url-encode-string w3m-current-title))))
+#+end_src
+I bind this function to =‘a’=, which is the normal w3m bookmark binding:
+
+#+begin_src emacs-lisp :tangle yes
+(eval-after-load "w3m"
+   '(define-key w3m-info-like-map "a" 'ted-delicious-url))
+#+end_src
+
+I've added a bit to this function, so that you can launch it when point is at a url in any buffer. It visits the url in w3m (to get the title information from the page), then goes to your bookmark posting page. Again, change =‘johnsu01’= to your username.
+
+#+begin_src emacs-lisp :tangle yes
+(defun /john-delicious-url ()
+   "Post either the url under point or the url of the current w3m page to delicious."
+   (interactive)
+   (let ((w3m-async-exec nil))
+     (if (thing-at-point-url-at-point)
+         (unless (eq (current-buffer) (w3m-alive-p))
+           (w3m-goto-url (thing-at-point-url-at-point))))
+     (w3m-goto-url
+      (concat "http://del.icio.us/johnsu01?"
+              "url="    (w3m-url-encode-string w3m-current-url)
+              "&title=" (w3m-url-encode-string w3m-current-title)))))
+#+end_src
+
+** [[https://www.emacswiki.org/emacs/WThreeMMailmanAdmin][EmacsWiki: W Three M Mailman Admin]]
+I'm the list admin on a couple of GNU Mailman mailing lists. Both of them get tremendous amounts of spam. I get multiple messages a day about messages with “suspicious headers” needing approval. The default operation is “Defer”. For the longest time I just let them build up because it was such a PITA to use mozilla to go through and click on “Discard” for all of them.
+
+Here's some [[https://www.emacswiki.org/emacs/WThreeM][WThreeM]], [[https://www.emacswiki.org/emacs/KeyboardMacro][KeyboardMacro]] goodness:
+
+#+begin_src emacs-lisp :tangle n
+(fset 'mailman-discard-next
+   [?\C-s ?D ?i ?s ?c ?a ?r ?d ?\C-m down down left left return])
+#+end_src
+Run this with the appropriate number of C-u's and all your pending messages will be marked “Discard”. You can then go through and figure out which ones you actually want to approve. The problem is that recent versions of Mailman use [[http://tools.ietf.org/html/rfc2019][RFC 2019]] (which has since been made obsolete by [[http://tools.ietf.org/html/rfc2965][RFC 2965]]) for cookies and [[https://www.emacswiki.org/emacs/WThreeM][WThreeM]] doesn't support either type. What that means is that when you submit pages to Mailman from [[https://www.emacswiki.org/emacs/WThreeM][WThreeM]] Mailman will punt on an error about misuse of keyword “version”. The trick is to remove your “Version” cookie before you submit the pages. Here's a defun to make that easy:
+
+#+begin_src emacs-lisp :tangle no
+(defun w3m-cookie-remove-version ()
+  (interactive)
+  (mapcar
+   (lambda (cookie)
+     (if (string= (w3m-cookie-name cookie) "Version")
+     (w3m-cookie-remove (w3m-cookie-domain cookie)
+                (w3m-cookie-path cookie)
+                (w3m-cookie-name cookie))))
+   w3m-cookies))
+#+end_src
+** GUI Desktop Integration
+    :PROPERTIES:
+    :CUSTOM_ID: gui-desktop-integration
+    :END:
+If your GUI desktop complies with the freedesktop standard, you can have all your GUI programs open links in emacs-w3m instead of, say, firefox or chrome. Most linux desktops are compliant (eg. gnome, kde, xfce, lxde)
+
+1. Create a file =emacs-w3m.desktop=. Here's an example:
+
+#+begin_example
+[Desktop Entry]
+Name=emacs-w3m
+GenericName=Emacs Web Browser
+X-GNOME-FullName=Emacs w3m Web Browser
+
+Encoding=UTF-8
+Version=1.0
+Comment=Using emacsclient
+NoDisplay=true
+
+Exec=emacsclient --eval  "(browse-url (replace-regexp-in-string  \"' \"  \" \"  \"%u \"))"
+
+Terminal=false
+X-MultipleArgs=false
+Type=Application
+Icon=firefox-esr
+Categories=Network ;WebBrowser;
+StartupWMClass=Firefox-esr
+StartupNotify=true
+MimeType=x-scheme-handler/unknown ;x-scheme-handler/about;text/html;text/xml;application/xhtml+xml;application/xml;application/vnd.mozilla.xul+xml;application/rss+xml;application/rdf+xml;image/gif;image/jpeg;image/png;x-scheme-handler/http;x-scheme-handler/https;
+#+end_example
+
+2. Save your =emacs-w3m.desktop= file in an appropriate place. If you want the change to be applied system-wide for all users, that would be =/usr/local/share/application/=. For a single user, the correct location would be =~/.local/share/applications=.
+
+3. run =xdg-settings set default-web-browser emacs-w3m.desktop=.
+
+** Other WThreeM pages
+   :PROPERTIES:
+   :CUSTOM_ID: other-wthreem-pages
+   :END:
+- [[https://www.emacswiki.org/emacs/WThreeMTabsAndDisplayModes][WThreeMTabsAndDisplayModes]] - managing multiple [[https://www.emacswiki.org/emacs/WThreeM][WThreeM]] buffers
+- [[https://www.emacswiki.org/emacs/WThreeMFilters][WThreeMFilters]] - greasemonkey ability to easily customize everything about how pages look
+- [[https://www.emacswiki.org/emacs/WThreeMHintsAndTips][WThreeMHintsAndTips]] - Useful extensions and tips for using w3m
+- [[https://www.emacswiki.org/emacs/WThreeMReportedProblems][WThreeMReportedProblems]] - Reported problems and their solutions
+- [[https://www.emacswiki.org/emacs/WThreeMEditingWikis][WThreeMEditingWikis]] - using *w3m* to view and edit wikis
+- [[https://www.emacswiki.org/emacs/WThreeMFrames][WThreeMFrames]] - rendering HTML elements
+- [[https://www.emacswiki.org/emacs/WThreeMKeymap][WThreeMKeymap]] - alternate keymaps (including some “hidden” commands)
+- [[https://www.emacswiki.org/emacs/WThreeMMailmanAdmin][WThreeMMailmanAdmin]] - using *w3m* to handle GNU Mailman admin approval queues
+- [[https://www.emacswiki.org/emacs/WThreeMSearch][WThreeMSearch]] - improving searching
+- [[https://www.emacswiki.org/emacs/WThreeMTables][WThreeMTables]] - displaying tables correctly
+- [[https://www.emacswiki.org/emacs/WThreeMTranslation][WThreeMTranslation]] - use google translate indirectly
+- [[https://www.emacswiki.org/emacs/WThreeMTypeAhead][WThreeMTypeAhead]] - type ahead support
+- [[https://www.emacswiki.org/emacs/WThreeMShimbun][WThreeMShimbun]] - use w3m to create mail backend
+- [[https://www.emacswiki.org/emacs/WThreeMAuthentication][WThreeMAuthentication]] - issues with http auth
+- [[https://www.emacswiki.org/emacs/WThreeMDelicious][WThreeMDelicious]] - using w3m with [[http://del.icio.us/]]
+- [[https://www.emacswiki.org/emacs/WThreeMSession][WThreeMSession]] - persistent tabbed browsing with w3m
+- [[https://www.emacswiki.org/emacs/WThreeMReadability][WThreeMReadability]] - improving readability
+- [[https://www.emacswiki.org/emacs/WThreeMYoutube][WThreeMYoutube]] - View youtube video from emacs-w3m
+- [[https://www.emacswiki.org/emacs/WThreeMEmacsTwentyThree][WThreeMEmacsTwentyThree]] - Issues specific to emacs version 23
+
+* uri-replace-alist
+#+begin_src emacs-lisp :tangle yes
+(setq w3m-uri-replac-alist
+'(("\\`gg:" w3m-search-uri-replace "google")
+ ("\\`ya:" w3m-search-uri-replace "yahoo")
+ ("\\`bts:" w3m-search-uri-replace "debian-bts")
+ ("\\`dpkg:" w3m-search-uri-replace "debian-pkg")
+ ("\\`alc:" w3m-search-uri-replace "alc")
+ ("\\`gvd:" w3m-search-uri-replace "video")
+ ("\\`ddg:" w3m-search-uri-replace "duckduckgo")
+ ("\\`13:" w3m-search-uri-replace "1377x")
+ ("\\`urn:ietf:rfc:\\([0-9]+\\)" w3m-pattern-uri-replace "http://www.ietf.org/rfc/rfc\\1.txt")))
+#+end_src
+
+* engine list
+#+begin_src emacs-lisp :tangle yes
+
+(setq w3m-search-engine-alist
+'(("yahoo" "https://search.yahoo.com/bin/search?p=%s")
+ ("yahoo-ja" "https://search.yahoo.co.jp/bin/search?p=%s" euc-japan)
+ ("alc" "https://eow.alc.co.jp/%s/UTF-8/" utf-8)
+ ("blog" "https://blogsearch.google.com/blogsearch?q=%s&oe=utf-8&ie=utf-8" utf-8)
+ ("blog-en" "https://blogsearch.google.com/blogsearch?q=%s&hl=en&oe=utf-8&ie=utf-8" utf-8)
+ ("google" "https://www.google.com/search?q=%s&ie=utf-8&oe=utf-8&gbv=1" utf-8)
+ ("google-en" "https://www.google.com/search?q=%s&hl=en&ie=utf-8&oe=utf-8&gbv=1" utf-8)
+ ("google news" "https://news.google.com/news?q=%s&ie=utf-8&oe=utf-8" utf-8)
+ ("google news-en" "https://news.google.com/news?q=%s&hl=en&ie=utf-8&oe=utf-8")
+ ("technorati" "https://www.technorati.com/search/%s" utf-8)
+ ("technorati-ja" "https://www.technorati.jp/search/search.html?query=%s&language=ja" utf-8)
+ ("technorati-tag" "https://www.technorati.com/tag/%s" utf-8)
+ ("goo-ja" "https://search.goo.ne.jp/web.jsp?MT=%s" euc-japan)
+ ("excite-ja" "https://www.excite.co.jp/search.gw?target=combined&look=excite_jp&lang=jp&tsug=-1&csug=-1&search=%s" shift_jis)
+ ("altavista" "https://altavista.com/sites/search/web?q=\"%s\"&kl=ja&search=Search")
+ ("rpmfind" "https://rpmfind.net/linux/rpm2html/search.php?query=%s" nil)
+ ("debian-pkg" "https://packages.debian.org/search?&searchon=names&suite=stable&section=all&arch=amd64&keywords=%s")
+ ("debian-bts" "https://bugs.debian.org/cgi-bin/pkgreport.cgi?archive=yes&pkg=%s")
+ ("freebsd-users-jp" "https://home.jp.FreeBSD.org/cgi-bin/namazu.cgi?key=\"%s\"&whence=0&max=50&format=long&sort=score&dbname=FreeBSD-users-jp" euc-japan)
+ ("iij-archie" "https://www.iij.ad.jp/cgi-bin/archieplexform?query=%s&type=Case+Insensitive+Substring+Match&order=host&server=archie1.iij.ad.jp&hits=95&nice=Nice")
+ ("waei" "https://dictionary.goo.ne.jp/search.php?MT=%s&kind=je" euc-japan)
+ ("eiwa" "https://dictionary.goo.ne.jp/search.php?MT=%s&kind=ej")
+ ("kokugo" "https://dictionary.goo.ne.jp/search.php?MT=%s&kind=jn" euc-japan)
+ ("eiei" "https://www.dictionary.com/cgi-bin/dict.pl?term=%s&r=67")
+ ("amazon" "https://www.amazon.com/exec/obidos/search-handle-form/250-7496892-7797857" iso-8859-1 "url=index=blended&field-keywords=%s")
+ ("amazon-ja" "https://www.amazon.co.jp/gp/search?__mk_ja_JP=%%83J%%83%%5E%%83J%%83i&url=search-alias%%3Daps&field-keywords=%s" shift_jis)
+ ("emacswiki" "https://www.emacswiki.org/cgi-bin/wiki?search=%s")
+ ("en.wikipedia" "https://en.wikipedia.org/w/index.php?title=Special:Search&search=%s")
+ ("de.wikipedia" "https://de.wikipedia.org/w/index.php?title=Spezial:Suche&search=%s" utf-8)
+ ("ja.wikipedia" "https://ja.wikipedia.org/w/index.php?title=Special:Search&search=%s" utf-8)
+ ("msdn" "https://search.msdn.microsoft.com/search/default.aspx?query=%s")
+  ("duckduckgo" "https://lite.duckduckgo.com/lite/?q=%s&kf=-1&kz=-1&kq=-1&kv=-1&k1=-1&kp=-2&kaf=1&kd=-1" utf-8)
+  ("github" "https://github.com/search?ref=simplesearch&q=%s" utf-8)
+  ("cern-gitlab" "https://gitlab.cern.ch/search?search=%s" utf-8)
+  ("duckduckgo-first" "https://duckduckgo.com/html?q=\\%s" utf-8)
+  ("google-maps" "https://www.google.com/maps/search/%s/" utf-8)
+  ("openstreetmap" "https://www.openstreetmap.org/search?query=%s" utf-8)
+  ("wordreference" "https://www.wordreference.com/es/translation.asp?tranword=%s" utf-8)
+  ("wikipedia" "http://www.wikipedia.org/search-redirect.php?language=en&go=Go&search=%s" utf-8)
+  ("youtube" "http://www.youtube.com/results?aq=f&oq=&search_query=%s" utf-8)
+  ("invidious" "https://invidious.garudalinux.org/search?q=%s" utf-8)
+  ("url" "https:%s" utf-8)
+  ("bing https://www.bing.com/search?q=%s" utf-8)
+  ("wiktionary https://en.wiktionary.org/w/index.php?search=%s" utf-8)
+  ("reddit https://www.reddit.com/search/?q=%s" utf-8)
+  ("amazon https://www.amazon.in/s?k=%s" utf-8)
+  ("archaur https://aur.archlinux.org/packages/?O=0&K=%s" utf-8)
+  ("archpackages https://archlinux.org/packages/?sort=&q=%s" utf-8)
+  ("archlinux https://wiki.archlinux.org/index.php?search=%s" utf-8)
+  ("gitlab https://gitlab.com/search?search=%s" utf-8)
+  ("opensource https://opensource.google/projects/search?q=%s" utf-8)
+  ("sourceforge https://sourceforge.net/directory/?q=%s" utf-8)
+  ("stackoverflow https://stackoverflow.com/search?q=%s" utf-8)
+  ("craigslist" "https://www.craigslist.org/search/sss?query=" utf-8)
+  ("gumtree" "https://www.gumtree.com/search?search_category=all&q=" utf-8)
+  ("brave" "https://search.brave.com/search?q=" utf-8)
+  ("gemini" "https://portal.mozz.us/gemini/geminispace.info/search%3F" utf-8)
+  ("qwant" "https://www.qwant.com/?q=" utf-8)
+  ("swisscows" "https://swisscows.com/web?query=" utf-8)
+  ("acronym"  "[[http://www.acronymfinder.com/af-query.asp?acronym=%s&string=exact]]")
+  ("ebay" "[[http://search.ebay.com/search/search.dll?query=%s]]")
+  ("google-groups" "[[http://www.google.com/groups?q=%s]]")
+  ("syndic8" "[[http://www.syndic8.com/feedlist.php?ShowStatus=all&ShowMatch=%s]]")
+  ("weather"  "[[http://www.weather.com/search/search?where=%s&what=WeatherLocalUndeclared]]")
+  ("worldclock" "[[http://www.timeanddate.com/worldclock/results.html?query=%s]]")
+  ("yandex" "https://yandex.com/search/?text=" utf-8)
+  ("bbc" "https://www.bbc.co.uk/search?q=" utf-8)
+  ("cnn" "https://www.cnn.com/search?q=" utf-8)
+  ("video" "https://www.google.com/search?q=%s&num=30&safe=off&tbo=p&tbm=vid" utf-8)
+  ("archive" "https://archive.org/search.php?query=%s" utf-8)
+  ("btdig" "https://btdig.com/search?q=%s" utf-8)
+  ("dailymotion" "https://dailymotion.com/search/%s/videos" utf-8)
+  ("eztv" "https://eztv.re/search/%s/1/" utf-8)
+  ("iplayer" "https://bbc.co.uk/iplayer/search?q=%s" utf-8)
+  ("limetorrents" "https://www.limetorrents.info/search/all/%s" utf-8)
+  ("rarbg" "https://rarbg.to/torrents.php?search=%s&order=seeders&by=DESC" utf-8)
+  ("sunxdcc" "http://sunxdcc.com/?sterm=%s%20-tar%20-rar" utf-8)
+  ("thepacket" "https://thepacket.info/?q=%s" utf-8)
+  ("torrentdownloads" "https://www.torrentdownloads.pro/search/?search=%s" utf-8)
+  ("torrentgalaxy" "https://torrentgalaxy.to/torrents.php?search=%s" utf-8)
+  ("vimeo" "https://vimeo.com/search?q=%s" utf-8)
+  ("xdcceu" "http://www.xdcc.eu/search.php?searchkey=%s" utf-8)
+  ("1377x" "https://1337x.to/search/%s/1/" utf-8)))
+#+end_src
