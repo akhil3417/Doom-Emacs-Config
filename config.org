@@ -141,7 +141,7 @@ To install ~some-package~ from MELPA, ELPA or emacsmirror:
 (package! sdcv)
 (package! clippy)
 (package! wordnut)
-(package! smart-mode-line)
+;; (package! smart-mode-line)
 (package! system-packages)
 (package! kind-icon)
 (package! define-word)
