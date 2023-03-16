@@ -32,7 +32,7 @@
 ;; what it does.
 
 ;;; Code:
-
+(load "~/.config/doom/lisp/prot-common.el")
 (require 'prot-common)
 
 (defgroup prot-bookmark ()
