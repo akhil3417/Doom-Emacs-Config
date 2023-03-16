@@ -403,8 +403,8 @@ my home machine is pretty safe, and my laptop is shutdown a lot.
 (load "~/.config/doom/lisp/setup-ui.el")
 (load "~/.config/doom/lisp/setup-minibuffer.el")
 (load "~/.config/doom/lisp/better-buffers.el");;essential
-(load "~/.config/doom/lisp/setup-orderless.el");;configured in doom already but...
-(load "~/.config/doom/lisp/setup-vertico.el")
+;; (load "~/.config/doom/lisp/setup-orderless.el");;configured in doom already but...
+;; (load "~/.config/doom/lisp/setup-vertico.el")
 (load "~/.config/doom/lisp/setup-embark.el")
 (load "~/.config/doom/lisp/utilities.el");;essential
 (load "~/.config/doom/lisp/setup-isearch")
