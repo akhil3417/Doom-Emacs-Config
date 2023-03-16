@@ -13667,16 +13667,20 @@ The agenda is nice, but a souped up version is nicer.
                           :order 1)))))
           (alltodo "" ((org-agenda-overriding-header "")
                        (org-super-agenda-groups
-                        '((:name "Next to do"
-                           :todo "NEXT"
+                        '((:name "Ongoing"
+                           :tag "ongoing"
+                           :todo "[-]"
                            :order 1)
-                          (:name "Important"
-                           :tag "Important"
-                           :priority "A"
-                           :order 6)
                           (:name "Due Today"
                            :deadline today
                            :order 2)
+                          (:name "Important"
+                           :tag "Important"
+                           :priority "A"
+                           :order 3)
+                          (:name "Next to do"
+                           :todo "NEXT"
+                           :order 4)
                           (:name "Due Soon"
                            :deadline future
                            :order 8)
