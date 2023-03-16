@@ -4186,6 +4186,9 @@ The following functions helps achieve this:
   (windmove-right))
 #+end_src
 
+#+begin_src emacs-lisp :tangle packages.el
+(package! beframe)
+
 * General interface and interactions
 This section contains configurations for all aspects of the Emacs user
 interface, as well lots of small or self-contained tweaks that cover a
