@@ -6268,6 +6268,22 @@ Taken form https://orgmode.org/worg/org-contrib/babel/how-to-use-Org-Babel-for-R
 (package! substitute)
 #+end_src
 
+#+begin_src emacs-lisp
+;;; Substitute
+;; Another package of mine... Video demo:
+;; <https://protesilaos.com/codelog/2023-01-16-emacs-substitute-package-demo/>.
+(use-package substitute
+  :config
+  ;; Set this to non-nil to highlight all occurences of the current
+  ;; target.
+  ;; (setopt substitute-highlight t)
+  (setq substitute-highlight t)
+
+  ;; Set this to t if you want to always treat the letter casing
+  ;; literally.  Otherwise each command accepts a `C-u' prefix
+  ;; argument to do this on-demand.
+  (setq substitute-fixed-letter-case nil)
+#+end_src
 * SHELLS
 ** desc
 Eshell is a strictly line-oriented command prompt written in Emacs Lisp.
