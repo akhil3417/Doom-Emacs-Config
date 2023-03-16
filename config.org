@@ -239,6 +239,8 @@ To install ~some-package~ from MELPA, ELPA or emacsmirror:
 (package! smart-compile)
 (package! pulseaudio-control)
 
+(package! emacsql-sqlite-builtin)
+
   (package! gitconfig-mode
 	    :recipe (:host github :repo "magit/git-modes"
 			   :files ("gitconfig-mode.el")))
