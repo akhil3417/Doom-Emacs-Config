@@ -12685,7 +12685,7 @@ and Minad's lovely =org-modern= goes a long way in this regard.
 
 #+begin_src emacs-lisp
 (use-package! org-modern
-  :hook (org-mode . org-modern-mode)
+  ;; :hook (org-mode . org-modern-mode)
   :config
   (setq org-modern-star '("◉" "○" "✸" "✿" "✤" "✜" "◆" "▶")
         org-modern-table-vertical 1
