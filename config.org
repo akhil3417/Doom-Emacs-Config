@@ -5832,9 +5832,10 @@ settings:
   that on GNU/Linux you can type them directly by hitting the "compose"
   key and then an angled bracket (=<= or =>=) followed by a quote mark.
 
-#+begin_src emacs-lisp :tangle no
+#+begin_src emacs-lisp :tangle yes
 ;;; Configure 'electric' behaviour
 (use-package! electric
+  :config
   (setq electric-pair-inhibit-predicate 'electric-pair-conservative-inhibit)
   (setq electric-pair-preserve-balance t)
   (setq electric-pair-pairs
