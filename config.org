@@ -4074,7 +4074,7 @@ well somehow, so let's switch to 'P22 Underground Book'; it looks much nicer.
 #+RESULTS:
 : wave
 *** prot-tabs
-#+begin_src emacs-lisp
+#+begin_src emacs-lisp :tangle no
 
 (add-to-list 'load-path "~/.config/doom/lisp/tab-bar/")
 (load "~/.config/doom/lisp/tab-bar/prot-tab.el")
