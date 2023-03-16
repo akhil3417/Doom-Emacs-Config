@@ -38,6 +38,7 @@
 (require 'esh-mode)
 (require 'em-dirs)
 (require 'em-hist)
+(load "~/.config/doom/lisp/prot-common")
 (require 'prot-common)
 
 ;;;; Customisation options
