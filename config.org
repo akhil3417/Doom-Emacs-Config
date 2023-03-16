@@ -17516,6 +17516,7 @@ priority of =mypyls=
 ;; (after! lsp-python-ms
 ;;   (set-lsp-priority! 'mspyls 1))
 
+(setq dap-python-debugger 'debugpy)
 (setq python-prettify-symbols-alist 'nil) ;defaults are bad , may customise later
 
 (defun efs/lsp-mode-setup ()
