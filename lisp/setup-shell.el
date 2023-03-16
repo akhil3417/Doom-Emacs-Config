@@ -170,7 +170,9 @@ Filenames are always matched by eshell."
     (setq eshell-cmpl-cycle-cutoff-length 2)))
 
 ;; ** Better paging
-(load "em-pager")
+
+;; (add-to-list 'load-path "~/.config/doom/lisp/")
+(load "~/.config/doom/lisp/em-pager")
 (use-package! em-pager
   :disabled
   :after eshell
@@ -560,7 +562,7 @@ If no universal argument is passed, assume only one output"
   :hook ((comint-mode) . capf-autosuggest-mode))
 
 (require 'em-cmpl)
-(load "prot-eshell.el")
+(load "~/.config/doom/lisp/prot-eshell.el")
 (use-package! prot-eshell
   :config
   (setq prot-eshell-output-buffer "*Exported Eshell output*")
