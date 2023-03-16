@@ -6258,6 +6258,11 @@ Taken form https://orgmode.org/worg/org-contrib/babel/how-to-use-Org-Babel-for-R
 (global-set-key [C-S-f4] 'org-skeleton)
 #+end_src
 
+** substitute
+#+begin_src emacs-lisp :tangle packages.el
+(package! substitute)
+#+end_src
+
 * SHELLS
 ** desc
 Eshell is a strictly line-oriented command prompt written in Emacs Lisp.
