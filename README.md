@@ -1,4 +1,4 @@
-- [Table of Contents](#table-contents)
+- [Table of Contents:toc:](#table-contentstoc)
 - [Description](#description)
   - [Maintainers](#maintainers)
 - [Prerequisites](#prerequisites)
@@ -7,16 +7,7 @@
 - [Troubleshooting](#troubleshooting)
 
 
-<a id="table-contents"></a>
-
-# Table of Contents
-
-1.  1.
-2.  
-3.  
-4.  
-5.  
-
+<a id="table-contentstoc"></a>
 
 <a id="description"></a>
 
