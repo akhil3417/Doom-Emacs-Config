@@ -3031,13 +3031,13 @@ just add a new =file= annotator.
 Another small thing is the face used for docstrings. At the moment it's =(italic
 shadow)=, but I don't like that.
 
-#+begin_src emacs-lisp :tangle yes
+#+begin_src emacs-lisp :tangle no
 (after! marginalia
 
-  ;; (add-to-list 'marginalia-prompt-categories '("\\burl\\b" . url))
-  ;; (setq marginalia-max-relative-age 0)  ; time is absolute here!
-  ;; (setq marginalia-annotators
-  ;;       '(marginalia-annotators-heavy marginalia-annotators-light))
+  (add-to-list 'marginalia-prompt-categories '("\\burl\\b" . url))
+  (setq marginalia-max-relative-age 0)  ; time is absolute here!
+  (setq marginalia-annotators
+        '(marginalia-annotators-heavy marginalia-annotators-light))
 
   (setq marginalia-censor-variables nil)
 
