@@ -4190,6 +4190,23 @@ The following functions helps achieve this:
 #+begin_src emacs-lisp :tangle packages.el
 (package! beframe)
 
+#+begin_src emacs-lisp
+
+;;; Frame-isolated buffers
+(use-package beframe ; another package of mine (work-in-progress)
+  :config
+  (setq beframe-functions-in-frames '(project-prompt-project-dir))
+
+  (beframe-mode 1)
+
+  (let ((map global-map))
+    (define-key map (kbd "C-x f") #'other-frame-prefix) ; override `set-fill-column'
+    ;; Also see `beframe-switch-buffer-in-frame'.
+    (define-key map (kbd "C-x B") #'beframe-switch-buffer)))
+
+  (let ((map global-map))
+    (define-key map (kbd "C-x C-n") #'next-buffer)     ; override `set-goal-column'
+    (define-key map (kbd "C-x C-p") #'previous-buffer)) ; override `mark-page'
 #+end_src
 * General interface and interactions
 This section contains configurations for all aspects of the Emacs user
