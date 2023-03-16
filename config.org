@@ -6283,6 +6283,12 @@ Taken form https://orgmode.org/worg/org-contrib/babel/how-to-use-Org-Babel-for-R
   ;; literally.  Otherwise each command accepts a `C-u' prefix
   ;; argument to do this on-demand.
   (setq substitute-fixed-letter-case nil)
+
+  ;; Produce a message after the substitution that reports on what
+  ;; happened.  It is a single line, like "Substituted `TARGET' with
+  ;; `SUBSTITUTE' N times across the buffer.
+  (add-hook 'substitute-post-replace-hook #'substitute-report-operation)
+
   ;; The mnemonic for the prefix is that M-# (or M-S-3) is close to
   ;; M-% (or M-S-5).
   (let ((map global-map))
