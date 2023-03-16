@@ -5895,6 +5895,7 @@ settings:
 #+end_src
 
 #+RESULTS:
+: t
 
 ** Parentheses (show-paren-mode)
 
