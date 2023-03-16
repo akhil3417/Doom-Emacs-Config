@@ -5881,7 +5881,7 @@ Summary of what these do:
 + Do not highlight a match when the point is on the inside of the
   parenthesis.
 
-#+begin_src emacs-lisp :tangle no
+#+begin_src emacs-lisp :tangle yes
 ;;; Parentheses (show-paren-mode)
 (use-package! paren
   :ensure nil
