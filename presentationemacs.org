@@ -1,0 +1,76 @@
+:PROPERTIES:
+:ID:       1a0e26b3-6bdc-4d69-b3d9-f52ef82774a7
+:END:
+:REVEAL_PROPERTIES:
+#+REVEAL_ROOT: https://cdn.jsdelivr.net/npm/reveal.js
+#+REVEAL_REVEAL_JS_VERSION: 4
+#+REVEAL_THEME: serif
+
+:END:
+#+TITLE: Org-Reveal Video
+#+AUTHOR: Akhil Pratap Singh
+#+DATE:Friday, October 07, 2022
+:PROPERTIES:
+#+OPTIONS: timestamp:nil toc:1 num:nil
+:END:
+
+* Some cool effects using ATTR_REVEAL
+* Installing org-reveal
+#+BEGIN_SRC emacs-lisp
+  (use-package ox-reveal)
+#+END_SRC
+
+* First export
+** Basic Header
+#+BEGIN_SRC
+
+:REVEAL_PROPERTIES:
+#+REVEAL_ROOT: https://cdn.jsdelivr.net/npm/reveal.js
+#+REVEAL_REVEAL_JS_VERSION: 4
+:END:
+
+#+TITLE: Reveal JS Presentation
+#+SUBTITLE: Straightforward Emacs - org-reveal
+#+AUTHOR: Jake B
+
+#+END_SRC
+
+* Improving your export
+#+ATTR_REVEAL: frag(appear)
+1) ~#+REVEAL_THEME:~
+   * https://revealjs.com/themes/
+2) ~#+OPTIONS: timestamp:nil toc:1 num:nil~
+3) ~#+REVEAL_INIT_OPTIONS: slideNumber:true~
+   * https://revealjs.com/config/
+   * you can press o to see overview
+
+* #+ATTR_HTMLs
+** Step-by-step elements
+https://revealjs.com/fragments/
+~#+ATTR_REVEAL: :frag (appear)~
+
+#+BEGIN_SRC org
+  #+ATTR_HTML: :width 45% :align center
+  https://upload.wikimedia.org/wikipedia/commons/thumb/0/08/EmacsIcon.svg/1024px-EmacsIcon.svg.png
+#+END_SRC
+
+* Notes
+#+ATTR_REVEAL: frag(appear)
+You can write speaker notes within org-reveal using the =#+BEGIN_NOTES= and =#+END_NOTES= lines. These notes can be seen in a speaker window. You open this window by pressing the =s= key on your reveal.js presentation, like so.
+#+BEGIN_NOTES
+
+here is as note for the presentation going on currently
+
+#+END_NOTES
+
+#+ATTR_REVEAL: frag(appear)
+1) Point one
+2) Point Two
+3) Point Three
+
+* Links
++ https://github.com/yjwen/org-reveal
++ https://revealjs.com/
+  * https://revealjs.com/config/
+  * https://revealjs.com/themes/
+  * https://revealjs.com/fragments/
