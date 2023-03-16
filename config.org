@@ -6283,6 +6283,14 @@ Taken form https://orgmode.org/worg/org-contrib/babel/how-to-use-Org-Babel-for-R
   ;; literally.  Otherwise each command accepts a `C-u' prefix
   ;; argument to do this on-demand.
   (setq substitute-fixed-letter-case nil)
+  ;; The mnemonic for the prefix is that M-# (or M-S-3) is close to
+  ;; M-% (or M-S-5).
+  (let ((map global-map))
+    (define-key map (kbd "M-# s") #'substitute-target-below-point) ; Forward motion like isearch (C-s)
+    (define-key map (kbd "M-# r") #'substitute-target-above-point) ; Backward motion like isearch (C-r)
+    (define-key map (kbd "M-# d") #'substitute-target-in-defun)    ; "defun" mnemonic
+    (define-key map (kbd "M-# b") #'substitute-target-in-buffer))) ; "buffer" mnemonic
+
 #+end_src
 * SHELLS
 ** desc
