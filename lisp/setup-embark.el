@@ -53,7 +53,7 @@
          ;; ("M"        . browse-url-mpv))
          ("M"        . open-link-with-mpv ))
   :config
-  (setq embark-cycle-key (kbd "C-c"))
+  ;; (setq embark-cycle-key (kbd "C-c"))
   (setq embark-quit-after-action t)
   ;; Use Embark instead of `describe-prefix-bindings'
   (setq prefix-help-command #'embark-prefix-help-command)
