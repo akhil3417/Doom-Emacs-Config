@@ -2733,6 +2733,7 @@ are just waiting to be saved!
         company-frontends'(company-pseudo-tooltip-frontend company-preview-frontend))
   (setq company-show-quick-access t))
    ;;(add-hook 'evil-normal-state-entry-hook #'company-abort)) ;; make aborting less annoying. currently disable caues dabbrev closes company -yasnipper automatically-but i use SPC i s
+
 #+end_src
 
 #+RESULTS:
@@ -4190,6 +4191,7 @@ The following functions helps achieve this:
 #+begin_src emacs-lisp :tangle packages.el
 (package! beframe)
 
+#+end_src
 #+begin_src emacs-lisp
 
 ;;; Frame-isolated buffers
@@ -5440,6 +5442,9 @@ Emacs registers are compartments where you can save text, rectangles and positio
 (evil-define-key 'insert smartparens-mode-map (kbd "M-DEL") #'sp-backward-kill-word)
 
 #+end_src
+
+#+RESULTS:
+
 ** SmartParens
 #+begin_src emacs-lisp :tangle no
 (sp-local-pair
@@ -5596,7 +5601,7 @@ Mainly useful in C and derived, and only when ACTION is insert."
 #+end_src
 
 #+RESULTS:
-| turn-on-smartparens-strict-mode | preview-mode-setup | er/add-latex-mode-expansions | mixed-pitch-mode | beginend-LaTeX-mode | reftex-mode | evil-tex-mode | adaptive-wrap-prefix-mode | +evil-embrace-latex-mode-hook-h | embrace-LaTeX-mode-hook |
+| turn-on-smartparens-strict-mode | preview-mode-setup | er/add-latex-mode-expansions | mixed-pitch-mode | laas-mode | beginend-LaTeX-mode | reftex-mode | evil-tex-mode | adaptive-wrap-prefix-mode | writegood-mode | +evil-embrace-latex-mode-hook-h | embrace-LaTeX-mode-hook |
 
 ** undo tree
 #+begin_src emacs-lisp :tangle no
@@ -17781,7 +17786,7 @@ Everything is mapped to SPC-R because doom is not using it and R stands for roam
 : org-gtd-show-stuck-projects
 
 * Denote
-#+begin_src emacs-lisp :tangle packages.el
+#+begin_src emacs-lisp :tangle no
 
 (package! denote
   :recipe (:host github
@@ -17791,7 +17796,7 @@ Everything is mapped to SPC-R because doom is not using it and R stands for roam
 #+RESULTS:
 | denote | :modules | ((:user) (:user . modules)) | :recipe | (:host github :repo protesilaos/denote) |
 
-#+begin_src emacs-lisp
+#+begin_src emacs-lisp :tangle no
 
 ;;; Denote (simple note-taking)
 ;; Read the manual: <https://protesilaos.com/emacs/denote>.
