@@ -17522,6 +17522,8 @@ priority of =mypyls=
   (setq lsp-headerline-breadcrumb-segments '(path-up-to-project file symbols))
   (lsp-headerline-breadcrumb-mode))
 
+    ;; :hook (lsp-mode . efs/lsp-mode-setup)
+
 #+end_src
 
 ** Markdown
