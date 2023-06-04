@@ -1,67 +1,54 @@
 ;;; lisp/codeiumconfig.el -*- lexical-binding: t; -*-
 
-;; we recommend using use-package to organize your init.el
 (use-package! codeium
-    ;; if you use straight
-    ;; :straight '(:type git :host github :repo "Exafunction/codeium.el")
-    ;; otherwise, make sure that the codeium.el file is on load-path
-
     :init
     ;; use globally
     ;; (add-to-list 'completion-at-point-functions #'codeium-completion-at-point)
     ;; or on a hook
-    ;; (add-hook 'python-mode-hook
-    ;;     (lambda ()
-    ;;         (setq-local completion-at-point-functions '(codeium-completion-at-point))))
-    ;;
-
-    ;; (add-hook 'python-mode-hook
-    ;;     (lambda ()
-    ;;       (setq-local completion-at-point-functions '(codeium-completion-at-point lsp-completion-at-point python-completion-at-point t)))))
-
-        ;; (setq-local company-frontends 'company-pseudo-tooltip-frontend))
-
+    ;; a dirty hack
    ;; (add-hook 'python-mode-hook
-   ;;           (lambda ()
-   ;;             (setq-local completion-at-point-functions
-   ;;                         '(codeium-completion-at-point lsp-completion-at-point python-completion-at-point t))
-   ;;             (run-with-idle-timer 2 nil
-   ;;                                  (lambda ()
-   ;;                                    (setq-local company-frontends
-   ;;                                                '(company-pseudo-tooltip-frontend company-preview-frontend))))))
+   ;;              (lambda ()
+   ;;                (setq-local completion-at-point-functions
+   ;;                            '(codeium-completion-at-point lsp-completion-at-point python-completion-at-point))
+   ;;                (run-with-idle-timer 4 nil
+   ;;                                     (lambda ()
+   ;;                                       (setq-local company-frontends
+   ;;                                                   '(company-pseudo-tooltip-frontend company-preview-frontend)))))
+   ;;                (run-with-idle-timer 4 nil
+   ;;                                     (lambda ()
+   ;;                                         (setq-local completion-at-point-functions
+   ;;                                                     '(codeium-completion-at-point lsp-completion-at-point python-completion-at-point)))))
+   ;;
+     (defun add-codeium-completion ()
+       (interactive)
+       (setq completion-at-point-functions
+             (cons 'codeium-completion-at-point completion-at-point-functions))
+       (setq-local company-frontends
+                   '(company-pseudo-tooltip-frontend company-preview-frontend))
+       (setq company-minimum-prefix-length 0))
 
+     (defun only-codeium-completion ()
+       (interactive)
+       (setq completion-at-point-functions 'codeium-completion-at-point)
+       (setq-local company-frontends
+                   '(company-pseudo-tooltip-frontend company-preview-frontend))
+       (setq company-minimum-prefix-length 0))
 
-   (add-hook 'python-mode-hook
-                (lambda ()
-                  (setq-local completion-at-point-functions
-                              '(codeium-completion-at-point lsp-completion-at-point python-completion-at-point))
-                  (run-with-idle-timer 4 nil
-                                       (lambda ()
-                                         (setq-local company-frontends
-                                                     '(company-pseudo-tooltip-frontend company-preview-frontend)))))
-                  (run-with-idle-timer 4 nil
-                                       (lambda ()
-                                           (setq-local completion-at-point-functions
-                                                       '(codeium-completion-at-point lsp-completion-at-point python-completion-at-point)))))
+;; (add-hook 'python-mode-hook
+;;     (let ((buf (current-buffer)))
+;;         (run-with-timer 2 nil
+;;             (lambda ()
+;;                 (with-current-buffer buf
+;;                     (add-codeium-completion))))))
 
+     (defun remove-codeium-completion ()
+       (interactive)
+       (setq completion-at-point-functions
+             (delete 'codeium-completion-at-point completion-at-point-functions))
+       (setq company-frontends
+                   '(company-box-frontend company-preview-frontend))
+       (setq company-minimum-prefix-length 2))
 
-   (add-hook 'c-mode-hook
-                (lambda ()
-                  (setq-local completion-at-point-functions
-                              '(codeium-completion-at-point lsp-completion-at-point tags-completion-at-point))
-                  (run-with-idle-timer 3 nil
-                                       (lambda ()
-                                         (setq-local company-frontends
-                                                     '(company-pseudo-tooltip-frontend company-preview-frontend)))))
-                  (run-with-idle-timer 4 nil
-                                       (lambda ()
-                                           (setq-local completion-at-point-functions
-                                                       '(codeium-completion-at-point lsp-completion-at-point tags-completion-at-point)))))
-
-
-    ;; (add-hook 'c-mode-hook
-    ;;     (lambda ()
-    ;;       (setq-local completion-at-point-functions '(codeium-completion-at-point lsp-completion-at-point tags-completion-at-point-function))))
 
     ;; if you want multiple completion backends, use cape (https://github.com/minad/cape):
     ;; (add-hook 'python-mode-hook
@@ -93,7 +80,7 @@
     ;; use M-x codeium-diagnose to see apis/fields that would be sent to the local language server
     (setq codeium-api-enabled
         (lambda (api)
-            (memq api '(GetCompletions Heartbeat CancelRequest GetAuthToken RegisterUser auth-redirect AcceptCompletion))))
+            (memq api '(GetCompletions Heartbeat CancelRequest GetAuthToken RegisterUser auth-redirect AcceptCompletion)))))
     ;; you can also set a config for a single buffer like this:
     ;; (add-hook 'python-mode-hook
     ;;     (lambda ()
@@ -101,29 +88,28 @@
 
     ;; You can overwrite all the codeium configs!
     ;; for example, we recommend limiting the string sent to codeium for better performance
-    (defun my-codeium/document/text ()
-        (buffer-substring-no-properties (max (- (point) 3000) (point-min)) (min (+ (point) 1000) (point-max))))
-    ;; if you change the text, you should also change the cursor_offset
-    ;; warning: this is measured by UTF-8 encoded bytes
-    (defun my-codeium/document/cursor_offset ()
-        (codeium-utf8-byte-length
-            (buffer-substring-no-properties (max (- (point) 3000) (point-min)) (point))))
-    (setq codeium/document/text 'my-codeium/document/text)
-    (setq codeium/document/cursor_offset 'my-codeium/document/cursor_offset)
-    (setq codeium-latest-local-server-version "1.1.53")
-    (setq codeium-local-server-version "1.1.53"))
+    ;; (defun my-codeium/document/text ()
+    ;;     (buffer-substring-no-properties (max (- (point) 3000) (point-min)) (min (+ (point) 1000) (point-max))))
+    ;; ;; if you change the text, you should also change the cursor_offset
+    ;; ;; warning: this is measured by UTF-8 encoded bytes
+    ;; (defun my-codeium/document/cursor_offset ()
+    ;;     (codeium-utf8-byte-length
+    ;;         (buffer-substring-no-properties (max (- (point) 3000) (point-min)) (point))))
+    ;; (setq codeium/document/text 'my-codeium/document/text)
+    ;; (setq codeium/document/cursor_offset 'my-codeium/document/cursor_offset))
+    ;; (setq codeium-latest-local-server-version "1.1.53"))
+    ;; (setq codeium-local-server-version "1.1.53"))
 
-;; (use-package company
-;;     :defer 0.1
-;;     :config
-;;     (global-company-mode t)
-;;     (setq-default
-;;         company-idle-delay 0.05
-;;         company-require-match nil
-;;         company-minimum-prefix-length 0
 
-;;         ;; get only preview
-;;         company-frontends '(company-preview-frontend)
-;;         ;; also get a drop down
-;;         company-frontends '(company-pseudo-tooltip-frontend company-preview-frontend)
-;;         ))
+;; (defun codieum-python()
+;;   (interactive)
+;;   (setq-local completion-at-point-functions
+;;               '(codeium-completion-at-point lsp-completion-at-point python-completion-at-point))
+;;   (run-with-idle-timer 1 nil
+;;                        (lambda ()
+;;                          (setq-local company-frontends
+;;                                      '(company-pseudo-tooltip-frontend company-preview-frontend))))
+;;   (run-with-idle-timer 1 nil
+;;                        (lambda ()
+;;                          (setq-local completion-at-point-functions
+;;                                      '(codeium-completion-at-point lsp-completion-at-point python-completion-at-point)))))
