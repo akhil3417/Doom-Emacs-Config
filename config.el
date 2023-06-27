@@ -1524,7 +1524,7 @@ active region use it instead."
 ;; [[file:config.org::*gptel - karthink][gptel - karthink:2]]
 (use-package! gptel
  :config
- (setq! gptel-api-key "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"))
+ (setq! gptel-api-key ""))
 
 (define-minor-mode gptel-mode
   "Minor mode for interacting with ChatGPT."
