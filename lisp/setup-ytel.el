@@ -11,6 +11,17 @@
               ("w" . ytel-url-kill-new)
               ("f" . ytel-search-next-page)
               ("b" . ytel-search-previous-page))
+;; (use-package! ytel
+;;   :ensure t
+;;   :commands ytel
+;;   :config
+;;   (evil-define-key 'normal ytel-mode-map
+;;     "x" 'ytel-watch-browse-url
+;;     "m" 'ytel-watch
+;;     "M" 'ytel-watch-umpv
+;;     "w" 'ytel-url-kill-new
+;;     "f" 'ytel-search-next-page
+;;     "b" 'ytel-search-previous-page)
   :hook ((ytel-mode . toggle-truncate-lines)
          (ytel-mode . hl-line-mode))
   :config
