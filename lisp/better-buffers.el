@@ -7,7 +7,7 @@
 ;; ** KEYBINDINGS
 ;;----------------------------------------------------------------------
 
-(global-set-key (kbd "C-x k") 'my/kill-this-buffer)
+;; (global-set-key (kbd "C-x k") 'my/kill-this-buffer)
 (global-set-key (kbd "C-x k") 'my-kill-current-buffer)
 ;; (global-set-key (kbd "C-a")
 ;;                 (defun my/switch-to-other-buffer (&optional _arg)
@@ -44,7 +44,7 @@
 
 
 ;;; Toggle window split between horizontal and vertical
-;; (define-key ctl-x-4-map "t" 'toggle-window-split)
+(define-key ctl-x-4-map "t" 'toggle-window-split)
 ;; (define-key ctl-x-4-map "|" 'toggle-window-split)
 
 (defun my/split-window-right (&optional size)
