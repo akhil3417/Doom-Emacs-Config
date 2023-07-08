@@ -139,7 +139,6 @@
 
 (use-package! vertico-reverse
   ;; :disabled
- :load-path "~/.config/doom/lisp/"
   :after vertico)
 
 (use-package! vertico-flat
