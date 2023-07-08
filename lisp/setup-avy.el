@@ -262,6 +262,6 @@
   ;;  :prefix "g"
   ;;  "s" 'avy-goto-char-timer)
   :bind (:map isearch-mode-map
-         ("C-'" . my/avy-isearch)
+         ("C-." . my/avy-isearch)
          ("C-j" . my/avy-isearch)
          ("M-j" . my/avy-isearch)))
