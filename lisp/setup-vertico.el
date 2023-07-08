@@ -1,7 +1,6 @@
 ;; -*- lexical-binding: t -*-
 ;; Vertico
 (use-package! vertico
-  ;; :commands vertico-mode
   :hook (doom-first-input . vertico-mode)
   :after minibuffer
   :commands vertico-mode
