@@ -30,7 +30,7 @@
   ;;        ("<f8>" . +make-frame-floating-with-current-buffer)
   ;;        ("C-M-`" . window-toggle-side-windows))
   :bind
-  ("<f9>" . +make-frame-floating-with-current-buffer)
+  ("<f7>" . +make-frame-floating-with-current-buffer)
   ;; "C-M-`" 'window-toggle-side-windows
   :general
   (:keymaps 'space-menu-window-map
@@ -293,7 +293,7 @@ Also kill this window, tab or frame if necessary."
 ;;----------------------------------------------------------------
 
 (use-package! transpose-frame
-  :ensure t
+  ;; :ensure t
   :bind (("H-\\" . rotate-frame-anticlockwise)
          :map ctl-x-4-map
          ("|" . flop-frame)
