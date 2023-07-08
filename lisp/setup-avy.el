@@ -244,7 +244,7 @@
     (move-end-of-line 1))
 
   :general
-  ("C-'"        '(my/avy-goto-char-this-window :wk "Avy goto char")
+  ("C-."        '(my/avy-goto-char-this-window :wk "Avy goto char")
    "M-s j"      '(avy-goto-char-2            :wk "Avy goto char 2")
    "M-s y"      '(avy-copy-line              :wk "Avy copy line above")
    "M-s M-y"    '(avy-copy-region            :wk "Avy copy region above")
