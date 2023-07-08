@@ -19,7 +19,7 @@
               (">"       . embark-become)
               ("<backtab>"   . embark-act-with-completing-read)
               ("C-a"   . embark-act-with-completing-read)
-              ("C-o"     . embark-minimal-act)
+              ("C-S-o"     . embark-minimal-act)
               ("C-M-o"   . embark-minimal-act-noexit)
               ("M-s o"   . embark-export)
               ("C-c C-o" . embark-export))
@@ -135,8 +135,7 @@
 
 (use-package! vertico-repeat
   :after vertico
-  :bind (("C-x ." . vertico-repeat)
-         ("H-."   . vertico-repeat)))
+  :bind (("C-x ." . vertico-repeat)))   ;bound to SPC-' in doom emacs
 
 (use-package! vertico-reverse
   ;; :disabled
