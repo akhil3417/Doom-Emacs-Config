@@ -18697,22 +18697,16 @@ Now let's set up that signature.
 (defvar +mu4e-org-ml-signature
   (cons
    "All the best,
-Timothy
+Akhil
 
 -- \
-Timothy (‘tecosaur’/‘TEC’), Org mode contributor.
+Akhil (‘akhil3417’/‘Akhil’), Org mode contributor.
 Learn more about Org mode at <https://orgmode.org/>.
 Support Org development at <https://liberapay.com/org-mode>,
-or support my work at <https://liberapay.com/tec>.
+or support my work at <https://liberapay.com/akhil3417>.
 "
    "All the best,\\\\
-@@html:<b>@@Timothy@@html:</b>@@
-
--\u200b- \\\\
-Timothy (‘tecosaur’/‘TEC’), Org mode contributor.\\\\
-Learn more about Org mode at https://orgmode.org/.\\\\
-Support Org development at https://liberapay.com/org-mode,\\\\
-or support my work at https://liberapay.com/tec.")
+@@html:<b>@@Akhil@@html:</b>@@")
   "Plain and Org version of the org-ml specific signature.")
 #+end_src
 
