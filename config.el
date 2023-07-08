@@ -479,6 +479,8 @@ List of keybindings (SPC h b b)")
 ;; [[file:config.org::*Unbind certain Emacs keybindings in =evil-mode=][Unbind certain Emacs keybindings in =evil-mode=:1]]
   (define-key evil-normal-state-map (kbd "C-?") #'execute-extended-command)
   (define-key evil-normal-state-map (kbd "C-.") #'embark-act)
+  (define-key evil-normal-state-map (kbd "t") #'my/avy-goto-char-this-window)
+  (define-key evil-normal-state-map (kbd "T") #'avy-goto-char-timer)
   (define-key evil-normal-state-map (kbd "C-n") nil)
   (define-key evil-normal-state-map (kbd "M-<right>") #'sp-backward-barf-sexp)
   (define-key evil-normal-state-map (kbd "M-<left>") #'sp-backward-slurp-sexp)
