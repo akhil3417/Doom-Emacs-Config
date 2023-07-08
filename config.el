@@ -1148,6 +1148,8 @@ available, use it to select window for visiting this file.`"
   ("avi" . "mpv")
   ("webm" . "mpv")
   ("3gp" . "mpv")
+  ("pdf" . "sioyek")
+  ("epub" . "sioyek")
   ("mp4" . "mpv")))
 
 (setq delete-by-moving-to-trash t
