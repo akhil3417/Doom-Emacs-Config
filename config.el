@@ -833,7 +833,7 @@ Including indent-buffer, which should not be called automatically on save."
 ;; substitute:2 ends here
 
 ;; [[file:config.org::*Eshell][Eshell:1]]
-(setq shell-file-name "/bin/bash"
+(setq shell-file-name "/usr/bin/fish"
       vterm-max-scrollback 5000)
 (setq eshell-rc-script "~/.config/doom/eshell/profile"
       eshell-aliases-file "~/.config/doom/eshell/aliases"
