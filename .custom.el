@@ -25,7 +25,7 @@
         (setq-local gac-automatically-push-p t)))))
  '(org-agenda-files '("~/org/org-agenda/" "~/org/org-capture/todo.org"))
  '(package-selected-packages
-   '(exwm-mff epc mentor pacmacs org-noter-pdftools visual-fill-column calfw elfeed-tube-mpv dash miniedit pdf-tools all-the-icons-completion all-the-icons-dired recursion-indicator edwina trashed rcirc-notify emojify all-the-icons olivetti gameoflife cape exwm))
+   '(vertico-posframe 0x0 popper haki-theme org-agenda-property exwm-mff epc mentor pacmacs org-noter-pdftools visual-fill-column calfw elfeed-tube-mpv dash miniedit pdf-tools all-the-icons-completion all-the-icons-dired recursion-indicator edwina trashed rcirc-notify emojify all-the-icons olivetti gameoflife cape exwm))
  '(rmh-elfeed-org-files '("~/.config/doom/elfeed.org") t)
  '(warning-suppress-log-types '((emacs) (org-element-cache) (comp) (defvaralias)))
  '(warning-suppress-types '((org-element-cache) (comp) (defvaralias))))
