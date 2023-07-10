@@ -599,11 +599,6 @@ the previously multi-windowed one"
 (use-package! transpose-frame
   :bind (("M-<f8>" . rotate-frame-clockwise)))
 
-(use-package! bookmark
-  :ensure nil
-  :custom
-  (bookmark-save-flag 1))
-
 (use-package! beginend
   :config
   (beginend-global-mode))
