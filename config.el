@@ -1528,28 +1528,6 @@ active region use it instead."
   :defer t)
 ;; simple httpd:1 ends here
 
-;; [[file:config.org::*gptel - karthink][gptel - karthink:2]]
-(use-package! gptel
- :config
- (setq! gptel-api-key "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"))
-
-(define-minor-mode gptel-mode
-  "Minor mode for interacting with ChatGPT."
-  :glboal nil
-  :lighter " GPT"
-  :keymap
-  (let ((map (make-sparse-keymap)))
-    (define-key map (kbd "C-c C-c") #'gptel-send)
-    map))
-(setq-default
- gptel--system-message-alist
- '((default . "You are a large language model living in Emacs and a helpful assistant. Respond concisely.")
-   (programming . "Provide code and only code as output without any additional text, prompt or note.")
-   (writing . "You are a large language model and a writing assistant. Respond concisely.")
-   (chat . "You are a large language model and a conversation partner. Respond concisely.")))
-
-;; gptel - karthink:2 ends here
-
 ;; [[file:config.org::*red shift][red shift:1]]
 (setq my/redshift-min 500)
 (setq my/redshift-max 6000)
