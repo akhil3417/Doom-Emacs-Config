@@ -959,9 +959,6 @@ CLOSED: [2022-03-30 Wed 12:23]
 ;;      (format "echo \"0i%s\n\" | sudo /repos/LG-ultrafine-brightness/build/LG_ultrafine_brightness
 #+end_src
 
-#+RESULTS:
-: my/brightness-decrease
-
 ** DONE Windows Split
 CLOSED: [2022-03-30 Wed 00:00]
 
@@ -1542,9 +1539,6 @@ provide."
 (provide 'prot-emacs-modus-themes)
 #+end_src
 
-#+RESULTS:
-: prot-emacs-modus-themes
-
 ** DONE Elcord
 CLOSED: [2022-03-30 Wed 12:23]
 
@@ -1708,9 +1702,6 @@ tweaks of my own.
 
 #+end_src
 
-#+RESULTS:
-| ( keycast-mode-line) |   | emms-mode-line-string | emms-playing-time-string | appt-mode-string | (pyvenv-virtual-env-name ( venv: pyvenv-virtual-env-name  )) | telega-mode-line-format |
-
 ** Frame sizing
 CLOSED: [2022-03-31 Thu 20:07]
 It's nice to control the size of new frames, when launching Emacs that can be
@@ -1729,9 +1720,6 @@ default to be something roughly 80% of that size.
 
 
 #+end_src
-
-#+RESULTS:
-: ((width . 80) (height . 24) (right-divider-width . 2) (bottom-divider-width . 2) (font . -*-Hack-*-*-*-*-15-*-*-*-*-*-*-*) (tool-bar-lines . 0) (menu-bar-lines . 0) (vertical-scroll-bars) (internal-border-width . 1) (buffer-predicate . exwm-layout--other-buffer-predicate) (left-fringe . 4) (right-fringe . 4))
 
 ** DONE pulsar.el (highlight cursor position)
 CLOSED: [2022-10-14 Fri 13:09]
@@ -1810,9 +1798,6 @@ Also watch my [[https://protesilaos.com/codelog/2022-03-14-emacs-pulsar-demo/][d
     (define-key map (kbd "C-x L") #'pulsar-highlight-dwim))) ; or use `pulsar-highlight-line'
 #+end_src
 
-#+RESULTS:
-: t
-
 ** DONE general line
 CLOSED: [2022-09-22 Thu 11:28]
 I set comment-line to 'SPC TAB TAB' which is a rather comfortable keybinding for me on my ZSA Moonlander keyboard.  The standard Emacs keybinding for comment-line is 'C-x C-;'.  The other keybindings are for commands that toggle on/off various line-related settings.  Doom Emacs uses 'SPC t' for "toggle" commands, so I choose 'SPC t' plus 'key' for those bindings.
@@ -1877,9 +1862,6 @@ List of keybindings (SPC h b b)")
 
 #+end_src
 
-#+RESULTS:
-: t
-
 *** Dashboard in Emacsclient
 This setting ensures that emacsclient always opens on *dashboard* rather than *scratch*.
 #+begin_src emacs-lisp :tangle no
@@ -1887,9 +1869,6 @@ This setting ensures that emacsclient always opens on *dashboard* rather than *s
  (setq doom-fallback-buffer-name "► Doom"
      +doom-dashboard-name "► Doom")
 #+end_src
-
-#+RESULTS:
-: ► Doom
 
 ** Prettier page breaks
 
@@ -1957,6 +1936,7 @@ frame if FRAME is nil, and to 1 if AMT is nil."
     (interactive "p")
     (zoom-frame (- (or amt 1)) frame))
 #+end_src
+#+RESULTS:
 *** Font Config
 Settings related to fonts within Doom Emacs:
 + 'doom-font' -- standard monospace font that is used for most things in Emacs.
@@ -2140,7 +2120,6 @@ for writeroom mode.
     (let ((mixed-pitch-face 'variable-pitch-serif))
       (mixed-pitch-mode (or arg 'toggle)))))
 #+end_src
-#+RESULTS:
 
 Now, as Harfbuzz is currently used in Emacs, we'll be missing out on the
 following Alegreya ligatures:
@@ -2155,9 +2134,6 @@ Thankfully, it isn't to hard to add these to the ~composition-function-table~.
 (set-char-table-range composition-function-table ?f '(["\\(?:ff?[fijlt]\\)" 0 font-shape-gstring]))
 (set-char-table-range composition-function-table ?T '(["\\(?:Th\\)" 0 font-shape-gstring]))
 #+end_src
-
-#+RESULTS:
-| [\(?:Th\) 0 font-shape-gstring] |
 
 **** Variable pitch serif font
 
@@ -2249,8 +2225,6 @@ so I don't feel like something's gone /wrong/ when editing files.
   '(doom-modeline-buffer-modified :foreground "orange"))
 #+end_src
 
-#+RESULTS:
-| doom--customize-themes-h-33 | doom--customize-themes-h-34 |
 
 While we're modifying the modeline, =LF UTF-8= is the default file encoding, and
 thus not worth noting in the modeline. So, let's conditionally hide it.
@@ -2266,9 +2240,6 @@ thus not worth noting in the modeline. So, let's conditionally hide it.
 
 (add-hook 'after-change-major-mode-hook #'doom-modeline-conditional-buffer-encoding)
 #+end_src
-
-#+RESULTS:
-| doom--setq-evil-shift-width-for-after-change-major-mode-h | doom-modeline-conditional-buffer-encoding | clean-mode-line | solaire-global-mode-enable-in-buffers | ess-r-package-auto-activate | global-evil-surround-mode-enable-in-buffers | yas-global-mode-enable-in-buffers | doom-modeline-auto-set-modeline | +ligatures-init-buffer-h | persp-after-change-major-mode-h | better-jumper-mode-enable-in-buffers | global-company-mode-enable-in-buffers | evil-snipe-override-mode-enable-in-buffers | evil-snipe-mode-enable-in-buffers | git-commit-setup-font-lock-in-buffer | global-hl-line-mode-enable-in-buffers | smartparens-global-mode-enable-in-buffers | doom-disable-smartparens-navigate-skip-match-h | ws-butler-global-mode-enable-in-buffers | global-undo-fu-session-mode-enable-in-buffers | global-flycheck-mode-enable-in-buffers | global-emojify-mode-enable-in-buffers | doom-modeline-update-buffer-file-icon | pulsar-global-mode-enable-in-buffers | global-subword-mode-enable-in-buffers | evil-mode-enable-in-buffers | global-eldoc-mode-enable-in-buffers | global-font-lock-mode-enable-in-buffers | +company-init-backends-h | doom-highlight-non-default-indentation-h | which-func-ff-hook | doom-run-local-var-hooks-h |
 
 **** DONE Doom's pdf modeline
 CLOSED: [2022-03-30 Wed 19:58]
@@ -2323,9 +2294,6 @@ icon. Then we'll redefine two functions used to generate the modeline.
     '(bar window-number pdf-pages pdf-icon buffer-name)
     '(misc-info matches major-mode process vcs)))
 #+end_src
-
-#+RESULTS:
-: doom-modeline-format--pdf
 
 *** Toggle modeline
 
