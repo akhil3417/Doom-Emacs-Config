@@ -2629,6 +2629,7 @@ CLOSED: [2022-09-22 Thu 11:48]
 #+begin_quote
 From the =:completion company= module.
 #+end_quote
+
 [[../../.emacs.d/modules/completion/company/README.org][Completion Module Readme.org]]
 It's nice to have completions almost all the time, in my opinion. Key strokes
 are just waiting to be saved!
@@ -3767,7 +3768,7 @@ Regarding /buffers/, the text you are editing in Emacs resides in an object call
 #+RESULTS:
 : t
 
-** group buffers
+** Ibuffer group buffers
 
 #+begin_src emacs-lisp
 
@@ -4623,7 +4624,7 @@ Rainbox mode displays the actual color for any hex value color.  It's such a nic
 
 fuck this snippet , wanna know why? well try using this and see your org agenda
 
-#+begin_src emacs-lisp :tangle no
+#+begin_src emacs-lisp :tangle yes
 (define-globalized-minor-mode global-rainbow-mode rainbow-mode
   (lambda () (rainbow-mode 1)))
 (global-rainbow-mode 1 )
@@ -4696,15 +4697,11 @@ This is how a boxquote looks:
       ("c" boxquote-narrow-to-boxquote-content)))))
 #+end_src
 
-#+RESULTS:
-: #s(hash-table size 65 test eql rehash-size 1.5 rehash-threshold 0.8125 data (:use-package! (25088 11393 498837 905000) :init (25088 11393 498812 216000) :init-secs (0 0 311 648000) :use-package-secs (0 0 2107 22000)))
-
 ** DONE Cloc (count lines of code in buffer)
 CLOSED: [2022-04-01 Fri 15:42]
 #+begin_src emacs-lisp
 
 ;; cloc count the lines of code in a buffer
-
 (use-package! cloc
   :ensure t
   :commands cloc)
@@ -4999,8 +4996,6 @@ And then point your browser to http://localhost:8080/imp/, select a buffer, and 
                                                   eww-mode))
 #+END_SRC
 
-#+RESULTS:
-| elfeed-show-mode | elfeed-search-mode | forge-pullreq-list-mode | forge-topic-list-mode | dired-mode | tide-references-mode | image-dired-mode | image-dired-thumbnail-mode | ytel-mode | eww-mode |
 
 #+BEGIN_SRC emacs-lisp :tangle no
   (mapc (lambda (mode)
@@ -5603,7 +5598,9 @@ For when you want to change the case pattern for a symbol.
     (define-key evil-normal-state-map (kbd "g~") 'evil-operator-string-inflection)))
 #+end_src
 
-** Auto insert
+** FIXME Auto insert
+- State "FIXME"      from              [2023-07-11 Tue 03:32] \\
+  fix export
 #+begin_src emacs-lisp :tangle no
 ;; auto-insert-mode is an elisp library that automatically inserts text into new buffers based on the file extension or major mode. For instance, trying to open a .el (Emacs LISP) file will insert the entire GPL notice, and also other stuff. This automatic insert can be interactive, too.
 
