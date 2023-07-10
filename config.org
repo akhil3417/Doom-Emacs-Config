@@ -5059,7 +5059,7 @@ functions =evil-repeat-pop-next= and =xref-pop-marker-stack=, for some reason.
   (define-key evil-normal-state-map (kbd "C-<right>") #'sp-forward-slurp-sexp)
   (define-key evil-normal-state-map (kbd "C-<left>") #'sp-forward-barf-sexp)
 
-  (define-key org-mode-map (kbd "C-'") nil) ;; need that for avy
+  (define-key org-mode-map (kbd "C-'") nil) ;; need that for embark act
   (evil-define-key 'normal org-mode-map (kbd "M-j") nil) ;; avvvy
 ;; for org-agenda-custom
   ;; (define-key org-super-agenda-header-map (kbd "j") nil) ;; its irrtating to be prompted when in custom org-agenda heading , can just use gd
