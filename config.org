@@ -335,9 +335,10 @@ Specify a ~:branch~ to install a package from a particular branch or tag.
 #+begin_src emacs-lisp :tangle no
 (package! builtin-package :recipe (:branch "develop"))
 #+end_src
+
 * Desktop Configuration
 :PROPERTIES:
-:header-args:emacs-lisp: :results silent
+:header-args:emacs-lisp: :tangle config.el :results silent :exports code
 :END:
 ** Personal Information
 It's useful to have some basic personal information
@@ -487,9 +488,6 @@ CLOSED: [2022-11-12 Sat 10:21]
 #+end_src
 
 * Exwm Config xmonad
-:PROPERTIES:
-#+property: header-args:emacs-lisp :results silent
-:END:
 ** Edwina configuration
 
 The following config works cleanly with Doom
@@ -620,6 +618,9 @@ the previously multi-windowed one"
 #+end_src
 
 * Services
+:PROPERTIES:
+:header-args:emacs-lisp: :tangle config.el :results silent :exports code
+:END:
 ** DONE Proced (process monitor, similar to `top')
 CLOSED: [2022-03-31 Thu 20:05]
 
@@ -914,6 +915,9 @@ That's no problem though, we just need to help TRAMP find them.
 #+end_src
 
 * UI
+:PROPERTIES:
+:header-args:emacs-lisp: :tangle config.el :results silent :exports code
+:END:
 CLOSED: [2022-04-02 Sat 23:43]
 ** DONE brightness
 CLOSED: [2022-03-30 Wed 12:23]
@@ -2613,7 +2617,11 @@ CLOSED: [2022-09-22 Thu 11:48]
 
 #+RESULTS:
 : t
+
 * Completions framework
+:PROPERTIES:
+:header-args:emacs-lisp: :tangle config.el :results silent :exports code
+:END:
 ** Company
 #+begin_src emacs-lisp :tangle packages.el
 (package! devdocs)
@@ -3655,6 +3663,9 @@ Useful for prompts such as `eval-expression' and `shell-command'."
 #+end_src
 
 * Buffers
+:PROPERTIES:
+:header-args:emacs-lisp: :tangle config.el :results silent :exports code
+:END:
 ** desc
 Doom Emacs uses 'SPC b' for keybindings related to bookmarks and buffers.
 
@@ -3916,10 +3927,10 @@ CLOSED: [2022-04-02 Sat 23:19]
 
 #+END_SRC
 
-#+RESULTS:
-: t
-
 * Window management
+:PROPERTIES:
+:header-args:emacs-lisp: :tangle config.el :results silent :exports code
+:END:
 ** DONE SPLITS
 CLOSED: [2022-03-30 Wed 13:34]
 I set splits to default to opening on the right using 'prefer-horizontal-split'.  I set a keybinding for 'clone-indirect-buffer-other-window' for when I want to have the same document in two splits.  The text of the indirect buffer is always identical to the text of its base buffer; changes made by editing either one are visible immediately in the other.  But in all other respects, the indirect buffer and its base buffer are completely separate.  For example, I can fold one split but other will be unfolded.
@@ -4133,7 +4144,11 @@ The following functions helps achieve this:
     (define-key map (kbd "C-x C-n") #'next-buffer)     ; override `set-goal-column'
     (define-key map (kbd "C-x C-p") #'previous-buffer)) ; override `mark-page'
 #+end_src
+
 * General interface and interactions
+:PROPERTIES:
+:header-args:emacs-lisp: :tangle config.el :results silent :exports code
+:END:
 This section contains configurations for all aspects of the Emacs user
 interface, as well lots of small or self-contained tweaks that cover a
 wide range of built-in libraries.
@@ -4506,7 +4521,11 @@ solution to this with the following:
 
 Now the contents of the clipboard are stored in the kill ring and can
 be retrieved from there (e.g. with =M-y=).
+
 * Code & Edit
+:PROPERTIES:
+:header-args:emacs-lisp: :tangle config.el :results silent :exports code
+:END:
 ** DONE Bookmarks
 CLOSED: [2022-04-01 Fri 15:36]
 Bookmarks are somewhat like registers in that they record positions you can jump to.  Unlike registers, they have long names, and they persist automatically from one Emacs session to the next. The prototypical use of bookmarks is to record where you were reading in various files.
@@ -6222,7 +6241,11 @@ Taken form https://orgmode.org/worg/org-contrib/babel/how-to-use-Org-Babel-for-R
     (define-key map (kbd "M-# b") #'substitute-target-in-buffer))) ; "buffer" mnemonic
 
 #+end_src
+
 * SHELLS
+:PROPERTIES:
+:header-args:emacs-lisp: :tangle config.el :results silent :exports code
+:END:
 ** desc
 Eshell is a strictly line-oriented command prompt written in Emacs Lisp.
 This comes with its pros and cons: it can understand Elisp but does not
@@ -6352,6 +6375,9 @@ Settings for the various shells and terminal emulators within Emacs.
 : +vterm/toggle
 
 * DIRED
+:PROPERTIES:
+:header-args:emacs-lisp: :tangle config.el :results silent :exports code
+:END:
 Dired is the file manager within Emacs.  Below, I setup keybindings for image previews (peep-dired).  Doom Emacs does not use 'SPC d' for any of its keybindings, so I've chosen the format of 'SPC d' plus 'key'.
 *** desc
 The directory editor abbreviated as "Dired" (which I pronounce like
@@ -7084,7 +7110,11 @@ Keybindings to open files that I work with all the time using the find-file comm
 
 #+RESULTS:
 : ((gif . sxiv) (jpg . sxiv) (png . sxiv) (mkv . mpv) (webm . mpv) (3gp . mpv) (mp4 . mpv))
+
 * Hydra
+:PROPERTIES:
+:header-args:emacs-lisp: :tangle config.el :results silent :exports code
+:END:
 ** Extensions for PDFs (pdf-tools)
 
 The =pdf-tools= package builds on top of the external libraries, =poppler=
@@ -8019,6 +8049,9 @@ _d_: subtree
       (evil-local-mode (if git-timemachine-mode -1 1)))))
 #+end_src
 * Avy
+:PROPERTIES:
+:header-args:emacs-lisp: :tangle config.el :results silent :exports code
+:END:
 **  desc
 
 I definitely need to use it more. It allows to quickly jump around, both in the same and in other buffers.
@@ -8053,6 +8086,9 @@ buffer (see [[#h:c110e399-3f43-4555-8427-b1afe44c0779][Minibuffer configurations
 #+end_src
 
 * Internet & services
+:PROPERTIES:
+:header-args:emacs-lisp: :tangle config.el :results silent :exports code
+:END:
 ** DONE Network Manager
 CLOSED: [2022-03-30 Wed 09:36]
 
@@ -8661,6 +8697,11 @@ Select the path of your public/ directory and then open your browser to http://l
 Any time you regenerate the site files, you can just reload the page to see the result of changes you made!
 
 ** Elfeed goodies
+:PROPERTIES:
+:header-args:emacs-lisp: :tangle ./lisp/elfeedconfig.el :results silent :exports code
+:END:
+*** Elfeed goodies
+
 An RSS newsfeed reader for Emacs.
 Elfeed enables the nicest podcast integration I know: Treat podcast entries as regular RSS entries, but hit A to enqueue them in emms.
 
@@ -9035,6 +9076,9 @@ MYTAG"
 
 #+end_src
 * Applications and utilities
+:PROPERTIES:
+:header-args:emacs-lisp: :tangle config.el :results silent :exports code
+:END:
 
 This section includes configurations for programs like email clients,
 news reader, music players…  Anything you would normally see in a
@@ -11545,6 +11589,9 @@ let's change that, and do a few other similar tweaks while we're at it.
 #+end_src
 
 * DONE Media
+:PROPERTIES:
+:header-args:emacs-lisp: :tangle config.el :results silent :exports code
+:END:
 CLOSED: [2022-03-30 Wed 09:28]
 ** EMMS
 One of the media players available for Emacs is emms, which stands for Emacs Multimedia System.  By default, Doom Emacs does not use 'SPC a',' so the format I use for these bindings is 'SPC a' plus 'key'.
@@ -12249,6 +12296,9 @@ then press capital O in mpv to show the time
 #+RESULTS:
 : hydra-mpv/body
 * Miscellaneous
+:PROPERTIES:
+:header-args:emacs-lisp: :tangle config.el :results silent :exports code
+:END:
 
 #+begin_src emacs-lisp
 
@@ -12362,6 +12412,9 @@ stored in
 
 #+end_src
 * Language configuration
+:PROPERTIES:
+:header-args:emacs-lisp: :tangle config.el :results silent :exports code
+:END:
 ** General
 *** File Templates
 
@@ -17665,6 +17718,9 @@ Of course, there's an Emacs mode for this.
 
 #+end_src
 * Keyboard shortcuts (org -roam)
+:PROPERTIES:
+:header-args:emacs-lisp: :tangle config.el :results silent :exports code
+:END:
 
 Everything is mapped to SPC-R because doom is not using it and R stands for roam.
 #+begin_src elisp :tangle yes
@@ -17748,6 +17804,9 @@ Everything is mapped to SPC-R because doom is not using it and R stands for roam
 : org-gtd-show-stuck-projects
 
 * Denote
+:PROPERTIES:
+:header-args:emacs-lisp: :tangle config.el :results silent :exports code
+:END:
 #+begin_src emacs-lisp :tangle no
 
 (package! denote
@@ -17942,6 +18001,9 @@ Everything is mapped to SPC-R because doom is not using it and R stands for roam
 #+end_src
 
 * deft
+:PROPERTIES:
+:header-args:emacs-lisp: :tangle config.el :results silent :exports code
+:END:
 #+begin_src emacs-lisp :tangle no
 (use-package deft
   :commands deft
