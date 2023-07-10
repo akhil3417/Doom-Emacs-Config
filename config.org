@@ -5503,10 +5503,7 @@ Mainly useful in C and derived, and only when ACTION is insert."
       (hydra-sp/body))))
 #+end_src
 
-#+RESULTS:
-| turn-on-smartparens-strict-mode | preview-mode-setup | er/add-latex-mode-expansions | mixed-pitch-mode | laas-mode | beginend-LaTeX-mode | reftex-mode | evil-tex-mode | adaptive-wrap-prefix-mode | writegood-mode | +evil-embrace-latex-mode-hook-h | embrace-LaTeX-mode-hook |
-
-** undo tree
+** Undo tree
 #+begin_src emacs-lisp :tangle no
 
 (use-package! undo-tree
@@ -8405,7 +8402,7 @@ active region use it instead."
 : t
 
 ** EWW
-*** oantolin'eww
+
 #+begin_src emacs-lisp
 ;; consult-eww-source.el --- eww bookmark source for consult-buffer   -*- lexical-binding: t; -*-
 
@@ -8458,7 +8455,7 @@ active region use it instead."
 #+RESULTS:
 : consult-eww-source
 
-*** eww load files
+*** Load eww submodules
 #+begin_src emacs-lisp
 
 ;; EWW is the Emacs Web Wowser, the builtin browser in Emacs.  Below I set urls to open in a specific browser (eww) with browse-url-browser-function.  By default, Doom Emacs does not use 'SPC e' for anything, so I choose to use the format 'SPC e' plus 'key' for these (I also use 'SPC e' for 'eval' keybindings).  I chose to use 'SPC s w' for eww-search-words because Doom Emacs uses 'SPC s' for 'search' commands.
@@ -8657,7 +8654,7 @@ Now you can run M-x httpd-serve-directory. It will prompt you for a directory to
 Select the path of your public/ directory and then open your browser to http://localhost:8080 to see the preview of your site! Set httpd-port to change the default port if necessary.
 Any time you regenerate the site files, you can just reload the page to see the result of changes you made!
 
-** Elfeed goodies
+** Elfeed
 :PROPERTIES:
 :header-args:emacs-lisp: :tangle ./lisp/elfeedconfig.el :results silent :exports code
 :END:
@@ -8715,14 +8712,14 @@ Usage:
 
 #+END_SRC
 
-** Newsfeed
+*** Newsfeed
 
 RSS feeds are still a thing. Why not make use of them with =elfeed=.
 I really like what [[https://github.com/fuxialexander/doom-emacs-private-xfu/tree/master/modules/app/rss][fuxialexander]] has going on, but I don't think I need a custom
 module. Let's just try to patch on the main things I like the look of.
 
-*** unsubscribe feeds
-#+begin_src emacs-lisp :tangle yes
+**** Unsubscribe feeds
+#+begin_src emacs-lisp
 (defun my-display-current-entry-feed ()
   (interactive)
   (let ((entry (elfeed-search-selected t)))
@@ -8742,9 +8739,9 @@ module. Let's just try to patch on the main things I like the look of.
                          :key (lambda (e) (if (listp e) (car e) e)))))
       (customize-save-variable 'elfeed-feeds elfeed-feeds))))
 #+end_src
-*** Keybindings
+**** Keybindings
 
-#+begin_src emacs-lisp :tangle yes
+#+begin_src emacs-lisp
 (map! :map elfeed-search-mode-map
       :after elfeed-search
       [remap kill-this-buffer] "q"
@@ -8781,9 +8778,9 @@ module. Let's just try to patch on the main things I like the look of.
 
 #+RESULTS:
 
-*** Usability enhancements
+**** Usability enhancements
 
-#+begin_src emacs-lisp :tangle yes
+#+begin_src emacs-lisp
 (after! elfeed-search
   (set-evil-initial-state! 'elfeed-search-mode 'normal))
 (after! elfeed-show-mode
@@ -8794,15 +8791,17 @@ module. Let's just try to patch on the main things I like the look of.
   (push 'elfeed-search-mode evil-snipe-disabled-modes))
 #+end_src
 
-*** Visual enhancements
+**** Visual enhancements
 
-#+begin_src emacs-lisp :tangle yes
+#+begin_src emacs-lisp
 (after! elfeed
 
   ;; (elfeed-org)
   (use-package! elfeed-link)
 
   ;; (setq elfeed-search-filter "@1-week-ago +unread"
+  (setq elfeed-search-filter "@6-months-ago +unread")
+
   (setq
         elfeed-search-print-entry-function '+rss/elfeed-search-print-entry
         elfeed-search-title-min-width 80
@@ -8916,9 +8915,9 @@ module. Let's just try to patch on the main things I like the look of.
 #+RESULTS:
 : +rss/elfeed-show-refresh--better-style
 
-*** Functionality enhancements
+**** Functionality enhancements
 
-#+begin_src emacs-lisp :tangle yes
+#+begin_src emacs-lisp
 (after! elfeed-show
   (require 'url)
 
@@ -8968,10 +8967,10 @@ module. Let's just try to patch on the main things I like the look of.
 #+RESULTS:
 : elfeed-show-pdf
 
-*** easier tagging
+**** easier tagging
 By default you can tag an entry from the search results by typing “+” followed by the tag name. This is too much work for a central organizational feature, so a little helper sorts things out.
 
-#+begin_src emacs-lisp :tangle yes
+#+begin_src emacs-lisp
 
 (defun elfeed-tag-selection-as (mytag)
     "Returns a function that tags an elfeed entry or selection as
