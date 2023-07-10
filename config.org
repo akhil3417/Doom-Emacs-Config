@@ -2194,8 +2194,8 @@ Setting the theme to doom-vibrant.  To try out new themes, I set a keybinding fo
 ;; You must run (all-the-icons-install-fonts) one time after
 ;; installing this package!
 
-(use-package! minions
-  :hook (doom-modeline-mode . minions-mode))
+;; (use-package! minions
+;;   :hook (doom-modeline-mode . minions-mode))
 
 (use-package! doom-modeline
   :after eshell     ;; Make sure it gets hooked after eshell
@@ -2215,7 +2215,6 @@ Setting the theme to doom-vibrant.  To try out new themes, I set a keybinding fo
   (doom-modeline-buffer-file-name-style 'truncate-except-project)
   (doom-modeline-major-mode-icon nil))
 #+end_src
-
 
 However, by default ~red~ text is used in the ~modeline~, so let's make that orange
 so I don't feel like something's gone /wrong/ when editing files.
