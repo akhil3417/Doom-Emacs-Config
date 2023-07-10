@@ -2344,6 +2344,9 @@ only for the current buffer."
 
 #+end_src
 
+#+RESULTS:
+: toggle-modeline
+
 ** Writeroom
 #+begin_quote
 From the =:ui zen= module.
@@ -2416,9 +2419,6 @@ tweaks. Namely:
                 ))))
 #+end_src
 
-#+RESULTS:
-| +zen-nonprose-org-h |
-
 ** WINNER MODE
 Winner mode has been included with GNU Emacs since version 20.  This is a global minor mode and, when activated, it allows you to “undo” (and “redo”) changes in the window configuration with the key commands 'SCP w <left>' and 'SPC w <right>'.
 
@@ -2433,8 +2433,6 @@ Winner mode has been included with GNU Emacs since version 20.  This is a global
 ;; usually what I want.
 
 #+END_SRC
-
-#+RESULTS:
 
 ** DONE Theme magic
 CLOSED: [2022-09-22 Thu 11:41]
@@ -2598,9 +2596,6 @@ Now, we just identify the files in question.
         "*/_region_.log"
         "*/_region_.tex"))
 #+end_src
-
-#+RESULTS:
-| */_minted-* | */.auctex-auto | */_region_.log | */_region_.tex |
 
 ** KILL NEOTREE
 CLOSED: [2022-11-12 Sat 12:44]
