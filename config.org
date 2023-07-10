@@ -1559,7 +1559,7 @@ about it?
 CLOSED: [2022-03-30 Wed 12:23]
 
 Why not flash words on the screen. Why not --- hey, it could be fun.
-#+begin_src emacs-lisp :tangle packages.el
+#+begin_src emacs-lisp :tangle no
 (package! spray :pin "74d9dcfa2e8b38f96a43de9ab0eb13364300cb46")
 #+end_src
 
@@ -1567,7 +1567,7 @@ It would be nice if Spray's default speed suited me better, and the keybindings
 worked in evil mode. Let's do that and make the display slightly nicer while
 we're at it.
 
-#+begin_src emacs-lisp
+#+begin_src emacs-lisp :tangle no
 (use-package! spray
   :commands spray-mode
   :config
