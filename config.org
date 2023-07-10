@@ -488,7 +488,7 @@ CLOSED: [2022-11-12 Sat 10:21]
 
 * Exwm Config xmonad
 :PROPERTIES:
-#+property: header-args:emacs-lisp :results no
+#+property: header-args:emacs-lisp :results silent
 :END:
 ** Edwina configuration
 
