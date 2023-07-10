@@ -14,7 +14,7 @@
   :init (auth-source-pass-enable))
 ;; Personal Information:3 ends here
 
-(load "~/.config/doom/lisp/myelfeedconfig.el")
+(load "~/.config/doom/lisp/elfeedconfig.el")
 (load "~/.config/doom/lisp/elfeedtubeconfig.el")
 
 
