@@ -8673,7 +8673,12 @@ Usage:
 +  Keep queueing up further interesting entries from elfeed.
 +  Pause emms with M-x emms-pause when needed.
 
- #+BEGIN_SRC emacs-lisp :tangle no
+#+BEGIN_SRC emacs-lisp
+;;Elfeed config
+;; (setq rmh-elfeed-org-files '("~/.config/doom/elfeed.org"))
+ (setq elfeed-db-directory (concat doom-local-dir "elfeed/db/")
+       elfeed-enclosure-default-dir (concat doom-local-dir "elfeed/enclosures/"))
+
 (use-package! elfeed-goodies)
 (elfeed-goodies/setup)
 (setq elfeed-goodies/entry-pane-size 0.7)
@@ -8800,8 +8805,6 @@ module. Let's just try to patch on the main things I like the look of.
   (use-package! elfeed-link)
 
   ;; (setq elfeed-search-filter "@1-week-ago +unread"
-  (setq elfeed-search-filter "@6-months-ago +unread")
-
   (setq
         elfeed-search-print-entry-function '+rss/elfeed-search-print-entry
         elfeed-search-title-min-width 80
