@@ -2029,8 +2029,7 @@ files.
 From the =:ui zen= module.
 #+end_quote
 
-#+begin_src emacs-lisp :tangle no
-
+#+begin_src emacs-lisp
 (use-package! mixed-pitch
   :hook (org-mode . mixed-pitch-mode)
   :config
