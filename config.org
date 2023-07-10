@@ -507,6 +507,7 @@ The following line
  #+begin_src emacs-lisp :tangle no
 (package! edwina)
  #+end_src
+
 #+BEGIN_SRC elisp :tangle no
 (use-package! edwina
   :config
@@ -911,6 +912,7 @@ That's no problem though, we just need to help TRAMP find them.
               "/run/current-system/profile/bin"
               "/run/current-system/profile/sbin")))
 #+end_src
+
 * UI
 CLOSED: [2022-04-02 Sat 23:43]
 ** DONE brightness
