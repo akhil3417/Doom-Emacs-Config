@@ -344,7 +344,8 @@ new EWW buffer."
     (dolist (bookmark eww-bookmarks)
       (push (plist-get bookmark :url) list))
     (if eww-bookmarks
-        (eww (completing-read "Visit EWW bookmark: " list)
+        ;; (eww (completing-read "Visit EWW bookmark: " list)
+        (eww (ivy-completing-read "Visit EWW bookmark: " list) ;use ivy completion instead for this function
              (when arg 4))
       (user-error "No bookmarks"))))
 
