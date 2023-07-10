@@ -715,7 +715,7 @@ new Emacsclient frames start on the =*scratch*= buffer instead of the dashboard.
 I prefer the dashboard, so let's ensure that's always switched to in new frames.
 
 #+name: daemon initialisation
-#+begin_src emacs-lisp
+#+begin_src emacs-lisp :tangle no
 (defun greedily-do-daemon-setup ()
   (require 'org)
   (when (require 'mu4e nil t)
