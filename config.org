@@ -391,7 +391,7 @@ my home machine is pretty safe, and my laptop is shutdown a lot.
 #+begin_src emacs-lisp :tangle yes
 ;; -*- lexical-binding: t -*-
 
-(load "~/.config/doom/lisp/myelfeedconfig.el")
+(load "~/.config/doom/lisp/elfeedconfig.el")
 (load "~/.config/doom/lisp/elfeedtubeconfig.el")
 
 
