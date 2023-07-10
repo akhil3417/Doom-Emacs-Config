@@ -8816,6 +8816,8 @@ module. Let's just try to patch on the main things I like the look of.
   (use-package! elfeed-link)
 
   ;; (setq elfeed-search-filter "@1-week-ago +unread"
+  (setq elfeed-search-filter "@6-months-ago +unread")
+
   (setq
         elfeed-search-print-entry-function '+rss/elfeed-search-print-entry
         elfeed-search-title-min-width 80
