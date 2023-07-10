@@ -470,13 +470,6 @@ CLOSED: [2022-11-12 Sat 10:21]
 (global-set-key (kbd "<C-wheel-up>") 'text-scale-increase)
 (global-set-key (kbd "<C-wheel-down>") 'text-scale-decrease)
 
-;; (define-key evil-normal-state-map (kbd "M-SPC") #'set-mark-command)
-(defhydra hydra-text-scale (:timeout 4) ; Change the size of text
-  "scale text"
-  ("j" text-scale-increase "inc")
-  ("k" text-scale-decrease "dec")
-  ("q" nil "finished" :exit t))
-
 (defhydra hydra-cycle-buffers (:timeout 4) ; Cycle through buffers, killing uneccessary ones
   "cycle buffers"
   ("j" next-buffer "next")
