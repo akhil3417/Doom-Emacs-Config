@@ -1102,7 +1102,7 @@ CLOSED: [2022-03-30 Wed 11:35]
   #+RESULTS:
   : toggle-transparency
 
-** DONE modus theme prot
+** DONE Modus theme prot
 CLOSED: [2022-10-14 Fri 16:22]
 - State "DONE"       from              [2022-10-14 Fri 16:22]
 #+begin_src emacs-lisp :tangle yes
@@ -1598,7 +1598,7 @@ CLOSED: [2022-10-14 Fri 14:53]
 (package! keycast :pin "72d9add8ba16e0cae8cfcff7fc050fa75e493b4e")
 #+end_src
 
-*** keycast misc
+*** Keycast Config
 
 Once enabled, this package uses the mode line to show the keys being
 pressed and the command they call.  It is quite useful for screen
@@ -1917,7 +1917,9 @@ CLOSED: [2022-03-30 Wed 12:22]
 #+RESULTS:
 : zoom-out
 
-*** zoom frame
+*** FIXME Zoom frame
+- State "FIXME"      from              [2023-07-11 Tue 02:39] \\
+  error : set-frame-font: Invalid function: (\, frame)
 #+begin_src emacs-lisp
 
 (defun zoom-frame (&optional amt frame)
