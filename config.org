@@ -360,6 +360,7 @@ It's useful to have some basic personal information
 
 #+end_src
 
+
 #+begin_src emacs-lisp
 ;; (setq package-native-compile t)
 (setq org-directory "~/org/")
@@ -388,15 +389,9 @@ my home machine is pretty safe, and my laptop is shutdown a lot.
 ** Load [[file:~/.config/doom/lisp/][Lisp]] submodules
 #+begin_src emacs-lisp :tangle yes
 ;; -*- lexical-binding: t -*-
-;; (add-to-list 'load-path "~/.config/doom/lisp/elfeed-tube/")
 
-(load "~/.config/doom/lisp/elfeed-tube/elfeed-tube.el")
-(load "~/.config/doom/lisp/elfeed-tube/elfeed-tube-contrib.el")
-(load "~/.config/doom/lisp/elfeed-tube/elfeed-tube-fill.el")
-(load "~/.config/doom/lisp/elfeed-tube/elfeed-tube-mpv.el")
-(load "~/.config/doom/lisp/elfeed-tube/elfeed-tube-test.el")
-(load "~/.config/doom/lisp/elfeed-tube/elfeed-tube-utils.el")
-
+(load "~/.config/doom/lisp/myelfeedconfig.el")
+(load "~/.config/doom/lisp/elfeedtubeconfig.el")
 
 
 ;; [[file:config.org::*load some configs.el][load some configs.el:1]]
