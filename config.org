@@ -615,7 +615,7 @@ the previously multi-windowed one"
 
 #+end_src
 
-* services
+* Services
 ** DONE Proced (process monitor, similar to `top')
 CLOSED: [2022-03-31 Thu 20:05]
 
@@ -660,7 +660,6 @@ For editing systemd unit files
 For running a systemd service for a Emacs server I have the following
 #+name: emacsclient service
 #+begin_src systemd :tangle no
-##+begin_src systemd :tangle ~/.config/systemd/user/default.target.wants/emacs.service :mkdirp yes
 [Unit]
 Description=Emacs server daemon
 Documentation=info:emacs man:emacs(1) https://gnu.org/software/emacs/
