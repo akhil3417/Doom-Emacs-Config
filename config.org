@@ -1544,11 +1544,11 @@ CLOSED: [2022-03-30 Wed 12:23]
 
 What's even the point of using Emacs unless you're constantly telling everyone
 about it?
-#+begin_src emacs-lisp :tangle packages.el
+#+begin_src emacs-lisp :tangle no
 (package! elcord :pin "a0fe08dac6417a7a0c4e48dc6f43fd65dbeb41dd")
 #+end_src
 
-#+begin_src emacs-lisp
+#+begin_src emacs-lisp :tangle no
 (use-package! elcord
   :commands elcord-mode
   :config
