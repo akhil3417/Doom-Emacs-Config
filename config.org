@@ -1717,8 +1717,6 @@ default to be something roughly 80% of that size.
 #+begin_src emacs-lisp :tangle yes
 (add-to-list 'default-frame-alist '(height . 24))
 (add-to-list 'default-frame-alist '(width . 80))
-
-
 #+end_src
 
 ** DONE pulsar.el (highlight cursor position)
@@ -1938,7 +1936,10 @@ frame if FRAME is nil, and to 1 if AMT is nil."
     (interactive "p")
     (zoom-frame (- (or amt 1)) frame))
 #+end_src
+
 #+RESULTS:
+: zoom-frame-out
+
 *** Font Config
 Settings related to fonts within Doom Emacs:
 + 'doom-font' -- standard monospace font that is used for most things in Emacs.
