@@ -17990,6 +17990,9 @@ Everything is mapped to SPC-R because doom is not using it and R stands for roam
 #+end_src
 
 * Mail Setup
+:PROPERTIES:
+:header-args:emacs-lisp: :tangle ./lisp/mu4econfig.el :results silent :exports code
+:END:
 ** Mu4e
 Thanks to System Crafters and Tecosaur for helping me configure this .
 
