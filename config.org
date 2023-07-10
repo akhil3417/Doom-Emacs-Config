@@ -9012,8 +9012,24 @@ MYTAG"
 
 #+RESULTS:
 : browse-url-mpv
-*** elfeed tube
+**** Elfeed tube
 #+begin_src emacs-lisp
+(add-to-list 'load-path "~/.config/doom/lisp/elfeed-tube/")
+;; ;; Load all .el files in the directory
+;; (let ((default-directory "~/.config/doom/lisp/elfeed-tube/"))
+;;   (normal-top-level-add-subdirs-to-load-path))
+
+;; Load each .el file individually
+(dolist (file (directory-files "~/.config/doom/lisp/elfeed-tube/" t "\\.el$"))
+  (load file))
+
+;; (load "~/.config/doom/lisp/elfeed-tube/elfeed-tube.el")
+;; (load "~/.config/doom/lisp/elfeed-tube/elfeed-tube-contrib.el")
+;; (load "~/.config/doom/lisp/elfeed-tube/elfeed-tube-fill.el")
+;; (load "~/.config/doom/lisp/elfeed-tube/elfeed-tube-mpv.el")
+;; (load "~/.config/doom/lisp/elfeed-tube/elfeed-tube-test.el")
+;; (load "~/.config/doom/lisp/elfeed-tube/elfeed-tube-utils.el")
+;;
 (require 'elfeed-tube)
 (elfeed-tube-setup)
 (define-key elfeed-search-mode-map (kbd "F") 'elfeed-tube-fetch)
