@@ -14,17 +14,11 @@
   :init (auth-source-pass-enable))
 ;; Personal Information:3 ends here
 
-;; [[file:config.org::*load some configs.el][load some configs.el:1]]
-;; -*- lexical-binding: t -*-
-;; (add-to-list 'load-path "~/.config/doom/lisp/")
-;; (add-to-list 'load-path "~/.config/doom/lisp/elfeed-tube/")
+(load "~/.config/doom/lisp/myelfeedconfig.el")
+(load "~/.config/doom/lisp/elfeedtubeconfig.el")
 
-;; (load "~/.config/doom/lisp/elfeed-tube/elfeed-tube.el")
-;; (load "~/.config/doom/lisp/elfeed-tube/elfeed-tube-contrib.el")
-;; (load "~/.config/doom/lisp/elfeed-tube/elfeed-tube-fill.el")
-;; (load "~/.config/doom/lisp/elfeed-tube/elfeed-tube-mpv.el")
-;; (load "~/.config/doom/lisp/elfeed-tube/elfeed-tube-test.el")
-;; (load "~/.config/doom/lisp/elfeed-tube/elfeed-tube-utils.el")
+
+;; [[file:config.org::*load some configs.el][load some configs.el:1]]
 ;; (load "w3m-type-ahead.el")
 ;; (load "w3m-config.el")
 ;;window-mangement
@@ -32,19 +26,19 @@
 
 (load "~/.config/doom/lisp/codeiumconfig.el")
 (load "~/.config/doom/lisp/setup-ui.el")
-;; (load "~/.config/doom/lisp/setup-minibuffer.el")
+(load "~/.config/doom/lisp/setup-minibuffer.el")
 (load "~/.config/doom/lisp/better-buffers.el");;essential
-;; (load "~/.config/doom/lisp/setup-orderless.el");;configured in doom already but...
-;; (load "~/.config/doom/lisp/setup-vertico.el")
-;; (load "~/.config/doom/lisp/setup-embark.el")
+(load "~/.config/doom/lisp/setup-orderless.el");;configured in doom already but...
+(load "~/.config/doom/lisp/setup-vertico.el")
+(load "~/.config/doom/lisp/setup-embark.el")
 (load "~/.config/doom/lisp/utilities.el");;essential
 (load "~/.config/doom/lisp/setup-isearch")
 ;; ytel provides an elfeed-like interface to search invidious instances for
 ;; youtube videos. Phew. The churn rate of Invidious urls is quite high, which
 ;; makes this flaky, but anything's better than the browser interface to
 ;; Youtube.
-;; (load "~/.config/doom/lisp/setup-ytel.el");; youttuuube
-;; (load "~/.config/doom/lisp/ytdl-downloader.el")
+(load "~/.config/doom/lisp/setup-ytel.el");; youttuuube
+(load "~/.config/doom/lisp/ytdl-downloader.el")
 (load "~/.config/doom/lisp/setup-shell.el")
 ;; (load "~/.config/doom/lisp/exwm-paste.el")
 ;; (load "~/.config/doom/lisp/lock-screen.el")
@@ -56,7 +50,7 @@
 (load "~/.config/doom/lisp/auto-scroll.el")
 ;; (load "~/.config/doom/lisp/prot-common.el")
 (load "~/.config/doom/lisp/prot-comment.el")
-;; (load "~/.config/doom/lisp/prot-bookmark.el")
+(load "~/.config/doom/lisp/prot-bookmark.el")
 (load "~/.config/doom/lisp/org-protocol-capture-html.el")
 
 
@@ -382,6 +376,15 @@ List of keybindings (SPC h b b)")
     (define-key map (kbd "C-x C-n") #'next-buffer)     ; override `set-goal-column'
     (define-key map (kbd "C-x C-p") #'previous-buffer)) ; override `mark-page'
 ;; beframe:2 ends here
+
+;;; Minibuffer history (savehist-mode)
+(use-package! savehist
+  :config
+  (setq savehist-file (locate-user-emacs-file "savehist"))
+  (setq history-length 10000)
+  (setq history-delete-duplicates t)
+  (setq savehist-save-minibuffer-history t)
+  (add-hook 'after-init-hook #'savehist-mode))
 
 ;; [[file:config.org::*Window divider mode][Window divider mode:1]]
  ;; (setq outline-minor-mode-highlight 'override) ; emacs28
@@ -835,7 +838,7 @@ Including indent-buffer, which should not be called automatically on save."
 ;; substitute:2 ends here
 
 ;; [[file:config.org::*Eshell][Eshell:1]]
-(setq shell-file-name "/usr/bin/fish"
+(setq shell-file-name "/bin/bash"
       vterm-max-scrollback 5000)
 (setq eshell-rc-script "~/.config/doom/eshell/profile"
       eshell-aliases-file "~/.config/doom/eshell/aliases"
@@ -1528,7 +1531,7 @@ active region use it instead."
 ;; [[file:config.org::*gptel - karthink][gptel - karthink:2]]
 (use-package! gptel
  :config
- (setq! gptel-api-key ""))
+ (setq! gptel-api-key "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"))
 
 (define-minor-mode gptel-mode
   "Minor mode for interacting with ChatGPT."
@@ -6346,3 +6349,7 @@ preview-default-preamble "\\fi}\"%' \"\\detokenize{\" %t \"}\""))
      "/tmp/doom-color-theme" ))
   (gif-screencast-write-colormap)
   (add-hook 'doom-load-theme-hook #'gif-screencast-write-colormap))
+
+(define-globalized-minor-mode global-rainbow-mode rainbow-mode
+  (lambda () (rainbow-mode 1)))
+(global-rainbow-mode 1 )
