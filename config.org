@@ -5066,6 +5066,17 @@ functions =evil-repeat-pop-next= and =xref-pop-marker-stack=, for some reason.
   ;; (define-key org-super-agenda-header-map (kbd "k") nil) ;; just use SPC-X , for capture
 
   (define-key evil-normal-state-map (kbd "C-M-d") nil) ;;change default evil-multiedit-restore in favor of sp-down-sexp
+;; Unbind certain Emacs keybindings in =evil-mode=:1 ends here
+
+;; [[file:config.org::*Unbind certain Emacs keybindings in =evil-mode=][Unbind certain Emacs keybindings in =evil-mode=:2]]
+  (define-key evil-normal-state-map (kbd "M-.") nil)
+  (define-key evil-normal-state-map (kbd "M-,") nil)
+;; Unbind certain Emacs keybindings in =evil-mode=:2 ends here
+
+;; [[file:config.org::*Unbind certain Emacs keybindings in =evil-mode=][Unbind certain Emacs keybindings in =evil-mode=:5]]
+  (define-key global-map (kbd "<tab>") nil)
+  (define-key evil-insert-state-map (kbd "<tab>") nil)
+  (evil-define-key 'normal org-mode-map (kbd "<tab>") #'org-cycle)
 #+end_src
 
 #+RESULTS:
@@ -8805,6 +8816,8 @@ module. Let's just try to patch on the main things I like the look of.
   (use-package! elfeed-link)
 
   ;; (setq elfeed-search-filter "@1-week-ago +unread"
+  (setq elfeed-search-filter "@6-months-ago +unread")
+
   (setq
         elfeed-search-print-entry-function '+rss/elfeed-search-print-entry
         elfeed-search-title-min-width 80
