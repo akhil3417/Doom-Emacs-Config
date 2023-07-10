@@ -1,4 +1,4 @@
-;; [[file:w3m-config.org::*Basic Setup][Basic Setup:1]]
+;;; lisp/w3m-config.el --- -*- lexical-binding: t; -*-
 ;;set w3m as def browser
 (setq browse-url-browser-function 'w3m-browse-url)
 

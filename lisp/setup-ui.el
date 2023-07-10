@@ -1,4 +1,4 @@
-;; [[file:../config.org::*setup.ui][setup.ui:1]]
+;;; lisp/setup-ui.el --- -*- lexical-binding: t; -*-
 ;; -*- lexical-binding: t -*-
 (setq inhibit-default-init t
       initial-scratch-message ";;Hello Sir! how you doing  eh?")
