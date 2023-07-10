@@ -487,6 +487,9 @@ CLOSED: [2022-11-12 Sat 10:21]
 #+end_src
 
 * Exwm Config xmonad
+:PROPERTIES:
+#+property: header-args:emacs-lisp :results no
+:END:
 ** Edwina configuration
 
 The following config works cleanly with Doom
