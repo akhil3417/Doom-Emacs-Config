@@ -2657,14 +2657,14 @@ are just waiting to be saved!
 
         company-require-match nil
         company-selection-wrap-around t
-        company-minimum-prefix-length 0 ;; ai-code completion
+        company-minimum-prefix-length 3 ;; ai-code completion
 ;;         ;; get only preview
         ;; company-frontends '(company-preview-frontend)
 ;;         ;; also get a drop down
         company-frontends'(company-pseudo-tooltip-frontend company-preview-frontend))
   (setq company-show-quick-access t))
-   ;;(add-hook 'evil-normal-state-entry-hook #'company-abort)) ;; make aborting less annoying. currently disable caues dabbrev closes company -yasnipper automatically-but i use SPC i s
 
+   ;;(add-hook 'evil-normal-state-entry-hook #'company-abort)) ;; make aborting less annoying. currently disable caues dabbrev closes company -yasnipper automatically-but i use SPC i s
 #+end_src
 
 #+RESULTS:
@@ -2682,7 +2682,7 @@ let's improve that memory.
 
 *** Plain Text
 ~Ispell~ is nice, let's have it in ~text~, ~markdown~, and ~GFM~.
-#+begin_src emacs-lisp :tangle no
+#+begin_src emacs-lisp :tangle yes
 (set-company-backend!
   '(text-mode
     markdown-mode
