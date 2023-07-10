@@ -2832,7 +2832,7 @@ developed muscle memory for the register-related actions.  Though using
 all three of the above is easier to learn and more consistent overall.
 
 *** code
-#+begin_src emacs-lisp
+#+begin_src emacs-lisp :tangle yes
 ;;; Enhanced minibuffer commands (consult.el)
 (use-package! consult
   :config
@@ -3824,9 +3824,6 @@ Regarding /buffers/, the text you are editing in Emacs resides in an object call
 
 #+end_src
 
-#+RESULTS:
-| Home | (EXWM (mode . exwm-mode)) | (dired (mode . dired-mode)) | (Web Development (or (mode . css-mode) (mode . html-mode) (mode . mhtml-mode) (mode . web-mode) (mode . less-mode) (mode . scss-mode) (mode . android-mode))) | (Clojure Development (or (mode . clojure-mode) (mode . clojurescript-mode))) | (perl (mode . cperl-mode)) | (erc (mode . erc-mode)) | (Mail (or (mode . mu4e-headers-mode) (mode . mu4e-view-mode) (mode . mu4e-compose-mode) (name . .*Mail*.) (name . .*draft*.) (filename . /home/shiva/doom.org))) | (planner (or (name . ^\*Calendar\*$) (name . ^diary$) (filename . .*agenda.*) (filename . .*todo.*) (mode . muse-mode))) | (org-roam (filename . .*2022.*.org$)) | (org (mode . org-mode)) | (Feeds (or (mode . elfeed-search-mode) (mode . elfeed-show-mode) (name . *elfeed-log*))) | (svg (name . \.svg)) | (emacs (or (name . ^\*scratch\*$) (name . ^\*Messages\*$))) | (Telegram (or (mode . telega-root-mode) (mode . telega-chat-mode) (mode . telega-image-mode))) | (Special (or (mode . special-mode) (name . ^\*.\*$))) |
-
 ** DONE Helper functions to clean up the gazillion buffers
 CLOSED: [2022-04-15 Fri 14:04]
 
@@ -3915,7 +3912,7 @@ are just some tweaks to make it work the way I prefer.
 
 ** DONE Nicer buffer name for buffers with same name uniquify
 CLOSED: [2022-04-02 Sat 23:19]
-#+BEGIN_SRC emacs-lisp
+#+BEGIN_SRC emacs-lisp :tangle no
 (use-package! uniquify
   :defer 5
   :config
@@ -4008,7 +4005,7 @@ well somehow, so let's switch to 'P22 Underground Book'; it looks much nicer.
 
 #+RESULTS:
 : wave
-*** prot-tabs
+*** Prot-tabs
 #+begin_src emacs-lisp :tangle no
 
 (add-to-list 'load-path "~/.config/doom/lisp/tab-bar/")
@@ -4121,11 +4118,11 @@ The following functions helps achieve this:
   (windmove-right))
 #+end_src
 
-** beframe
+** Beframe
 #+begin_src emacs-lisp :tangle packages.el
 (package! beframe)
-
 #+end_src
+
 #+begin_src emacs-lisp
 
 ;;; Frame-isolated buffers
@@ -4340,7 +4337,7 @@ primary selection).  I choose not to use this here.
 mouse, =<mouse-3>= is the right click.  Normally I call that command with
 =M-x=, though it does not hurt to rely on the mouse from time to time.
 
-#+begin_src emacs-lisp :tangle no
+#+begin_src emacs-lisp :tangle yes
 ;;; Mouse wheel behaviour
 (use-package! mouse
   ;; In Emacs 27+, use Control + mouse wheel to scale text.
@@ -4377,7 +4374,7 @@ The =next-screen-context-lines= ensures that when moving by screenfulls
 (with either =C-v= or =M-v=) we do not get any continuation lines from the
 previous screen.  I find this more intuitive.
 
-#+begin_src emacs-lisp :tangle no
+#+begin_src emacs-lisp :tangle yes
 ;;; Scrolling behaviour
 ;; These four come from the C source code.
 (setq-default scroll-preserve-screen-position t)
@@ -4420,7 +4417,7 @@ mouse over an actionable item:
 + The delay is slightly reduced for the initial pop-up, while it has
   been increased for immediate pop-ups thereafter.
 
-#+begin_src emacs-lisp :tangle no
+#+begin_src emacs-lisp :tangle yes
 ;;; Tooltips (tooltip-mode)
 (use-package! tooltip
   :config
