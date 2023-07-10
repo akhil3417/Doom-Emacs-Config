@@ -336,6 +336,9 @@ Specify a ~:branch~ to install a package from a particular branch or tag.
 (package! builtin-package :recipe (:branch "develop"))
 #+end_src
 * Desktop Configuration
+:PROPERTIES:
+:header-args:emacs-lisp: :results silent
+:END:
 ** Personal Information
 It's useful to have some basic personal information
 
@@ -364,8 +367,7 @@ It's useful to have some basic personal information
       user-mail-address "akhilpratapsingh3417@gmail.com")
 #+end_src
 
-#+RESULTS:
-: akhilpratapsingh3417@gmail.com
+
 
 Apparently this is used by ~GPG~, and all sorts of other things.
 
@@ -375,7 +377,7 @@ make a difference, and I don't want to accidentally purge this file I have done
 src_shell{rm -rf~/.emac.d~ before}. I also want to cache as much as possible, as
 my home machine is pretty safe, and my laptop is shutdown a lot.
 
-#+begin_src emacs-lisp :tangle yes
+#+begin_src emacs-lisp
 (setq auth-sources '("~/.authinfo.gpg")
       auth-source-cache-expiry nil)
  ; default is 7200 (2h)
@@ -383,9 +385,6 @@ my home machine is pretty safe, and my laptop is shutdown a lot.
   :init (auth-source-pass-enable))
 #+end_src
 
-#+RESULTS:
-: auth-source-pass
-** load some configs.el
 #+begin_src emacs-lisp :tangle yes
 ;; -*- lexical-binding: t -*-
 ;; (add-to-list 'load-path "~/.config/doom/lisp/")
