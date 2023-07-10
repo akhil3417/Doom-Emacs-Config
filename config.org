@@ -1987,7 +1987,7 @@ In addition to these fonts, Merriweather is used with =nov.el=, and Alegreya as 
 serifed proportional font used by =mixed-pitch-mode= for =writeroom-mode= with Org
 files.
 
-*** detect fonts
+*** Detect fonts
 #+name: detect-missing-fonts
 #+begin_src emacs-lisp :tangle no
 (defvar required-fonts '("JetBrainsMono.*" "Overpass" "JuliaMono" "IBM Plex Mono" "Merriweather" "Alegreya"))
