@@ -526,7 +526,7 @@ consider whole buffer."
                 hist-var prot-eww--youtube-hist))
 
     (invidious . (invidious
-                  "https://vid.puffyan.us/search?q="
+                  "https://invidious.garudalinux.org/search?q=%s"
                   hist-var prot-eww--invidious-hist))
 
 
