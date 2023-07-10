@@ -2161,7 +2161,7 @@ For ease of use, let's also set up an easy way of setting the ~:font~ attribute.
 
 ** DONE MODELINE
 CLOSED: [2022-03-31 Thu 19:49]
-*** doom modeline
+*** Doom modeline
 **** Theme and modeline
 CLOSED: [2022-03-30 Wed 12:25]
 
