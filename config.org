@@ -385,9 +385,9 @@ my home machine is pretty safe, and my laptop is shutdown a lot.
   :init (auth-source-pass-enable))
 #+end_src
 
+** Load [[file:~/.config/doom/lisp/][Lisp]] submodules
 #+begin_src emacs-lisp :tangle yes
 ;; -*- lexical-binding: t -*-
-;; (add-to-list 'load-path "~/.config/doom/lisp/")
 ;; (add-to-list 'load-path "~/.config/doom/lisp/elfeed-tube/")
 
 (load "~/.config/doom/lisp/elfeed-tube/elfeed-tube.el")
@@ -396,16 +396,21 @@ my home machine is pretty safe, and my laptop is shutdown a lot.
 (load "~/.config/doom/lisp/elfeed-tube/elfeed-tube-mpv.el")
 (load "~/.config/doom/lisp/elfeed-tube/elfeed-tube-test.el")
 (load "~/.config/doom/lisp/elfeed-tube/elfeed-tube-utils.el")
+
+
+
+;; [[file:config.org::*load some configs.el][load some configs.el:1]]
 ;; (load "w3m-type-ahead.el")
 ;; (load "w3m-config.el")
 ;;window-mangement
-(load "~/.config/doom/lisp/window-managment.el")
+;; (load "~/.config/doom/lisp/window-managment.el")
 
+(load "~/.config/doom/lisp/codeiumconfig.el")
 (load "~/.config/doom/lisp/setup-ui.el")
 (load "~/.config/doom/lisp/setup-minibuffer.el")
 (load "~/.config/doom/lisp/better-buffers.el");;essential
-;; (load "~/.config/doom/lisp/setup-orderless.el");;configured in doom already but...
-;; (load "~/.config/doom/lisp/setup-vertico.el")
+(load "~/.config/doom/lisp/setup-orderless.el");;configured in doom already but...
+(load "~/.config/doom/lisp/setup-vertico.el")
 (load "~/.config/doom/lisp/setup-embark.el")
 (load "~/.config/doom/lisp/utilities.el");;essential
 (load "~/.config/doom/lisp/setup-isearch")
@@ -416,20 +421,18 @@ my home machine is pretty safe, and my laptop is shutdown a lot.
 (load "~/.config/doom/lisp/setup-ytel.el");; youttuuube
 (load "~/.config/doom/lisp/ytdl-downloader.el")
 (load "~/.config/doom/lisp/setup-shell.el")
-(load "~/.config/doom/lisp/exwm-paste.el")
-(load "~/.config/doom/lisp/lock-screen.el")
+;; (load "~/.config/doom/lisp/exwm-paste.el")
+;; (load "~/.config/doom/lisp/lock-screen.el")
 (load "~/.config/doom/lisp/correct-previous-word-and-create-abbrev")
 (load "~/.config/doom/lisp/lookup-on-github")
 (load "~/.config/doom/lisp/show-diffs-before-killing-buffers")
-(load "~/.config/doom/lisp/switch-window-patches")
+;; (load "~/.config/doom/lisp/switch-window-patches")
 (load "~/.config/doom/lisp/pulseaudio.el")
 (load "~/.config/doom/lisp/auto-scroll.el")
-(load "~/.config/doom/lisp/prot-common.el")
+;; (load "~/.config/doom/lisp/prot-common.el")
 (load "~/.config/doom/lisp/prot-comment.el")
 (load "~/.config/doom/lisp/prot-bookmark.el")
 (load "~/.config/doom/lisp/org-protocol-capture-html.el")
-
-;; (load "~/.config/doom/lisp/corfuv2.el")
 ;; (load "~/.config/doom/lisp/emacs-with-nyxt.el")
 ;; (load "~/.config/doom/lisp/prot-common.el")
 ;; (load "~/.config/doom/lisp/setup-corfu.el")
@@ -457,12 +460,12 @@ setting, and load it if it exists.
   (load custom-file))
 #+end_src
 
-#+RESULTS:
-
 ** DONE Rudimentry Settings
 CLOSED: [2022-11-12 Sat 10:21]
 - State "DONE"       from              [2022-11-12 Sat 10:21]
 #+begin_src emacs-lisp
+
+
 (global-set-key (kbd "C-@") 'er/expand-region)
 (setq delete-selection-mode t)
 ;; Use visual line motions even outside of visual-line-mode buffers
