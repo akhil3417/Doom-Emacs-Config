@@ -486,9 +486,6 @@ CLOSED: [2022-11-12 Sat 10:21]
          ("C-M-s" . swiper-thing-at-point)))
 #+end_src
 
-#+RESULTS:
-: hydra-cycle-buffers/body
-
 * Exwm Config xmonad
 ** Edwina configuration
 
@@ -576,9 +573,6 @@ The following line
   )
 #+END_SRC
 
-#+RESULTS:
-: t
-
 ** movement and window switching
 The default window movement keys are super cumbersome, here are some better defaults.
 #+begin_src emacs-lisp :tangle yes
@@ -625,8 +619,6 @@ the previously multi-windowed one"
 (map! :nvig "C-<tab>" #'evil-window-next)
 
 #+end_src
-
-#+RESULTS:
 
 * services
 ** DONE Proced (process monitor, similar to `top')
@@ -748,7 +740,6 @@ I prefer the dashboard, so let's ensure that's always switched to in new frames.
       ;; (switch-to-buffer +doom-dashboard-name))))
 #+end_src
 
-#+RESULTS: daemon initialisation
 
 *** Emacs client wrapper
 I frequently want to make use of Emacs while in a terminal emulator. To make
