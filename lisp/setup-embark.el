@@ -2,7 +2,7 @@
 ;; Embark for actions
 (use-package! embark
   :demand
-  :ensure t
+  ;; :ensure t
   :after minibuffer
   :bind (("M-s RET"  . embark-act)
          ("s-a"      . embark-act)
