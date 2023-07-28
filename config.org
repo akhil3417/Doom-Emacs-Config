@@ -3536,69 +3536,15 @@ modify parts of the directory before switching to it."
 
 #+RESULTS:
 : swiper-thing-at-point
-**
-**  Corfu , Cape and tempel
 #+begin_src emacs-lisp :tangle no
-(package! corfu)
-(package! tempel)
 
-#+end_src
-
-#+begin_src emacs-lisp :tangle no
-;;; Corfu (in-buffer completion popup)
 (use-package! corfu
   :config
-  ;; (dolist (mode '( message-mode-hook text-mode-hook prog-mode-hook
-  ;;                  shell-mode-hook eshell-mode-hook))
-  ;;   (add-hook mode #'corfu-mode))
-  (global-corfu-mode 1)
-  (define-key corfu-map (kbd "<tab>") #'corfu-complete)
-
-  ;; Adapted from Corfu's manual.
-  (defun contrib/corfu-enable-always-in-minibuffer ()
-    "Enable Corfu in the minibuffer if Vertico is not active.
-Useful for prompts such as `eval-expression' and `shell-command'."
-    (unless (bound-and-true-p vertico--input)
       (corfu-mode 1)))
 
-  (add-hook 'minibuffer-setup-hook #'contrib/corfu-enable-always-in-minibuffer 1))
-
-;;; CAPE (extra completion-at-point backends)
-(use-package! cape
   :config
-  (setq cape-dabbrev-min-length 3)
-  (dolist (backend '( cape-symbol cape-keyword cape-file cape-dabbrev cape-super-capf))
-  ;; (dolist (backend '( cape-keyword cape-file cape-dict cape-history cape-symbol cape-abbrev))
-    (add-to-list 'completion-at-point-functions backend)))
 
-;;; Template-based in-buffer completion (tempel.el)
-(use-package! tempel
-  :config
-  ;; Setup completion at point
-  (defun contrib/tempel-setup-capf ()
-    ;; Add the Tempel Capf to `completion-at-point-functions'.
-    ;; `tempel-expand' only triggers on exact matches. Alternatively use
-    ;; `tempel-complete' if you want to see all matches, but then you
-    ;; should also configure `tempel-trigger-prefix', such that Tempel
-    ;; does not trigger too often when you don't expect it. NOTE: We add
-    ;; `tempel-expand' *before* the main programming mode Capf, such
-    ;; that it will be tried first.
-    (setq-local completion-at-point-functions
-                (cons #'tempel-expand
-                      completion-at-point-functions)))
-
-  (dolist (hook '(prog-mode-hook text-mode-hook))
-    (add-hook hook 'contrib/tempel-setup-capf))
-
-  (let ((map global-map))
-    (define-key map (kbd "M-+") #'tempel-complete) ; Alternative: `tempel-expand'
-    (define-key map (kbd "M-*") #'tempel-insert))
-  (let ((map tempel-map))
-    (define-key map (kbd "RET") #'tempel-done)
-    (define-key map (kbd "C-p") #'tempel-previous)
-    (define-key map (kbd "C-n") #'tempel-next)))
 #+end_src
-
 * Buffers
 ** desc
 Doom Emacs uses 'SPC b' for keybindings related to bookmarks and buffers.
