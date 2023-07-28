@@ -237,6 +237,35 @@
     (define-key map (kbd "M-# b") #'substitute-target-in-buffer))) ; "buffer" mnemonic
 ;; substitute:2 ends here
 
+(use-package! evil-goggles
+  :init
+  (setq evil-goggles-enable-change t
+        evil-goggles-enable-delete t
+        evil-goggles-pulse         t
+        evil-goggles-duration      0.25)
+  :config
+  (custom-set-faces!
+    `((evil-goggles-yank-face evil-goggles-surround-face)
+      :background ,(doom-blend (doom-color 'blue) (doom-color 'bg-alt) 0.5)
+      :extend t)
+    `(evil-goggles-paste-face
+      :background ,(doom-blend (doom-color 'green) (doom-color 'bg-alt) 0.5)
+      :extend t)
+    `(evil-goggles-delete-face
+      :background ,(doom-blend (doom-color 'red) (doom-color 'bg-alt) 0.5)
+      :extend t)
+    `(evil-goggles-change-face
+      :background ,(doom-blend (doom-color 'orange) (doom-color 'bg-alt) 0.5)
+      :extend t)
+    `(evil-goggles-commentary-face
+      :background ,(doom-blend (doom-color 'grey) (doom-color 'bg-alt) 0.5)
+      :extend t)
+    `((evil-goggles-indent-face evil-goggles-join-face evil-goggles-shift-face)
+      :background ,(doom-blend (doom-color 'yellow) (doom-color 'bg-alt) 0.25)
+      :extend t)
+    ))
+
+
 (setq ispell-dictionary "en-custom")
 (add-hook 'text-mode-hook 'flyspell-mode)
 (add-hook 'prog-mode-hook 'flyspell-prog-mode)
