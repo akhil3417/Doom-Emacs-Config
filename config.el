@@ -3708,6 +3708,12 @@ preview-default-preamble "\\fi}\"%' \"\\detokenize{\" %t \"}\""))
 ;; (after! lsp-python-ms
 ;;   (set-lsp-priority! 'mspyls 1))
 
+(use-package! python
+  :config
+  (set-popup-rules!
+    '(("^\\*Python:*\\*$" :side right :size 0.5 :ttl nil))))
+
+
 (setq dap-python-debugger 'debugpy)
 (setq python-prettify-symbols-alist 'nil) ;defaults are bad , may customise later
 
