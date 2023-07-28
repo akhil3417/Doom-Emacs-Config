@@ -189,6 +189,21 @@
 (map! :map corfu-map
       :desc "insert separator" "C-SPC" #'corfu-insert-separator)
 
+(use-package! corfu
+  :config
+  (defun corfu-enable-in-minibuffer ()
+    "Enable Corfu in the minibuffer if `completion-at-point' is bound."
+    (when (where-is-internal #'completion-at-point (list (current-local-map)))
+      ;; (setq-local corfu-auto nil) ;; Enable/disable auto completion
+      (setq-local corfu-echo-delay nil ;; Disable automatic echo and popup
+                  corfu-popupinfo-delay nil)
+      (corfu-mode 1)))
+  (add-hook 'minibuffer-setup-hook #'corfu-enable-in-minibuffer))
+;; Automatic documentation popup while autocompleting is nice, but let’s reduce
+;; the font size a little bit so that it doesn’t cover the screen too much and
+;; makes it easier to skim for information:
+(custom-set-faces! '((corfu-popupinfo) :height 0.9))
+
 
 ;; [[file:config.org::*EVIL][EVIL:1]]
 (after! evil
