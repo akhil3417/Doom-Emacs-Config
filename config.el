@@ -761,6 +761,58 @@ optional `tmr--timer-description'."
   :init (miniedit-install))
 ;; Mini-buffer editing more space:2 ends here
 
+;; ibuffer
+
+(setq ibuffer-saved-filter-groups
+      '(("Home"
+         ;; ("Modified" (predicate buffer-modified-p (current-buffer)))
+         ("EXWM" (mode . exwm-mode))
+         ("dired" (mode . dired-mode))
+         ("Web Development" (or (mode . css-mode)
+                                (mode . html-mode)
+                                (mode . mhtml-mode)
+                                (mode . web-mode)
+                                (mode . less-mode)
+                                (mode . scss-mode)
+                                (mode . android-mode)))
+         ("Clojure Development" (or (mode . clojure-mode)
+                                    (mode . clojurescript-mode)))
+         ("perl" (mode . cperl-mode))
+         ("erc" (mode . erc-mode))
+         ;; ("Dev" (or (filename . ".+\\\\.css\\\\'")
+         ;;            (filename . ".+\\\\.html?\\\\'")
+         ;;            (mode . android-mode)
+         ;;            (mode . clojure-mode)))
+         ("Mail" (or (mode . mu4e-headers-mode)
+                     (mode . mu4e-view-mode)
+                     (mode . mu4e-compose-mode)
+                     (name . ".*Mail*.")
+                     (name . ".*draft*.")
+                     (filename . "/home/shiva/doom.org")))
+         ("planner" (or
+                     (name . "^\\*Calendar\\*$")
+                     (name . "^diary$")
+                     ;; (filename . "(.*agenda.*|.*todo.*)") ;; should'nt it work?
+                     (filename . ".*agenda.*")
+                     (filename . ".*todo.*")
+                     (mode . muse-mode)))
+
+         ("org-roam" (filename . ".*2022.*\.org$"))
+         ("org" (mode . org-mode))
+
+         ("Feeds" (or (mode . elfeed-search-mode)
+                      (mode . elfeed-show-mode)
+                      (name . "*elfeed-log*")))
+         ("svg" (name . "\\.svg")) ; group by file extension
+         ("emacs" (or
+                   (name . "^\\*scratch\\*$")
+                   ;; (filename . "~/.config/doom/config.org")
+                   (name . "^\\*Messages\\*$")))
+        ("Telegram" (or (mode . telega-root-mode)
+                        (mode . telega-chat-mode)
+                        (mode . telega-image-mode)))
+        ("Special" (or (mode . special-mode)
+                       (name . "^\\*.\\*$"))))))
 ;; [[file:config.org::*Copy filename to clipboard][Copy filename to clipboard:1]]
 (defun my/copy-file-name-to-clipboard ()
   "Copy the current buffer file name to the clipboard."
