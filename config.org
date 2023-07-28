@@ -5859,6 +5859,7 @@ LSP auto format is nice, but not as configurable as prettier, better let prettie
   (setq-hook! 'typescript-tsx-mode-hook +format-with :nil)
   (add-hook! 'typescript-tsx-mode-hook 'prettier-mode)
   ))
+
 #+end_src
 
 ** Lsp ui
@@ -6165,6 +6166,7 @@ into the background a little bit
       :extend t)
     ))
 
+#+end_src
 ** ess
  Most of the time, the interation provided by ess-mode is excellent and I can be
  productive with it. Syntax-highlighting in ess-r-mode is not so spectacular,
@@ -8248,7 +8250,10 @@ prompt and everyone in the channel can see it.  Some things I learnt:
 (package! telega)
 #+end_src
 #+begin_src emacs-lisp
-(load "~/.config/doom/lisp/setup-telega.el")
+(when (file-exists-p "~/.telega/db.sqlite")
+  (telega nil)
+  (setq telega-notifications-mode t)
+  (load "~/.config/doom/lisp/setup-telega.el"))
 #+end_src
 
 ** DONE Google Translate
@@ -13089,6 +13094,8 @@ be nice to have a function to convert =org-ref= citations to =org-cite= forms.
 It's also nice to be able to use ~cdlatex~.
 #+begin_src emacs-lisp
 (add-hook 'org-mode-hook 'turn-on-org-cdlatex)
+
+
 #+end_src
 
 It's handy to be able to quickly insert environments with =C-c }=. I almost always
@@ -13928,6 +13935,7 @@ Since we don't want to trigger errors (which will happen as soon as roam tries
 to initialise), let's not load roam.
 #+begin_src emacs-lisp :tangle (if (file-exists-p "~/org/org-roam2/") "no" "packages.el")
 (package! org-roam :disable t)
+#+end_src
 ****** Improve ui
 ****** Backlinks display
 borrowed from [[https://hieuphay.com/doom-emacs-config/][here]]
@@ -15258,11 +15266,11 @@ size and prefer a vector graphic.
 Using the above latex expression and benchmarking lead to the following results:
 | ~dvipng~ time | ~dvisvgm~ time | ~pdf2svg~ time |
 |-------------+--------------+--------------|
-| 89 \pm 2 ms   | 178 \pm 2 ms   | 12 \pm 2 ms    |
+| 89 \pm 2 ms | 178 \pm 2 ms | 12 \pm 2 ms  |
 
 Now let's combine this to see what's best
-| Tool chain         | Total time | Resultant file size |
-|--------------------+------------+---------------------|
+| Tool chain         | Total time   | Resultant file size |
+|--------------------+--------------+---------------------|
 | ~latex~ + ~dvipng~     | 226 \pm 2 ms | 7 KiB               |
 | ~latex~ + ~dvisvgm~    | 392 \pm 4 ms | 8 KiB               |
 | ~pdflatex~ + ~pdf2svg~ | 230 \pm 2 ms | 16 KiB              |
