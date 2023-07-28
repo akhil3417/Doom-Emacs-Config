@@ -2270,59 +2270,6 @@ icon. Then we'll redefine two functions used to generate the modeline.
     '(misc-info matches major-mode process vcs)))
 #+end_src
 
-*** Toggle modeline
-
-#+begin_src emacs-lisp
-(defun toggle-modeline (arg)
-  "Toggle the visibility of the modeline.
-If ARG is non-nil, hide the modeline globally. Otherwise, hide it
-only for the current buffer."
-  (interactive "P")
-  (if (eq mode-line-format nil)
-      (if arg
-          (setq-default mode-line-format
-                        '((:eval (propertize " %b " 'face
-                                            (if (buffer-modified-p)
-                                                'mode-line-modified
-                                              'mode-line-buffer-id)))
-                          (:eval (when (buffer-modified-p)
-                                   (concat " ["
-                                           (propertize "Modified"
-                                                       'face 'mode-line-modified)
-                                           "]")))
-                          (:propertize " %p " 'face 'mode-line-position-face)
-                          (:propertize mode-name
-                                       face mode-line-mode-face)
-                          (:propertize mode-line-misc-info
-                                       face mode-line-misc-face)
-                          (:propertize mode-line-end-spaces
-                                       face mode-line-position-face)))
-        (setq mode-line-format
-              '((:eval (propertize " %b " 'face
-                                  (if (buffer-modified-p)
-                                      'mode-line-modified
-                                    'mode-line-buffer-id)))
-                (:eval (when (buffer-modified-p)
-                         (concat " ["
-                                 (propertize "Modified"
-                                             'face 'mode-line-modified)
-                                 "]")))
-                (:propertize " %p " 'face 'mode-line-position-face)
-                (:propertize mode-name
-                             face mode-line-mode-face)
-                (:propertize mode-line-misc-info
-                             face mode-line-misc-face)
-                (:propertize mode-line-end-spaces
-                             face mode-line-position-face))))
-    (if arg
-        (setq-default mode-line-format nil)
-      (setq mode-line-format nil))))
-
-#+end_src
-
-#+RESULTS:
-: toggle-modeline
-
 ** Writeroom
 #+begin_quote
 From the =:ui zen= module.
