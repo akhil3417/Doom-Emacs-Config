@@ -5860,6 +5860,15 @@ LSP auto format is nice, but not as configurable as prettier, better let prettie
   ))
 #+end_src
 
+** Lsp ui
+#+begin_src emacs-lisp :tangle yes
+(use-package! lsp-ui
+  :config
+  (setq lsp-ui-doc-delay 2
+        lsp-ui-doc-max-width 80)
+  (setq lsp-signature-function 'lsp-signature-posframe))
+
+#+end_src
 ** Very large files
 
 The /very large files/ mode loads large files in chunks, allowing one to open
