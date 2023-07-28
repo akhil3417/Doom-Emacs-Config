@@ -17,14 +17,14 @@
 
 
 ;; Scrolling
-(setq scroll-margin 0
-      scroll-preserve-screen-position t
-      next-screen-context-lines 2)
+;; scroll-margin 0 ;; already in doom
+(setq scroll-preserve-screen-position t
+      next-screen-context-lines 4)
 ;;; mouse
 ;;; (setq mouse-wheel-scroll-amount '(t ((shift) . 2))
 ;;;       mouse-wheel-progressive-speed t)
 
-;;; (setq-hook! '(eshell-mode-hook term-mode-hook) hscroll-margin 0)
+;; (setq-hook! '(eshell-mode-hook term-mode-hook) hscroll-margin 0);; implemented in doom
 
 ;; Reduce the clutter in the fringes; we'd like to reserve that space for more
 ;; useful information, like git-gutter and flycheck.
@@ -45,6 +45,13 @@
 ;;; ;;;###package hide-mode-line-mode
 ;;; (add-hook! '(completion-list-mode-hook Man-mode-hook)
 ;;;            #'hide-mode-line-mode)
+
+(setq
+ version-control t
+ delete-old-versions t
+ kept-new-versions 10
+ kept-old-versions 5)
+
 
 (setq-default
  x-stretch-cursor t)                              ; Stretch cursor to the glyph width
