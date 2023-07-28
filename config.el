@@ -813,6 +813,13 @@ optional `tmr--timer-description'."
                         (mode . telega-image-mode)))
         ("Special" (or (mode . special-mode)
                        (name . "^\\*.\\*$"))))))
+(map! :leader
+      :desc "Switch to perspective NAME" "DEL" #'persp-switch
+      :desc "Switch to buffer in perspective" "," #'persp-switch-to-buffer
+      :desc "Switch to next perspective" "]" #'persp-next
+      :desc "Switch to previous perspective" "[" #'persp-prev
+      :desc "Add a buffer current perspective" "+" #'persp-add-buffer
+      :desc "Remove perspective by name" "-" #'persp-remove-by-name)
 ;; [[file:config.org::*Copy filename to clipboard][Copy filename to clipboard:1]]
 (defun my/copy-file-name-to-clipboard ()
   "Copy the current buffer file name to the clipboard."
