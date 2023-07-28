@@ -17420,6 +17420,11 @@ priority of =mypyls=
   (lsp-headerline-breadcrumb-mode))
 
     ;; :hook (lsp-mode . efs/lsp-mode-setup)
+(use-package! python
+  :config
+  (set-popup-rules!
+    '(("^\\*Python:*\\*$" :side right :size 0.5 :ttl nil))))
+
 
 #+end_src
 
