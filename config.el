@@ -421,9 +421,9 @@
 ;; (setq telega-tdlib-max-version "1.8.5")
     ;; Launch Telega in workspace 0 if we've logged in before
 (when (file-exists-p "~/.telega/db.sqlite")
-  (telega nil)
-  (setq telega-notifications-mode t)
-  (load "~/.config/doom/lisp/setup-telega.el"))
+  ;; (telega nil)
+  (load "~/.config/doom/lisp/setup-telega.el")
+  (setq telega-notifications-mode t))
 ;; telega:2 ends here
 
 ;; [[file:config.org::*Google Translate][Google Translate:2]]
