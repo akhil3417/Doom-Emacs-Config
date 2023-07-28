@@ -2043,10 +2043,129 @@ is selected, only the bare key is returned."
 
 ;; [[file:config.org::*Basic settings][Basic settings:1]]
 ;;(after! org-roam
-(setq
-      org-roam-directory "~/org/org-roam2/"
-      org-roam-db-location (concat org-roam-directory "org-roam.db")
-      org-roam-todo-file (concat org-roam-directory "todo/todo.org"))
+;; (setq
+;;       org-roam-directory "~/org/org-roam2/"
+;;       org-roam-db-location (concat org-roam-directory "org-roam.db")
+;;       org-roam-todo-file (concat org-roam-directory "todo/todo.org"))
+;; (save-window-excursion
+;;   (find-file org-roam-todo-file)
+;;   (save-buffer))
+;; Basic settings:1 ends here
+;;
+;;
+
+(use-package! org-roam
+  :after org-roam
+  :init
+  (setq org-roam-db-location (concat org-roam-directory "org-roam.db")
+        org-roam-directory "~/org/org-roam2/"
+        org-roam-todo-file (concat org-roam-directory "todo/todo.org")
+        org-roam-completion-everywhere nil
+        ;;Functions tags are special types of tags which tells what the node are for
+        ;;In the future, this should probably be replaced by categories
+        hp/org-roam-function-tags '("compilation" "argument" "journal" "concept" "tool" "data" "bio" "literature" "event" "website"))
+  :config
+  ;; Org-roam interface
+  (cl-defmethod org-roam-node-hierarchy ((node org-roam-node))
+    "Return the node's TITLE, as well as it's HIERACHY."
+    (let* ((title (org-roam-node-title node))
+           (olp (mapcar (lambda (s) (if (> (length s) 10) (concat (substring s 0 10)  "...") s)) (org-roam-node-olp node)))
+           (level (org-roam-node-level node))
+           (filetitle (org-roam-get-keyword "TITLE" (org-roam-node-file node)))
+           (filetitle-or-name (if filetitle filetitle (file-name-nondirectory (org-roam-node-file node))))
+           (shortentitle (if (> (length filetitle-or-name) 20) (concat (substring filetitle-or-name 0 20)  "...") filetitle-or-name))
+           (separator (concat " " (all-the-icons-material "chevron_right") " ")))
+      (cond
+       ((= level 1) (concat (propertize (format "=level:%d=" level) 'display (all-the-icons-material "insert_drive_file" :face 'all-the-icons-dyellow))
+                            (propertize shortentitle 'face 'org-roam-olp) separator title))
+       ((= level 2) (concat (propertize (format "=level:%d=" level) 'display (all-the-icons-material "insert_drive_file" :face 'all-the-icons-dsilver))
+                            (propertize (concat shortentitle separator (string-join olp separator)) 'face 'org-roam-olp) separator title))
+       ((> level 2) (concat (propertize (format "=level:%d=" level) 'display (all-the-icons-material "insert_drive_file" :face 'org-roam-olp))
+                            (propertize (concat shortentitle separator (string-join olp separator)) 'face 'org-roam-olp) separator title))
+       (t (concat (propertize (format "=level:%d=" level) 'display (all-the-icons-material "insert_drive_file" :face 'all-the-icons-yellow))
+                  (if filetitle title (propertize filetitle-or-name 'face 'all-the-icons-dyellow)))))))
+
+  (cl-defmethod org-roam-node-functiontag ((node org-roam-node))
+    "Return the FUNCTION TAG for each node. These tags are intended to be unique to each file, and represent the note's function.
+        journal data literature"
+    (let* ((tags (seq-filter (lambda (tag) (not (string= tag "ATTACH"))) (org-roam-node-tags node))))
+      (concat
+       ;; Argument or compilation
+       (cond
+        ((member "argument" tags)
+         (propertize "=f:argument=" 'display (all-the-icons-material "forum" :face 'all-the-icons-dred)))
+        ((member "compilation" tags)
+         (propertize "=f:compilation=" 'display (all-the-icons-material "collections" :face 'all-the-icons-dyellow)))
+        (t (propertize "=f:empty=" 'display (all-the-icons-material "remove" :face 'org-hide))))
+       ;; concept, bio, data or event
+       (cond
+        ((member "concept" tags)
+         (propertize "=f:concept=" 'display (all-the-icons-material "blur_on" :face 'all-the-icons-dblue)))
+        ((member "tool" tags)
+         (propertize "=f:tool=" 'display (all-the-icons-material "build" :face 'all-the-icons-dblue)))
+        ((member "bio" tags)
+         (propertize "=f:bio=" 'display (all-the-icons-material "people" :face 'all-the-icons-dblue)))
+        ((member "event" tags)
+         (propertize "=f:event=" 'display (all-the-icons-material "event" :face 'all-the-icons-dblue)))
+        ((member "data" tags)
+         (propertize "=f:data=" 'display (all-the-icons-material "data_usage" :face 'all-the-icons-dblue)))
+        (t (propertize "=f:nothing=" 'display (all-the-icons-material "format_shapes" :face 'org-hide))))
+       ;; literature
+       (cond
+        ((member "literature" tags)
+         (propertize "=f:literature=" 'display (all-the-icons-material "book" :face 'all-the-icons-dcyan)))
+        ((member "website" tags)
+         (propertize "=f:website=" 'display (all-the-icons-material "move_to_inbox" :face 'all-the-icons-dsilver)))
+        (t (propertize "=f:nothing=" 'display (all-the-icons-material "book" :face 'org-hide))))
+       ;; journal
+       )))
+
+  (cl-defmethod org-roam-node-othertags ((node org-roam-node))
+    "Return the OTHER TAGS of each notes."
+    (let* ((tags (seq-filter (lambda (tag) (not (string= tag "ATTACH"))) (org-roam-node-tags node)))
+           (specialtags hp/org-roam-function-tags)
+           (othertags (seq-difference tags specialtags 'string=)))
+       (propertize
+        (string-join
+         (append '(" ") othertags)
+         (propertize "#" 'display (all-the-icons-material "label" :face 'all-the-icons-dgreen)))
+        'face 'all-the-icons-dgreen)))
+
+  (cl-defmethod org-roam-node-backlinkscount ((node org-roam-node))
+    (let* ((count (caar (org-roam-db-query
+                         [:select (funcall count source)
+                          :from links
+                          :where (= dest $s1)
+                          :and (= type "id")]
+                         (org-roam-node-id node)))))
+      (if (> count 0)
+          (concat (propertize "=has:backlinks=" 'display (all-the-icons-material "link" :face 'all-the-icons-blue)) (format "%d" count))
+        (concat (propertize "=not-backlinks=" 'display (all-the-icons-material "link" :face 'org-hide))  " "))))
+
+  (cl-defmethod org-roam-node-directories ((node org-roam-node))
+    (if-let ((dirs (file-name-directory (file-relative-name (org-roam-node-file node) org-roam-directory))))
+        (concat
+         (if (string= "journal/" dirs)
+             (all-the-icons-material "edit" :face 'all-the-icons-dsilver)
+           (all-the-icons-material "folder" :face 'all-the-icons-dsilver))
+         (propertize (string-join (f-split dirs) "/") 'face 'all-the-icons-dsilver) " ")
+      ""))
+
+  (defun +marginalia--time-colorful (time)
+    (let* ((seconds (float-time (time-subtract (current-time) time)))
+           (color (doom-blend
+                   (face-attribute 'marginalia-on :foreground nil t)
+                   (face-attribute 'marginalia-off :foreground nil t)
+                   (/ 1.0 (log (+ 3 (/ (+ 1 seconds) 345600.0)))))))
+      ;; 1 - log(3 + 1/(days + 1)) % grey
+      (propertize (marginalia--time time) 'face (list :foreground color :slant 'italic))))
+
+  (setq org-roam-node-display-template
+        (concat  "${backlinkscount:16} ${functiontag} ${directories}${hierarchy}${othertags} ")
+        org-roam-node-annotation-function
+        (lambda (node) (+marginalia--time-colorful (org-roam-node-file-mtime node))))
+  )
+
 (save-window-excursion
   (find-file org-roam-todo-file)
   (save-buffer))
