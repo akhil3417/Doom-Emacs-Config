@@ -3536,13 +3536,43 @@ modify parts of the directory before switching to it."
 
 #+RESULTS:
 : swiper-thing-at-point
+** Enable corfu in the minibuffer:
 #+begin_src emacs-lisp :tangle no
 
 (use-package! corfu
   :config
+  (defun corfu-enable-in-minibuffer ()
+    "Enable Corfu in the minibuffer if `completion-at-point' is bound."
+    (when (where-is-internal #'completion-at-point (list (current-local-map)))
+      ;; (setq-local corfu-auto nil) ;; Enable/disable auto completion
+      (setq-local corfu-echo-delay nil ;; Disable automatic echo and popup
+                  corfu-popupinfo-delay nil)
       (corfu-mode 1)))
+  (add-hook 'minibuffer-setup-hook #'corfu-enable-in-minibuffer))
+#+end_src
 
+** Yasnippert
+#+begin_src emacs-lisp :tangle yes
+(use-package! yasnippet
   :config
+  ;; It will test whether it can expand, if yes, change cursor color
+  (defun hp/change-cursor-color-if-yasnippet-can-fire (&optional field)
+    (interactive)
+    (setq yas--condition-cache-timestamp (current-time))
+    (let (templates-and-pos)
+      (unless (and yas-expand-only-for-last-commands
+                   (not (member last-command yas-expand-only-for-last-commands)))
+        (setq templates-and-pos (if field
+                                    (save-restriction
+                                      (narrow-to-region (yas--field-start field)
+                                                        (yas--field-end field))
+                                      (yas--templates-for-key-at-point))
+                                  (yas--templates-for-key-at-point))))
+      (set-cursor-color (if (and templates-and-pos (first templates-and-pos)
+                                 (eq evil-state 'insert))
+                            (doom-color 'red)
+                          (face-attribute 'default :foreground)))))
+  :hook (post-command . hp/change-cursor-color-if-yasnippet-can-fire))
 
 #+end_src
 * Buffers
