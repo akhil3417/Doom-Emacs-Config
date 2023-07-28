@@ -90,7 +90,8 @@
 
 (after! doom-themes
   (setq doom-themes-enable-bold t
-        doom-themes-enable-italic t))
+        doom-themes-enable-italic t
+   doom-themes-treemacs-enable-variable-pitch nil))
  (custom-set-faces!
    '(font-lock-comment-face :slant italic)
    '(font-lock-keyword-face :slant italic))
