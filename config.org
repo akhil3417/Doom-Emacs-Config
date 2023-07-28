@@ -6164,6 +6164,32 @@ into the background a little bit
       :extend t)
     ))
 
+** ess
+ Most of the time, the interation provided by ess-mode is excellent and I can be
+ productive with it. Syntax-highlighting in ess-r-mode is not so spectacular,
+ however. Hopefully this will get better once tree-sitter is better integrated
+ into Emacs.
+#+begin_src emacs-lisp :tangle yes
+(use-package! ess
+  :config
+  (set-popup-rules!
+    '(("^\\*R:*\\*$" :side right :size 0.5 :ttl nil)))
+  (setq ess-R-font-lock-keywords
+        '((ess-R-fl-keyword:keywords . t)
+          (ess-R-fl-keyword:constants . t)
+          (ess-R-fl-keyword:modifiers . t)
+          (ess-R-fl-keyword:fun-defs . t)
+          (ess-R-fl-keyword:assign-ops . t)
+          (ess-R-fl-keyword:%op% . t)
+          (ess-fl-keyword:fun-calls . t)
+          (ess-fl-keyword:numbers . t)
+          (ess-fl-keyword:operators . t)
+          (ess-fl-keyword:delimiters . t)
+          (ess-fl-keyword:= . t)
+          (ess-R-fl-keyword:F&T . t)))
+  (map! (:map (ess-mode-map inferior-ess-mode-map)
+         :g ";" #'ess-insert-assign)))
+
 #+end_src
 * SHELLS
 ** desc
