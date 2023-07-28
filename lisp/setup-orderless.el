@@ -6,6 +6,7 @@
   :config
   (setq orderless-component-separator #'split-string-and-unquote)
   (setq completion-styles '(orderless partial-completion))
+  (add-to-list 'orderless-matching-styles 'char-fold-to-regexp)
   (setq orderless-matching-styles
         '(orderless-regexp
           orderless-initialism
