@@ -2685,6 +2685,13 @@ allowfullscreen>%s</iframe>" path (or "" desc)))
 (use-package! visual-regexp-steroids
   :after 'visual-regexp)
 
+
+(use-package! lsp-ui
+  :config
+  (setq lsp-ui-doc-delay 2
+        lsp-ui-doc-max-width 80)
+  (setq lsp-signature-function 'lsp-signature-posframe))
+
 (add-hook 'org-mode-hook #'+org-pretty-mode)
 
   (custom-set-faces!
