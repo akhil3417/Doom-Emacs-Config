@@ -2685,6 +2685,17 @@ allowfullscreen>%s</iframe>" path (or "" desc)))
 (use-package! visual-regexp-steroids
   :after 'visual-regexp)
 
+(add-hook! 'after-init-hook
+           (progn
+  (setq-hook! 'typescript-mode-hook +format-with :nil)
+  (add-hook! 'typescript-mode-hook 'prettier-mode)
+  (setq-hook! 'rjsx-mode-hook +format-with :nil)
+  (add-hook! 'rjsx-mode-hook 'prettier-mode)
+  (setq-hook! 'js2-mode-hook +format-with :nil)
+  (add-hook! 'js2-mode-hook 'prettier-mode)
+  (setq-hook! 'typescript-tsx-mode-hook +format-with :nil)
+  (add-hook! 'typescript-tsx-mode-hook 'prettier-mode)
+  ))
 
 (use-package! lsp-ui
   :config
