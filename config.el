@@ -825,6 +825,13 @@ optional `tmr--timer-description'."
       (message "Copied buffer file name '%s' to the clipboard." filename))))
 ;; Copy filename to clipboard:1 ends here
 
+(use-package! uniquify
+  :defer 5
+  :config
+  (setq uniquify-buffer-name-style 'forward)
+  (setq uniquify-strip-common-suffix t)
+  (setq uniquify-after-kill-buffer-p t))
+
 ;; [[file:config.org::*open current file with external program][open current file with external program:1]]
 (defun my/open-with (arg)
   "Open visited file in default external program.
