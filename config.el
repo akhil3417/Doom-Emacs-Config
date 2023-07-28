@@ -813,6 +813,21 @@ optional `tmr--timer-description'."
                         (mode . telega-image-mode)))
         ("Special" (or (mode . special-mode)
                        (name . "^\\*.\\*$"))))))
+
+  (defun kill-other-buffers ()
+    "Kill all other buffers."
+    (interactive)
+    (mapc 'kill-buffer (delq (current-buffer) (buffer-list))))
+
+
+  (defun kill-dired-buffers ()
+    "Kill all open dired buffers."
+    (interactive)
+    (mapc (lambda (buffer)
+            (when (eq 'dired-mode (buffer-local-value 'major-mode buffer))
+              (kill-buffer buffer)))
+          (buffer-list)))
+
 (map! :leader
       :desc "Switch to perspective NAME" "DEL" #'persp-switch
       :desc "Switch to buffer in perspective" "," #'persp-switch-to-buffer
