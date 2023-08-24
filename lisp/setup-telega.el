@@ -6,13 +6,14 @@
     :commands (telega)
     :init
         (defun my/telega/olivetti () (setq-local olivetti-body-width 100))
+        (when (featurep! :completion company)
         (defun my/telega/company-backends ()
             (setq-local company-backends
                 (append '(telega-company-username telega-company-botcmd )
                         company-backends)))
-    ;; :hook (telega-chat-mode . olivetti-mode)
-          ;; (telega-chat-mode . my/telega/olivetti)
-      :hook   (telega-chat-mode . my/telega/company-backends)
+    :hook (telega-chat-mode . olivetti-mode)
+          (telega-chat-mode . my/telega/olivetti)
+      :hook   (telega-chat-mode . my/telega/company-backends))
     :config
     ;; (telega-mode-line-mode)
     ;; (telega-notifications-mode 1)
