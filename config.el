@@ -1448,6 +1448,11 @@ preview-default-preamble "\\fi}\"%' \"\\detokenize{\" %t \"}\""))
       (+latex-fold-last-macro-a)))
   (add-hook 'aas-post-snippet-expand-hook #'laas-tex-fold-maybe))
 ;; LAAS:2 ends here
+(use-package! lsp-ui
+  :config
+  (setq lsp-ui-doc-delay 2
+        lsp-ui-doc-max-width 80)
+  (setq lsp-signature-function 'lsp-signature-posframe))
 
 ;; [[file:lang.org::*LAAS][LAAS:3]]
 (use-package! laas
