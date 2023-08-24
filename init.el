@@ -90,6 +90,7 @@
        grammar           ; tasing grammar mistake every you make
 
        :tools
+       (codeium +python)
        ;;ansible
        ;;biblio            ; Writes a PhD for you (citation needed)
        ;;collab            ; buffers with friends
