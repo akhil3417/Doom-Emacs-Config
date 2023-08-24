@@ -60,6 +60,7 @@
   (load custom-file))
 ;; Auto-customisations:1 ends here
 
+(global-set-key (kbd "C-@") 'er/expand-region)
 ;; [[file:config.org::*Windows Split][Windows Split:1]]
 (setq evil-vsplit-window-right t
       evil-split-window-below t)
@@ -1080,6 +1081,8 @@ optional `tmr--timer-description'."
     (define-key map (kbd "i") #'Man-goto-section)
     (define-key map (kbd "g") #'Man-update-manpage)))
 (evil-define-key 'normal Info-mode-map (kbd "n") 'Info-next)
+(evil-define-key 'normal Info-mode-map (kbd "C-n") 'Info-scroll-up)
+(evil-define-key 'normal Info-mode-map (kbd "C-p") 'Info-scroll-down)
 (evil-define-key 'normal Info-mode-map (kbd "p") 'Info-prev)
 (evil-define-key 'normal Info-mode-map (kbd "H") 'Info-up)
 (evil-define-key 'normal Info-mode-map (kbd "f") 'Info-goto-node)
