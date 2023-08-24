@@ -1448,6 +1448,16 @@ preview-default-preamble "\\fi}\"%' \"\\detokenize{\" %t \"}\""))
       (+latex-fold-last-macro-a)))
   (add-hook 'aas-post-snippet-expand-hook #'laas-tex-fold-maybe))
 ;; LAAS:2 ends here
+(use-package! paren
+  :ensure nil
+  :config
+  (setq show-paren-style 'parenthesis)
+  (setq show-paren-when-point-in-periphery nil)
+  (setq show-paren-when-point-inside-paren nil)
+  (setq show-paren-context-when-offscreen 'child-frame) ; Emacs 29
+  (add-hook 'after-init-hook #'show-paren-mode))
+
+
 (map! :leader
       (:prefix ("e". "evaluate/EWW")
        :desc "Evaluate elisp in buffer" "b" #'eval-buffer
