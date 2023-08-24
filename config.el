@@ -15,7 +15,7 @@
   :init (auth-source-pass-enable))
 ;; Personal Information:3 ends here
 
-(load "~/.config/doom/lisp/codeiumconfig.el")
+;; (load "~/.config/doom/lisp/codeiumconfig.el")
 (load "~/.config/doom/lisp/setup-avy.el")
 ;; (load "~/.config/doom/lisp/splash.el")
 (load "~/.config/doom/lisp/setup-ui.el")
