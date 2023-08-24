@@ -1134,6 +1134,7 @@ optional `tmr--timer-description'."
 (load "~/.config/doom/lisp/setup-org.el")
 (load "~/.config/doom/lisp/setup-org-capture.el")
 (load "~/.config/doom/lisp/setup-org-roam.el")
+(load "~/.config/doom/lisp/setup-org-agenda.el")
 ;; [[file:lang.org::*Compilation][Compilation:1]]
 (setq TeX-save-query nil
       TeX-show-compilation t
