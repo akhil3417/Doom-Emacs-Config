@@ -46,7 +46,12 @@
 (load "~/.config/doom/lisp/prot-comment.el")
 (load "~/.config/doom/lisp/prot-bookmark.el")
 
+(load "~/.config/doom/lisp/setup-avy.el")
+;; (load "~/.config/doom/lisp/setup-keychord.el")
 (load "~/.config/doom/lisp/setup-webshare.el")
+
+(load "~/.config/doom/lisp/yt-org.el")
+;;
 (defun ak/mpc-invidious-grabber (arg)
   (interactive "P")
   (let* ((query (replace-regexp-in-string " " "+" (read-string "Enter query: ")))
