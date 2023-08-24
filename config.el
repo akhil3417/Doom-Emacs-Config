@@ -287,7 +287,7 @@ Also immediately enables `mixed-pitch-modes' if currently in one of the modes."
 ;; Automatic documentation popup while autocompleting is nice, but let’s reduce
 ;; the font size a little bit so that it doesn’t cover the screen too much and
 ;; makes it easier to skim for information:
-(custom-set-faces! '((corfu-popupinfo) :height 0.9))
+(custom-set-faces! '((corfu-popupinfo) :height 0.9)))
 
 (use-package! yasnippet
   :config
