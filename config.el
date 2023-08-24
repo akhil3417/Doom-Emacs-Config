@@ -271,9 +271,11 @@ Also immediately enables `mixed-pitch-modes' if currently in one of the modes."
   (define-key evil-insert-state-map (kbd "<tab>") nil)
   (evil-define-key 'normal org-mode-map (kbd "<tab>") #'org-cycle)
 ;; Unbind certain Emacs keybindings in =evil-mode=:5 ends here
-
+;;
+(when (featurep! :completion corfu)
 (map! :map corfu-map
       :desc "insert separator" "C-SPC" #'corfu-insert-separator)
+;; (setq corfu-quit-no-match t)
 
 (use-package! corfu
   :config
@@ -1493,6 +1495,8 @@ preview-default-preamble "\\fi}\"%' \"\\detokenize{\" %t \"}\""))
 ;;         "*/_region_.log"
 ;;         "*/_region_.tex"))
 
+;;; Configure 'electric' behaviour
+(use-package! electric
   :config
   (setq electric-pair-inhibit-predicate 'electric-pair-conservative-inhibit)
   (setq electric-pair-preserve-balance t)
