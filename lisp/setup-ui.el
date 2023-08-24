@@ -74,6 +74,20 @@
 (setq x-underline-at-descent-line t)
 
 
+(defun toggle-transparency ()
+  (interactive)
+  (let ((alpha (frame-parameter nil 'alpha)))
+    (set-frame-parameter
+     nil 'alpha
+     (if (eql (cond ((numberp alpha) alpha)
+                    ((numberp (cdr alpha)) (cdr alpha))
+                    ;; also handle undocumented (<active> <inactive>) form.
+                    ((numberp (cadr alpha)) (cadr alpha)))
+              100)
+         '(85 . 50) '(100 . 100)))))
+(global-set-key (kbd "C-c T") 'toggle-transparency)
+
+
 
 ;  (setq centaur-tabs-style "wave")
 ;  (setq centaur-tabs-set-bar 'under)
