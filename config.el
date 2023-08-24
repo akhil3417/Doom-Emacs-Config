@@ -476,7 +476,24 @@ Also immediately enables `mixed-pitch-modes' if currently in one of the modes."
       )
 ;; ERC:1 ends here
 
-;; [[file:config.org::*telega][telega:2]]
+(defun +insert-todays-date (prefix)
+  (interactive "P")
+  (let ((format (cond
+                 ((not prefix) "%A, %B %d, %Y")
+                 ((equal prefix '(4)) "%m-%d-%Y")
+                 ((equal prefix '(16)) "%Y-%m-%d"))))
+    (insert (format-time-string format))))
+
+(require 'calendar)
+(defun +insert-any-date (date)
+  "Insert DATE using the current locale."
+  (interactive (list (calendar-read-date)))
+  (insert (calendar-date-string date)))
+
+(map! :leader
+      (:prefix ("i d" . "Insert date")
+        :desc "Insert any date" "a" #'+insert-any-date
+        :desc "Insert todays date" "t" #'+insert-todays-date))
 
 ;; (setq telega-tdlib-max-version "1.8.5")
     ;; Launch Telega in workspace 0 if we've logged in before
