@@ -2,7 +2,7 @@
 
 (use-package! ytel
   ;; :load-path "~/.emacs.d/.local/straight/repos/ytel/ytel.el"
-  :ensure t
+  :defer t
   :commands ytel
   :bind (:map ytel-mode-map
               ("x" . ytel-watch-browse-url)

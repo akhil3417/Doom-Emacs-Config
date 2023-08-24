@@ -17,7 +17,7 @@
               ("C->"     . embark-become)
               ("C-b"     . embark-become)
               (">"       . embark-become)
-              ("<backtab>"   . embark-act-with-completing-read)
+              ;; ("<backtab>"   . embark-act-with-completing-read)
               ("C-a"   . embark-act-with-completing-read)
               ("C-S-o"     . embark-minimal-act)
               ("C-M-o"   . embark-minimal-act-noexit)

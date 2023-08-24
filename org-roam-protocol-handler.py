@@ -1,4 +1,4 @@
-# [[file:configlight.org::*org roam qutebrowser][org roam qutebrowser:2]]
+# [[file:config.org::*org roam qutebrowser][org roam qutebrowser:2]]
 import os
 import sys
 import urllib.parse

@@ -1,4 +1,5 @@
 ;; -*- lexical-binding: t -*-
+
 (use-package! fish-completion
   :disabled
   :when (executable-find "fish")

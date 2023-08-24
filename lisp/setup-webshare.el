@@ -2,7 +2,7 @@
 
 
 (use-package! webpaste
-  ;; :ensure t
+  :defer t
   :bind (("C-c C-p C-b" . webpaste-paste-buffer)
          ("C-c C-p C-r" . webpaste-paste-region)
          ("C-c C-p C-p" . webpaste-paste-buffer-or-region))

@@ -5,14 +5,13 @@
 ;; Fun dice game. Now I can get mad at Emacs instead of my sister.
 
 (use-package! yahtzee
-  ;; :ensure t
   :defer t
   :bind ("C-c g y" . yahtzee))
 ;; Sudoku
 ;; I love sudoku puzzles.
 
 (use-package! sudoku
-  ;; :ensure t
+
   :defer t
   :bind (("C-c g s" . sudoku)
   :map sudoku-mode-map
@@ -68,14 +67,14 @@
   ;; Just for fun. I suck at chess but it’s nice to have.
 
   (use-package! chess
-    ;; :ensure t
+
     :defer t
     :bind ("C-c g c" . chess))
   ;; 2048
   ;; A simple and fun game. Was a big deal when I was in high school. I still play it from time to time, to pass the time and remember my powers of 2.
 
   (use-package! 2048-game
-    ;; :ensure t
+
     :defer t
     :bind (("C-c g 2" . 2048-game)
     :map 2048-mode-map
@@ -84,9 +83,8 @@
     ("h" . 2048-left)
     ("l" . 2048-right)))
 
-
   (use-package! pacmacs
-    ;; :ensure t
+
     :defer t
     :bind (("C-c g p" . pacmacs)
     :map pacmacs-mode-map

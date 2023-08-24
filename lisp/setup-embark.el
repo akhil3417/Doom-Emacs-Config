@@ -282,7 +282,7 @@ targets."
       (add-to-list 'embark-indicators #'embark-vertico-indicator)))
 
 (use-package! embark-consult
-  :ensure t
+  ;; :ensure t
   :after (embark consult)
   :demand
   :bind (:map embark-become-file+buffer-map

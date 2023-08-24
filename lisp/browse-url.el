@@ -27,7 +27,7 @@
     ))
 
 
-(defun open-link-with-mpv ()
+(defun +open-link-with-mpv ()
   "Open the link under the point using mpv."
   (interactive)
   (save-excursion

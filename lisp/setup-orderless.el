@@ -1,7 +1,7 @@
 ;; -*- lexical-binding: t -*-
 (use-package! orderless
   :after setup-minibuffer
-  :ensure t
+  ;; :ensure t
   :demand
   :config
   (setq orderless-component-separator #'split-string-and-unquote)
