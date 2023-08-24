@@ -1448,6 +1448,23 @@ preview-default-preamble "\\fi}\"%' \"\\detokenize{\" %t \"}\""))
       (+latex-fold-last-macro-a)))
   (add-hook 'aas-post-snippet-expand-hook #'laas-tex-fold-maybe))
 ;; LAAS:2 ends here
+(use-package! devdocs
+  :after lsp
+  :config
+  (add-hook! 'devdocs-mode-hook
+    (face-remap-add-relative 'variable-pitch '(:family "Noto Sans"))))
+;; (add-hook! 'after-init-hook
+;;            (progn
+;;   (setq-hook! 'typescript-mode-hook +format-with :nil)
+;;   (add-hook! 'typescript-mode-hook 'prettier-mode)
+;;   (setq-hook! 'rjsx-mode-hook +format-with :nil)
+;;   (add-hook! 'rjsx-mode-hook 'prettier-mode)
+;;   (setq-hook! 'js2-mode-hook +format-with :nil)
+;;   (add-hook! 'js2-mode-hook 'prettier-mode)
+;;   (setq-hook! 'typescript-tsx-mode-hook +format-with :nil)
+;;   (add-hook! 'typescript-tsx-mode-hook 'prettier-mode)
+;;   ))
+
 (use-package! lsp-ui
   :config
   (setq lsp-ui-doc-delay 2
