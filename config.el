@@ -85,16 +85,34 @@
        :desc "Toggle line highlight globally" "H" #'global-hl-line-mode
        :desc "Toggle truncate lines" "t" #'toggle-truncate-lines))
 
-(setq doom-font (font-spec :family "JetBrains Mono" :size 18)
-      doom-big-font (font-spec :family "JetBrains Mono" :size 27)
+;; (setq doom-font (font-spec :family "JetBrains Mono" :size 18)
+;;       doom-big-font (font-spec :family "JetBrains Mono" :size 27)
+;;       doom-variable-pitch-font (font-spec :family "Overpass" :size 20)
+;;       doom-unicode-font (font-spec :family "JuliaMono")
+      ;; doom-unicode-font (font-spec :name "Noto Color Emoji"
+;;       doom-serif-font (font-spec :family "IBM Plex Mono" :size 17 :weight 'light))
+
+(setq doom-font (font-spec :family "Fira Code" :size 18 :weight 'light :slant 'italic)
       doom-variable-pitch-font (font-spec :family "Overpass" :size 20)
-      doom-unicode-font (font-spec :family "JuliaMono")
-      doom-serif-font (font-spec :family "IBM Plex Mono" :size 17 :weight 'light))
+      doom-big-font (font-spec :family "JetBrains Mono" :size 22 :weight 'light)
+      doom-serif-font (font-spec :family "IBM Plex Mono" :size 18 :weight 'light)
+      doom-unicode-font (font-spec :name "Noto Color Emoji"))
+      ;; doom-unicode-font (font-spec :family "DejaVu Sans Mono" :size 18))
 
 ;; Thin grey line separating windows
 (set-face-background 'vertical-border "black")
 (set-face-foreground 'vertical-border (face-background 'vertical-border))
 
+;; (after! org
+;;   ;; Custom regex fontifications
+;;   (font-lock-add-keywords 'org-mode
+;;                           '(("^\\(?:[  ]*\\)\\(?:[-+]\\|[ ]+\\*\\|\\(?:[0-9]+\\|[A-Za-z]\\)[.)]\\)?[ ]+"
+;;                              . 'fixed-pitch)))
+;;   (font-lock-add-keywords 'org-mode '(("(\\?)" . 'error)))
+
+;;   ;; Highlight first letter of a paragraph
+;;   ;; (font-lock-add-keywords 'org-mode '(("^\\(?:\n\\)\\([[:digit:][:upper:][:lower:]]\\)" . 'org-warning)))
+;;   )
 
 (after! doom-themes
   (setq doom-themes-enable-bold t
