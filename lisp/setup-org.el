@@ -714,25 +714,6 @@ allowfullscreen>%s</iframe>" path (or "" desc)))
 (setq org-outline-path-complete-in-steps nil)
 (setq org-refile-allow-creating-parent-nodes (quote confirm))
 
-(define-minor-mode org-vid-minor-mode
-   "Toggle video minor mode for video note taking in org-mode"
-   :lighter " Video"
-   :keymap
-   `(
-     (,(kbd "<up>")    . (lambda () (interactive) (mpv-speed-increase 1)))
-     (,(kbd "<down>")  . (lambda () (interactive) (mpv-speed-decrease 1)))
-     (,(kbd "<right>") . (lambda () (interactive) (mpv-seek-forward 1)))
-     (,(kbd "<left>")  . (lambda () (interactive) (mpv-seek-backward 1)))
-     (,(kbd "M-p")     . mpv-pause)
-     (,(kbd "M-SPC")   . mpv-pause)
-     (,(kbd "M-k")     . mpv-kill)
-     (,(kbd "M--")     . (lambda () (interactive) (mpv-insert-playback-position t)))
-     (,(kbd "M-s")     . (lambda () mpv-seek))
-     (,(kbd "M-0")     . (lambda () (interactive) (mpv-speed-set 1)))
-     (,(kbd "M-S")     . (lambda () (interactive) (mpv-seek-to-position-at-point)))
-     ))
-
-
 
 (defun op/buffer-to-side-window (place)
   "Place the current buffer in the side window at PLACE."

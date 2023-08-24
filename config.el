@@ -1000,6 +1000,26 @@ optional `tmr--timer-description'."
       (concat "pwgen -A " (read-string "Length: " "24") " 1"))))
 ;; generate password:1 ends here
 
+;; minor mode for video note taking
+(define-minor-mode org-vid-minor-mode
+   "Toggle video minor mode for video note taking in org-mode"
+   :lighter " Video"
+   :keymap
+   `(
+     (,(kbd "<up>")    . (lambda () (interactive) (mpv-speed-increase 1)))
+     (,(kbd "<down>")  . (lambda () (interactive) (mpv-speed-decrease 1)))
+     (,(kbd "<right>") . (lambda () (interactive) (mpv-seek-forward 1)))
+     (,(kbd "<left>")  . (lambda () (interactive) (mpv-seek-backward 1)))
+     (,(kbd "M-p")     . mpv-pause)
+     (,(kbd "M-SPC")   . mpv-pause)
+     (,(kbd "M-k")     . mpv-kill)
+     (,(kbd "M--")     . (lambda () (interactive) (mpv-insert-playback-position t)))
+     (,(kbd "M-s")     . (lambda () mpv-seek))
+     (,(kbd "M-0")     . (lambda () (interactive) (mpv-speed-set 1)))
+     (,(kbd "M-S")     . (lambda () (interactive) (mpv-seek-to-position-at-point)))
+     ))
+
+
 ;; [[file:config.org::*Info pages][Info pages:2]]
 (use-package! info-colors
   :commands (info-colors-fontify-node))
