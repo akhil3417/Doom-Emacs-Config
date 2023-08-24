@@ -8,7 +8,8 @@
 - Well this is my Doom Emacs Config , this config has pretty much everything I could find useful from reading other emacs users.
 - This config can be reproduced on vanilla emacs as I was previously an vanilla emacs user.
 - If you want to use this config just use one part at a time as this is an experimental Config
-
+- *Note* - Don't directly tangle from config.org (take it as a source of code snippets), rather i would suggest to use
+  my config.el .
 - Some of the people by whom the config is Inspired are :
   - DistroTube
   - Prot(Protesilaos)
