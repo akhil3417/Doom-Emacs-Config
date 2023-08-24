@@ -495,13 +495,6 @@ Also immediately enables `mixed-pitch-modes' if currently in one of the modes."
         :desc "Insert any date" "a" #'+insert-any-date
         :desc "Insert todays date" "t" #'+insert-todays-date))
 
-;; (setq telega-tdlib-max-version "1.8.5")
-    ;; Launch Telega in workspace 0 if we've logged in before
-(when (file-exists-p "~/.telega/db.sqlite")
-  ;; (telega nil)
-  (load "~/.config/doom/lisp/setup-telega.el")
-  (setq telega-notifications-mode t))
-;; telega:2 ends here
 
 ;; [[file:config.org::*Google Translate][Google Translate:2]]
      (use-package! google-translate
@@ -577,71 +570,11 @@ active region use it instead."
   ;; cache directory
   (defvar user-cache-directory "~/.cache/emacs/"
   "Location where files created by emacs are placed."))
-(setq bookmark-file (expand-file-name "~/.config/eww-bookmarks/emacs-bookmarks"))
-(require 'consult)
-(require 'eww)
-
-;;; consult-buffer source
-;; Taken with very minor modifications from the Consult wiki
-(defvar consult--source-eww
-  (list
-   :name     "Eww"
-   :narrow   ?e
-   :category 'eww-bookmark
-   :action   (lambda (bm)
-               (eww-browse-url (get-text-property 0 'url bm)))
-   :items    (lambda ()
-               (eww-read-bookmarks)
-               (mapcar (lambda (bm)
-                         (propertize
-                          (plist-get bm :title)
-                          'url (plist-get bm :url)))
-                       eww-bookmarks))))
-
-;;; annotate with URL
-(add-to-list 'consult-buffer-sources 'consult--source-eww 'append)
-
-(defun annotate-eww-bookmark (bm)
-  (concat
-   (propertize " " 'display `(space :align-to (- right 50)))
-   (propertize (get-text-property 0 'url bm) 'face 'completions-annotations)))
-
-(defvar marginalia-annotator-registry)
-(with-eval-after-load 'marginalia
-  (add-to-list 'marginalia-annotator-registry
-               '(eww-bookmark annotate-eww-bookmark builtin none)))
-
-;;; Have Embark treat them as just URLs
-(defun transform-eww-bookmark-to-url (target)
-  (if (eq (car target) 'eww-bookmark)
-      (cons 'url (get-text-property 0 'url (cdr target)))
-    target))
-
-(with-eval-after-load 'embark
-  (advice-add 'embark--refine-multi-category
-              :filter-return #'transform-eww-bookmark-to-url))
-
-(provide 'consult-eww-source)
-;; oantolin'eww:1 ends here
-
-;; [[file:config.org::*eww load files][eww load files:1]]
-;; EWW is the Emacs Web Wowser, the builtin browser in Emacs.  Below I set urls to open in a specific browser (eww) with browse-url-browser-function.  By default, Doom Emacs does not use 'SPC e' for anything, so I choose to use the format 'SPC e' plus 'key' for these (I also use 'SPC e' for 'eval' keybindings).  I chose to use 'SPC s w' for eww-search-words because Doom Emacs uses 'SPC s' for 'search' commands.
-
-(load "~/.config/doom/lisp/setup-engine-mode.el")
-(load "~/.config/doom/lisp/setup-eww.el")
-(load "~/.config/doom/lisp/language-detection-eww.el")
-
-(load "~/.config/doom/lisp/browse-url.el")
- ;; eww toggle  images
-(load "~/.config/doom/lisp/eww-image-toggle.el")
-;; eww load files:1 ends here
-
 ;; [[file:config.org::*simple httpd][simple httpd:1]]
 (use-package simple-httpd
   :defer t)
 ;; simple httpd:1 ends here
 
-(load "~/.config/doom/lisp/setup-avy.el")
 
 (use-package! tmr
 :config
@@ -947,9 +880,6 @@ optional `tmr--timer-description'."
                     (shell-quote-argument buffer-file-name)))))
 ;; open current file with external program:1 ends here
 
-;; [[file:config.org::*Org Mode: Insert YouTube video with separate caption][Org Mode: Insert YouTube video with separate caption:2]]
-(load "~/.config/doom/lisp/yt-org.el")
-;; Org Mode: Insert YouTube video with separate caption:2 ends here
 
 ;; [[file:config.org::*CLIPPY][CLIPPY:1]]
 (map! :leader
