@@ -1448,6 +1448,13 @@ preview-default-preamble "\\fi}\"%' \"\\detokenize{\" %t \"}\""))
       (+latex-fold-last-macro-a)))
   (add-hook 'aas-post-snippet-expand-hook #'laas-tex-fold-maybe))
 ;; LAAS:2 ends here
+(map! :leader
+      (:prefix ("e". "evaluate/EWW")
+       :desc "Evaluate elisp in buffer" "b" #'eval-buffer
+       :desc "Evaluate defun" "d" #'eval-defun
+       :desc "Evaluate elisp expression" "e" #'eval-expression
+       :desc "Evaluate last sexpression" "l" #'eval-last-sexp
+       :desc "Evaluate elisp in region" "r" #'eval-region))
 (use-package! devdocs
   :after lsp
   :config
