@@ -370,6 +370,15 @@ Also immediately enables `mixed-pitch-modes' if currently in one of the modes."
       :extend t)
     ))
 
+(use-package! savehist
+  :config
+  (setq savehist-file (locate-user-emacs-file "savehist"))
+  (setq history-length 10000)
+  (setq history-delete-duplicates t)
+  (setq savehist-save-minibuffer-history t)
+  (add-hook 'after-init-hook #'savehist-mode))
+
+
 
 (setq ispell-dictionary "en-custom")
 (add-hook 'text-mode-hook 'flyspell-mode)
