@@ -45,6 +45,14 @@
 (load "~/.config/doom/lisp/prot-comment.el")
 (load "~/.config/doom/lisp/prot-bookmark.el")
 
+(defun ak/mpc-invidious-grabber (arg)
+  (interactive "P")
+  (let* ((query (replace-regexp-in-string " " "+" (read-string "Enter query: ")))
+         (url (shell-command-to-string (format "curl -s \"https://vid.puffyan.us/search?q=%s\" | grep -Eo \"watch\\?v=.{11}\" | head -n 1 | xargs -I {} echo \"https://youtube.com/{}\"" query))))
+    (if arg
+        (start-process-shell-command "yt" nil (format "mpv --no-video %s" url))
+      (start-process-shell-command "yt" nil (format "mpv %s" url))))
+  (message "Streaming started."))
 ;; [[file:config.org::*Auto-customisations][Auto-customisations:1]]
 (setq-default custom-file (expand-file-name ".custom.el" doom-user-dir))
 (when (file-exists-p custom-file)
