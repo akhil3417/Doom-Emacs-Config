@@ -1465,6 +1465,16 @@ preview-default-preamble "\\fi}\"%' \"\\detokenize{\" %t \"}\""))
        :desc "Evaluate elisp expression" "e" #'eval-expression
        :desc "Evaluate last sexpression" "l" #'eval-last-sexp
        :desc "Evaluate elisp in region" "r" #'eval-region))
+
+(use-package! visual-regexp
+  :config
+        (map! :map 'doom-leader-regular-map
+              (:prefix ("v" . "visual regex")
+               :desc "Replace regexp" "r"#'vr/replace)))
+
+(use-package! visual-regexp-steroids
+  :after 'visual-regexp)
+
 (use-package! devdocs
   :after lsp
   :config
