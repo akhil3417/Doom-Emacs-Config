@@ -32,7 +32,7 @@
 ;; makes this flaky, but anything's better than the browser interface to
 ;; Youtube.
 ;; (load "~/.config/doom/lisp/setup-ytel.el");; youttuuube
-;; (load "~/.config/doom/lisp/ytdl-downloader.el")
+(load "~/.config/doom/lisp/ytdl-downloader.el")
 (load "~/.config/doom/lisp/setup-shell.el")
 ;; (load "~/.config/doom/lisp/exwm-paste.el")
 ;; (load "~/.config/doom/lisp/lock-screen.el")
