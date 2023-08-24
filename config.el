@@ -825,6 +825,43 @@ optional `tmr--timer-description'."
         ("Special" (or (mode . special-mode)
                        (name . "^\\*.\\*$"))))))
 
+
+(defun buffer-to-side-window (place)
+  "Place the current buffer in the side window at PLACE."
+  (interactive (list (intern
+                      (completing-read "Which side: "
+                                       '(top left right bottom)))))
+  (let ((buf (current-buffer)))
+    (display-buffer-in-side-window
+     buf `((window-height . 0.15)
+           (side . ,place)
+           (slot . -1)
+           (window-parameters . ((no-delete-other-windows . t)
+                                 (no-other-window t)))))
+    (delete-window)))
+
+
+(defun create-scratch-buffer nil
+  "create a new scratch buffer to work in. (could be *scratch* - *scratchX*)"
+  (interactive)
+  (let ((n 0)
+        bufname)
+    (while (progn
+             (setq bufname (concat "*scratch"
+                                   (if (= n 0) "" (int-to-string n))
+                                   "*"))
+             (setq n (1+ n))
+             (get-buffer bufname)))
+    (switch-to-buffer (get-buffer-create bufname))
+    (emacs-lisp-mode)
+    ))
+
+(defun split-window-right-and-move-there-dammit ()
+  (interactive)
+  (split-window-right)
+  (windmove-right))
+
+
   (defun kill-other-buffers ()
     "Kill all other buffers."
     (interactive)
