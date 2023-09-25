@@ -97,8 +97,8 @@
   :after '(evil-window-split evil-window-vsplit)
   (consult-buffer))
 
-(evil-global-set-key 'motion "j" 'evil-next-visual-line)
-(evil-global-set-key 'motion "k" 'evil-previous-visual-line)
+;; (evil-global-set-key 'motion "j" 'evil-next-visual-line)
+;; (evil-global-set-key 'motion "k" 'evil-previous-visual-line)
 
 (setq-default tab-width 4)
 (global-set-key (kbd "C-?") #'execute-extended-command)
