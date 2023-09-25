@@ -14,6 +14,9 @@
 (use-package! auth-source-pass
   :init (auth-source-pass-enable))
 ;; Personal Information:3 ends here
+;;
+;; load configuration
+;;
 
 (load "~/.config/doom/lisp/setup-theme-magic.el")
 ;; (load "~/.config/doom/lisp/codeiumconfig.el")
@@ -52,6 +55,17 @@
 
 (load "~/.config/doom/lisp/yt-org.el")
 ;;
+;; launch telegram
+    ;; Launch Telega in workspace 0 if we've logged in before
+;; (when (file-exists-p "~/.telega/db.sqlite")
+;;   (load "~/.config/doom/lisp/setup-telega.el")
+;;   (telega nil)
+;;   (setq telega-notifications-mode t))
+;; telega:2 ends here
+;;
+(setq eww-download-directory "~/Downloads/")
+  (setq eww-bookmarks-directory (expand-file-name "~/.config/eww-bookmarks/"))
+  (setq bookmark-file (expand-file-name "~/.config/eww-bookmarks/emacs-bookmarks"))
 (defun ak/mpc-invidious-grabber (arg)
   (interactive "P")
   (let* ((query (replace-regexp-in-string " " "+" (read-string "Enter query: ")))
@@ -60,6 +74,11 @@
         (start-process-shell-command "yt" nil (format "mpv --no-video %s" url))
       (start-process-shell-command "yt" nil (format "mpv %s" url))))
   (message "Streaming started."))
+
+(setq pixel-scroll-positon-large-scroll-height 40)
+;; (after! projectile (setq projectile-project-root-files-bottom-up (remove ".git"
+;;           projectile-project-root-files-bottom-up)))
+
 ;; [[file:config.org::*Auto-customisations][Auto-customisations:1]]
 (setq-default custom-file (expand-file-name ".custom.el" doom-user-dir))
 (when (file-exists-p custom-file)
@@ -351,6 +370,15 @@ Also immediately enables `mixed-pitch-modes' if currently in one of the modes."
     (define-key map (kbd "M-# b") #'substitute-target-in-buffer))) ; "buffer" mnemonic
 ;; substitute:2 ends here
 
+;; (use-package! diff-hl
+;;   :config
+;;   (custom-set-faces!
+;;     `((diff-hl-change)
+;;       :foreground ,(doom-blend (doom-color 'bg) (doom-color 'blue) 0.5))
+;;     `((diff-hl-insert)
+;;       :foreground ,(doom-blend (doom-color 'bg) (doom-color 'green) 0.5)))
+;;   )
+
 (use-package! evil-goggles
   :init
   (setq evil-goggles-enable-change t
@@ -389,6 +417,9 @@ Also immediately enables `mixed-pitch-modes' if currently in one of the modes."
 
 
 
+;; (setq ispell-program-name "aspell"
+;;       ispell-extra-args '("--sug-mode=ultra" "--lang=en_us"))
+      ;; ispell-dictionary "en"
 (setq ispell-dictionary "en-custom")
 (add-hook 'text-mode-hook 'flyspell-mode)
 (add-hook 'prog-mode-hook 'flyspell-prog-mode)
