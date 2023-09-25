@@ -1,6 +1,7 @@
 ;;; config.el -*- lexical-binding: t; -*-
 (setenv "LC_ALL" "C.UTF-8")
 
+;; (setq emms-source-playlist-ask-before-overwrite nil) ;; for favs
 ;; (load "~/.config/doom/exwmmain.el")
 ;; (setq package-native-compile t)
 (setq org-directory "~/org/")
@@ -208,6 +209,7 @@ Also immediately enables `mixed-pitch-modes' if currently in one of the modes."
   :set (lambda (symbol value)
          (set-face-attribute 'variable-pitch-serif nil :font value)
          (set-default-toplevel-value symbol value)))
+
 (use-package! doom-themes
   :config
   ;; Enable flashing mode-line on errors
@@ -821,6 +823,7 @@ optional `tmr--timer-description'."
   :commands minibuffer-edit
   :init (miniedit-install))
 ;; Mini-buffer editing more space:2 ends here
+
 
 ;; ibuffer
 
@@ -1483,6 +1486,7 @@ preview-default-preamble "\\fi}\"%' \"\\detokenize{\" %t \"}\""))
      (?B    "\\mathbb"        nil          t    nil  nil)
      (?a    "\\abs"           nil          t    nil  nil))))
 ;; CDLaTeX:1 ends here
+;;
 
 ;; (after! treemacs
 ;;   (defvar treemacs-file-ignore-extensions '()
