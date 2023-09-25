@@ -5,6 +5,7 @@
   :commands doct)
 (load "~/.config/doom/lisp/org-protocol-capture-html.el")
 (require 'org-protocol-capture-html)
+(require 'all-the-icons)
 
 (after! org-capture
   (defun org-capture-select-template-prettier (&optional keys)
