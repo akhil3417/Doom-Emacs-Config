@@ -5,6 +5,12 @@
 ;; COUNT-WORDS-REGION: USING `while'
 ;;----------------------------------------------------------------------
 
+(defun +emms-toggle-player ()
+  (interactive)
+  (if (eq (car emms-player-list) 'emms-player-mpv)
+      (setq emms-player-list '(emms-player-mpd))
+    (setq emms-player-list '(emms-player-mpv))))
+
 ;;;###autoload
 (defun count-words-region (beginning end)
   "Print number of words in the region."
