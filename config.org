@@ -75,8 +75,6 @@ This file shouldn't be byte compiled.
 
 #+end_src
 
-#+RESULTS:
-
 You'll then need to restart Emacs for your changes to take effect! Or at least,
 run =M-x doom/reload=.
 
@@ -247,8 +245,6 @@ To install ~some-package~ from MELPA, ELPA or emacsmirror:
 			   :files ("gitconfig-mode.el")))
 #+end_src
 
-#+RESULTS:
-| gitignore-mode | :modules | ((:user) (:user . modules)) | :recipe | (:host github :repo magit/git-modes :files (gitignore-mode.el)) |
 
 *** Packages from git repositories
 To install a package directly from a particular repo, you'll need to specify
@@ -392,52 +388,35 @@ my home machine is pretty safe, and my laptop is shutdown a lot.
 (load "~/.config/doom/lisp/elfeedconfig.el")
 (load "~/.config/doom/lisp/elfeedtubeconfig.el")
 
-
-;; [[file:config.org::*load some configs.el][load some configs.el:1]]
-;; (load "w3m-type-ahead.el")
-;; (load "w3m-config.el")
-;;window-mangement
-;; (load "~/.config/doom/lisp/window-managment.el")
-
 (load "~/.config/doom/lisp/codeiumconfig.el")
+(load "~/.config/doom/lisp/setup-avy.el")
+;; (load "~/.config/doom/lisp/splash.el")
 (load "~/.config/doom/lisp/setup-ui.el")
 (load "~/.config/doom/lisp/setup-minibuffer.el")
 (load "~/.config/doom/lisp/better-buffers.el");;essential
-(load "~/.config/doom/lisp/setup-orderless.el");;configured in doom already but...
-(load "~/.config/doom/lisp/setup-vertico.el")
-(load "~/.config/doom/lisp/setup-embark.el")
+;; (load "~/.config/doom/lisp/setup-orderless.el");;configured in doom already but...
+;; (load "~/.config/doom/lisp/setup-vertico.el")
+;; (load "~/.config/doom/lisp/setup-embark.el")
 (load "~/.config/doom/lisp/utilities.el");;essential
 (load "~/.config/doom/lisp/setup-isearch")
 ;; ytel provides an elfeed-like interface to search invidious instances for
 ;; youtube videos. Phew. The churn rate of Invidious urls is quite high, which
 ;; makes this flaky, but anything's better than the browser interface to
 ;; Youtube.
-(load "~/.config/doom/lisp/setup-ytel.el");; youttuuube
+;; (load "~/.config/doom/lisp/setup-ytel.el");; youttuuube
 (load "~/.config/doom/lisp/ytdl-downloader.el")
 (load "~/.config/doom/lisp/setup-shell.el")
 ;; (load "~/.config/doom/lisp/exwm-paste.el")
 ;; (load "~/.config/doom/lisp/lock-screen.el")
 (load "~/.config/doom/lisp/correct-previous-word-and-create-abbrev")
-(load "~/.config/doom/lisp/lookup-on-github")
+;; (load "~/.config/doom/lisp/lookup-on-github")
 (load "~/.config/doom/lisp/show-diffs-before-killing-buffers")
 ;; (load "~/.config/doom/lisp/switch-window-patches")
-(load "~/.config/doom/lisp/pulseaudio.el")
+;; (load "~/.config/doom/lisp/pulseaudio.el")
 (load "~/.config/doom/lisp/auto-scroll.el")
-;; (load "~/.config/doom/lisp/prot-common.el")
+(load "~/.config/doom/lisp/prot-common.el")
 (load "~/.config/doom/lisp/prot-comment.el")
 (load "~/.config/doom/lisp/prot-bookmark.el")
-(load "~/.config/doom/lisp/org-protocol-capture-html.el")
-;; (load "~/.config/doom/lisp/emacs-with-nyxt.el")
-;; (load "~/.config/doom/lisp/prot-common.el")
-;; (load "~/.config/doom/lisp/setup-corfu.el")
-;; (load "~/.config/doom/lisp/setup-consult.el")
-;; (load "~/.config/doom/lisp/sweet-kill.el") ;;overide doom session kill messages
-;; (load "~/.config/doom/lisp/setup-dired.el")
-;; (load "~/.config/doom/lisp/setup-email.el")
-;; (load "~/.config/doom/lisp/setup-elfeed.el")
-;; (load "~/.config/doom/lisp/setup-email.el")
-;; (load "~/.config/doom/lisp/dunst.el")
-;; (load "~/.config/doom/lisp/chromium")
 
 #+end_src
 
@@ -459,15 +438,11 @@ CLOSED: [2022-11-12 Sat 10:21]
 - State "DONE"       from              [2022-11-12 Sat 10:21]
 #+begin_src emacs-lisp
 
-
 (global-set-key (kbd "C-@") 'er/expand-region)
 (setq delete-selection-mode t)
 ;; Use visual line motions even outside of visual-line-mode buffers
 (evil-global-set-key 'motion "j" 'evil-next-visual-line)
 (evil-global-set-key 'motion "k" 'evil-previous-visual-line)
-
-(global-set-key (kbd "<C-wheel-up>") 'text-scale-increase)
-(global-set-key (kbd "<C-wheel-down>") 'text-scale-decrease)
 
 (defhydra hydra-cycle-buffers (:timeout 4) ; Cycle through buffers, killing uneccessary ones
   "cycle buffers"
@@ -642,8 +617,6 @@ to keep track of the information on display.
   (prot-proced-extra-keywords 1))
 #+end_src
 
-#+RESULTS:
-: t
 
 ** DONE Systemd
 CLOSED: [2022-03-31 Thu 20:05]
@@ -967,16 +940,12 @@ First, we'll enter the new window
       evil-split-window-below t)
 #+end_src
 
-#+RESULTS:
-
 Then, we'll pull up a buffer prompt.
 #+begin_src emacs-lisp
 (defadvice! prompt-for-buffer (&rest _)
   :after '(evil-window-split evil-window-vsplit)
   (consult-buffer))
 #+end_src
-
-#+RESULTS:
 
 ** DONE All the icons
 CLOSED: [2022-03-30 Wed 00:03]
@@ -1032,8 +1001,6 @@ table
     (remhash emoji emojify-emojis)))
 #+end_src
 
-#+RESULTS:
-
 Now, it would be good to have a minor mode which allowed you to type ascii/gh
 emojis and get them converted to unicode. Let's make one.
 #+begin_src emacs-lisp
@@ -1058,15 +1025,11 @@ emojis and get them converted to unicode. Let's make one.
     (advice-remove 'emojify--propertize-text-for-emoji #'emojify--replace-text-with-emoji)))
 #+end_src
 
-#+RESULTS:
-
 This new minor mode of ours will be nice for messages, so let's hook it in for
 Email and IRC.
 #+begin_src emacs-lisp
 (add-hook! '(mu4e-compose-mode org-msg-edit-mode circe-channel-mode) (emoticon-to-emoji 1))
 #+end_src
-
-#+RESULTS:
 
 ** DONE Modus themes
 CLOSED: [2022-03-30 Wed 11:00]
@@ -1095,8 +1058,6 @@ CLOSED: [2022-03-30 Wed 11:35]
     (global-set-key (kbd "C-c T") 'toggle-transparency)
   #+end_src
 
-  #+RESULTS:
-  : toggle-transparency
 
 ** DONE Modus theme prot
 CLOSED: [2022-10-14 Fri 16:22]
@@ -1818,8 +1779,6 @@ then =ESC 12 <UP>= gets you exactly where you think.
        :desc "Toggle truncate lines" "t" #'toggle-truncate-lines))
 #+END_SRC
 
-#+RESULTS:
-: toggle-truncate-lines
 
 ** DONE DASHBOARD
 CLOSED: [2022-10-14 Fri 14:53]
@@ -1886,8 +1845,6 @@ these as horizontal rules.
         :desc "Next page break" :nv "]" #'forward-page))
 #+end_src
 
-#+RESULTS:
-
 ** FONTS
 CLOSED: [2022-03-30 Wed 12:22]
 *** Zoom font-size
@@ -1908,8 +1865,6 @@ CLOSED: [2022-03-30 Wed 12:22]
   ;; (define-key global-map (kbd "C-+") 'zoom-out)
 #+END_SRC
 
-#+RESULTS:
-: zoom-out
 
 *** FIXME Zoom frame
 - State "FIXME"      from              [2023-07-11 Tue 02:39] \\
@@ -1933,8 +1888,6 @@ frame if FRAME is nil, and to 1 if AMT is nil."
     (zoom-frame (- (or amt 1)) frame))
 #+end_src
 
-#+RESULTS:
-: zoom-frame-out
 
 *** Font Config
 Settings related to fonts within Doom Emacs:
@@ -1957,7 +1910,8 @@ Fira Code is amazing, and so is Roboto.
 (setq doom-font (font-spec :family "JetBrains Mono" :size 18)
       doom-big-font (font-spec :family "JetBrains Mono" :size 27)
       doom-variable-pitch-font (font-spec :family "Overpass" :size 20)
-      doom-unicode-font (font-spec :family "JuliaMono")
+      ;; doom-unicode-font (font-spec :family "JuliaMono")
+      doom-unicode-font (font-spec :name "Noto Color Emoji"
       doom-serif-font (font-spec :family "IBM Plex Mono" :size 17 :weight 'light))
 
 ;; (setq doom-font (font-spec :family "Fira Code" :size 18 :weight 'light :slant 'italic)
@@ -1965,6 +1919,17 @@ Fira Code is amazing, and so is Roboto.
 ;;       doom-big-font (font-spec :family "JetBrains Mono" :size 22 :weight 'light)
 ;;       doom-serif-font (font-spec :family "IBM Plex Mono" :size 18 :weight 'light)
 ;;       doom-unicode-font (font-spec :family "DejaVu Sans Mono" :size 18))
+
+(after! org
+  ;; Custom regex fontifications
+  (font-lock-add-keywords 'org-mode
+                          '(("^\\(?:[  ]*\\)\\(?:[-+]\\|[ ]+\\*\\|\\(?:[0-9]+\\|[A-Za-z]\\)[.)]\\)?[ ]+"
+                             . 'fixed-pitch)))
+  (font-lock-add-keywords 'org-mode '(("(\\?)" . 'error)))
+
+  ;; Highlight first letter of a paragraph
+  ;; (font-lock-add-keywords 'org-mode '(("^\\(?:\n\\)\\([[:digit:][:upper:][:lower:]]\\)" . 'org-warning)))
+  )
 
 
 ;; Thin grey line separating windows
@@ -1980,8 +1945,6 @@ Fira Code is amazing, and so is Roboto.
    '(font-lock-keyword-face :slant italic))
 #+END_SRC
 
-#+RESULTS:
-| doom--customize-themes-h-1854 | doom--customize-themes-h-1855 | doom--customize-themes-h-1875 | doom--customize-themes-h-1876 | doom--customize-themes-h-1878 | doom--customize-themes-h-1885 |
 
 In addition to these fonts, Merriweather is used with =nov.el=, and Alegreya as a
 serifed proportional font used by =mixed-pitch-mode= for =writeroom-mode= with Org
@@ -2021,8 +1984,6 @@ files.
                          (sleep-for 0.5))))))
   ";; No missing fonts detected")
 #+end_src
-
-#+RESULTS: detect-missing-fonts
 
 *** Mixed pitch
 #+begin_quote
@@ -2075,8 +2036,6 @@ subsequent face definition). This was created for writeroom mode.
     (let ((mixed-pitch-face 'variable-pitch-serif))
       (mixed-pitch-mode (or arg 'toggle)))))
 #+end_src
-#+RESULTS:
-| init-mixed-pitch-h | persp-mode | window-divider-mode | +ligatures-init-h | +popup-mode |
 
 As mixed pitch uses the variable =mixed-pitch-face=, we can create a new function
 to apply mixed pitch with a serif face instead of the default. This was created
@@ -2281,8 +2240,6 @@ For starters, I think Doom is a bit over-zealous when zooming in
 (setq +zen-text-scale 0.8)
 #+end_src
 
-#+RESULTS:
-: 0.8
 
 Then, when using Org it would be nice to make a number of other aesthetic
 tweaks. Namely:
@@ -2406,8 +2363,6 @@ lightened versions --- let's do that.
 ;; (theme-magic-export-theme-mode)
 #+end_src
 
-#+RESULTS:
-: t
 
 ** FIXME Screencast
 - State "FIXME"      from "DONE"       [2022-10-14 Fri 15:10] \\
@@ -2455,8 +2410,6 @@ theme.
   (add-hook 'doom-load-theme-hook #'gif-screencast-write-colormap))
 #+end_src
 
-#+RESULTS:
-** Treemacs
 CLOSED: [2022-09-22 Thu 11:48]
 #+begin_quote
 From the =:ui treemacs= module.
@@ -2485,8 +2438,6 @@ good reason for them to take up space. Let's add a mechanism to ignore them.
   (add-to-list 'treemacs-ignored-file-predicates #'treemacs-ignore-filter))
 #+end_src
 
-#+RESULTS:
-| treemacs-ignore-filter | treemacs--std-ignore-file-predicate |
 
 Now, we just identify the files in question.
 #+begin_src emacs-lisp
@@ -2521,28 +2472,6 @@ Now, we just identify the files in question.
         "*/_region_.tex"))
 #+end_src
 
-** KILL NEOTREE
-CLOSED: [2022-11-12 Sat 12:44]
-- State "KILL"       from              [2022-11-12 Sat 12:44] \\
-  treemacs is way better
-
-Neotree is a file tree viewer.  When you open neotree, it jumps to the current file thanks to neo-smart-open.  The neo-window-fixed-size setting makes the neotree width be adjustable.  Doom Emacs had no keybindings set for neotree.  Since Doom Emacs uses 'SPC t' for 'toggle' keybindings, I used 'SPC t n' for toggle-neotree.
-
-| COMMAND        | DESCRIPTION               | KEYBINDING |
-|----------------+---------------------------+------------|
-| neotree-toggle | /Toggle neotree/            | SPC t n    |
-| neotree- dir   | /Open directory in neotree/ | SPC d n    |
-
-#+BEGIN_SRC emacs-lisp :tangle no
-(after! neotree
-  (setq neo-smart-open t
-        neo-window-fixed-size nil))
-(after! doom-themes
-  (setq doom-neotree-enable-variable-pitch t))
-(map! :leader
-      :desc "Toggle neotree file viewer" "t n" #'neotree-toggle
-      :desc "Open directory in neotree" "d n" #'neotree-dir)
-#+END_SRC
 ** DONE pulsing cursor
 CLOSED: [2022-09-22 Thu 11:48]
 #+begin_src emacs-lisp :tangle packages.el
@@ -2555,8 +2484,6 @@ CLOSED: [2022-09-22 Thu 11:48]
     :config (pulsing-cursor-mode +1))
 #+end_src
 
-#+RESULTS:
-: t
 
 * Completions framework
 ** Company
@@ -2567,7 +2494,6 @@ CLOSED: [2022-09-22 Thu 11:48]
 From the =:completion company= module.
 #+end_quote
 
-[[../../.emacs.d/modules/completion/company/README.org][Completion Module Readme.org]]
 It's nice to have completions almost all the time, in my opinion. Key strokes
 are just waiting to be saved!
 
@@ -2605,8 +2531,6 @@ are just waiting to be saved!
    ;;(add-hook 'evil-normal-state-entry-hook #'company-abort)) ;; make aborting less annoying. currently disable caues dabbrev closes company -yasnipper automatically-but i use SPC i s
 #+end_src
 
-#+RESULTS:
-: t
 
 Now, the improvements from ~precedent~ are mostly from remembering history, so
 let's improve that memory.
@@ -2615,8 +2539,6 @@ let's improve that memory.
 (setq-default prescient-history-length 1000)
 #+end_src
 
-#+RESULTS:
-: 1000
 
 *** Plain Text
 ~Ispell~ is nice, let's have it in ~text~, ~markdown~, and ~GFM~.
@@ -2633,16 +2555,12 @@ let's improve that memory.
 (add-hook 'text-mode-hook 'paragraph-indent-text-mode)
 #+end_src
 
-#+RESULTS:
-
 We then configure the dictionary we're using in [[*Ispell][Ispell]].
 *** ESS
 ~company-dabbrev-code~ is nice. Let's have it.
 #+begin_src emacs-lisp
 (set-company-backend! 'ess-r-mode '(company-R-args company-R-objects company-dabbrev-code :separate))
 #+end_src
-
-#+RESULTS:
 
 ** Consult
 *** desc
@@ -2822,8 +2740,6 @@ all three of the above is easier to learn and more consistent overall.
     (add-hook 'consult-after-jump-hook fn)))
 #+end_src
 
-#+RESULTS:
-: t
 
 *** consult keybinds
 #+begin_src emacs-lisp
@@ -2877,8 +2793,6 @@ all three of the above is easier to learn and more consistent overall.
 
 #+end_src
 
-#+RESULTS:
-: consult-buffer-other-tab
 
 ** DONE Marginalia
 CLOSED: [2022-10-14 Fri 23:30]
@@ -2943,8 +2857,6 @@ shadow)=, but I don't like that.
       (propertize (file-size-human-readable size) 'face (list :foreground color)))))
 #+end_src
 
-#+RESULTS:
-: +marginalia-file-size-colorful
 
 ** Embark
 *** desc
@@ -3162,8 +3074,6 @@ the minibuffer-specific setup.
   (add-hook 'after-init-hook #'savehist-mode))
 #+end_src
 
-#+RESULTS:
-: t
 
 ** IVY
 Ivy is a generic completion mechanism for Emacs.
@@ -3237,8 +3147,6 @@ Available functions (positions) for 'ivy-posframe-display-functions-alist'
   (counsel-mode 1))
 #+END_SRC
 
-#+RESULTS:
-: counsel-minibuffer-history
 
 *** IVY
 #+begin_src emacs-lisp :tangle no
@@ -3417,8 +3325,6 @@ modify parts of the directory before switching to it."
 
 #+end_src
 
-#+RESULTS:
-: swiper-thing-at-point
 
 *** IVY push and switch view
 By default, Doom Emacs does not use 'SPC v', so the format I use for these bindings is 'SPC v' plus 'key'.
@@ -3433,8 +3339,6 @@ By default, Doom Emacs does not use 'SPC v', so the format I use for these bindi
 
 #+END_SRC
 
-#+RESULTS:
-: ivy-switch-view
 
 *** Davivil ivy mode
 #+begin_src emacs-lisp :tangle no
@@ -3535,8 +3439,6 @@ modify parts of the directory before switching to it."
          ("C-M-s" . swiper-thing-at-point)))
 #+end_src
 
-#+RESULTS:
-: swiper-thing-at-point
 ** Enable corfu in the minibuffer:
 #+begin_src emacs-lisp :tangle no
 
@@ -3553,7 +3455,7 @@ modify parts of the directory before switching to it."
 #+end_src
 
 ** Yasnippert
-#+begin_src emacs-lisp :tangle yes
+#+begin_src emacs-lisp :tangle no
 (use-package! yasnippet
   :config
   ;; It will test whether it can expand, if yes, change cursor color
@@ -3675,11 +3577,9 @@ Regarding /buffers/, the text you are editing in Emacs resides in an object call
 
 #+end_src
 
-#+RESULTS:
-: t
 
 ** Ibuffer group buffers
-
+its built in , hit s RET in ibuffer
 #+begin_src emacs-lisp
 
 (setq ibuffer-saved-filter-groups
@@ -3749,8 +3649,6 @@ the things I often do (especially in the long-running =emacsclient=).
     (mapc 'kill-buffer (delq (current-buffer) (buffer-list))))
 #+END_SRC
 
-#+RESULTS:
-: kill-other-buffers
 
 =dired= will create buffers for every visited folder. This is a helper
 to clear them out once you're done working with those folders.
@@ -3766,8 +3664,6 @@ to clear them out once you're done working with those folders.
           (buffer-list)))
 #+END_SRC
 
-#+RESULTS:
-: kill-dired-buffers
 
 ** PERSPECTIVE
 Perspective provides multiple named workspaces (or "perspectives") in Emacs, similar to having multiple desktops in window managers like Awesome and XMonad.  Each perspective has its own buffer list and its own window layout, making it easy to work on many separate projects without getting lost in all the buffers.  Switching to a perspective activates its window configuration, and when in a perspective, only its buffers are available (by default).  Doom Emacs uses 'SPC some_key' for binding some of the perspective commands, so I used this binging format for the perspective bindings that I created..
@@ -3849,8 +3745,6 @@ I set splits to default to opening on the right using 'prefer-horizontal-split'.
       :desc "Clone indirect buffer other window" "b c" #'clone-indirect-buffer-other-window)
 #+END_SRC
 
-#+RESULTS:
-: clone-indirect-buffer-other-window
 
 ** DONE Rotate (window management)
 CLOSED: [2022-04-02 Sat 23:26]
@@ -3911,8 +3805,6 @@ well somehow, so let's switch to 'P22 Underground Book'; it looks much nicer.
 
 #+END_SRC
 
-#+RESULTS:
-: wave
 *** Prot-tabs
 #+begin_src emacs-lisp :tangle no
 
@@ -3974,8 +3866,6 @@ Originally from protesilaos' dotemacs."
 
 #+end_src
 
-#+RESULTS:
-: transpose-regions
 ** Side Window
 Side windows are an interesting concept. Emacs reserve an optional space at the top, bottom, left and right of the frame for these side windows. You can think of them as a dockable space, akin to the panels in IDEs.
 
@@ -3999,8 +3889,6 @@ The following functions helps achieve this:
     (delete-window)))
 #+end_src
 
-#+RESULTS:
-: op/buffer-to-side-window
 
 ** Scratch buffer and window move
 #+begin_src emacs-lisp
@@ -4073,8 +3961,6 @@ line---see [[#h:63ad472f-c9c2-40ad-9675-1dc529487788][Tabs for window layouts (t
 (setq window-divider-default-places 'right-only)
 #+end_src
 
-#+RESULTS:
-: right-only
 
 ** Fringe mode
 
@@ -4103,8 +3989,6 @@ buffer-local.
   (setq-default overflow-newline-into-fringe t))
 #+end_src
 
-#+RESULTS:
-: t
 
 ** Depth-based code colourisation (prism.el)
 *** desc
@@ -4155,8 +4039,6 @@ To disable the effect, just do =M-x prot-prism-disable=.
   (setq prot-prism-presets-function #'prot-prism--colors))
 #+end_src
 
-#+RESULTS:
-: t
 
 ** Cursor and mouse settings
 *** Cursor appearance and tweaks (prot-cursor.el)
@@ -4212,8 +4094,6 @@ is reproduced right after the following package configurations.
   ;; (define-key global-map (kbd "C-c p p") #'prot-cursor-set-cursor))
 #+end_src
 
-#+RESULTS:
-: t
 
 *** Mouse wheel behaviour
 
@@ -4260,8 +4140,6 @@ mouse, =<mouse-3>= is the right click.  Normally I call that command with
   (define-key global-map (kbd "C-M-<mouse-3>") #'tear-off-window))
 #+end_src
 
-#+RESULTS:
-: t
 
 *** Scrolling behaviour
 
@@ -4288,8 +4166,6 @@ previous screen.  I find this more intuitive.
 (setq-default next-screen-context-lines 0)
 #+end_src
 
-#+RESULTS:
-: 0
 
 *** Delete selection
 
@@ -4305,8 +4181,6 @@ effect (see the section on the [[#h:02572210-eb26-4941-8f7c-666a0314877b][mouse 
   (add-hook 'after-init-hook #'delete-selection-mode))
 #+end_src
 
-#+RESULTS:
-: t
 
 *Pro tip*: On Emacs 27.1 or higher you can create a rectangular region by
 holding down Ctrl and Meta while dragging the mouse with the left click
@@ -4337,8 +4211,6 @@ mouse over an actionable item:
   (add-hook 'after-init-hook #'tooltip-mode))
 #+end_src
 
-#+RESULTS:
-: t
 
 ** Dired-like list for registers (rlist)
 
@@ -4405,8 +4277,6 @@ stamp upon save, where relevant.  It works seamlessly.
   (add-hook 'before-save-hook #'time-stamp))
 #+end_src
 
-#+RESULTS:
-: t
 
 *** Preserve contents of system clipboard
 
@@ -4437,8 +4307,6 @@ Bookmarks are somewhat like registers in that they record positions you can jump
   (setq bookmark-set-fringe-mark t) ; Emacs28
 #+END_SRC
 
-#+RESULTS:
-: bookmark-save
 ** DONE EMOJIS
 CLOSED: [2022-04-01 Fri 15:37]
 Emojify is an Emacs extension to display emojis. It can display github style emojis like :smile: or plain ascii ones like :).
@@ -4469,8 +4337,6 @@ CLOSED: [2022-04-01 Fri 15:39]
 (add-hook 'monkeytype-mode-hook #'my/monkeytype-mode-hook)
 #+end_src
 
-#+RESULTS:
-| my/monkeytype-mode-hook |
 
 ** DONE Selectric
 CLOSED: [2022-04-01 Fri 15:39]
@@ -4516,8 +4382,6 @@ Nested snippets are good, so let's enable that.
 (setq yas-triggers-in-field t)
 #+end_src
 
-#+RESULTS:
-: t
 
 ** DONE RAINBOW MODE
 CLOSED: [2022-04-01 Fri 15:43]
@@ -4531,8 +4395,6 @@ fuck this snippet , wanna know why? well try using this and see your org agenda
 (global-rainbow-mode 1 )
 #+end_src
 
-#+RESULTS:
-: t
 
 ** DONE Box Quote
 CLOSED: [2022-04-01 Fri 15:43]
@@ -4608,8 +4470,6 @@ CLOSED: [2022-04-01 Fri 15:42]
   :commands cloc)
 #+end_src
 
-#+RESULTS:
-
 ** DONE Abbrev
 CLOSED: [2022-04-01 Fri 15:45]
 Thanks to [[https://emacs.stackexchange.com/questions/45462/use-a-single-abbrev-table-for-multiple-modes/45476#45476][use a single abbrev-table for multiple modes? - Emacs Stack Exchange]] I
@@ -4621,8 +4481,6 @@ have the following.
             (setq abbrev-file-name (expand-file-name "abbrev_defs" doom-user-dir))))
 #+end_src
 
-#+RESULTS:
-| +abbrev-file-name |
 ** DONE Save Macros
 CLOSED: [2022-11-16 Wed 19:04]
 - State "DONE"       from              [2022-11-16 Wed 19:04]
@@ -4701,8 +4559,6 @@ configurations and documentation for [[#h:6c6759c8-3ae3-40b0-8356-05cc0975e12a][
 
 #+end_src
 
-#+RESULTS:
-: t
 
 #+begin_src emacs-lisp :tangle no
 
@@ -4721,8 +4577,6 @@ configurations and documentation for [[#h:6c6759c8-3ae3-40b0-8356-05cc0975e12a][
   (setq dabbrev-eliminate-newlines nil))
 #+end_src
 
-#+RESULTS:
-: t
 
 ** Abbreviation
 #+begin_src emacs-lisp :tangle no
@@ -4786,8 +4640,6 @@ configurations and documentation for [[#h:6c6759c8-3ae3-40b0-8356-05cc0975e12a][
 ;;; my-abbrev.el ends here
 #+end_src
 
-#+RESULTS:
-: my-abbrev
 
 ** DONE Spell
 CLOSED: [2022-04-01 Fri 15:55]
@@ -4834,8 +4686,6 @@ cd aspell6-en-custom
 (add-hook 'prog-mode-hook 'flyspell-prog-mode)
 #+end_src
 
-#+RESULTS:
-: en-custom
 
 Oh, and by the way, if ~company-ispell-dictionary~ is ~nil~, then
 ~ispell-complete-word-dict~ is used instead, which once again when ~nil~ is
@@ -4848,8 +4698,6 @@ nearby (also means that if I change the 'main' dictionary I keep my addition).
 (setq ispell-personal-dictionary (expand-file-name ".ispell_personal" doom-user-dir))
 #+end_src
 
-#+RESULTS:
-: /home/shiva/.config/doom/.ispell_personal
 
 ** DONE Impatient mode
 CLOSED: [2022-04-01 Fri 15:50]
@@ -4904,8 +4752,6 @@ And then point your browser to http://localhost:8080/imp/, select a buffer, and 
                                                   prot-eww-history-mode))
 #+END_SRC
 
-#+RESULTS:
-| osm-mode | prot-eww-history-mode |
 
 Turning off evil when working in =cider--debug= minor mode:
 
@@ -4925,8 +4771,6 @@ Turning off evil when working in =cider--debug= minor mode:
   (define-key evil-normal-state-map (kbd "C-t") 'transpose-chars)
 #+END_SRC
 
-#+RESULTS:
-: evil-visual-paste
 
 *** =evil-escape=
 https://github.com/syl20bnr/evil-escape
@@ -4975,8 +4819,6 @@ functions =evil-repeat-pop-next= and =xref-pop-marker-stack=, for some reason.
   (evil-define-key 'normal org-mode-map (kbd "<tab>") #'org-cycle)
 #+end_src
 
-#+RESULTS:
-: avy-goto-char-timer
 
 #+BEGIN_SRC emacs-lisp
   (define-key evil-normal-state-map (kbd "M-.") nil)
@@ -5029,8 +4871,6 @@ something else, so let's change them.
         evil-kill-on-visual-paste nil)) ; Don't put overwritten text in the kill ring
 #+end_src
 
-#+RESULTS:
-
 I don't use ~evil-escape-mode~, so I may as well turn it off, I've heard it
 contributes a typing delay. I'm not sure it's much, but it is an extra
 ~pre-command-hook~ that I don't benefit from, so...
@@ -5040,8 +4880,6 @@ the mode on startup, let's prevent installation of the package.
 (package! evil-escape :disable t)
 #+end_src
 
-#+RESULTS:
-| vlf | evil-escape |
 ** Open file with emacsclient using =filename:line= path
    This configuration is originally from the great [[https://github.com/bbatsov/prelude/commit/8c55c6f4bb8fab04040e178b97a9e68006525403][bbatsov's prelude]].
 
@@ -5069,8 +4907,6 @@ and file 'filename' will be opened and cursor set on line 'linenumber'"
                             fn))) files)))
 #+END_SRC
 
-#+RESULTS:
-: server-visit-files
 
 ** ZAP TO CHAR
 Emacs provides a 'zap-to-char' command that kills from the current point to a character.  It is bound to 'M-z' in standard GNU Emacs but since Doom Emacs uses 'SPC' as its leader key and does not have 'SPC z' binded to anything, it just makes since to use it for 'zap-to-char'.  Note that 'zap-to-char' can be used with the universal argument 'SPC u' to modify its behavior.  Examples of 'zap-to-char' usage are listed in the table below:
@@ -5130,8 +4966,6 @@ counterpart on =M-Z= (=M-S-z=).
   (add-to-list 'easy-kill-alist '(104 paragraph "\n")))
 #+end_src
 
-#+RESULTS:
-: easy-kill
 
 ** Emacs as external editor
 #+begin_src emacs-lisp :tangle no
@@ -5209,8 +5043,6 @@ Emacs registers are compartments where you can save text, rectangles and positio
        :desc "Point to register" "SPC" #'point-to-register))
 #+END_SRC
 
-#+RESULTS:
-: point-to-register
 
 ** Smartparens
 #+begin_src emacs-lisp
@@ -5252,8 +5084,6 @@ Emacs registers are compartments where you can save text, rectangles and positio
 (evil-define-key 'insert smartparens-mode-map (kbd "M-DEL") #'sp-backward-kill-word)
 
 #+end_src
-
-#+RESULTS:
 
 ** SmartParens
 #+begin_src emacs-lisp :tangle no
@@ -5459,8 +5289,6 @@ Mainly useful in C and derived, and only when ACTION is insert."
         (when (= parity 0) (cons (mark) (point))))))
 #+end_src
 
-#+RESULTS:
-: my/find-bounds-of-regexps
 
 ** String inflection
 
@@ -5702,8 +5530,6 @@ settings:
   (add-hook 'prog-mode-hook #'electric-indent-local-mode))
 #+end_src
 
-#+RESULTS:
-: t
 
 ** Parentheses (show-paren-mode)
 
@@ -5739,8 +5565,6 @@ Summary of what these do:
   (add-hook 'after-init-hook #'show-paren-mode))
 #+end_src
 
-#+RESULTS:
-: t
 
 ** EVALUATE ELISP EXPRESSIONS
 Changing some keybindings from their defaults to better fit with Doom Emacs, and to avoid conflicts with my window managers which sometimes use the control key in their keybindings.  By default, Doom Emacs does not use 'SPC e' for anything, so I choose to use the format 'SPC e' plus 'key' for these (I also use 'SPC e' for 'eww' keybindings).
@@ -5834,8 +5658,6 @@ Better regex than emacs regex
   :after 'visual-regexp)
 #+end_src
 
-#+RESULTS:
-
 ** Docs
 #+begin_src emacs-lisp
 (use-package! devdocs
@@ -5897,8 +5719,6 @@ To make VLF available without delaying startup, we'll just load it in quiet mome
   <<vlf-linenum-offset>>)
 #+end_src
 
-#+RESULTS:
-
 Now, there are one or two tweaks worth applying to VLF. For starters, it goes to
 the liberty of advising ~abort-if-file-too-large~, and in doing so removes the
 option of opening files literally. I think that's a bit much, so we can remove
@@ -5936,8 +5756,6 @@ imagine using anyway).
                 (t 'abort)))))))
 #+end_src
 
-#+RESULTS: vlf-largefile-prompt
-
 As you go from one chunk fetched by VLF to the next, the displayed line number
 of the first line /in each chunk/ is unchanged. I think it's reasonable to hope
 for an /overall/ line number, and by tracking chunk's cumulative line numbers we
@@ -5964,8 +5782,6 @@ can implement this behaviour fairly easily.
 (add-hook! 'vlf-mode-hook (setq-local display-line-numbers t))
 #+end_src
 
-#+RESULTS: vlf-linenum-offset
-| +vlf-log-poses-a |
 
 The other thing that doesn't work too well with VLF is searching with anything
 other than =M-x occur=. This is because trying to go to the next match at the end
@@ -5992,8 +5808,6 @@ moving to the next chunk.
 
 (add-hook! 'vlf-mode-hook (setq-local isearch-wrap-function #'+vlf-isearch-wrap))
 #+end_src
-
-#+RESULTS:
 
 Unfortunately, since evil-search doesn't have an analogue to
 ~isearch-wrap-function~, we can't easily add support to it.
@@ -6123,6 +5937,9 @@ Taken form https://orgmode.org/worg/org-contrib/babel/how-to-use-Org-Babel-for-R
 The diff changes are reflected in the left fringe. However, I find them to be a
 little bit too intrusive, so let’s change how they looks by blending the colors
 into the background a little bit
+#+begin_src emacs-lisp :tangle packages.el
+(package! diff-hl)
+#+end_src
 #+begin_src emacs-lisp :tangle yes
 (use-package! diff-hl
   :config
@@ -6320,8 +6137,6 @@ Settings for the various shells and terminal emulators within Emacs.
       :desc "Vterm popup toggle" "v t" #'+vterm/toggle)
 #+END_SRC
 
-#+RESULTS:
-: +vterm/toggle
 
 * DIRED
 Dired is the file manager within Emacs.  Below, I setup keybindings for image previews (peep-dired).  Doom Emacs does not use 'SPC d' for any of its keybindings, so I've chosen the format of 'SPC d' plus 'key'.
@@ -6939,8 +6754,6 @@ available, use it to select window for visiting this file.`"
   :hook (dired-mode . diredfl-mode))
 #+end_src
 
-#+RESULTS:
-| denote-dired-mode | pdf-occur-dired-minor-mode | dired-async-mode | prot-dired-setup-imenu | dired-extra-startup | toggle-truncate-lines | hl-line-mode | dired-hide-details-mode | beginend-dired-mode | doom--recentf-add-dired-directory-h | +dired-disable-gnu-ls-flags-maybe-h | dired-omit-mode | all-the-icons-dired-mode | diredfl-mode | ranger-set-dired-key | (lambda nil (interactive) (dired-hide-details-mode 1) (all-the-icons-dired-mode 1)) |
 
 ** dired-like mode for the trash (trashed.el)
 
@@ -6967,8 +6780,6 @@ Basically, its interaction model is as follows:
   (setq trashed-date-format "%Y-%m-%d %H:%M:%S"))
 #+end_src
 
-#+RESULTS:
-: t
 
 ** OPEN SPECIFIC FILES
 Keybindings to open files that I work with all the time using the find-file command, which is the interactive file search that opens with 'C-x C-f' in GNU Emacs or 'SPC f f' in Doom Emacs.  These keybindings use find-file non-interactively since we specify exactly what file to open.  The format I use for these bindings is 'SPC =' plus 'key' since Doom Emacs does not use 'SPC ='.
@@ -7054,8 +6865,6 @@ Keybindings to open files that I work with all the time using the find-file comm
                 '(file)))))
 #+end_src
 
-#+RESULTS:
-: ((gif . sxiv) (jpg . sxiv) (png . sxiv) (mkv . mpv) (webm . mpv) (3gp . mpv) (mp4 . mpv))
 
 * Hydra
 ** Extensions for PDFs (pdf-tools)
@@ -7163,8 +6972,6 @@ in the manual of the themes.  If you are using them, evaluate this form:
 
 #+end_src
 
-#+RESULTS:
-: t
 
 ** Taking notes on PDFs(org-noter)
 :PROPERTIES:
@@ -7214,8 +7021,6 @@ in the manual of the themes.  If you are using them, evaluate this form:
 
 ;; (setq org-noter-notes-search-path '("~/org/notes/"))
 #+end_src
-#+RESULTS:
-: t
 
 #+begin_src emacs-lisp
 (defun org-noter-create-notes-file-for-current-book ()
@@ -7242,8 +7047,6 @@ in the manual of the themes.  If you are using them, evaluate this form:
       (call-interactively 'bookmark-jump))))
 #+end_src
 
-#+RESULTS:
-: org-noter-create-notes-file-for-current-book
 
 ** Hydra
 #+begin_src emacs-lisp
@@ -7830,8 +7633,6 @@ in the manual of the themes.  If you are using them, evaluate this form:
       ("x" comment-box)))
 #+end_src
 
-#+RESULTS:
-: t
 
 ** karthydra
 #+begin_src emacs-lisp
@@ -7948,8 +7749,6 @@ _d_: subtree
 
  #+end_src
 
- #+RESULTS:
-
 ** git-time-machine
 #+begin_src emacs-lisp :tangle no
 (use-package! git-timemachine
@@ -8052,8 +7851,6 @@ CLOSED: [2022-03-30 Wed 09:36]
                            (format "nmcli device wifi connect %s" (shell-quote-argument network))))))))
 #+end_src
 
-#+RESULTS:
-: counsel-network-manager
 
 ** DONE url util
 CLOSED: [2022-03-30 Wed 09:31]
@@ -8081,8 +7878,6 @@ CLOSED: [2022-03-30 Wed 09:32]
   (setq wolfram-alpha-app-id "KTKV36-2LRW2LELV8"))
 #+END_SRC
 
-#+RESULTS:
-: t
 
 ** DONE Webpaste
 CLOSED: [2022-04-01 Fri 16:00]
@@ -8132,8 +7927,6 @@ CLOSED: [2022-04-01 Fri 16:00]
 (add-hook 'webpaste-return-url-hook 'simpleclip-set-contents)
 #+end_src
 
-#+RESULTS:
-| simpleclip-set-contents | (lambda (url) (message Opened URL in browser: %S url) (browse-url-generic url)) | message |
 
 ** DONE 0x0
 CLOSED: [2022-04-01 Fri 15:59]
@@ -8176,8 +7969,6 @@ actually useful.  Well done, Daniel!
     (require 'osm-ol)))
 #+end_src
 
-#+RESULTS:
-: t
 
 ** DONE launch firefox
 CLOSED: [2022-04-14 Thu 17:30]
@@ -8193,8 +7984,6 @@ CLOSED: [2022-04-14 Thu 17:30]
        :command `("firefox" ,(if arg "--private-window" "--new-window"))))
 #+end_src
 
-#+RESULTS:
-: my/launch-firefox-private
 
 ** ERC
 ERC is a built-in Emacs IRC client.
@@ -8282,8 +8071,6 @@ CLOSED: [2022-09-22 Thu 12:05]
        ("C-c t". my-google-translate-at-point))
 #+end_src
 
-#+RESULTS:
-: my-google-translate-at-point
 
 ** Youtube
 #+begin_src emacs-lisp
@@ -8356,8 +8143,6 @@ active region use it instead."
 
 #+end_src
 
-#+RESULTS:
-: google-search-at-point
 
 ** Custom Helper
 #+begin_src emacs-lisp
@@ -8380,8 +8165,6 @@ active region use it instead."
   "Location where files created by emacs are placed."))
 #+end_src
 
-#+RESULTS:
-: t
 
 ** EWW
 
@@ -8434,8 +8217,6 @@ active region use it instead."
 (provide 'consult-eww-source)
 #+end_src
 
-#+RESULTS:
-: consult-eww-source
 
 *** Load eww submodules
 #+begin_src emacs-lisp
@@ -8763,8 +8544,6 @@ module. Let's just try to patch on the main things I like the look of.
       :nm "y" #'elfeed-show-yank)
 #+end_src
 
-#+RESULTS:
-
 **** Usability enhancements
 
 #+begin_src emacs-lisp
@@ -8899,8 +8678,6 @@ module. Let's just try to patch on the main things I like the look of.
   )
 #+end_src
 
-#+RESULTS:
-: +rss/elfeed-show-refresh--better-style
 
 **** Functionality enhancements
 
@@ -8951,8 +8728,6 @@ module. Let's just try to patch on the main things I like the look of.
   )
 #+end_src
 
-#+RESULTS:
-: elfeed-show-pdf
 
 **** easier tagging
 By default you can tag an entry from the search results by typing “+” followed by the tag name. This is too much work for a central organizational feature, so a little helper sorts things out.
@@ -8983,8 +8758,6 @@ MYTAG"
 
 #+end_src
 
-#+RESULTS:
-: browse-url-mpv
 **** Elfeed tube
 #+begin_src emacs-lisp
 (add-to-list 'load-path "~/.config/doom/lisp/elfeed-tube/")
@@ -9011,8 +8784,6 @@ MYTAG"
 (define-key elfeed-show-mode-map (kbd "C-c C-w") 'elfeed-tube-mpv-where)
 #+end_src
 
-#+RESULTS:
-: elfeed-tube-mpv-where
 * Applications and utilities
 
 This section includes configurations for programs like email clients,
@@ -9044,8 +8815,6 @@ CLOSED: [2022-03-30 Wed 00:03]
 
 #+end_src
 
-#+RESULTS:
-: my/set-redshift
 
 ** Exercism
 Exercism is a useful site for learning a programming language by performing
@@ -9059,15 +8828,11 @@ Which do you think I want?
   :recipe (:host github :repo "elken/exercism.el"))
 #+end_src
 
-#+RESULTS:
-| exercism | :modules | ((:user) (:user . modules)) | :recipe | (:host github :repo elken/exercism.el) |
 
 #+begin_src emacs-lisp :tangle no
 (load "~/.emacs.d/.local/straight/repos/exercism.el/exercism-modern.el")
 #+end_src
 
-#+RESULTS:
-: t
 ** generate password
 
 #+BEGIN_SRC emacs-lisp
@@ -9163,8 +8928,6 @@ date heading that contains list of urls."
 (provide 'qbs)
 #+end_src
 
-#+RESULTS:
-: qbs
 ** org roam qutebrowser
 #+begin_src emacs-lisp
 (require 'org-roam-protocol)
@@ -9178,8 +8941,6 @@ date heading that contains list of urls."
 
 #+end_src
 
-#+RESULTS:
-| r | ref | plain | #'org-roam-capture--get-point | %? | :file-name | ${slug} | :head | #+TITLE: ${title} |
 **
 #+begin_src python :tangle ~/.config/doom/org-roam-protocol-handler.py
 import os
@@ -9217,8 +8978,6 @@ Sometimes you want to be able to do fancy things with the text that you're enter
 
 #+end_src
 
-#+RESULTS:
-: my/copy-file-name-to-clipboard
 ** open current file with external program
 #+begin_src emacs-lisp
 
@@ -9316,8 +9075,6 @@ This one is a pleasant surprise to have honestly. Having Emacs handle system pac
 (setq system-packages-package-manager 'yay)
 #+end_src
 
-#+RESULTS:
-: yay
 
 ** DONE System Package Managment void
 CLOSED: [2022-04-15 Fri 11:43]
@@ -9357,8 +9114,6 @@ This one is a pleasant surprise to have honestly. Having Emacs handle system pac
 
 #+end_src
 
-#+RESULTS:
-: system-packages-list-installed-packages
 
 ** Custom extensions for "focus mode" (logos.el)
 
@@ -9454,8 +9209,6 @@ Other potentially relevant parts of my dotemacs:
   (add-hook 'logos-page-motion-hook #'prot/logos--recenter-top))
 #+end_src
 
-#+RESULTS:
-: t
 ** Auto git clone
 #+begin_src emacs-lisp
 (load "~/.config/doom/lisp/auto-git-clone.el")
@@ -9554,8 +9307,6 @@ optional `tmr--timer-description'."
             end)))
 #+end_src
 
-#+RESULTS:
-: t
 
 ** Smerge
 
@@ -9590,8 +9341,6 @@ For repeated operations, a hydra would be helpful. But I prefer transient.
       ("q" "quit" (lambda () (interactive) (smerge-auto-leave)))]]))
 #+end_src
 
-#+RESULTS:
-| [1 transient-columns nil ([1 transient-column (:description Move) ((1 transient-suffix (:key n :description next :command transient:smerge-transient:next)) (1 transient-suffix (:key p :description previous :command transient:smerge-transient:previous)))] [1 transient-column (:description Keep) ((1 transient-suffix (:key b :description base :command transient:smerge-transient:base)) (1 transient-suffix (:key u :description upper :command transient:smerge-transient:upper)) (1 transient-suffix (:key l :description lower :command transient:smerge-transient:lower)) (1 transient-suffix (:key a :description all :command transient:smerge-transient:all)) (1 transient-suffix (:key RET :description current :command transient:smerge-transient:current)))] [1 transient-column (:description Diff) ((1 transient-suffix (:key < :description upper/base :command transient:smerge-transient:upper/base)) (1 transient-suffix (:key = :description upper/lower :command transient:smerge-transient:upper/lower)) (1 transient-suffix (:key > :description base/lower :command transient:smerge-transient:base/lower)) (1 transient-suffix (:key R :description refine :command transient:smerge-transient:refine)) (1 transient-suffix (:key E :description ediff :command transient:smerge-transient:ediff)))] [1 transient-column (:description Other) ((1 transient-suffix (:key c :description combine :command transient:smerge-transient:combine)) (1 transient-suffix (:key r :description resolve :command transient:smerge-transient:resolve)) (1 transient-suffix (:key k :description kill current :command transient:smerge-transient:kill current)) (1 transient-suffix (:key q :description quit :command transient:smerge-transient:quit)))])] |
 
 ** Projectile
 #+begin_quote
@@ -9607,8 +9356,6 @@ add package src directories to projectile. This isn't desirable in my opinion.
   (or (mapcar (lambda (p) (s-starts-with-p p filepath)) projectile-ignored-projects)))
 #+end_src
 
-#+RESULTS:
-: projectile-ignored-project-function
 
 ** CALENDAR
 Let's make a 12-month calendar available so we can have a calendar app that, when we click on time/date in xmobar, we get a nice 12-month calendar to view.
@@ -9683,8 +9430,6 @@ Let's also play around with calfw.
 (use-package! calfw-org)
 #+end_src
 
-#+RESULTS:
-: calfw-org
 
 ** Calendar and Diary (and prot-diary.el)
 
@@ -10065,8 +9810,6 @@ Finally, note that I control the placement of those buffers in the
 
 #+end_src
 
-#+RESULTS:
-: t
 
 ** Screenshot
 
@@ -10075,8 +9818,6 @@ This makes it a breeze to take lovely screenshots.
 (package! screenshot :recipe (:host github :repo"tecosaur/screenshot" :files ("*.el" "filters" "preprocessors")))
 #+end_src
 
-#+RESULTS:
-| screenshot | :modules | ((:private . config) (:private . modules)) | :recipe | (:host github :repo tecosaur/screenshot :files (*.el filters preprocessors)) |
 
 
 Some light configuring is all we need, so we can make use of the [[https://github.com/Calinou/0x0][0x0]] wrapper
@@ -10087,8 +9828,6 @@ file uploading script (which I've renamed to ~upload~).
   :config (setq screenshot-upload-fn "upload %s 2>/dev/null"))
 #+end_src
 
-#+RESULTS:
-: t
 
 ** Dictionary
 
@@ -10106,8 +9845,6 @@ To interface with this, we'll use a my =lexic= package.
 (package! lexic :recipe (:host github :repo"tecosaur/lexic" :files ("*.el" "filters" "preprocessors")))
 #+end_src
 
-#+RESULTS:
-| lexic | :modules | ((:user) (:user . modules)) | :recipe | (:host github :repo tecosaur/lexic :files (*.el filters preprocessors)) |
 
 Given that a request for a CLI is the [[https://github.com/goldendict/goldendict/issues/37][most upvoted issue]] on GitHub for
 GoldenDict, it's likely we'll be able to switch from ~sdcv~ to that in the future.
@@ -10140,8 +9877,6 @@ definition functionality (like ~+lookup/dictionary-definition~).
         :n "/" (cmd! (call-interactively #'lexic-search))))
 #+end_src
 
-#+RESULTS:
-
 Now let's use this instead of wordnet.
 #+begin_src emacs-lisp
 (defadvice! +lookup/dictionary-definition-lexic (identifier &optional arg)
@@ -10153,8 +9888,6 @@ Now let's use this instead of wordnet.
          current-prefix-arg))
   (lexic-search identifier nil nil t))
 #+end_src
-
-#+RESULTS:
 
 Lastly, I want to make sure I have some dictionaries set up. I've put a tarball
 of dictionaries online which we can download if none seem to be present on the
@@ -10199,8 +9932,6 @@ PS: If sqlite3 and calibredb is in not in your system path, set them with
                                   ("~/Documents/LIB1")))
 #+end_src
 
-#+RESULTS:
-| ~/Documents/EBooks Library |
 | ~/Documents/LIB1           |
 
 Together these should give me a rather good experience reading ebooks.
@@ -10286,8 +10017,6 @@ something through Emacs?
         :ne "M-c" #'calibredb-set-metadata--comments))
 #+end_src
 
-#+RESULTS:
-: t
 
 Then, to actually read the ebooks we use =nov=.
 
@@ -10516,8 +10245,6 @@ panel.
                                       calc-angle-mode rad)))))))))
 #+end_src
 
-#+RESULTS:
-: latex-math-from-calc
 
 ** Version control tools
 *** Diff-mode (and prot-diff.el extensions)
@@ -10628,8 +10355,6 @@ the variable =display-buffer-alist=).
      (define-key map (kbd "C-c C-n") #'prot-diff-narrow-dwim)))
  #+end_src
 
-#+RESULTS:
-: t
 
 *** Version control framework (vc.el and prot-vc.el)
 
@@ -11203,8 +10928,6 @@ sure this is a good approach."
     (flush-lines ".*prot-ediff.*" (point-min) (point-max) nil)))
 #+end_src
 
-#+RESULTS:
-: t
 
 ** Convenience functions when working with PDF exports
 
@@ -11273,8 +10996,6 @@ In a screenshot, it looks like this:
     '(define-key markdown-mode-map (kbd "C-c r") 'md-compile-and-update-other-buffer))
 #+END_SRC
 
-#+RESULTS:
-
 ** Helper function to measure the running time of a function
 
 For example =(measure-time (prettier-eslint))=.
@@ -11286,8 +11007,6 @@ For example =(measure-time (prettier-eslint))=.
        (message "%.06f" (float-time (time-since time)))))
 #+END_SRC
 
-#+RESULTS:
-: measure-time
 ** Repeatable key chords (repeat-mode)
 
 Emacs28 comes with a built-in utility for repeating selected commands in
@@ -11390,8 +11109,6 @@ could be slightly nicer though.
 (setq eros-eval-result-prefix "⟹ ") ; default =>
 #+end_src
 
-#+RESULTS:
-: ⟹
 
 ** DONE Tools for manual pages (manpages)
 CLOSED: [2022-03-30 Wed 15:08]
@@ -11446,8 +11163,6 @@ canonical.
 (evil-define-key 'normal Info-mode-map (kbd "f") 'Info-goto-node)
 (evil-define-key 'normal Info-mode-map (kbd "C-f") 'Info-menu)
 #+end_src
-
-#+RESULTS:
 
 ** DONE Which-key
 CLOSED: [2022-03-30 Wed 10:22]
@@ -11506,8 +11221,6 @@ CLOSED: [2022-03-30 Wed 10:22]
     (advice-add 'repeat-post-hook :after #'my/which-key-repeat-mode-binding))
 #+end_src
 
-#+RESULTS:
-: t
 
 I also think that having =evil-= appear in so many popups is a bit too verbose,
 let's change that, and do a few other similar tweaks while we're at it.
@@ -11847,8 +11560,6 @@ _v_: vol     _a_: seek bw     _#_: shuffle            _s_elect
 
 #+end_src
 
-#+RESULTS:
-: hydra-emms/body
 
 #+begin_src emacs-lisp
 
@@ -11885,8 +11596,6 @@ rather than the whole path."
 
 (setq emms-track-description-function 'my-emms-track-description)
 #+end_src
-#+RESULTS:
-: my-emms-track-description
 
 #+BEGIN_SRC emacs-lisp :tangle no
 ;; just in case above config breaks
@@ -11958,8 +11667,6 @@ rather than the whole path."
      (t (emms-notifications-message track-name)))))
 #+end_src
 
-#+RESULTS:
-: emms-start
 
 ** volume
 #+begin_src emacs-lisp
@@ -12013,8 +11720,6 @@ rather than the whole path."
 ;; (map! "<XF86AudioLowerVolume>" 'my/volume-decrease)
 #+end_src
 
-#+RESULTS:
-: my/volume-decrease
 ** brightness (xradr)
 #+begin_src emacs-lisp
 
@@ -12032,8 +11737,6 @@ rather than the whole path."
        (format "xrandr --output DP-1 --brightness %s &" clipped-level) nil nil))))
 #+end_src
 
-#+RESULTS:
-: my/brightness
 ** pipewire start
 #+begin_src emacs-lisp
 
@@ -12049,8 +11752,6 @@ rather than the whole path."
 
 #+end_src
 
-#+RESULTS:
-: my/pipewire-restart
 
 ** mpv and emacs for video editing
 
@@ -12223,8 +11924,6 @@ then press capital O in mpv to show the time
   ("n" end-of-line-and-indented-new-line))
 #+end_src
 
-#+RESULTS:
-: hydra-mpv/body
 * Miscellaneous
 
 #+begin_src emacs-lisp
@@ -12387,8 +12086,6 @@ numbers is stripped away.
 
 #+end_src
 
-#+RESULTS:
-: +setup-text-mode-left-margin
 
 Now we just need to hook this up to all the events which could either indicate a
 change in the conditions or require the setup to be re-applied.
@@ -12399,8 +12096,6 @@ change in the conditions or require the setup to be re-applied.
 (add-hook 'text-mode-hook #'+setup-text-mode-left-margin)
 #+end_src
 
-#+RESULTS:
-| +spell-remove-run-together-switch-for-aspell-h | er/add-text-mode-expansions | auto-fill-mode | +setup-text-mode-left-margin | (lambda (&rest _) (if (derived-mode-p 'org-mode) nil (let* ((modified (buffer-modified-p)) (buffer-undo-list t) (inhibit-read-only t) (inhibit-modification-hooks t)) (unwind-protect (progn (ansi-color-apply-on-region (point-min) (point-max) t)) (if modified nil (restore-buffer-modified-p nil)))))) | flyspell-mode | auto-revert-mode | text-mode-hook-identify |
 
 There's one little niggle with Doom, as ~doom/toggle-line-numbers~ doesn't run
 ~display-line-numbers-mode-hook~, so some advice is needed.
@@ -12410,8 +12105,6 @@ There's one little niggle with Doom, as ~doom/toggle-line-numbers~ doesn't run
   :after #'doom/toggle-line-numbers
   (run-hooks 'display-line-numbers-mode-hook))
 #+end_src
-
-#+RESULTS:
 
 Lastly, I think I actually like this enough that I'll go ahead and remove line
 numbers in text mode.
@@ -12548,8 +12241,6 @@ Custom Highlighting -  so = becomes =red=.
 
 #+end_src
 
-#+RESULTS:
-| * | (bold)              |          |
 | _ | underline           |          |
 | = | org-verbatim        | verbatim |
 | ~ | org-code            | verbatim |
@@ -12581,8 +12272,6 @@ structure has come to my attention.
       :localleader
       :desc "Outline" "O" #'org-ol-tree)
 #+end_src
-
-#+RESULTS:
 
 ****** Better indirect buffers
 Copied from =Thomas Journa='s config to move around org-buffers.
@@ -12709,8 +12398,6 @@ spell-check face ignore list
       :desc "Org babel tangle" "m B" #'org-babel-tangle)
 #+end_src
 
-#+RESULTS:
-: org-babel-tangle
 
 #+begin_src emacs-lisp
 (setq org-directory "~/org"                      ; let's put files here
@@ -12744,8 +12431,6 @@ spell-check face ignore list
 (setq org-export-with-smart-quotes t)
 #+end_src
 
-#+RESULTS:
-: t
 
 I also like the src_elisp{:comments} header-argument, so let's make that a
 default.
@@ -13371,8 +13056,6 @@ set up org-capture.
                                #'org-capture-reinitialise-hook))))))
 #+end_src
 
-#+RESULTS:
-
 It would also be nice to improve how the capture dialogue looks
 #+name: prettify-capture
 #+begin_src emacs-lisp :noweb-ref none
@@ -13486,8 +13169,6 @@ is selected, only the bare key is returned."
 (advice-add 'org-mks :override #'org-mks-pretty)
 #+end_src
 
-#+RESULTS: prettify-capture
-
 The [[file:~/.emacs.d/bin/org-capture][org-capture bin]] is rather nice, but I'd be nicer with a smaller frame, and
 no modeline.
 #+begin_src emacs-lisp
@@ -13500,8 +13181,6 @@ no modeline.
         (org-capture)))
 #+end_src
 
-#+RESULTS:
-| lambda | nil | (interactive) | (set-window-parameter nil 'mode-line-format 'none) | (org-capture) |
 
 ***** Habit Tracking
 
@@ -13515,8 +13194,6 @@ https://orgmode.org/manual/Tracking-your-habits.html
 
 #+end_src
 
-#+RESULTS:
-: 60
 ***** Super agenda
 
 The agenda is nice, but a souped up version is nicer.
@@ -13534,8 +13211,6 @@ The agenda is nice, but a souped up version is nicer.
 
 #+end_src
 
-#+RESULTS:
-: #s(hash-table size 65 test eql rehash-size 1.5 rehash-threshold 0.8125 data (:use-package (25554 27531 393074 978000) :init (25554 27531 393072 207000) :init-secs (0 0 20 843000) :use-package-secs (0 0 26 54000) :config (25554 27531 393065 361000) :config-secs (0 0 2 792000)))
 
 #+begin_src emacs-lisp
 (after! org
@@ -13733,8 +13408,6 @@ The agenda is nice, but a souped up version is nicer.
 
 #+end_src
 
-#+RESULTS:
-: my-org-check-agenda
 
 #+begin_src emacs-lisp :tangle no
 
@@ -13758,8 +13431,6 @@ The agenda is nice, but a souped up version is nicer.
 ;; Build the agenda list the first time for the session
 (my/org-roam-refresh-agenda-list)
 #+end_src
-
-#+RESULTS:
 
 ***** org capture academics
 
@@ -13797,7 +13468,7 @@ Set some capture templates, to work with GTD.
 
 I'll just set this to be within =Organisation= folder for now, in the future it
 could be worth seeing if I could hook this up to a [[https://nextcloud.com/][Nextcloud]] instance.
-#+begin_src emacs-lisp
+#+begin_src emacs-lisp :tangle no
 ;;(after! org-roam
 (setq
       org-roam-directory "~/org/org-roam2/"
@@ -13807,8 +13478,6 @@ could be worth seeing if I could hook this up to a [[https://nextcloud.com/][Nex
   (find-file org-roam-todo-file)
   (save-buffer))
 #+end_src
-
-#+RESULTS:
 
 #+begin_src emacs-lisp
 
@@ -14004,8 +13673,6 @@ borrowed from [[https://hieuphay.com/doom-emacs-config/][here]]
   (org-roam-setup))
  #+end_src
 
- #+RESULTS:
- : t
 
 ****** Hotter Buffer
 #+begin_src emacs-lisp :tangle no
@@ -14022,8 +13689,6 @@ borrowed from [[https://hieuphay.com/doom-emacs-config/][here]]
 (after! org-roam
 (add-hook! 'org-roam-mode-hook #'org-roam-buffer-setup))
 #+end_src
-
-#+RESULTS:
 
 ****** Modeline file name
 All those numbers! It's messy. Let's adjust this in a similar way that I have in
@@ -14065,8 +13730,6 @@ with it.
     (browse-url-xdg-open (format "http://localhost:%d" org-roam-ui-port))))
 #+end_src
 
-#+RESULTS:
-| org-roam-ui-mode |
 
 ****** Org-roam-capture templates
 
@@ -14173,8 +13836,6 @@ with it.
         (insert (concat "\n* Backlinks\n" links))))))
 #+end_src
 
-#+RESULTS:
-: my/org-export-preprocessor
 
 ****** Citations
 #+begin_src emacs-lisp :tangle no
@@ -14217,8 +13878,6 @@ with it.
 )
 
 #+end_src
-
-#+RESULTS:
 
 #+begin_example
 ,#+TITLE: ${title}
@@ -14603,8 +14262,6 @@ For header args, the keys I'll use are
     ('keyword (string-match-p "^header-args" (org-element-property :value (org-element-context))))))
 #+end_src
 
-#+RESULTS:
-: +yas/org-src-header-p
 
 Now let's write a function we can reference in yasnippets to produce a nice
 interactive way to specify header args.
@@ -14689,8 +14346,6 @@ Return nil otherwise."
     (car (cl-set-difference src-langs header-langs :test #'string=))))
 #+end_src
 
-#+RESULTS:
-: +yas/org-most-common-no-property-lang
 
 ***** Translate capital keywords (old) to lower case (new)
 Everyone used to use ~#+CAPITAL~ keywords. Then people realised that ~#+lowercase~
@@ -14720,8 +14375,6 @@ It likely misses some edge cases, but should mostly work.
       (message "Replaced %d occurances" count))))
 #+end_src
 
-#+RESULTS:
-: org-syntax-convert-keyword-case-to-lower
 
 ***** Extra links
 ****** xkcd
@@ -14773,8 +14426,6 @@ Saving seconds adds up after all! (but only so much)
   (format "xkcd:%d" (+xkcd-select)))
 #+end_src
 
-#+RESULTS:
-: +org-xkcd-complete
 
 ****** YouTube
 The ~[[yt:...]]~ links preview nicely, but don't export nicely. Thankfully, we can
@@ -14793,8 +14444,6 @@ allowfullscreen>%s</iframe>" path (or "" desc)))
          (format "\\href{https://youtu.be/%s}{%s}" path (or desc "youtube")))
         (t (format "https://youtu.be/%s" path))))
 #+end_src
-#+RESULTS:
-: +org-export-yt
 
 ***** Fix problematic hooks
 When one of the src_elisp{org-mode-hook} functions errors, it halts the hook
@@ -14806,8 +14455,6 @@ cause issues. Let's make their failure less eventful.
   :around #'org-fancy-priorities-mode
   (ignore-errors (apply orig-fn args)))
 #+end_src
-
-#+RESULTS:
 
 ***** Flycheck with org-lint
 
@@ -14876,8 +14523,6 @@ regurgitate the code, cross our fingers, and hope it works.
    ((error line-start line ": " (message) line-end))
    :modes org-mode))
 #+end_src
-
-#+RESULTS:
 
 Turns out it almost works. Running =M-x flycheck-verify-setup= after running that
 snippet produces the following:
@@ -14975,8 +14620,6 @@ Mixed pitch is great. As is ~+org-pretty-mode~, let's use them.
                            :weight medium)))
 #+end_src
 
-#+RESULTS:
-| doom--customize-themes-h-9 | doom--customize-themes-h-16 | doom--customize-themes-h-17 |
 
 You can set the Org heading levels to be different font sizes.  So I choose to have level 1 headings to be 140% in height, level 2 to be 130%, etc.  Other interesting things you could play with include adding :foreground color and/or :background color if you want to override the theme colors.
 Let's make headings a bit bigger
@@ -15015,8 +14658,6 @@ Let's make headings a bit bigger
   '(outline-9 :weight semi-bold))
 #+end_src
 
-#+RESULTS:
-| doom--customize-themes-h-1854 | doom--customize-themes-h-1855 | doom--customize-themes-h-1875 | doom--customize-themes-h-1876 | doom--customize-themes-h-1878 | doom--customize-themes-h-1885 |
 
 
 And the same with the title.
@@ -15025,8 +14666,6 @@ And the same with the title.
   '(org-document-title :height 1.2))
 #+end_src
 
-#+RESULTS:
-| doom--customize-themes-h-13 | doom--customize-themes-h-14 | doom--customize-themes-h-33 | doom--customize-themes-h-34 | doom--customize-themes-h-35 | doom--customize-themes-h-36 |
 
 It seems reasonable to have deadlines in the error face when they're passed.
 #+begin_src emacs-lisp
@@ -15194,8 +14833,6 @@ functionality from =bmc-maths=, so we'll load that too.
 ")
 #+end_src
 
-#+RESULTS:
-#+begin_example
 \documentclass{article}
 \usepackage[usenames]{xcolor}
 
@@ -15229,8 +14866,6 @@ let's make it transparent.
       (plist-put org-format-latex-options :background "Transparent"))
 #+end_src
 
-#+RESULTS:
-| :foreground | default | :background | Transparent | :scale | 1.5 | :html-foreground | Black | :html-background | Transparent | :html-scale | 1.0 | :matchers | (begin $1 $ $$ \( \[) |
 
 With the background taken care of, we just need to make sure we're using the
 theme-appropriate foreground.
@@ -15248,8 +14883,6 @@ theme-appropriate foreground.
       (org--latex-preview-region (point-min) (point-max)))))
 #+end_src
 
-#+RESULTS:
-
 ****** Rendering speed tests
 
 We can either render from a ~dvi~ or ~pdf~ file, so let's benchmark ~latex~ and
@@ -15266,11 +14899,11 @@ size and prefer a vector graphic.
 Using the above latex expression and benchmarking lead to the following results:
 | ~dvipng~ time | ~dvisvgm~ time | ~pdf2svg~ time |
 |-------------+--------------+--------------|
-| 89 \pm 2 ms | 178 \pm 2 ms | 12 \pm 2 ms  |
+| 89 \pm 2 ms   | 178 \pm 2 ms   | 12 \pm 2 ms    |
 
 Now let's combine this to see what's best
-| Tool chain         | Total time   | Resultant file size |
-|--------------------+--------------+---------------------|
+| Tool chain         | Total time | Resultant file size |
+|--------------------+------------+---------------------|
 | ~latex~ + ~dvipng~     | 226 \pm 2 ms | 7 KiB               |
 | ~latex~ + ~dvisvgm~    | 392 \pm 4 ms | 8 KiB               |
 | ~pdflatex~ + ~pdf2svg~ | 230 \pm 2 ms | 16 KiB              |
@@ -15423,8 +15056,6 @@ I've also added some fun alternatives, just commented out.
         (?E . 'all-the-icons-blue)))
 #+end_src
 
-#+RESULTS:
-| 65 | quote | all-the-icons-red    |
 | 66 | quote | all-the-icons-orange |
 | 67 | quote | all-the-icons-yellow |
 | 68 | quote | all-the-icons-green  |
@@ -15505,8 +15136,6 @@ It's also nice to make use of the Unicode characters for check boxes, and other 
   :header        "#+header:"
   :begin_export  "#+begin_export"
   :end_export    "#+end_export"
-  :results       "#+RESULTS:"
-  :property      ":PROPERTIES:"
   :end           ":END:"
   :priority_a    "[#A]"
   :priority_b    "[#B]"
@@ -15521,8 +15150,6 @@ It's also nice to make use of the Unicode characters for check boxes, and other 
 ;;   (plist-put org-format-latex-options :background 'default))
 #+end_src
 
-#+RESULTS:
-| :name | ⁍  | :src_block | » | :src_block_end | « | :quote | “ | :quote_end | ” | :lambda | λ | :def | ƒ | :composition | ∘ | :map | ↦ | :null | ∅ | :true | 𝕋 | :false | 𝔽 | :int | ℤ | :float | ℝ | :str | 𝕊  | :bool | 𝔹 | :list | 𝕃 | :not | ￢ | :in | ∈ | :not-in | ∉ | :and | ∧ | :or | ∨ | :for | ∀ | :some | ∃ | :return | ⟼ | :yield | ⟻ | :union | ⋃ | :intersect | ∩ | :diff | ∖  | :tuple | ⨂ | :pipe |   | :dot | • | :checkbox | ☐ | :pending | ◼  | :checkedbox | ☑ | :list_property | ∷ | :em_dash | — | :ellipses | … | :arrow_right | → | :arrow_left | ← | :title | 𝙏  | :subtitle | 𝙩  | :author | 𝘼 | :date | 𝘿 | :property | ☸ | :options | ⌥ | :startup | ⏻ | :macro | 𝓜  | :html_head | 🅷 | :html | 🅗 | :latex_class | 🄻 | :latex_header | 🅻 | :beamer_header | 🅑 | :latex | 🅛 | :attr_latex | 🄛 | :attr_html | 🄗 | :attr_org | ⒪ | :begin_quote | ❝ | :end_quote | ❞ | :caption | ☰ | :header | › | :results | 🠶 | :begin_export | ⏩ | :end_export | ⏪ | :properties | ⚙ | :end | ∎ | :priority_a | ⚑ | :priority_b | ⬆ | :priority_c | ■ | :priority_d | ⬇ | :priority_e | ❓ | :checkbox | ☐ | :pending | ◼  | :checkedbox | ☑ | :list_property | ∷ | :em_dash | — | :ellipses | … | :arrow_right | → | :arrow_left | ← | :title | 𝙏  | :subtitle | 𝙩  | :author | 𝘼 | :date | 𝘿 | :property | ☸ | :options | ⌥ | :startup | ⏻ | :macro | 𝓜 | :html_head | 🅷 | :html | 🅗 | :latex_class | 🄻 | :latex_header | 🅻 | :beamer_header | 🅑 | :latex | 🅛 | :attr_latex | 🄛 | :attr_html | 🄗 | :attr_org | ⒪ | :begin_quote | ❝ | :end_quote | ❞ | :caption | ☰ | :header | › | :results | 🠶 | :begin_export | ⏩ | :end_export | ⏪ | :properties | ⚙ | :end | ∎ | :priority_a | ⚑ | :priority_b | ⬆ | :priority_c | ■ | :priority_d | ⬇ | :priority_e | ❓ |
 
 ~org-superstar-mode~ is great. While we're at it we may as well make tags prettier as well 🙂
 #+begin_src emacs-lisp :tangle packages.el
@@ -15717,8 +15344,6 @@ set palette defined ( 0 '%s',\
   (setq org-plot/gnuplot-term-extra #'+org-plot-gnuplot-term-properties))
 #+end_src
 
-#+RESULTS:
-***** custom minor mode
 
    Stolen from =Prot=
 
@@ -15749,8 +15374,6 @@ set palette defined ( 0 '%s',\
 
 
 #+end_src
-
-#+RESULTS:
 
 
 Make everything variable pitch, who the hell likes reading fixed-pitch?
@@ -16922,8 +16545,6 @@ The package that allows us to search through bibliography files and take notes o
 (setq org-journal-enable-agenda-integration t)
 #+end_src
 
-#+RESULTS:
-: t
 
 **** Org-publish
 #+begin_src emacs-lisp
@@ -16962,8 +16583,6 @@ The package that allows us to search through bibliography files and take notes o
 
 #+end_src
 
-#+RESULTS:
-: Build complete!
 
 **** Ox-Hugo
 I have recently started using =ox-hugo= to help post on my Hugo based website. The following section sets up an org-capture to enable quick blogging.
@@ -17012,8 +16631,6 @@ By setting a few more variables, we can use a nice stylesheet to give our site a
 
 #+end_src
 
-#+RESULTS:
-: <link rel="stylesheet" href="https://cdn.simplecss.org/simple.min.css" />
 
 This will remove the default JavaScript and CSS code that gets injected into the HTML output by default and replace it with the link to a nice stylesheet called Simple.css (or a CSS file of your own!).
 
@@ -17135,8 +16752,6 @@ This will remove the default JavaScript and CSS code that gets injected into the
          (("C-c n a" . orb-note-actions))))
 #+END_SRC
 
-#+RESULTS:
-: orb-note-actions
 
 **** Org-roam-server
 
@@ -17514,6 +17129,17 @@ but more convenient, like =;=.
    '( ;; my own stuff
      (?B    "\\mathbb"        nil          t    nil  nil)
      (?a    "\\abs"           nil          t    nil  nil))))
+
+
+;; (after! cdlatex
+;;   (setq cdlatex-math-modify-alist
+;;         '((?d "\\mathbb" nil t nil nil)
+;;           (?D "\\mathbbm" nil t nil nil))
+;;         cdlatex-env-alist
+;;         '(("cases" "\\begin{cases} ? \\end{cases}" nil)
+;;           ("matrix" "\\begin{matrix} ? \\end{matrix}" nil)
+;;           ("pmatrix (parenthesis)" "\\begin{pmatrix} ? \\end{pmatrix}" nil)
+;;           ("bmatrix [braces]" "\\begin{bmatrix} ? \\end{bmatrix}" nil))))
 #+end_src
 
 **** LAAS
@@ -17524,16 +17150,6 @@ This makes use of =aas= (/Auto Activating Snippets/) for CDLaTeX-like symbol inp
 #+begin_src emacs-lisp :tangle packages.el
 (package! laas :recipe (:host github :repo "tecosaur/LaTeX-auto-activating-snippets"))
 
-#+end_src
-
-#+begin_src emacs-lisp
-(use-package! laas
-  :hook (LaTeX-mode . laas-mode)
-  :config
-  (defun laas-tex-fold-maybe ()
-    (unless (equal "/" aas-transient-snippet-key)
-      (+latex-fold-last-macro-a)))
-  (add-hook 'aas-post-snippet-expand-hook #'laas-tex-fold-maybe))
 #+end_src
 
 #+begin_src emacs-lisp :tangle no
@@ -17563,8 +17179,50 @@ This makes use of =aas= (/Auto Activating Snippets/) for CDLaTeX-like symbol inp
 #+end_src
 
 
-#+RESULTS:
-| preview-mode-setup | er/add-latex-mode-expansions | mixed-pitch-mode | laas-mode | beginend-LaTeX-mode | reftex-mode | evil-tex-mode | adaptive-wrap-prefix-mode | +evil-embrace-latex-mode-hook-h | embrace-LaTeX-mode-hook |
+#+begin_src emacs-lisp :tangle no
+(use-package! laas
+  :hook (org-mode . laas-mode)
+  :config
+  (setq laas-enable-auto-space nil)
+  ;; ;; For some reason (texmathp) returns t everywhere in org buffer
+  ;; ;; which is not every useful, so here's a fix
+  ;; (add-hook 'org-cdlatex-mode-hook
+  ;;           (lambda () (advice-remove 'texmathp 'org--math-always-on)))
+  ;;More snippets
+  (aas-set-snippets 'laas-mode
+    ;; Condition: Not in math environment and not in a middle of a word
+    :cond (lambda nil (and (not (laas-org-mathp)) (memq (char-before) '(10 40 32))))
+    "mk"  (lambda () (interactive) (yas-expand-snippet "\\\\( $0 \\\\)"))
+    "mmk" (lambda () (interactive) (yas-expand-snippet "\\[ $0 \\]"))
+    "citet" (lambda () (interactive) (yas-expand-snippet "\[cite/t:@$0\]"))
+    ;; Condition: Math environment
+    :cond #'laas-org-mathp
+    "qed" "\\blacksquare"
+    ",,"  "\\,,"
+    ".,"  "\\,."
+    ";0" "\\emptyset"
+    ",." nil                            ;disable the annoying \vec{} modifier
+    "||" nil
+    "lr||" (lambda () (interactive) (yas-expand-snippet "\\lVert $0 \\rVert"))
+    "pdv" (lambda () (interactive) (yas-expand-snippet "\\frac{\\partial $1}{\\partial $2}"))
+    ;; Condition: Math environment, modify last object on the left
+    :cond #'laas-object-on-left-condition
+    "hat" (lambda () (interactive) (laas-wrap-previous-object "hat"))
+    "ubar" (lambda () (interactive) (laas-wrap-previous-object "underline"))
+    "bar" (lambda () (interactive) (laas-wrap-previous-object "bar"))
+    "dot" (lambda () (interactive) (laas-wrap-previous-object "dot"))
+    "tilde" (lambda () (interactive) (laas-wrap-previous-object "tilde"))
+    "TX"  (lambda () (interactive) (laas-wrap-previous-object "text"))
+    "ON"  (lambda () (interactive) (laas-wrap-previous-object "operatorname"))
+    "BON" (lambda () (interactive) (laas-wrap-previous-object
+                                    '("\\operatorname{\\mathbf{" . "}}")))
+    "tt"  "_{t}"
+    "tp1" "_{t+1}"
+    "tm1" "_{t-1}"
+    "**"  "^{\\ast}"))
+
+#+end_src
+
 
 *** SyncTeX
 
@@ -17869,8 +17527,6 @@ Everything is mapped to SPC-R because doom is not using it and R stands for roam
       )
 #+end_src
 
-#+RESULTS:
-: org-gtd-show-stuck-projects
 
 ** getting things done
 
@@ -17901,8 +17557,6 @@ Everything is mapped to SPC-R because doom is not using it and R stands for roam
   (bind-key "C-c c" 'org-gtd-clarify-finalize)) ;; the keybinding to hit when you're done editing an item in the processing phase
 #+end_src
 
-#+RESULTS:
-: org-gtd-show-stuck-projects
 
 * Denote
 #+begin_src emacs-lisp :tangle no
@@ -17912,8 +17566,6 @@ Everything is mapped to SPC-R because doom is not using it and R stands for roam
            :repo "protesilaos/denote"))
 #+end_src
 
-#+RESULTS:
-| denote | :modules | ((:user) (:user . modules)) | :recipe | (:host github :repo protesilaos/denote) |
 
 #+begin_src emacs-lisp :tangle no
 
@@ -18074,8 +17726,6 @@ Everything is mapped to SPC-R because doom is not using it and R stands for roam
 
 #+end_src
 
-#+RESULTS:
-: prot-emacs-write
 
 * Some helper macros
 
@@ -18315,8 +17965,6 @@ user base, which tends to correlate with better support and attention.
 
 #+end_src
 
-#+RESULTS:
-: t
 
 *** Viewing Mail
 :PROPERTIES:
