@@ -1,4 +1,5 @@
 ;;; config.el -*- lexical-binding: t; -*-
+(setenv "LC_ALL" "C.UTF-8")
 
 ;; (load "~/.config/doom/exwmmain.el")
 ;; (setq package-native-compile t)
