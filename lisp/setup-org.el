@@ -72,7 +72,7 @@
   (+org-tree-to-indirect-buffer-options 'dedicated-frame))
 
 (use-package! org-modern
-  ;; :hook (org-mode . org-modern-mode)
+  :hook (org-mode . org-modern-mode)
   :config
   (setq org-modern-star '("◉" "○" "✸" "✿" "✤" "✜" "◆" "▶")
         org-modern-table-vertical 1
@@ -227,7 +227,7 @@
 
 (setq org-list-demote-modify-bullet '(("+" . "-") ("-" . "+") ("*" . "+") ("1." . "a.")))
 
-(add-hook 'org-mode-hook 'turn-on-flyspell)
+;; (add-hook 'org-mode-hook 'turn-on-flyspell)
 
 ;; (cl-defmacro lsp-org-babel-enable (lang)
 ;;   "Support LANG in org source code block."
