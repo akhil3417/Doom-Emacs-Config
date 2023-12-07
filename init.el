@@ -23,7 +23,7 @@
        :completion
         ;; (company)                     ; the ultimate code completion backend
                         ; ... when your children are better than you
-       (corfu +icons +orderless +tng)
+       (corfu +icons +orderless)
        ;;helm              ; the *other* search engine for love and life
        ;;ido               ; the other *other* search engine...
        ;;ivy               ; a search engine for love and life
@@ -48,8 +48,8 @@
         +all                        ; catch all popups that start with an asterix
         +defaults)                  ; default popup rules
        ;; tabs              ; a tab bar for Emacs
-       unicode           ; extended unicode support for various languages
        ;; treemacs          ; a project drawer, like neotree but cooler
+       ;; unicode           ; extended unicode support for various languages
        ;; (vc-gutter +pretty) ; vcs diff in the fringe
        ;; vi-tilde-fringe   ; fringe tildes to mark beyond EOB
        window-select     ; visually switch windows
@@ -76,6 +76,8 @@
        ibuffer         ; interactive buffer management
        undo                ; persistent, smarter undo for your inevitable mistakes
        vc                ; version-control and Emacs, sitting in a tree
+       ;; (eww +shrface +highlight)               ;better than chrome
+       (eww +langdetect)               ;better than chrome
 
        :term
        eshell            ; the elisp shell that works everywhere
@@ -84,8 +86,9 @@
        vterm             ; the best terminal emulation in Emacs
 
        :checkers
-       syntax              ; tasing you for every semicolon you forget
-       (:if (executable-find "aspell") spell) ; tasing you for misspelling mispelling
+       (syntax +flymake)              ; tasing you for every semicolon you forget
+       ;; (:if (executable-find "aspell") spell) ; tasing you for misspelling mispelling
+       (spell +aspell)
        ;; (spell +flyspell) ; tasing you for misspelling mispelling
        grammar           ; tasing grammar mistake every you make
 
@@ -103,8 +106,9 @@
        ;;gist              ; interacting with github gists
        (lookup                      ; helps you navigate your code and documentation
         +dictionary                 ; dictionary/thesaurus is nice
+        +offline
         +docsets)                   ; ...or in Dash docsets locally
-       (lsp +elgot +peek)               ; M-x vscode
+       (lsp +elgot)               ; M-x vscode
        (magit +forge)             ; a git porcelain for Emacs
        make              ; run make tasks from Emacs
        (pass +auth)              ; password manager for nerds
@@ -166,19 +170,20 @@
        (org                         ; organize your plain life in plain text
         +dragndrop                  ; drag & drop files/images into org buffers
         +notify
-        ;;+hugo                     ; use Emacs for hugo blogging
+        +hugo                     ; use Emacs for hugo blogging
         +journal
         +noter                      ; enhanced PDF notetaking
         +jupyter                    ; ipython/jupyter support for babel
         +pandoc                     ; export-with-pandoc support
-        +gnuplot                    ; who doesn't like pretty pictures
+        ;; +gnuplot                    ; who doesn't like pretty pictures
         +pomodoro                 ; be fruitful with the tomato technique
         +present                    ; using org-mode for presentations
+        ;; +pretty
         +roam2)                     ; wander around notes
        ;;php               ; perl's insecure younger brother
        ;;plantuml          ; diagrams for confusing people more
        ;;purescript        ; javascript, but functional
-       (python +lsp +pyright +tree-sitter)       ; beautiful is better than ugly
+       (python +conda +lsp +pyright +tree-sitter)       ; beautiful is better than ugly
        ;;qt                ; the 'cutest' gui framework ever
        (racket +lsp +xp)            ; a DSL for DSLs
        ;;raku              ; the artist formerly known as perl6
