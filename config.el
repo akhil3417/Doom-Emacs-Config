@@ -1860,8 +1860,8 @@ preview-default-preamble "\\fi}\"%' \"\\detokenize{\" %t \"}\""))
   (gif-screencast-write-colormap)
   (add-hook 'doom-load-theme-hook #'gif-screencast-write-colormap))
 
-;; html
-;; [[file:lang.org::*HTML Export][HTML Export:1]]
+
+;; [[file:test.org::*HTML Export][HTML Export:1]]
 (define-minor-mode org-fancy-html-export-mode
   "Toggle my fabulous org export tweaks. While this mode itself does a little bit,
 the vast majority of the change in behaviour comes from switch statements in:
@@ -1884,7 +1884,7 @@ the vast majority of the change in behaviour comes from switch statements in:
           org-html-checkbox-type 'html)))
 ;; HTML Export:1 ends here
 
-;; [[file:lang.org::*Extra header content][Extra header content:1]]
+;; [[file:test.org::*Extra header content][Extra header content:1]]
 (defadvice! org-html-template-fancier (orig-fn contents info)
   "Return complete document string after HTML conversion.
 CONTENTS is the transcoded contents string.  INFO is a plist
@@ -1980,7 +1980,7 @@ compared to the default implementation."
      "</div>\n</body>\n</html>")))
 ;; Extra header content:1 ends here
 
-;; [[file:lang.org::*Extra header content][Extra header content:2]]
+;; [[file:test.org::*Extra header content][Extra header content:2]]
 (defadvice! org-html-toc-linked (depth info &optional scope)
   "Build a table of contents.
 
@@ -2014,7 +2014,7 @@ of contents as a string, or nil if it is empty."
                     (format "</%s>\n" outer-tag))))))))
 ;; Extra header content:2 ends here
 
-;; [[file:lang.org::*Extra header content][Extra header content:3]]
+;; [[file:test.org::*Extra header content][Extra header content:3]]
 (defvar org-html-meta-tags-opengraph-image
   '(:image "https://tecosaur.com/resources/org/nib.png"
     :type "image/png"
@@ -2076,7 +2076,7 @@ of contents as a string, or nil if it is empty."
 (setq org-html-meta-tags #'org-html-meta-tags-fancy)
 ;; Extra header content:3 ends here
 
-;; [[file:lang.org::*Custom CSS/JS][Custom CSS/JS:2]]
+;; [[file:test.org::*Custom CSS/JS][Custom CSS/JS:2]]
 (setq org-html-style-plain org-html-style-default
       org-html-htmlize-output-type 'css
       org-html-doctype "html5"
@@ -2096,14 +2096,14 @@ of contents as a string, or nil if it is empty."
 (org-html-reload-fancy-style)
 ;; Custom CSS/JS:2 ends here
 
-;; [[file:lang.org::*Collapsable src and example blocks][Collapsable src and example blocks:1]]
+;; [[file:test.org::*Collapsable src and example blocks][Collapsable src and example blocks:1]]
 (defvar org-html-export-collapsed nil)
 (eval '(cl-pushnew '(:collapsed "COLLAPSED" "collapsed" org-html-export-collapsed t)
                    (org-export-backend-options (org-export-get-backend 'html))))
 (add-to-list 'org-default-properties "EXPORT_COLLAPSED")
 ;; Collapsable src and example blocks:1 ends here
 
-;; [[file:lang.org::Src blocks][Src blocks]]
+;; [[file:test.org::Src blocks][Src blocks]]
 (defadvice! org-html-src-block-collapsable (orig-fn src-block contents info)
   "Wrap the usual <pre> block in a <details>"
   :around #'org-html-src-block
@@ -2223,7 +2223,7 @@ of contents as a string, or nil if it is empty."
       mode))
 ;; Src blocks ends here
 
-;; [[file:lang.org::Example, fixed width, and property blocks][Example, fixed width, and property blocks]]
+;; [[file:test.org::Example, fixed width, and property blocks][Example, fixed width, and property blocks]]
 (defun org-html-block-collapsable (orig-fn block contents info)
   "Wrap the usual block in a <details>"
   (if (or (not org-fancy-html-export-mode) (bound-and-true-p org-msg-export-in-progress))
@@ -2259,12 +2259,12 @@ of contents as a string, or nil if it is empty."
 (advice-add 'org-html-property-drawer :around #'org-html-block-collapsable)
 ;; Example, fixed width, and property blocks ends here
 
-;; [[file:lang.org::*Include extra font-locking in htmlize][Include extra font-locking in htmlize:1]]
+;; [[file:test.org::*Include extra font-locking in htmlize][Include extra font-locking in htmlize:1]]
 (autoload #'highlight-numbers--turn-on "highlight-numbers")
 (add-hook 'htmlize-before-hook #'highlight-numbers--turn-on)
 ;; Include extra font-locking in htmlize:1 ends here
 
-;; [[file:lang.org::*Handle table overflow][Handle table overflow:1]]
+;; [[file:test.org::*Handle table overflow][Handle table overflow:1]]
 (defadvice! org-html-table-wrapped (orig-fn table contents info)
   "Wrap the usual <table> in a <div>"
   :around #'org-html-table
@@ -2285,7 +2285,7 @@ of contents as a string, or nil if it is empty."
                 (funcall orig-fn table contents info))))))
 ;; Handle table overflow:1 ends here
 
-;; [[file:lang.org::*TOC as a collapsable tree][TOC as a collapsable tree:1]]
+;; [[file:test.org::*TOC as a collapsable tree][TOC as a collapsable tree:1]]
 (defadvice! org-html--format-toc-headline-colapseable (orig-fn headline info)
   "Add a label and checkbox to `org-html--format-toc-headline's usual output,
 to allow the TOC to be a collapseable tree."
@@ -2298,7 +2298,7 @@ to allow the TOC to be a collapseable tree."
               id id (funcall orig-fn headline info)))))
 ;; TOC as a collapsable tree:1 ends here
 
-;; [[file:lang.org::*TOC as a collapsable tree][TOC as a collapsable tree:2]]
+;; [[file:test.org::*TOC as a collapsable tree][TOC as a collapsable tree:2]]
 (defadvice! org-html--toc-text-stripped-leaves (orig-fn toc-entries)
   "Remove label"
   :around #'org-html--toc-text
@@ -2308,7 +2308,7 @@ to allow the TOC to be a collapseable tree."
                               (funcall orig-fn toc-entries))))
 ;; TOC as a collapsable tree:2 ends here
 
-;; [[file:lang.org::*Make verbatim different to code][Make verbatim different to code:1]]
+;; [[file:test.org::*Make verbatim different to code][Make verbatim different to code:1]]
 (setq org-html-text-markup-alist
       '((bold . "<b>%s</b>")
         (code . "<code>%s</code>")
@@ -2318,7 +2318,7 @@ to allow the TOC to be a collapseable tree."
         (verbatim . "<kbd>%s</kbd>")))
 ;; Make verbatim different to code:1 ends here
 
-;; [[file:lang.org::*Change checkbox type][Change checkbox type:1]]
+;; [[file:test.org::*Change checkbox type][Change checkbox type:1]]
 (appendq! org-html-checkbox-types
           '((html-span
              (on . "<span class='checkbox'></span>")
@@ -2327,13 +2327,13 @@ to allow the TOC to be a collapseable tree."
 (setq org-html-checkbox-type 'html-span)
 ;; Change checkbox type:1 ends here
 
-;; [[file:lang.org::*Extra special strings][Extra special strings:1]]
+;; [[file:test.org::*Extra special strings][Extra special strings:1]]
 (pushnew! org-html-special-string-regexps
           '("-&gt;" . "&#8594;")
           '("&lt;-" . "&#8592;"))
 ;; Extra special strings:1 ends here
 
-;; [[file:lang.org::*Header anchors][Header anchors:1]]
+;; [[file:test.org::*Header anchors][Header anchors:1]]
 (defun org-export-html-headline-anchor (text backend info)
   (when (and (org-export-derived-backend-p backend 'html)
              (not (org-export-derived-backend-p backend 're-reveal))
@@ -2348,13 +2348,13 @@ to allow the TOC to be a collapseable tree."
              'org-export-html-headline-anchor)
 ;; Header anchors:1 ends here
 
-;; [[file:lang.org::*Link previews][Link previews:1]]
+;; [[file:test.org::*Link previews][Link previews:1]]
 (org-link-set-parameters "Https"
                          :follow (lambda (url arg) (browse-url (concat "https:" url) arg))
                          :export #'org-url-fancy-export)
 ;; Link previews:1 ends here
 
-;; [[file:lang.org::*Link previews][Link previews:2]]
+;; [[file:test.org::*Link previews][Link previews:2]]
 (defun org-url-fancy-export (url _desc backend)
   (let ((metadata (org-url-unfurl-metadata (concat "https:" url))))
     (cond
@@ -2375,7 +2375,7 @@ to allow the TOC to be a collapseable tree."
      (t url))))
 ;; Link previews:2 ends here
 
-;; [[file:lang.org::*Link previews][Link previews:3]]
+;; [[file:test.org::*Link previews][Link previews:3]]
 (setq org-url-unfurl-metadata--cache nil)
 (defun org-url-unfurl-metadata (url)
   (cdr (or (assoc url org-url-unfurl-metadata--cache)
@@ -2423,11 +2423,11 @@ to allow the TOC to be a collapseable tree."
                  org-url-unfurl-metadata--cache)))))
 ;; Link previews:3 ends here
 
-;; [[file:lang.org::*Pre-rendered][Pre-rendered:1]]
-;; (setq-default org-html-with-latex `dvisvgm)
+;; [[file:test.org::*Pre-rendered][Pre-rendered:1]]
+(setq-default org-html-with-latex `dvisvgm)
 ;; Pre-rendered:1 ends here
 
-;; [[file:lang.org::*MathJax][MathJax:1]]
+[[file:test.org::*MathJax][MathJax:1]]
 (setq org-html-mathjax-options
       '((path "https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-svg.js" )
         (scale "1")
