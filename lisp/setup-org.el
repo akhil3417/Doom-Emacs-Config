@@ -23,34 +23,11 @@
       (write-region (point-min) (point-max) file))
     (insert (format "[[file:%s]]\n" (file-relative-name file)))))
 
-(use-package! org-appear
-  :hook (org-mode . org-appear-mode)
-  :config
-  (setq org-appear-autoemphasis t
-        org-appear-autosubmarkers t
-        org-appear-autolinks nil)
-  ;; for proper first-time setup, `org-appear--set-elements'
-  ;; needs to be run after other hooks have acted.
-  (run-at-time nil nil #'org-appear--set-elements))
 
  ;; (add-to-list 'org-emphasis-alist
  ;;              '("=" (:foreground "red")
  ;;                ))
 
-(use-package! org-ol-tree
-  :commands org-ol-tree
-  :config
-  (setq org-ol-tree-ui-icon-set
-        (if (and (display-graphic-p)
-                 (fboundp 'all-the-icons-material))
-            'all-the-icons
-          'unicode))
-  (org-ol-tree-ui--update-icon-set))
-
-;; (map! :map org-mode-map
-;;       :after org
-;;       :localleader
-;;       :desc "Outline" "O" #'org-ol-tree)
 
 (defun +org-tree-to-indirect-buffer-options (option)
     (let* ((old-value org-indirect-buffer-display))
@@ -142,6 +119,31 @@
           ("caption" . "☰")
           ("results" . "🠶")))
   (custom-set-faces! '(org-modern-statistics :inherit org-checkbox-statistics-todo)))
+
+(use-package! org-appear
+  :hook (org-mode . org-appear-mode)
+  :config
+  (setq org-appear-autoemphasis t
+        org-appear-autosubmarkers t
+        org-appear-autolinks nil)
+  ;; for proper first-time setup, `org-appear--set-elements'
+  ;; needs to be run after other hooks have acted.
+  (run-at-time nil nil #'org-appear--set-elements))
+
+(use-package! org-ol-tree
+  :commands org-ol-tree
+  :config
+  (setq org-ol-tree-ui-icon-set
+        (if (and (display-graphic-p)
+                 (fboundp 'all-the-icons-material))
+            'all-the-icons
+          'unicode))
+  (org-ol-tree-ui--update-icon-set))
+
+(map! :map org-mode-map
+      :after org
+      :localleader
+      :desc "Outline" "O" #'org-ol-tree)
 
 (after! spell-fu
   (cl-pushnew 'org-modern-tag (alist-get 'org-mode +spell-excluded-faces-alist)))
@@ -1139,7 +1141,6 @@ TODO abstract backend implementations."
    todo todo-type priority (org-export-filter-text-acronym text 'latex info) tags info))
 (setq org-latex-format-headline-function #'org-latex-format-headline-acronymised)
 
-
 (defun +org-mode--fontlock-only-mode ()
   "Just apply org-mode's font-lock once."
   (let (org-mode-hook
@@ -1156,7 +1157,6 @@ TODO abstract backend implementations."
                       (list (cons "org" #'+org-mode--fontlock-only)))))
 
 (add-hook 'org-export-before-processing-hook #'+org-export-babel-mask-org-config)
-
 
 ;; [[file:lang.org::*Reveal export][Reveal export:1]]
 (setq org-re-reveal-theme "white"
