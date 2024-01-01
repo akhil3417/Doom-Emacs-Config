@@ -267,37 +267,38 @@ Also immediately enables `mixed-pitch-modes' if currently in one of the modes."
      (switch-to-buffer nil))               ; return to the initial buffer
 
   (define-key evil-normal-state-map (kbd "C-t") 'transpose-chars)
+(define-key evil-normal-state-map (kbd "C-t") 'transpose-chars)
 ;; Paste in Visual Mode:1 ends here
 
 ;; [[file:config.org::*Unbind certain Emacs keybindings in =evil-mode=][Unbind certain Emacs keybindings in =evil-mode=:1]]
-  (define-key evil-normal-state-map (kbd "C-?") #'execute-extended-command)
-  (define-key evil-normal-state-map (kbd "C-.") #'embark-act)
-  (define-key evil-normal-state-map (kbd "t") #'my/avy-goto-char-this-window)
-  (define-key evil-normal-state-map (kbd "T") #'avy-goto-char-timer)
-  (define-key evil-normal-state-map (kbd "C-n") nil)
-  (define-key evil-normal-state-map (kbd "M-<right>") #'sp-backward-barf-sexp)
-  (define-key evil-normal-state-map (kbd "M-<left>") #'sp-backward-slurp-sexp)
-  (define-key evil-normal-state-map (kbd "C-<right>") #'sp-forward-slurp-sexp)
-  (define-key evil-normal-state-map (kbd "C-<left>") #'sp-forward-barf-sexp)
+(define-key evil-normal-state-map (kbd "C-?") #'execute-extended-command)
+(define-key evil-normal-state-map (kbd "C-.") #'embark-act)
+(define-key evil-normal-state-map (kbd "t") #'my/avy-goto-char-this-window)
+(define-key evil-normal-state-map (kbd "T") #'avy-goto-char-timer)
+(define-key evil-normal-state-map (kbd "C-n") nil)
+(define-key evil-normal-state-map (kbd "M-<right>") #'sp-backward-barf-sexp)
+(define-key evil-normal-state-map (kbd "M-<left>") #'sp-backward-slurp-sexp)
+(define-key evil-normal-state-map (kbd "C-<right>") #'sp-forward-slurp-sexp)
+(define-key evil-normal-state-map (kbd "C-<left>") #'sp-forward-barf-sexp)
 
-  ;; (define-key org-mode-map (kbd "C-'") nil) ;; need that for embark act
-  (evil-define-key 'normal org-mode-map (kbd "M-j") nil) ;; avvvy
+;; (define-key org-mode-map (kbd "C-'") nil) ;; need that for embark act
+(evil-define-key 'normal org-mode-map (kbd "M-j") nil) ;; avvvy
 ;; for org-agenda-custom
-  ;; (define-key org-super-agenda-header-map (kbd "j") nil) ;; its irrtating to be prompted when in custom org-agenda heading , can just use gd
-  ;; (define-key org-super-agenda-header-map (kbd "k") nil) ;; just use SPC-X , for capture
+;; (define-key org-super-agenda-header-map (kbd "j") nil) ;; its irrtating to be prompted when in custom org-agenda heading , can just use gd
+;; (define-key org-super-agenda-header-map (kbd "k") nil) ;; just use SPC-X , for capture
 
-  (define-key evil-normal-state-map (kbd "C-M-d") nil) ;;change default evil-multiedit-restore in favor of sp-down-sexp
+(define-key evil-normal-state-map (kbd "C-M-d") nil) ;;change default evil-multiedit-restore in favor of sp-down-sexp
 ;; Unbind certain Emacs keybindings in =evil-mode=:1 ends here
 
 ;; [[file:config.org::*Unbind certain Emacs keybindings in =evil-mode=][Unbind certain Emacs keybindings in =evil-mode=:2]]
-  (define-key evil-normal-state-map (kbd "M-.") nil)
-  (define-key evil-normal-state-map (kbd "M-,") nil)
+(define-key evil-normal-state-map (kbd "M-.") nil)
+(define-key evil-normal-state-map (kbd "M-,") nil)
 ;; Unbind certain Emacs keybindings in =evil-mode=:2 ends here
 
 ;; [[file:config.org::*Unbind certain Emacs keybindings in =evil-mode=][Unbind certain Emacs keybindings in =evil-mode=:5]]
-  (define-key global-map (kbd "<tab>") nil)
-  (define-key evil-insert-state-map (kbd "<tab>") nil)
-  (evil-define-key 'normal org-mode-map (kbd "<tab>") #'org-cycle)
+(define-key global-map (kbd "<tab>") nil)
+(define-key evil-insert-state-map (kbd "<tab>") nil)
+(evil-define-key 'normal org-mode-map (kbd "<tab>") #'org-cycle)
 ;; Unbind certain Emacs keybindings in =evil-mode=:5 ends here
 ;;
 (when (featurep! :completion corfu)
