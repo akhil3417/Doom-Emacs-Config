@@ -1877,6 +1877,7 @@ the vast majority of the change in behaviour comes from switch statements in:
   :init-value t
   (if org-fancy-html-export-mode
       (setq org-html-style-default org-html-style-fancy
+            org-html-head 'nil ;; important
             org-html-meta-tags #'org-html-meta-tags-fancy
             org-html-checkbox-type 'html-span)
     (setq org-html-style-default org-html-style-plain
@@ -2076,8 +2077,12 @@ of contents as a string, or nil if it is empty."
 (setq org-html-meta-tags #'org-html-meta-tags-fancy)
 ;; Extra header content:3 ends here
 
+;; (setq org-html-head "<link rel=\"stylesheet\" href=\"https://cdn.simplecss.org/simple.min.css\" />")
+
 ;; [[file:test.org::*Custom CSS/JS][Custom CSS/JS:2]]
 (setq org-html-style-plain org-html-style-default
+      org-html-head 'nil ;; important
+      org-html-head-include-default-style 't ;; otherwise below template won't be added
       org-html-htmlize-output-type 'css
       org-html-doctype "html5"
       org-html-html5-fancy t)
@@ -2424,7 +2429,7 @@ to allow the TOC to be a collapseable tree."
 ;; Link previews:3 ends here
 
 ;; [[file:test.org::*Pre-rendered][Pre-rendered:1]]
-(setq-default org-html-with-latex `dvisvgm)
+;; (setq-default org-html-with-latex `dvisvgm)
 ;; Pre-rendered:1 ends here
 
 [[file:test.org::*MathJax][MathJax:1]]
