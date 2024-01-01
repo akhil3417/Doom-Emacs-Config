@@ -12,7 +12,7 @@
 ;; [[file:config.org::*Personal Information][Personal Information:3]]
 (setq auth-sources '("~/.authinfo")
       auth-source-cache-expiry nil)
- ; default is 7200 (2h)
+                                        ; default is 7200 (2h)
 (use-package! auth-source-pass
   :init (auth-source-pass-enable))
 ;; Personal Information:3 ends here
@@ -58,7 +58,7 @@
 (load "~/.config/doom/lisp/yt-org.el")
 ;;
 ;; launch telegram
-    ;; Launch Telega in workspace 0 if we've logged in before
+;; Launch Telega in workspace 0 if we've logged in before
 ;; (when (file-exists-p "~/.telega/db.sqlite")
 ;;   (load "~/.config/doom/lisp/setup-telega.el")
 ;;   (telega nil)
@@ -66,8 +66,8 @@
 ;; telega:2 ends here
 ;;
 (setq eww-download-directory "~/Downloads/")
-  (setq eww-bookmarks-directory (expand-file-name "~/.config/eww-bookmarks/"))
-  (setq bookmark-file (expand-file-name "~/.config/eww-bookmarks/emacs-bookmarks"))
+(setq eww-bookmarks-directory (expand-file-name "~/.config/eww-bookmarks/"))
+(setq bookmark-file (expand-file-name "~/.config/eww-bookmarks/emacs-bookmarks"))
 (defun ak/mpc-invidious-grabber (arg)
   (interactive "P")
   (let* ((query (replace-regexp-in-string " " "+" (read-string "Enter query: ")))
@@ -118,7 +118,7 @@
 ;;       doom-big-font (font-spec :family "JetBrains Mono" :size 27)
 ;;       doom-variable-pitch-font (font-spec :family "Overpass" :size 20)
 ;;       doom-unicode-font (font-spec :family "JuliaMono")
-      ;; doom-unicode-font (font-spec :name "Noto Color Emoji"
+;; doom-unicode-font (font-spec :name "Noto Color Emoji"
 ;;       doom-serif-font (font-spec :family "IBM Plex Mono" :size 17 :weight 'light))
 
 (setq doom-font (font-spec :family "Fira Code" :size 18 :weight 'light :slant 'italic)
@@ -126,7 +126,7 @@
       doom-big-font (font-spec :family "JetBrains Mono" :size 22 :weight 'light)
       doom-serif-font (font-spec :family "IBM Plex Mono" :size 18 :weight 'light)
       doom-unicode-font (font-spec :name "Noto Color Emoji"))
-      ;; doom-unicode-font (font-spec :family "DejaVu Sans Mono" :size 18))
+;; doom-unicode-font (font-spec :family "DejaVu Sans Mono" :size 18))
 
 ;; Thin grey line separating windows
 (set-face-background 'vertical-border "black")
@@ -146,10 +146,10 @@
 (after! doom-themes
   (setq doom-themes-enable-bold t
         doom-themes-enable-italic t
-   doom-themes-treemacs-enable-variable-pitch nil))
- (custom-set-faces!
-   '(font-lock-comment-face :slant italic)
-   '(font-lock-keyword-face :slant italic))
+        doom-themes-treemacs-enable-variable-pitch nil))
+(custom-set-faces!
+  '(font-lock-comment-face :slant italic)
+  '(font-lock-keyword-face :slant italic))
 
 (use-package! mixed-pitch
   :hook (org-mode . mixed-pitch-mode)
@@ -199,9 +199,9 @@ Also immediately enables `mixed-pitch-modes' if currently in one of the modes."
 (set-char-table-range composition-function-table ?T '(["\\(?:Th\\)" 0 font-shape-gstring]))
 
 (defface variable-pitch-serif
-    '((t (:family "serif")))
-    "A variable-pitch face with serifs."
-    :group 'basic-faces)
+  '((t (:family "serif")))
+  "A variable-pitch face with serifs."
+  :group 'basic-faces)
 
 (defcustom variable-pitch-serif-font (font-spec :family "serif")
   "The font face used for `variable-pitch-serif'."
@@ -216,7 +216,7 @@ Also immediately enables `mixed-pitch-modes' if currently in one of the modes."
   (doom-themes-visual-bell-config)
   ;; Corrects (and improves) org-mode's native fontification.
   (doom-themes-org-config))
-  (doom-themes-visual-bell-config)
+(doom-themes-visual-bell-config)
 (map! :leader
       :desc "Load new theme" "h t" #'load-theme)
 
@@ -240,9 +240,9 @@ Also immediately enables `mixed-pitch-modes' if currently in one of the modes."
     ;; Also see `beframe-switch-buffer-in-frame'.
     (define-key map (kbd "C-x B") #'beframe-switch-buffer)))
 
-  (let ((map global-map))
-    (define-key map (kbd "C-x C-n") #'next-buffer)     ; override `set-goal-column'
-    (define-key map (kbd "C-x C-p") #'previous-buffer)) ; override `mark-page'
+(let ((map global-map))
+  (define-key map (kbd "C-x C-n") #'next-buffer)     ; override `set-goal-column'
+  (define-key map (kbd "C-x C-p") #'previous-buffer)) ; override `mark-page'
 
 ;; [[file:config.org::*Abbrev][Abbrev:1]]
 (add-hook 'doom-first-buffer-hook
@@ -252,21 +252,20 @@ Also immediately enables `mixed-pitch-modes' if currently in one of the modes."
 ;; Abbrev:1 ends here
 
 ;; [[file:config.org::*Save Macros][Save Macros:1]]
-  (defun save-macro (name)
-    "save a macro. Take a name as argument
+(defun save-macro (name)
+  "save a macro. Take a name as argument
      and save the last defined macro under
      this name at the end of your .emacs"
-     (interactive "SName of the macro: ")  ; ask for the name of the macro
-     (kmacro-name-last-macro name)         ; use this name for the macro
-     (find-file custom-file)            ; open ~/.emacs or other user init file
-     (goto-char (point-max))               ; go to the end of the .emacs
-     (newline)                             ; insert a newline
-     (insert-kbd-macro name)               ; copy the macro
-     (newline)                             ; insert a newline
-     (save-buffer)
-     (switch-to-buffer nil))               ; return to the initial buffer
+  (interactive "SName of the macro: ")  ; ask for the name of the macro
+  (kmacro-name-last-macro name)         ; use this name for the macro
+  (find-file custom-file)            ; open ~/.emacs or other user init file
+  (goto-char (point-max))               ; go to the end of the .emacs
+  (newline)                             ; insert a newline
+  (insert-kbd-macro name)               ; copy the macro
+  (newline)                             ; insert a newline
+  (save-buffer)
+  (switch-to-buffer nil))               ; return to the initial buffer
 
-  (define-key evil-normal-state-map (kbd "C-t") 'transpose-chars)
 (define-key evil-normal-state-map (kbd "C-t") 'transpose-chars)
 ;; Paste in Visual Mode:1 ends here
 
@@ -302,24 +301,24 @@ Also immediately enables `mixed-pitch-modes' if currently in one of the modes."
 ;; Unbind certain Emacs keybindings in =evil-mode=:5 ends here
 ;;
 (when (featurep! :completion corfu)
-(map! :map corfu-map
-      :desc "insert separator" "C-SPC" #'corfu-insert-separator)
-;; (setq corfu-quit-no-match t)
+  (map! :map corfu-map
+        :desc "insert separator" "C-SPC" #'corfu-insert-separator)
+  ;; (setq corfu-quit-no-match t)
 
-(use-package! corfu
-  :config
-  (defun corfu-enable-in-minibuffer ()
-    "Enable Corfu in the minibuffer if `completion-at-point' is bound."
-    (when (where-is-internal #'completion-at-point (list (current-local-map)))
-      ;; (setq-local corfu-auto nil) ;; Enable/disable auto completion
-      (setq-local corfu-echo-delay nil ;; Disable automatic echo and popup
-                  corfu-popupinfo-delay nil)
-      (corfu-mode 1)))
-  (add-hook 'minibuffer-setup-hook #'corfu-enable-in-minibuffer))
-;; Automatic documentation popup while autocompleting is nice, but let’s reduce
-;; the font size a little bit so that it doesn’t cover the screen too much and
-;; makes it easier to skim for information:
-(custom-set-faces! '((corfu-popupinfo) :height 0.9)))
+  (use-package! corfu
+    :config
+    (defun corfu-enable-in-minibuffer ()
+      "Enable Corfu in the minibuffer if `completion-at-point' is bound."
+      (when (where-is-internal #'completion-at-point (list (current-local-map)))
+        ;; (setq-local corfu-auto nil) ;; Enable/disable auto completion
+        (setq-local corfu-echo-delay nil ;; Disable automatic echo and popup
+                    corfu-popupinfo-delay nil)
+        (corfu-mode 1)))
+    (add-hook 'minibuffer-setup-hook #'corfu-enable-in-minibuffer))
+  ;; Automatic documentation popup while autocompleting is nice, but let’s reduce
+  ;; the font size a little bit so that it doesn’t cover the screen too much and
+  ;; makes it easier to skim for information:
+  (custom-set-faces! '((corfu-popupinfo) :height 0.9)))
 
 (use-package! yasnippet
   :config
@@ -423,7 +422,7 @@ Also immediately enables `mixed-pitch-modes' if currently in one of the modes."
 
 ;; (setq ispell-program-name "aspell"
 ;;       ispell-extra-args '("--sug-mode=ultra" "--lang=en_us"))
-      ;; ispell-dictionary "en"
+;; ispell-dictionary "en"
 (setq ispell-dictionary "en-custom")
 (add-hook 'text-mode-hook 'flyspell-mode)
 (add-hook 'prog-mode-hook 'flyspell-prog-mode)
@@ -485,10 +484,10 @@ Also immediately enables `mixed-pitch-modes' if currently in one of the modes."
 (require 'url-util)
 (use-package! goto-addr
   :hook ((compilation-mode . goto-address-mode)
-          (prog-mode . goto-address-prog-mode)
-          (magit-mode . goto-address-mode)
-          (yaml-mode . goto-address-prog-mode)
-          (mu4e-view-mode . goto-address-mode))
+         (prog-mode . goto-address-prog-mode)
+         (magit-mode . goto-address-mode)
+         (yaml-mode . goto-address-prog-mode)
+         (mu4e-view-mode . goto-address-mode))
   :commands (goto-address-prog-mode
              goto-address-mode))
 ;; url util:1 ends here
@@ -501,14 +500,14 @@ Also immediately enables `mixed-pitch-modes' if currently in one of the modes."
   (setq wolfram-alpha-app-id "KTKV36-2LRW2LELV8"))
 
 ;; [[file:config.org::*launch firefox][launch firefox:1]]
-    (defun my/launch-firefox-private (&optional arg)
-      "Launch Firefox.
+(defun my/launch-firefox-private (&optional arg)
+  "Launch Firefox.
   With `\\[universal-argument]' prefix argument ARG, create private
   window."
-      (interactive "P")
-      (make-process
-       :name "firefox"
-       :command `("firefox" ,(if arg "--private-window" "--new-window"))))
+  (interactive "P")
+  (make-process
+   :name "firefox"
+   :command `("firefox" ,(if arg "--private-window" "--new-window"))))
 ;; launch firefox:1 ends here
 
 ;; [[file:config.org::*ERC][ERC:1]]
@@ -546,28 +545,28 @@ Also immediately enables `mixed-pitch-modes' if currently in one of the modes."
 
 (map! :leader
       (:prefix ("i d" . "Insert date")
-        :desc "Insert any date" "a" #'+insert-any-date
-        :desc "Insert todays date" "t" #'+insert-todays-date))
+       :desc "Insert any date" "a" #'+insert-any-date
+       :desc "Insert todays date" "t" #'+insert-todays-date))
 
 
 ;; [[file:config.org::*Google Translate][Google Translate:2]]
-     (use-package! google-translate
-       :demand t
-       :init
-            (require 'google-translate)
-       :functions (my-google-translate-at-point google-translate--search-tkk)
-       :custom
-       (google-translate-backend-method 'curl)
-       :config
-       (defun google-translate--search-tkk () "Search TKK." (list 430675 2721866130))
-       (defun my-google-translate-at-point()
-         "reverse translate if prefix"
-         (interactive)
-         (if current-prefix-arg
-             (google-translate-at-point)
-           (google-translate-at-point-reverse)))
-       :bind
-       ("C-c t". my-google-translate-at-point))
+(use-package! google-translate
+  :demand t
+  :init
+  (require 'google-translate)
+  :functions (my-google-translate-at-point google-translate--search-tkk)
+  :custom
+  (google-translate-backend-method 'curl)
+  :config
+  (defun google-translate--search-tkk () "Search TKK." (list 430675 2721866130))
+  (defun my-google-translate-at-point()
+    "reverse translate if prefix"
+    (interactive)
+    (if current-prefix-arg
+        (google-translate-at-point)
+      (google-translate-at-point-reverse)))
+  :bind
+  ("C-c t". my-google-translate-at-point))
 (use-package! emacs
   :config
   (defvar google-search-history nil
@@ -623,7 +622,7 @@ active region use it instead."
 
   ;; cache directory
   (defvar user-cache-directory "~/.cache/emacs/"
-  "Location where files created by emacs are placed."))
+    "Location where files created by emacs are placed."))
 ;; [[file:config.org::*simple httpd][simple httpd:1]]
 (use-package simple-httpd
   :defer t)
@@ -631,7 +630,7 @@ active region use it instead."
 
 
 (use-package! tmr
-:config
+  :config
   (setq tmr-sound-file
         "~/.config/doom/NotificationSound.opus")
   (setq tmr-notification-urgency 'normal)
@@ -675,12 +674,12 @@ optional `tmr--timer-description'."
 ;; [[file:config.org::*org roam qutebrowser][org roam qutebrowser:1]]
 (require 'org-roam-protocol)
 (setq org-roam-capture-ref-templates
-        '(("r" "ref" plain (function org-roam-capture--get-point)
-           "%?"
-           :file-name "${slug}"
-           :head "#+TITLE: ${title}
+      '(("r" "ref" plain (function org-roam-capture--get-point)
+         "%?"
+         :file-name "${slug}"
+         :head "#+TITLE: ${title}
 #+ROAM_KEY: ${ref}"
-           :unnarrowed t)))
+         :unnarrowed t)))
 ;; org roam qutebrowser:1 ends here
 ;;
 ;;
@@ -698,9 +697,9 @@ optional `tmr--timer-description'."
   (interactive)
   (require 'calendar)
   (let* (
-      (current-year (number-to-string (nth 5 (decode-time (current-time)))))
-      (month 0)
-      (year (if year year (string-to-number (format-time-string "%Y" (current-time))))))
+         (current-year (number-to-string (nth 5 (decode-time (current-time)))))
+         (month 0)
+         (year (if year year (string-to-number (format-time-string "%Y" (current-time))))))
     (switch-to-buffer (get-buffer-create calendar-buffer))
     (when (not (eq major-mode 'calendar-mode))
       (calendar-mode))
@@ -713,10 +712,10 @@ optional `tmr--timer-description'."
       ;; vertical columns
       (dotimes (i 3)
         (calendar-generate-month
-          (setq month (+ month 1))
-          year
-          ;; indentation / spacing between months
-          (+ 5 (* 25 i))))
+         (setq month (+ month 1))
+         year
+         ;; indentation / spacing between months
+         (+ 5 (* 25 i))))
       (goto-char (point-max))
       (insert (make-string (- 10 (count-lines (point-min) (point-max))) ?\n))
       (widen)
@@ -735,7 +734,7 @@ optional `tmr--timer-description'."
     (if (setq event (event-start event)) (select-window (posn-window event)))
     (unless (zerop arg)
       (let* (
-              (year (+ displayed-year arg)))
+             (year (+ displayed-year arg)))
         (dt/year-calendar year)))
     (goto-char (point-min))
     (run-hooks 'calendar-move-hook)))
@@ -764,9 +763,9 @@ optional `tmr--timer-description'."
   (interactive)
   (require 'calendar)
   (let* (
-      (current-year (number-to-string (nth 5 (decode-time (current-time)))))
-      (month 0)
-      (year (if year year (string-to-number (format-time-string "%Y" (current-time))))))
+         (current-year (number-to-string (nth 5 (decode-time (current-time)))))
+         (month 0)
+         (year (if year year (string-to-number (format-time-string "%Y" (current-time))))))
     (switch-to-buffer (get-buffer-create calendar-buffer))
     (when (not (eq major-mode 'calendar-mode))
       (calendar-mode))
@@ -779,10 +778,10 @@ optional `tmr--timer-description'."
       ;; vertical columns
       (dotimes (i 3)
         (calendar-generate-month
-          (setq month (+ month 1))
-          year
-          ;; indentation / spacing between months
-          (+ 5 (* 25 i))))
+         (setq month (+ month 1))
+         year
+         ;; indentation / spacing between months
+         (+ 5 (* 25 i))))
       (goto-char (point-max))
       (insert (make-string (- 10 (count-lines (point-min) (point-max))) ?\n))
       (widen)
@@ -801,7 +800,7 @@ optional `tmr--timer-description'."
     (if (setq event (event-start event)) (select-window (posn-window event)))
     (unless (zerop arg)
       (let* (
-              (year (+ displayed-year arg)))
+             (year (+ displayed-year arg)))
         (dt/year-calendar year)))
     (goto-char (point-min))
     (run-hooks 'calendar-move-hook)))
@@ -873,11 +872,11 @@ optional `tmr--timer-description'."
                    (name . "^\\*scratch\\*$")
                    ;; (filename . "~/.config/doom/config.org")
                    (name . "^\\*Messages\\*$")))
-        ("Telegram" (or (mode . telega-root-mode)
-                        (mode . telega-chat-mode)
-                        (mode . telega-image-mode)))
-        ("Special" (or (mode . special-mode)
-                       (name . "^\\*.\\*$"))))))
+         ("Telegram" (or (mode . telega-root-mode)
+                         (mode . telega-chat-mode)
+                         (mode . telega-image-mode)))
+         ("Special" (or (mode . special-mode)
+                        (name . "^\\*.\\*$"))))))
 
 
 (defun buffer-to-side-window (place)
@@ -916,19 +915,33 @@ optional `tmr--timer-description'."
   (windmove-right))
 
 
-  (defun kill-other-buffers ()
-    "Kill all other buffers."
-    (interactive)
-    (mapc 'kill-buffer (delq (current-buffer) (buffer-list))))
+(defun kill-other-buffers ()
+  "Kill all other buffers."
+  (interactive)
+  (mapc 'kill-buffer (delq (current-buffer) (buffer-list))))
 
 
-  (defun kill-dired-buffers ()
-    "Kill all open dired buffers."
-    (interactive)
-    (mapc (lambda (buffer)
-            (when (eq 'dired-mode (buffer-local-value 'major-mode buffer))
-              (kill-buffer buffer)))
-          (buffer-list)))
+(defun kill-dired-buffers ()
+  "Kill all open dired buffers."
+  (interactive)
+  (mapc (lambda (buffer)
+          (when (eq 'dired-mode (buffer-local-value 'major-mode buffer))
+            (kill-buffer buffer)))
+        (buffer-list)))
+
+(setq! dirvish-quick-access-entries
+       `(("h" "~/"                          "Home")
+         ("e" ,user-emacs-directory         "Emacs user directory")
+         ("c" "~/myrepos/"                     "My Repos")
+         ("g" "~/gitclones/"                     "Git Clones")
+         ("d" "~/Downloads/"                "Downloads")
+         ("b" "~/Documents/books & pdf/"      "Books")
+         ("w" "/media/New_Volume/Edu/Web Series/"      "Web Series")
+         ("D" "~/Documents/"                "Documents")
+         ("H" "/media/New_Volume/"                "Harddiskntfs")
+         ("Z" "/media/hdd_home/"                "Harddiskhome")
+         ("m" "/mnt/"                       "Mounted drives")
+         ("t" "~/.local/share/Trash/files/" "Trash")))
 
 (map! :leader
       :desc "Switch to perspective NAME" "DEL" #'persp-switch
@@ -1029,27 +1042,27 @@ optional `tmr--timer-description'."
   (setq diff-font-lock-syntax 'hunk-also))
 
 (load "~/.config/doom/lisp/prot-diff.el")
- (use-package! prot-diff
-   :config
-   ;; (prot-diff-modus-themes-diffs)
-   (add-hook 'modus-themes-after-load-theme-hook #'prot-diff-modus-themes-diffs)
+(use-package! prot-diff
+  :config
+  ;; (prot-diff-modus-themes-diffs)
+  (add-hook 'modus-themes-after-load-theme-hook #'prot-diff-modus-themes-diffs)
 
-   (prot-diff-extra-keywords 1)
+  (prot-diff-extra-keywords 1)
 
-   ;; `prot-diff-buffer-dwim' replaces the default for `vc-diff' (which I
-   ;; bind to another key---see VC section).
-   (define-key global-map (kbd "C-x v =") #'prot-diff-buffer-dwim)
-   (let ((map diff-mode-map))
-     (define-key map (kbd "C-c C-b") #'prot-diff-refine-cycle) ; replace `diff-refine-hunk'
-     (define-key map (kbd "C-c C-n") #'prot-diff-narrow-dwim)))
+  ;; `prot-diff-buffer-dwim' replaces the default for `vc-diff' (which I
+  ;; bind to another key---see VC section).
+  (define-key global-map (kbd "C-x v =") #'prot-diff-buffer-dwim)
+  (let ((map diff-mode-map))
+    (define-key map (kbd "C-c C-b") #'prot-diff-refine-cycle) ; replace `diff-refine-hunk'
+    (define-key map (kbd "C-c C-n") #'prot-diff-narrow-dwim)))
 ;; Diff-mode (and prot-diff.el extensions):1 ends here
 
 ;; [[file:config.org::*Helper function to measure the running time of a function][Helper function to measure the running time of a function:1]]
-  (defmacro measure-time (&rest body)
-    "Measure the time it takes to evaluate BODY."
-    `(let ((time (current-time)))
-       ,@body
-       (message "%.06f" (float-time (time-since time)))))
+(defmacro measure-time (&rest body)
+  "Measure the time it takes to evaluate BODY."
+  `(let ((time (current-time)))
+     ,@body
+     (message "%.06f" (float-time (time-since time)))))
 ;; Helper function to measure the running time of a function:1 ends here
 
 ;; [[file:config.org::*Repeatable key chords (repeat-mode)][Repeatable key chords (repeat-mode):1]]
@@ -1081,36 +1094,36 @@ optional `tmr--timer-description'."
 ;; Eros:1 ends here
 
 ;; [[file:config.org::*generate password][generate password:1]]
-  (defun generate-password-non-interactive ()
-     (string-trim (shell-command-to-string "pwgen -A 24")))
+(defun generate-password-non-interactive ()
+  (string-trim (shell-command-to-string "pwgen -A 24")))
 
-  (defun generate-password ()
-    "Generates and inserts a new password"
-    (interactive)
-    (insert
-     (shell-command-to-string
-      (concat "pwgen -A " (read-string "Length: " "24") " 1"))))
+(defun generate-password ()
+  "Generates and inserts a new password"
+  (interactive)
+  (insert
+   (shell-command-to-string
+    (concat "pwgen -A " (read-string "Length: " "24") " 1"))))
 ;; generate password:1 ends here
 
-(setq dirvish-open-with-programs '((("ape" "stm" "s3m" "ra" "rm" "ram" "wma" "wax" "m3u" "med" "669" "mtm" "m15" "uni" "ult" "mka" "flac" "axa" "kar" "midi" "mid" "s1m" "smp" "smp3" "rip" "multitrack" "ecelp9600" "ecelp7470" "ecelp4800" "vbk" "pya" "lvp" "plj" "dtshd" "dts" "mlp" "eol" "uvva" "uva" "koz" "xhe" "loas" "sofa" "smv" "qcp" "psid" "sid" "spx" "opus" "ogg" "oga" "mp1" "mpga" "m4a" "mxmf" "mhas" "l16" "lbc" "evw" "enw" "evb" "evc" "dls" "omg" "aa3" "at3" "atx" "aal" "acn" "awb" "amr" "ac3" "ass" "aac" "adts" "726" "abs" "aif" "aifc" "aiff" "au" "mp2" "mp3" "mp2a" "mpa" "mpa2" "mpega" "snd" "vox" "wav") "/usr/bin/mpv" "--profile=builtin-pseudo-gui" "%f") (("f4v" "rmvb" "wvx" "wmx" "wmv" "wm" "asx" "mk3d" "mkv" "fxm" "flv" "axv" "webm" "viv" "yt" "s1q" "smo" "smov" "ssw" "sswf" "s14" "s11" "smpg" "smk" "bk2" "bik" "nim" "pyv" "m4u" "mxu" "fvt" "dvb" "uvvv" "uvv" "uvvs" "uvs" "uvvp" "uvp" "uvvu" "uvu" "uvvm" "uvm" "uvvh" "uvh" "ogv" "m2v" "m1v" "m4v" "mpg4" "mp4" "mjp2" "mj2" "m4s" "3gpp2" "3g2" "3gpp" "3gp" "avi" "mov" "ts" "movie" "mpe" "mpeg" "mpegv" "mpg" "mpv" "qt" "vbs") "/usr/bin/mpv" "%f")))
+(setq dirvish-open-with-programs '((("ape" "stm" "s3m" "ra" "rm" "ram" "wma" "wax" "m3u" "med" "669" "mtm" "m15" "uni" "ult" "mka" "flac" "axa" "kar" "midi" "mid" "s1m" "smp" "smp3" "rip" "multitrack" "ecelp9600" "ecelp7470" "ecelp4800" "vbk" "pya" "lvp" "plj" "dtshd" "dts" "mlp" "eol" "uvva" "uva" "koz" "xhe" "loas" "sofa" "smv" "qcp" "psid" "sid" "spx" "opus" "ogg" "oga" "mp1" "mpga" "m4a" "mxmf" "mhas" "l16" "lbc" "evw" "enw" "evb" "evc" "dls" "omg" "aa3" "at3" "atx" "aal" "acn" "awb" "amr" "ac3" "ass" "aac" "adts" "726" "abs" "aif" "aifc" "aiff" "au" "mp2" "mp3" "mp2a" "mpa" "mpa2" "mpega" "snd" "vox" "wav") "/usr/bin/mpv" "--profile=builtin-pseudo-gui" "%f") (("f4v" "rmvb" "wvx" "wmx" "wmv" "wm" "asx" "mk3d" "mkv" "fxm" "flv" "axv" "webm" "viv" "yt" "s1q" "smo" "smov" "ssw" "sswf" "s14" "s11" "smpg" "smk" "bk2" "bik" "nim" "pyv" "m4u" "mxu" "fvt" "dvb" "uvvv" "uvv" "uvvs" "uvs" "uvvp" "uvp" "uvvu" "uvu" "uvvm" "uvm" "uvvh" "uvh" "ogv" "m2v" "m1v" "m4v" "mpg4" "mp4" "mjp2" "mj2" "m4s" "3gpp2" "3g2" "3gpp" "3gp" "avi" "mov" "ts" "movie" "mpe" "mpeg" "mpegv" "mpg" "mpv" "qt" "vbs") "/usr/bin/mpv" "%f")(("pdf" "epub")"sioyek" "%f")))
 ;; minor mode for video note taking
 (define-minor-mode org-vid-minor-mode
-   "Toggle video minor mode for video note taking in org-mode"
-   :lighter " Video"
-   :keymap
-   `(
-     (,(kbd "<up>")    . (lambda () (interactive) (mpv-speed-increase 1)))
-     (,(kbd "<down>")  . (lambda () (interactive) (mpv-speed-decrease 1)))
-     (,(kbd "<right>") . (lambda () (interactive) (mpv-seek-forward 1)))
-     (,(kbd "<left>")  . (lambda () (interactive) (mpv-seek-backward 1)))
-     (,(kbd "M-p")     . mpv-pause)
-     (,(kbd "M-SPC")   . mpv-pause)
-     (,(kbd "M-k")     . mpv-kill)
-     (,(kbd "M--")     . (lambda () (interactive) (mpv-insert-playback-position t)))
-     (,(kbd "M-s")     . (lambda () mpv-seek))
-     (,(kbd "M-0")     . (lambda () (interactive) (mpv-speed-set 1)))
-     (,(kbd "M-S")     . (lambda () (interactive) (mpv-seek-to-position-at-point)))
-     ))
+  "Toggle video minor mode for video note taking in org-mode"
+  :lighter " Video"
+  :keymap
+  `(
+    (,(kbd "<up>")    . (lambda () (interactive) (mpv-speed-increase 1)))
+    (,(kbd "<down>")  . (lambda () (interactive) (mpv-speed-decrease 1)))
+    (,(kbd "<right>") . (lambda () (interactive) (mpv-seek-forward 1)))
+    (,(kbd "<left>")  . (lambda () (interactive) (mpv-seek-backward 1)))
+    (,(kbd "M-p")     . mpv-pause)
+    (,(kbd "M-SPC")   . mpv-pause)
+    (,(kbd "M-k")     . mpv-kill)
+    (,(kbd "M--")     . (lambda () (interactive) (mpv-insert-playback-position t)))
+    (,(kbd "M-s")     . (lambda () mpv-seek))
+    (,(kbd "M-0")     . (lambda () (interactive) (mpv-speed-set 1)))
+    (,(kbd "M-S")     . (lambda () (interactive) (mpv-seek-to-position-at-point)))
+    ))
 
 
 ;; [[file:config.org::*Info pages][Info pages:2]]
@@ -1120,7 +1133,7 @@ optional `tmr--timer-description'."
 (add-hook 'Info-selection-hook 'info-colors-fontify-node)
 ;; Info pages:2 ends here
 (use-package! man
-   :ensure nil
+  :ensure nil
   :config
   (let ((map Man-mode-map))
     (define-key map (kbd "i") #'Man-goto-section)
@@ -1582,9 +1595,9 @@ preview-default-preamble "\\fi}\"%' \"\\detokenize{\" %t \"}\""))
 
 (use-package! visual-regexp
   :config
-        (map! :map 'doom-leader-regular-map
-              (:prefix ("v" . "visual regex")
-               :desc "Replace regexp" "r"#'vr/replace)))
+  (map! :map 'doom-leader-regular-map
+        (:prefix ("v" . "visual regex")
+         :desc "Replace regexp" "r"#'vr/replace)))
 
 (use-package! visual-regexp-steroids
   :after 'visual-regexp)
@@ -1617,21 +1630,21 @@ preview-default-preamble "\\fi}\"%' \"\\detokenize{\" %t \"}\""))
   :hook (LaTeX-mode . laas-mode)
   :config
   (aas-set-snippets 'laas-mode
-                    ;; set condition!
-                    :cond #'texmathp ; expand only while in math
-                    "supp" "\\supp"
-                    "On" "O(n)"
-                    "O1" "O(1)"
-                    "Olog" "O(\\log n)"
-                    "Olon" "O(n \\log n)"
-                    ;; bind to functions!
-                    "Sum" (lambda () (interactive)
-                            (yas-expand-snippet "\\sum_{$1}^{$2} $0"))
-                    "Span" (lambda () (interactive)
-                             (yas-expand-snippet "\\Span($1)$0"))
-                    ;; add accent snippets
-                    :cond #'laas-object-on-left-condition
-                    "qq" (lambda () (interactive) (laas-wrap-previous-object "sqrt")))
+    ;; set condition!
+    :cond #'texmathp ; expand only while in math
+    "supp" "\\supp"
+    "On" "O(n)"
+    "O1" "O(1)"
+    "Olog" "O(\\log n)"
+    "Olon" "O(n \\log n)"
+    ;; bind to functions!
+    "Sum" (lambda () (interactive)
+            (yas-expand-snippet "\\sum_{$1}^{$2} $0"))
+    "Span" (lambda () (interactive)
+             (yas-expand-snippet "\\Span($1)$0"))
+    ;; add accent snippets
+    :cond #'laas-object-on-left-condition
+    "qq" (lambda () (interactive) (laas-wrap-previous-object "sqrt")))
   (defun laas-tex-fold-maybe ()
     (unless (equal "/" aas-transient-snippet-key)
       (+latex-fold-last-macro-a)))
@@ -1669,8 +1682,8 @@ preview-default-preamble "\\fi}\"%' \"\\detokenize{\" %t \"}\""))
 
 ;; (after! lsp-mode
 ;;   (set-lsp-priority! 'clangd 1))  ; ccls has priority 0
- ;; (setq lsp-enable-file-watchers nil)
-    ;; :hook (lsp-mode . efs/lsp-mode-setup)
+;; (setq lsp-enable-file-watchers nil)
+;; :hook (lsp-mode . efs/lsp-mode-setup)
 ;; Python:1 ends here
 
 ;; [[file:lang.org::*Markdown][Markdown:1]]
@@ -1678,7 +1691,7 @@ preview-default-preamble "\\fi}\"%' \"\\detokenize{\" %t \"}\""))
 ;; Markdown:1 ends here
 
 ;; [[file:lang.org::*Markdown][Markdown:2]]
- (add-to-list 'auto-mode-alist '("\\.mdx\\'" . markdown-mode))
+(add-to-list 'auto-mode-alist '("\\.mdx\\'" . markdown-mode))
 
 (custom-set-faces!
   '(markdown-header-face-1 :height 1.25 :weight extra-bold :inherit markdown-header-face)
@@ -1763,17 +1776,17 @@ preview-default-preamble "\\fi}\"%' \"\\detokenize{\" %t \"}\""))
 
 ;; [[file:lang.org::*latex][latex:1]]
 (with-eval-after-load 'ox-latex
-(add-to-list 'org-latex-classes
-             '("org-plain-latex"
-               "\\documentclass{article}
+  (add-to-list 'org-latex-classes
+               '("org-plain-latex"
+                 "\\documentclass{article}
            [NO-DEFAULT-PACKAGES]
            [PACKAGES]
            [EXTRA]"
-               ("\\section{%s}" . "\\section*{%s}")
-               ("\\subsection{%s}" . "\\subsection*{%s}")
-               ("\\subsubsection{%s}" . "\\subsubsection*{%s}")
-               ("\\paragraph{%s}" . "\\paragraph*{%s}")
-               ("\\subparagraph{%s}" . "\\subparagraph*{%s}"))))
+                 ("\\section{%s}" . "\\section*{%s}")
+                 ("\\subsection{%s}" . "\\subsection*{%s}")
+                 ("\\subsubsection{%s}" . "\\subsubsection*{%s}")
+                 ("\\paragraph{%s}" . "\\paragraph*{%s}")
+                 ("\\subparagraph{%s}" . "\\subparagraph*{%s}"))))
 ;; latex:1 ends here
 
 ;; ;; [[file:lang.org::*Org-roam-server][Org-roam-server:1]]
