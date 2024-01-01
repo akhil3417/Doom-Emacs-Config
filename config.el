@@ -382,33 +382,33 @@ Also immediately enables `mixed-pitch-modes' if currently in one of the modes."
 ;;       :foreground ,(doom-blend (doom-color 'bg) (doom-color 'green) 0.5)))
 ;;   )
 
-(use-package! evil-goggles
-  :init
-  (setq evil-goggles-enable-change t
-        evil-goggles-enable-delete t
-        evil-goggles-pulse         t
-        evil-goggles-duration      0.25)
-  :config
-  (custom-set-faces!
-    `((evil-goggles-yank-face evil-goggles-surround-face)
-      :background ,(doom-blend (doom-color 'blue) (doom-color 'bg-alt) 0.5)
-      :extend t)
-    `(evil-goggles-paste-face
-      :background ,(doom-blend (doom-color 'green) (doom-color 'bg-alt) 0.5)
-      :extend t)
-    `(evil-goggles-delete-face
-      :background ,(doom-blend (doom-color 'red) (doom-color 'bg-alt) 0.5)
-      :extend t)
-    `(evil-goggles-change-face
-      :background ,(doom-blend (doom-color 'orange) (doom-color 'bg-alt) 0.5)
-      :extend t)
-    `(evil-goggles-commentary-face
-      :background ,(doom-blend (doom-color 'grey) (doom-color 'bg-alt) 0.5)
-      :extend t)
-    `((evil-goggles-indent-face evil-goggles-join-face evil-goggles-shift-face)
-      :background ,(doom-blend (doom-color 'yellow) (doom-color 'bg-alt) 0.25)
-      :extend t)
-    ))
+;; (use-package! evil-goggles
+;;   :init
+;;   (setq evil-goggles-enable-change t
+;;         evil-goggles-enable-delete t
+;;         evil-goggles-pulse         t
+;;         evil-goggles-duration      0.25)
+;;   :config
+;;   (custom-set-faces!
+;;     `((evil-goggles-yank-face evil-goggles-surround-face)
+;;       :background ,(doom-blend (doom-color 'blue) (doom-color 'bg-alt) 0.5)
+;;       :extend t)
+;;     `(evil-goggles-paste-face
+;;       :background ,(doom-blend (doom-color 'green) (doom-color 'bg-alt) 0.5)
+;;       :extend t)
+;;     `(evil-goggles-delete-face
+;;       :background ,(doom-blend (doom-color 'red) (doom-color 'bg-alt) 0.5)
+;;       :extend t)
+;;     `(evil-goggles-change-face
+;;       :background ,(doom-blend (doom-color 'orange) (doom-color 'bg-alt) 0.5)
+;;       :extend t)
+;;     `(evil-goggles-commentary-face
+;;       :background ,(doom-blend (doom-color 'grey) (doom-color 'bg-alt) 0.5)
+;;       :extend t)
+;;     `((evil-goggles-indent-face evil-goggles-join-face evil-goggles-shift-face)
+;;       :background ,(doom-blend (doom-color 'yellow) (doom-color 'bg-alt) 0.25)
+;;       :extend t)
+;;     ))
 
 (use-package! savehist
   :config
