@@ -21,7 +21,6 @@
 ;;
 
 (load "~/.config/doom/lisp/setup-theme-magic.el")
-;; (load "~/.config/doom/lisp/codeiumconfig.el")
 (load "~/.config/doom/lisp/setup-avy.el")
 ;; (load "~/.config/doom/lisp/splash.el")
 (load "~/.config/doom/lisp/setup-ui.el")
