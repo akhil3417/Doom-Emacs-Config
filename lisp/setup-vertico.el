@@ -25,7 +25,7 @@
               ("C-c C-o" . embark-export))
   :config
   (setq vertico-resize t
-        vertico-count 17
+        vertico-count 10
         vertico-cycle t
         completion-in-region-function
         (lambda (&rest args)
@@ -36,13 +36,18 @@
   (add-hook 'rfn-eshadow-update-overlay-hook #'vertico-directory-tidy)
   (add-hook 'minibuffer-setup-hook #'vertico-repeat-save)
   (map! :map vertico-map [backspace] #'vertico-directory-delete-char)
-  (advice-add #'tmm-add-prompt :after #'minibuffer-hide-completions))
+  (advice-add #'tmm-add-prompt :after #'minibuffer-hide-completions)
+  (advice-add #'ffap-menu-ask :around
+              (lambda (&rest args)
+                (cl-letf (((symbol-function #'minibuffer-completion-help)
+                           #'ignore))
+                  (apply args)))))
 
-  (define-key vertico-map "\M-V" #'vertico-multiform-vertical)
-  (define-key vertico-map "\M-G" #'vertico-multiform-grid)
-  (define-key vertico-map "\M-F" #'vertico-multiform-flat)
-  (define-key vertico-map "\M-R" #'vertico-multiform-reverse)
-  (define-key vertico-map "\M-U" #'vertico-multiform-unobtrusive)
+(define-key vertico-map "\M-V" #'vertico-multiform-vertical)
+(define-key vertico-map "\M-G" #'vertico-multiform-grid)
+(define-key vertico-map "\M-F" #'vertico-multiform-flat)
+(define-key vertico-map "\M-R" #'vertico-multiform-reverse)
+(define-key vertico-map "\M-U" #'vertico-multiform-unobtrusive)
 (use-package! vertico-multiform
   :commands vertico-multiform-mode
   :after vertico-flat
@@ -50,45 +55,68 @@
               ("M-q" . vertico-multiform-grid)
               ("C-l" . vertico-multiform-reverse)
               ("C-M-l" . embark-export))
-  :init (vertico-multiform-mode 1)
+  ;; :init (vertico-multiform-mode 1)
+  :init (vertico-reverse-mode 1)
   :config
   (setq vertico-multiform-categories
-         '((file my/vertico-grid-mode reverse)
-           (project-file my/vertico-grid-mode reverse)
-           (imenu buffer)
-           (consult-location buffer)
-           (consult-grep buffer)
-           (notmuch-result reverse)
-           (minor-mode reverse)
-           (reftex-label reverse)
-           (citar-reference reverse)
-           (xref-location reverse)
-           (t unobtrusive)))
-   (setq vertico-multiform-commands
-        '((load-theme my/vertico-grid-mode reverse)
-           (my/toggle-theme my/vertico-grid-mode reverse)
-           (consult-dir-maybe reverse)
-           (consult-dir reverse)
-           (consult-history reverse)
-           (consult-completion-in-region reverse)
-           (completion-at-point reverse)
-           (org-roam-node-find reverse)
-           (embark-completing-read-prompter reverse)
-           (embark-act-with-completing-read reverse)
-           (embark-prefix-help-command reverse)
-           (embark-bindings reverse)
-           (consult-org-heading reverse)
-           (consult-dff unobtrusive)
-           (my/eshell-previous-matching-input reverse)
-           (tmm-menubar reverse)))
+        '((file my/vertico-grid-mode reverse)
+          (jinx grid (vertico-grid-annotate . 20))
+          (project-file my/vertico-grid-mode reverse)
+          (imenu buffer)
+          (consult-location buffer)
+          (consult-grep buffer)
+          (notmuch-result reverse)
+          (minor-mode reverse)
+          (reftex-label (:not unobtrusive))
+          (embark-keybinding grid)
+          (citar-reference reverse)
+          (xref-location reverse)
+          (history reverse)
+          (url reverse)
+          (consult-info buffer)
+          (kill-ring reverse)
+          (consult-compile-error reverse)
+          (buffer flat (vertico-cycle . t))
+          (t flat)))
+  (setq vertico-multiform-commands
+        '((jinx-correct reverse)
+          (tab-bookmark-open reverse)
+          (dired-goto-file unobtrusive)
+          (load-theme my/vertico-grid-mode reverse)
+          (my/toggle-theme my/vertico-grid-mode reverse)
+          (org-refile reverse)
+          (org-agenda-refile reverse)
+          (org-capture-refile reverse)
+          (affe-find reverse)
+          (execute-extended-command unobtrusive)
+          (dired-goto-file flat)
+          (consult-project-buffer flat)
+          (consult-dir-maybe reverse)
+          (consult-dir reverse)
+          (consult-flymake reverse)
+          (consult-history reverse)
+          (consult-completion-in-region reverse)
+          (consult-recoll buffer)
+          (citar-insert-citation reverse)
+          (completion-at-point reverse)
+          (org-roam-node-find reverse)
+          ;; (embark-completing-read-prompter reverse)
+          ;; (embark-act-with-completing-read reverse)
+          ;; (embark-bindings reverse)
+          (consult-org-heading reverse)
+          (consult-dff unobtrusive)
+          (embark-find-definition reverse)
+          (xref-find-definitions reverse)
+          (my/eshell-previous-matching-input reverse)
+          (tmm-menubar reverse)))
 
-   (defun vertico-multiform-unobtrusive ()
-     "Toggle the quiet display."
-     (interactive)
-     (vertico-multiform--define-display-toggle 'vertico-unobtrusive-mode)
-     (if vertico-unobtrusive-mode
-         (vertico-multiform--temporary-mode 'vertico-reverse-mode -1)
-       (vertico-multiform--temporary-mode 'vertico-reverse-mode 1))))
+  (defun vertico-multiform-unobtrusive ()
+    "Toggle the quiet display."
+    (interactive)
+    (vertico-multiform--define-display-toggle 'vertico-unobtrusive-mode)
+    (if vertico-unobtrusive-mode
+        (vertico-multiform--temporary-mode 'vertico-reverse-mode -1)
+      (vertico-multiform--temporary-mode 'vertico-reverse-mode 1))))
 
 (use-package! vertico-unobtrusive
   :after vertico-flat)
@@ -114,9 +142,9 @@
 (use-package! vertico-quick
   :after vertico
   :bind (:map vertico-map
-         ("M-i" . vertico-quick-insert)
-         ("C-'" . vertico-quick-exit)
-         ("C-o" . vertico-quick-embark))
+              ("M-i" . vertico-quick-insert)
+              ("C-'" . vertico-quick-exit)
+              ("C-o" . vertico-quick-embark))
   :config
   (defun vertico-quick-embark (&optional arg)
     "Embark on candidate using quick keys."
@@ -128,10 +156,10 @@
   ;; :hook (rfn-eshadow-update-overlay vertico-directory-tidy)
   :after vertico
   :bind (:map vertico-map
-         ("DEL"   . vertico-directory-delete-char)
-         ("M-DEL" . vertico-directory-delete-word)
-         ("C-w"   . vertico-directory-delete-word)
-         ("RET"   . vertico-directory-enter)))
+              ("DEL"   . vertico-directory-delete-char)
+              ("M-DEL" . vertico-directory-delete-word)
+              ("C-w"   . vertico-directory-delete-word)
+              ("RET"   . vertico-directory-enter)))
 
 (use-package! vertico-repeat
   :after vertico
@@ -152,7 +180,7 @@
   :config
   (setq vertico-buffer-display-action 'display-buffer-reuse-window))
 
-;; vertico-posframe config
+;; ;; vertico-posframe config
 ;; (require 'vertico-posframe)
 ;; (vertico-posframe-mode 1)
 ;; (setq vertico-multiform-commands
@@ -167,10 +195,16 @@
 ;;          (vertico-posframe-fallback-mode . vertico-buffer-mode))
 ;;         (t posframe)))
 ;; (vertico-multiform-mode 1)
-
+;; (setq vertico-multiform-commands
+;;       '((consult-line (:not posframe))
+;;         ;; (consult-dir (:not posframe))
+;;         ;; (find-file (:not posframe))
+;;         (execute-extended-command (:not posframe))
+;;         (t posframe)))
 ;; (setq vertico-posframe-parameters
-;;       '((left-fringe . 8)
-;;         (right-fringe . 8)))
+;;       '((left-fringe . 15)
+;;         (right-fringe . 1)))
+
 
 (provide 'setup-vertico)
 ;; setup-vertico.el ends here
