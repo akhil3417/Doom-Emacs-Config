@@ -24,10 +24,9 @@
 (load "~/.config/doom/lisp/setup-avy.el")
 ;; (load "~/.config/doom/lisp/splash.el")
 (load "~/.config/doom/lisp/setup-ui.el")
-(load "~/.config/doom/lisp/setup-minibuffer.el")
+;; (load "~/.config/doom/lisp/setup-minibuffer.el")
 (load "~/.config/doom/lisp/better-buffers.el");;essential
 ;; (load "~/.config/doom/lisp/setup-orderless.el");;configured in doom already but...
-;; (load "~/.config/doom/lisp/setup-vertico.el")
 ;; (load "~/.config/doom/lisp/setup-embark.el")
 (load "~/.config/doom/lisp/utilities.el");;essential
 (load "~/.config/doom/lisp/setup-isearch")
@@ -288,36 +287,21 @@ Also immediately enables `mixed-pitch-modes' if currently in one of the modes."
 (define-key evil-normal-state-map (kbd "C-M-d") nil) ;;change default evil-multiedit-restore in favor of sp-down-sexp
 ;; Unbind certain Emacs keybindings in =evil-mode=:1 ends here
 
-;; [[file:config.org::*Unbind certain Emacs keybindings in =evil-mode=][Unbind certain Emacs keybindings in =evil-mode=:2]]
-(define-key evil-normal-state-map (kbd "M-.") nil)
-(define-key evil-normal-state-map (kbd "M-,") nil)
-;; Unbind certain Emacs keybindings in =evil-mode=:2 ends here
-
 ;; [[file:config.org::*Unbind certain Emacs keybindings in =evil-mode=][Unbind certain Emacs keybindings in =evil-mode=:5]]
 (define-key global-map (kbd "<tab>") nil)
 (define-key evil-insert-state-map (kbd "<tab>") nil)
 (evil-define-key 'normal org-mode-map (kbd "<tab>") #'org-cycle)
 ;; Unbind certain Emacs keybindings in =evil-mode=:5 ends here
 ;;
-(when (featurep! :completion corfu)
-  (map! :map corfu-map
-        :desc "insert separator" "C-SPC" #'corfu-insert-separator)
-  ;; (setq corfu-quit-no-match t)
-
-  (use-package! corfu
-    :config
-    (defun corfu-enable-in-minibuffer ()
-      "Enable Corfu in the minibuffer if `completion-at-point' is bound."
-      (when (where-is-internal #'completion-at-point (list (current-local-map)))
-        ;; (setq-local corfu-auto nil) ;; Enable/disable auto completion
-        (setq-local corfu-echo-delay nil ;; Disable automatic echo and popup
-                    corfu-popupinfo-delay nil)
-        (corfu-mode 1)))
-    (add-hook 'minibuffer-setup-hook #'corfu-enable-in-minibuffer))
-  ;; Automatic documentation popup while autocompleting is nice, but let’s reduce
-  ;; the font size a little bit so that it doesn’t cover the screen too much and
-  ;; makes it easier to skim for information:
-  (custom-set-faces! '((corfu-popupinfo) :height 0.9)))
+;; (when (featurep! :completion corfu)
+;;   (map! :map corfu-map
+;;         :desc "insert separator" "C-SPC" #'corfu-insert-separator)
+;;   ;; (setq corfu-quit-no-match t)
+;;   ;; (setq corfu-on-exact-match nil)
+;;   ;; Automatic documentation popup while autocompleting is nice, but let’s reduce
+;;   ;; the font size a little bit so that it doesn’t cover the screen too much and
+;;   ;; makes it easier to skim for information:
+;;   (custom-set-faces! '((corfu-popupinfo) :height 0.9)))
 
 (use-package! yasnippet
   :config
@@ -372,14 +356,14 @@ Also immediately enables `mixed-pitch-modes' if currently in one of the modes."
     (define-key map (kbd "M-# b") #'substitute-target-in-buffer))) ; "buffer" mnemonic
 ;; substitute:2 ends here
 
-;; (use-package! diff-hl
-;;   :config
-;;   (custom-set-faces!
-;;     `((diff-hl-change)
-;;       :foreground ,(doom-blend (doom-color 'bg) (doom-color 'blue) 0.5))
-;;     `((diff-hl-insert)
-;;       :foreground ,(doom-blend (doom-color 'bg) (doom-color 'green) 0.5)))
-;;   )
+(use-package! diff-hl
+  :config
+  (custom-set-faces!
+    `((diff-hl-change)
+      :foreground ,(doom-blend (doom-color 'bg) (doom-color 'blue) 0.5))
+    `((diff-hl-insert)
+      :foreground ,(doom-blend (doom-color 'bg) (doom-color 'green) 0.5)))
+  )
 
 ;; (use-package! evil-goggles
 ;;   :init
@@ -549,66 +533,66 @@ Also immediately enables `mixed-pitch-modes' if currently in one of the modes."
 
 
 ;; [[file:config.org::*Google Translate][Google Translate:2]]
-(use-package! google-translate
-  :demand t
-  :init
-  (require 'google-translate)
-  :functions (my-google-translate-at-point google-translate--search-tkk)
-  :custom
-  (google-translate-backend-method 'curl)
-  :config
-  (defun google-translate--search-tkk () "Search TKK." (list 430675 2721866130))
-  (defun my-google-translate-at-point()
-    "reverse translate if prefix"
-    (interactive)
-    (if current-prefix-arg
-        (google-translate-at-point)
-      (google-translate-at-point-reverse)))
-  :bind
-  ("C-c t". my-google-translate-at-point))
-(use-package! emacs
-  :config
-  (defvar google-search-history nil
-    "List of queries to google-search-string.")
-  (defun google-search-string (search-string)
-    "Read SEARCH-STRING from the minibuffer and call the shell
-command tuxi on it."
-    (interactive (list (read-string "Google: " nil
-                                    google-search-history
-                                    (thing-at-point 'sexp))))
-    (unless (executable-find "ls");; m dumb,
-      (user-error "Cannot find shell command: tuxipy"))
-    (let ((search-output (string-trim-right
-                          (shell-command-to-string
-                           (concat
-                            "python3 -m tuxipy "
-                            (shell-quote-argument search-string))))))
-      (with-current-buffer (get-buffer-create "*Tuxi Output*")
-        (goto-char (point-max))
-        (unless (bobp) (insert "\n\n* * *\n"))
-        (insert (capitalize search-string) ":\n\n")
-        (push-mark)
-        (insert search-output)
-        (let ((lines (count-lines (or (mark) (point-min)) (point-max))))
-          (if (<= lines 1)
-              (message search-output)
-            (let ((win (display-buffer (current-buffer))))
-              (set-window-start win (mark))
-              (set-window-parameter win 'window-height (min lines 10))
-              (goto-address-mode 1)))))))
-  (defun google-search-at-point (&optional beg end)
-    "Call the shell command tuxi on the symbol at point. With an
-active region use it instead."
-    (interactive "r")
-    (if-let ((search-string (if (use-region-p)
-                                (buffer-substring-no-properties beg end)
-                              (thing-at-point 'symbol))))
-        (google-search-string search-string)
-      ;; (message "No symbol to search for at point!")
-      (call-interactively #'google-search-string)))
-  :bind (:map help-map
-              ("g" . google-search-string)
-              ("C-=" . google-search-at-point)))
+;; (use-package! google-translate
+;;   :demand t
+;;   :init
+;;   (require 'google-translate)
+;;   :functions (my-google-translate-at-point google-translate--search-tkk)
+;;   :custom
+;;   (google-translate-backend-method 'curl)
+;;   :config
+;;   (defun google-translate--search-tkk () "Search TKK." (list 430675 2721866130))
+;;   (defun my-google-translate-at-point()
+;;     "reverse translate if prefix"
+;;     (interactive)
+;;     (if current-prefix-arg
+;;         (google-translate-at-point)
+;;       (google-translate-at-point-reverse)))
+;;   :bind
+;;   ("C-c t". my-google-translate-at-point))
+;; (use-package! emacs
+;;   :config
+;;   (defvar google-search-history nil
+;;     "List of queries to google-search-string.")
+;;   (defun google-search-string (search-string)
+;;     "Read SEARCH-STRING from the minibuffer and call the shell
+;; command tuxi on it."
+;;     (interactive (list (read-string "Google: " nil
+;;                                     google-search-history
+;;                                     (thing-at-point 'sexp))))
+;;     (unless (executable-find "ls");; m dumb,
+;;       (user-error "Cannot find shell command: tuxipy"))
+;;     (let ((search-output (string-trim-right
+;;                           (shell-command-to-string
+;;                            (concat
+;;                             "python3 -m tuxipy "
+;;                             (shell-quote-argument search-string))))))
+;;       (with-current-buffer (get-buffer-create "*Tuxi Output*")
+;;         (goto-char (point-max))
+;;         (unless (bobp) (insert "\n\n* * *\n"))
+;;         (insert (capitalize search-string) ":\n\n")
+;;         (push-mark)
+;;         (insert search-output)
+;;         (let ((lines (count-lines (or (mark) (point-min)) (point-max))))
+;;           (if (<= lines 1)
+;;               (message search-output)
+;;             (let ((win (display-buffer (current-buffer))))
+;;               (set-window-start win (mark))
+;;               (set-window-parameter win 'window-height (min lines 10))
+;;               (goto-address-mode 1)))))))
+;;   (defun google-search-at-point (&optional beg end)
+;;     "Call the shell command tuxi on the symbol at point. With an
+;; active region use it instead."
+;;     (interactive "r")
+;;     (if-let ((search-string (if (use-region-p)
+;;                                 (buffer-substring-no-properties beg end)
+;;                               (thing-at-point 'symbol))))
+;;         (google-search-string search-string)
+;;       ;; (message "No symbol to search for at point!")
+;;       (call-interactively #'google-search-string)))
+;;   :bind (:map help-map
+;;               ("g" . google-search-string)
+;;               ("C-=" . google-search-at-point)))
 (use-package! emacs
   :config
   (defun dir-concat (dir file)
@@ -1040,20 +1024,20 @@ optional `tmr--timer-description'."
   ;; `prot-diff-modus-themes-diffs'
   (setq diff-font-lock-syntax 'hunk-also))
 
-(load "~/.config/doom/lisp/prot-diff.el")
-(use-package! prot-diff
-  :config
-  ;; (prot-diff-modus-themes-diffs)
-  (add-hook 'modus-themes-after-load-theme-hook #'prot-diff-modus-themes-diffs)
+;; (load "~/.config/doom/lisp/prot-diff.el")
+;; (use-package! prot-diff
+;;   :config
+;;   ;; (prot-diff-modus-themes-diffs)
+;;   (add-hook 'modus-themes-after-load-theme-hook #'prot-diff-modus-themes-diffs)
 
-  (prot-diff-extra-keywords 1)
+;;   (prot-diff-extra-keywords 1)
 
-  ;; `prot-diff-buffer-dwim' replaces the default for `vc-diff' (which I
-  ;; bind to another key---see VC section).
-  (define-key global-map (kbd "C-x v =") #'prot-diff-buffer-dwim)
-  (let ((map diff-mode-map))
-    (define-key map (kbd "C-c C-b") #'prot-diff-refine-cycle) ; replace `diff-refine-hunk'
-    (define-key map (kbd "C-c C-n") #'prot-diff-narrow-dwim)))
+;;   ;; `prot-diff-buffer-dwim' replaces the default for `vc-diff' (which I
+;;   ;; bind to another key---see VC section).
+;;   (define-key global-map (kbd "C-x v =") #'prot-diff-buffer-dwim)
+;;   (let ((map diff-mode-map))
+;;     (define-key map (kbd "C-c C-b") #'prot-diff-refine-cycle) ; replace `diff-refine-hunk'
+;;     (define-key map (kbd "C-c C-n") #'prot-diff-narrow-dwim)))
 ;; Diff-mode (and prot-diff.el extensions):1 ends here
 
 ;; [[file:config.org::*Helper function to measure the running time of a function][Helper function to measure the running time of a function:1]]
@@ -1629,21 +1613,21 @@ preview-default-preamble "\\fi}\"%' \"\\detokenize{\" %t \"}\""))
   :hook (LaTeX-mode . laas-mode)
   :config
   (aas-set-snippets 'laas-mode
-    ;; set condition!
-    :cond #'texmathp ; expand only while in math
-    "supp" "\\supp"
-    "On" "O(n)"
-    "O1" "O(1)"
-    "Olog" "O(\\log n)"
-    "Olon" "O(n \\log n)"
-    ;; bind to functions!
-    "Sum" (lambda () (interactive)
-            (yas-expand-snippet "\\sum_{$1}^{$2} $0"))
-    "Span" (lambda () (interactive)
-             (yas-expand-snippet "\\Span($1)$0"))
-    ;; add accent snippets
-    :cond #'laas-object-on-left-condition
-    "qq" (lambda () (interactive) (laas-wrap-previous-object "sqrt")))
+                    ;; set condition!
+                    :cond #'texmathp ; expand only while in math
+                    "supp" "\\supp"
+                    "On" "O(n)"
+                    "O1" "O(1)"
+                    "Olog" "O(\\log n)"
+                    "Olon" "O(n \\log n)"
+                    ;; bind to functions!
+                    "Sum" (lambda () (interactive)
+                            (yas-expand-snippet "\\sum_{$1}^{$2} $0"))
+                    "Span" (lambda () (interactive)
+                             (yas-expand-snippet "\\Span($1)$0"))
+                    ;; add accent snippets
+                    :cond #'laas-object-on-left-condition
+                    "qq" (lambda () (interactive) (laas-wrap-previous-object "sqrt")))
   (defun laas-tex-fold-maybe ()
     (unless (equal "/" aas-transient-snippet-key)
       (+latex-fold-last-macro-a)))
@@ -1670,7 +1654,8 @@ preview-default-preamble "\\fi}\"%' \"\\detokenize{\" %t \"}\""))
   :config
   (set-popup-rules!
     '(("^\\*Python:*\\*$" :side right :size 0.5 :ttl nil))))
-
+(add-hook 'python-mode-hook
+          (lambda () (setq-local devdocs-current-docs '("python~3.12"))))
 
 (setq dap-python-debugger 'debugpy)
 (setq python-prettify-symbols-alist 'nil) ;defaults are bad , may customise later
