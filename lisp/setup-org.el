@@ -283,14 +283,9 @@
   (add-to-list 'orgdiff-latexdiff-postprocess-hooks #'+orgdiff-nicer-change-colours))
 
 (setq org-todo-keywords
-      '((sequence "TODO(t)" "PROJ(p)" "LOOP(r)" "STRT(s)" "WAIT(w@/!)" "HOLD(h)" "IDEA(i)" "FIXME(f@/!)" "REVIEW(v!)" "NEXT(N)" "FOUND(F@/!)" "|" "DONE(d)" "KILL(k@)")
-        (sequence "BACKLOG(b)" "PLAN(P)" "READY(r)"   "|" "COMPLETED(c)" "CANC(C@)")
+      '((sequence "TODO(t)" "PROJ(p)" "LOOP(r)" "STRT(s)" "WAIT(w@/!)" "HOLD(h)" "IDEA(i@/!)" "FIXME(f@/!)" "REVIEW(v!)" "NEXT(N)" "|" "DONE(d)" "KILL(k@)")
         (sequence "[ ](T)" "[-](S)" "[?](W)" "|" "[X](D)")
         (sequence "|" "OKAY(o)" "YES(y)" "NO(n)")))
-
-;; (setq org-todo-keywords-for-agenda '("TODO(t)" "PROJ(p)" "LOOP(r)" "STRT(s)" "WAIT(w@/!)" "HOLD(h)" "IDEA(i)" "FIXME(f@/!)" "DONE(d)" "KILL(k)" "BLOCKED(B@) BACKLOG(b)" "SOMEDAY(s)" "PLAN(P)" "READY(r)" "FOUND(F@/!)" "ACTIVE(a@)" "REVIEW(v!)" "COMPLETED(c)" "CANC(C@)" "[ ](T)" "[-](S)" "[?](W)" "[X](D)"  "OKAY(o)" "YES(y)" "NO(n)"))
-
-(setq org-todo-keywords-for-agenda '("TODO(t)" "PROJ(p)" "LOOP(r)" "STRT(s)" "WAIT(w@/!)" "HOLD(h)" "IDEA(i)" "FIXME(f@/!)" "[ ](T)" "[-](S)" "[?](W)" "[X](D)" "OKAY(o)" "YES(y)" "NO(n)"))
 
 (map! :map org-mode-map
       :localleader

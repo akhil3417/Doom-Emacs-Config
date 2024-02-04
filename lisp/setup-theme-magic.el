@@ -1,6 +1,5 @@
 ;;; lisp/setup-theme-magic.el -*- lexical-binding: t; -*-
 
-
 (use-package! theme-magic
   :commands theme-magic-from-emacs
   :config

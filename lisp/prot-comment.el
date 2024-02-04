@@ -165,6 +165,6 @@ an alternative date format, as specified by
      (t
       (comment-indent t)
       (insert (concat " " string))))))
-
+(global-set-key (kbd "M-;") 'prot-comment-timestamp-keyword)
 (provide 'prot-comment)
 ;;; prot-comment.el ends here

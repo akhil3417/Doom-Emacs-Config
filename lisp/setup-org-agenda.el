@@ -86,7 +86,7 @@
                            :order 10)
                           (:name "Issues"
                            :tag "Issue"
-                           :todo ("FIXME" "CLAR")
+                           :todo ("FIXME")
                            :order 12)
                           (:name "Emacs"
                            :tag "Emacs"
@@ -97,7 +97,7 @@
                            :order 14)
                           (:name "Research"
                            :tag "Research"
-                           :todo "FOUND"
+                           :todo "IDEA"
                            :order 15)
                           (:name "To read & Learn"
                            :tag ("Read" "learn")

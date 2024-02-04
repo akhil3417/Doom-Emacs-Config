@@ -21,13 +21,13 @@
        ;;layout            ; auie,ctsrnm is the superior home row
 
        :completion
-        ;; (company)                     ; the ultimate code completion backend
-                        ; ... when your children are better than you
-       (corfu +icons +orderless)
+       ;; (company)                     ; the ultimate code completion backend
+                                        ; ... when your children are better than you
+       (corfu +icons +orderless +dabbrev +dict)
        ;;helm              ; the *other* search engine for love and life
        ;;ido               ; the other *other* search engine...
        ;;ivy               ; a search engine for love and life
-       (vertico +icons)           ; the search engine of the future
+       (vertico +multiform +icons)           ; the search engine of the future
 
        :ui
        deft              ; notational velocity for Emacs
@@ -45,7 +45,7 @@
        ;;neotree           ; a project drawer, like NERDTree for vim
        ophints           ; highlight the region an operation acts on
        (popup                       ; tame sudden yet inevitable temporary windows
-        +all                        ; catch all popups that start with an asterix
+        ;; +all
         +defaults)                  ; default popup rules
        ;; tabs              ; a tab bar for Emacs
        ;; treemacs          ; a project drawer, like neotree but cooler
@@ -76,8 +76,7 @@
        ibuffer         ; interactive buffer management
        undo                ; persistent, smarter undo for your inevitable mistakes
        vc                ; version-control and Emacs, sitting in a tree
-       ;; (eww +shrface +highlight)               ;better than chrome
-       (eww +langdetect)               ;better than chrome
+       (eww +shrface +highlight +langdetect)               ;better than chrome
 
        :term
        eshell            ; the elisp shell that works everywhere
@@ -93,7 +92,8 @@
        grammar           ; tasing grammar mistake every you make
 
        :tools
-       (codeium +python)
+       (codeium)
+      (gptel +aipihkal +extras +extension)
        ;;ansible
        ;;biblio            ; Writes a PhD for you (citation needed)
        ;;collab            ; buffers with friends
@@ -108,7 +108,7 @@
         +dictionary                 ; dictionary/thesaurus is nice
         +offline
         +docsets)                   ; ...or in Dash docsets locally
-       (lsp +elgot)               ; M-x vscode
+       (lsp +elgot +peek)               ; M-x vscode
        (magit +forge)             ; a git porcelain for Emacs
        make              ; run make tasks from Emacs
        (pass +auth)              ; password manager for nerds
@@ -170,7 +170,7 @@
        (org                         ; organize your plain life in plain text
         +dragndrop                  ; drag & drop files/images into org buffers
         +notify
-        +hugo                     ; use Emacs for hugo blogging
+        ;; +hugo                     ; use Emacs for hugo blogging
         +journal
         +noter                      ; enhanced PDF notetaking
         +jupyter                    ; ipython/jupyter support for babel

@@ -19,7 +19,7 @@
 ;; Scrolling
 ;; scroll-margin 0 ;; already in doom
 (setq scroll-preserve-screen-position t
-      next-screen-context-lines 4)
+      next-screen-context-lines 5)
 ;;; mouse
 ;;; (setq mouse-wheel-scroll-amount '(t ((shift) . 2))
 ;;;       mouse-wheel-progressive-speed t)
@@ -66,7 +66,7 @@
 ;; (display-time-mode 1)                             ; Enable time in the mode-line
 
 ;; (unless (string-match-p "^Power N/A" (battery))   ; On laptops...
-  ;; (display-battery-mode 1)                       ; it's nice to know how much power you have but i am running a desktop so doesnt make sense
+;; (display-battery-mode 1)                       ; it's nice to know how much power you have but i am running a desktop so doesnt make sense
 
 (global-subword-mode 1)                           ; Iterate through CamelCase words
 
@@ -89,12 +89,12 @@
 
 
 
-;  (setq centaur-tabs-style "wave")
-;  (setq centaur-tabs-set-bar 'under)
+                                        ;  (setq centaur-tabs-style "wave")
+                                        ;  (setq centaur-tabs-set-bar 'under)
 ;; Note: If you're not using Spacmeacs, in order for the underline to display
 ;; correctly you must add the following line:
-;(setq x-underline-at-descent-line t)
-;
+                                        ;(setq x-underline-at-descent-line t)
+                                        ;
 (provide 'setup-ui)
 ;; setup-ui ends here
 ;; setup.ui:1 ends here
