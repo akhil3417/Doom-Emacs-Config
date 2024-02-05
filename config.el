@@ -1644,6 +1644,34 @@ preview-default-preamble "\\fi}\"%' \"\\detokenize{\" %t \"}\""))
         lsp-ui-doc-max-width 80)
   (setq lsp-signature-function 'lsp-signature-posframe))
 
+(setq lsp-idle-delay 0.0
+      company-idle-delay 0.0
+      company-tooltip-idle-delay 0.0
+      gc-cons-threshold (* 100 1024 1024)
+      company-minimum-prefix-length 0
+      company-tooltip-limit 10
+      company-tooltip-minimum-width 100
+      company-tooltip-maximum-width 200
+      lsp-ui-doc-max-width 150
+      lsp-ui-doc-max-height 100
+      lsp-ui-doc-include-signature nil
+      lsp-ui-doc-enable nil
+      lsp-signature-render-documentation nil
+      lsp-signature-auto-activate nil
+      lsp-enable-snippet nil
+      company-lsp-enable-snippet nil
+      lsp-enable-symbol-highlighting nil
+      lsp-enable-links nil
+      lsp-restart nil ;; 'auto-restart
+      lsp-intelephense-completion-trigger-parameter-hints nil
+      lsp-signature-function 'lsp-signature-posframe)
+(company-box-mode -1)
+
+(after! company
+  (map! :map company-active-map "<tab>" #'company-complete-selection)
+  (map! "M-[" #'+company/complete)
+  (map! :map lsp-mode-map "<tab>" #'company-indent-or-complete-common))
+
 ;; [[file:lang.org::*LAAS][LAAS:3]]
 (use-package! laas
   :hook (LaTeX-mode . laas-mode)
