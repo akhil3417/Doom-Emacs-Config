@@ -85,7 +85,10 @@
   (load custom-file))
 ;; Auto-customisations:1 ends here
 
+;; Visually selects the paragraph. Execute multiple times to expand the selection or move the cursor:
+(map! :leader :desc "Visually mark paragraph" "v p" 'er/mark-paragraph)
 (global-set-key (kbd "C-@") 'er/expand-region)
+
 ;; [[file:config.org::*Windows Split][Windows Split:1]]
 (setq evil-vsplit-window-right t
       evil-split-window-below t)
