@@ -1313,7 +1313,7 @@ contextual information."
       :bind
       ("C-c n j" . org-journal-new-entry)
       :custom
-      (org-journal-dir "~/org/journal")
+      (org-journal-dir (concat org-directory "/journal"))
       (org-journal-date-prefix "#+TITLE: ")
       (org-journal-time-prefix "** ")
       (org-journal-file-format "%Y-%m-%d.org")
@@ -1326,9 +1326,9 @@ contextual information."
 (setq org-export-with-broken-links t)
 (setq org-publish-project-alist
       '(("my.site"
-         :base-directory "~/org/mysite/"
+         :base-directory(concat org-directory "/mysite/")
          :base-extension "org"
-         :publishing-directory "~/org/mysite/html/"
+         :publishing-directory (concat org-directory "/mysite/html/")
          :recursive t
          :exclude "org-html-themes/.*"
          :with-author nil           ;; Don't include author name
@@ -1341,7 +1341,7 @@ contextual information."
          :headline-levels 4             ; Just the default for this project.
          :auto-preamble t)
          ("org-static"
-         :base-directory "~/org/website"
+         :base-directory(concat org-directory "website")
          :base-extension "css\\|js\\|png\\|jpg\\|gif\\|pdf\\|mp3\\|ogg\\|swf"
          :publishing-directory "~/public_html/"
          :recursive t

@@ -20,8 +20,8 @@
 (after! org
  ;; '(org-agenda-files
  ;;   '( "~/org/org-capture/todo.org" "~/org/org-capture/webnotes.org" "~/org/org-roam2/daily/" "~/org/org-roam2/todo/todo.org"))
- (setq org-agenda-files '("~/org/org-agenda/" "~/org/org-capture/todo.org")))
- (setq org-default-notes-file "~/org/notes/notes.org")
+(setq org-agenda-files (list (concat org-directory "/org-agenda/") "/org-capture/todo.org"))
+ (setq org-default-notes-file (concat org-directory "/notes/notes.org"))
 ;; Super agenda:3 ends here
 
 ;; [[file:config.org::*Super agenda][Super agenda:5]]
@@ -30,7 +30,7 @@
 
 (after! org-agenda
   (let ((inhibit-message t))
-    (org-super-agenda-mode)))
+    (org-super-agenda-mode))
 
 (setq org-agenda-skip-scheduled-if-done t
       org-agenda-skip-deadline-if-done t
@@ -174,8 +174,8 @@
   (define-key map (kbd "C-c O") #'org-open-at-point-global))
 (let ((map org-mode-map))
   (define-key map (kbd "C-c M-l") #'org-insert-last-stored-link)
-  (define-key map (kbd "C-c C-M-l") #'org-toggle-link-display))
-
+  (define-key map (kbd "C-c C-M-l") #'org-toggle-link-display)))
+)
 (defun my-org-check-agenda ()
   "Peek at agenda."
   (interactive)
@@ -186,16 +186,3 @@
     (switch-to-buffer-other-window "*Org Agenda*"))
    (t (org-agenda nil "a"))))
 ;; Super agenda:5 ends here
-
-;; [[file:config.org::*Basic settings][Basic settings:1]]
-;;(after! org-roam
-;; (setq
-;;       org-roam-directory "~/org/org-roam2/"
-;;       org-roam-db-location (concat org-roam-directory "org-roam.db")
-;;       org-roam-todo-file (concat org-roam-directory "todo/todo.org"))
-;; (save-window-excursion
-;;   (find-file org-roam-todo-file)
-;;   (save-buffer))
-;; Basic settings:1 ends here
-;;
-;;

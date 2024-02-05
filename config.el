@@ -432,7 +432,7 @@ Also immediately enables `mixed-pitch-modes' if currently in one of the modes."
 
 (map! :leader
       (:prefix ("=" . "open file")
-       :desc "Edit agenda file" "a" #'(lambda () (interactive) (find-file "~/org/org-agenda/agenda.org"))
+       :desc "Edit agenda file" "a" #'(lambda () (interactive) (find-file(concat org-directory "/org-agenda/agenda.org")))
        :desc "Edit doom config.org" "c" #'(lambda () (interactive) (find-file "~/.config/doom/config.org"))
        :desc "Edit doom init.el" "i" #'(lambda () (interactive) (find-file "~/.config/doom/init.el"))
        :desc "Edit doom packages.el" "p" #'(lambda () (interactive) (find-file "~/.config/doom/packages.el"))))

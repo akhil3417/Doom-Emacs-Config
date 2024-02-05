@@ -3,7 +3,7 @@
 
 (use-package! doct
   :commands doct)
-(load "~/.config/doom/lisp/org-protocol-capture-html.el")
+(load (concat doom-user-dir "lisp/org-protocol-capture-html.el"))
 (require 'org-protocol-capture-html)
 (require 'all-the-icons)
 
@@ -139,8 +139,8 @@
 
   (setq doct-after-conversion-functions '(+doct-iconify-capture-templates))
 
-  (defvar +org-capture-recipies  "~/org/org-capture/recipies.org")
-  (setq +org-capture-todo-file  "~/org/org-capture/todo.org")
+  (defvar +org-capture-recipies (concat org-directory "/org-capture/recipies.org"))
+  (setq +org-capture-todo-file (concat org-directory "/org-capture/todo.org"))
 
   (defun set-org-capture-templates ()
     (setq org-capture-templates

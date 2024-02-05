@@ -1,11 +1,10 @@
 ;;; lisp/setup-org-roam.el -*- lexical-binding: t; -*-
 
-
 (use-package! org-roam
   :after org-roam
   :init
   (setq org-roam-db-location (concat org-roam-directory "org-roam.db")
-        org-roam-directory "~/org/org-roam2/"
+        org-roam-directory (concat org-directory "/org-roam2/")
         org-roam-todo-file (concat org-roam-directory "todo/todo.org")
         org-roam-completion-everywhere nil
         ;;Functions tags are special types of tags which tells what the node are for
