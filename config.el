@@ -493,6 +493,23 @@ Also immediately enables `mixed-pitch-modes' if currently in one of the modes."
              goto-address-mode))
 ;; url util:1 ends here
 
+;; magit
+(after! magit
+    (setq git-commit-summary-max-length 100))
+
+;; This function first checks if there are any modified files using =magit-anything-modified-p=. If there are no modified files, it displays a message. Otherwise, it stages the modified files using =magit-stage-modified=, prompts you for a commit message, creates a commit using =magit-commit-create=, and finally pushes the changes to the "origin" remote using =magit-push-current-to-upstream=.
+(defun +magit-stage-commit-push ()
+  "Stage, commit, and push all modified files to 'origin'."
+  (interactive)
+  (if (not (magit-anything-modified-p))
+      (message "No modified files to commit.")
+    (magit-stage-modified)
+    (let* ((timestamp (format-time-string "%Y-%m-%d %H:%M:%S"))
+      (commit-msg (concat "Update notes " timestamp)))
+      (magit-commit-create (list "-m" commit-msg))
+      (magit-push-current-to-upstream "p"))))
+;; (map! :leader :desc "Magit quick push" "g p" #+magit-stage-commit-push)
+
 ;; [[file:config.org::*Wolfram alpha][Wolfram alpha:1]]
 ;; wolfram alpha queries (M-x wolfram-alpha)
 (use-package! wolfram
