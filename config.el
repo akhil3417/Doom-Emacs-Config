@@ -1625,6 +1625,7 @@ preview-default-preamble "\\fi}\"%' \"\\detokenize{\" %t \"}\""))
   :config
   (add-hook! 'devdocs-mode-hook
     (face-remap-add-relative 'variable-pitch '(:family "Noto Sans"))))
+(global-set-key (kbd "C-h D") 'devdocs-lookup)
 ;; (add-hook! 'after-init-hook
 ;;            (progn
 ;;   (setq-hook! 'typescript-mode-hook +format-with :nil)
