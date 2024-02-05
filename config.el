@@ -267,6 +267,21 @@ Also immediately enables `mixed-pitch-modes' if currently in one of the modes."
   (save-buffer)
   (switch-to-buffer nil))               ; return to the initial buffer
 
+(global-evil-mc-mode  1)
+(with-eval-after-load 'evil-maps
+  (global-set-key (kbd "M-D") 'evil-mc-make-and-goto-next-match)
+  (define-key evil-normal-state-map (kbd "C-J") 'evil-mc-make-cursor-move-next-line)
+  (define-key evil-normal-state-map (kbd "C-K") 'evil-mc-make-cursor-move-prev-line)
+
+  (define-key evil-visual-state-map (kbd "M-D") 'evil-mc-make-and-goto-next-match)
+  (define-key evil-normal-state-map (kbd "M-D") 'evil-mc-make-and-goto-next-match))
+
+(defun +make-evil-multiedit-case-sensitive (fn &rest args)
+  (let ((case-fold-search (not iedit-case-sensitive)))
+    (apply fn args)))
+
+(advice-add #'evil-multiedit-match-and-next :around #'+make-evil-multiedit-case-sensitive)
+
 (define-key evil-normal-state-map (kbd "C-t") 'transpose-chars)
 ;; Paste in Visual Mode:1 ends here
 
