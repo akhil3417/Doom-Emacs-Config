@@ -1373,3 +1373,20 @@ contextual information."
 (setq appt-display-interval 900)
 ;; Org-appt settings:1 ends here
 )
+
+;; Keybindings for marking up in org mode:
+
+(defun +emphasize-word-or-selection (emphasis)
+  (interactive)
+  (if (evil-visual-state-p)
+      (org-emphasize emphasis)
+    (er/mark-word))
+  (org-emphasize emphasis))
+
+;; (general-define-key :states '(visual normal insert) :keymaps 'org-mode-map
+(general-define-key :states '(insert) :keymaps 'org-mode-map
+                    "C-M-b" (lambda () (interactive) (+emphasize-word-or-selection ?\*)) ;; bold
+                    "C-M-i" (lambda () (interactive) (+emphasize-word-or-selection ?\/)) ;; italics
+                    "C-M-e" (lambda () (interactive) (+emphasize-word-or-selection ?\=))) ;; code
+
+
