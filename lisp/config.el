@@ -1,4 +1,4 @@
-;;; lisp/config.el -*- lexical-binding: t; -*-
+;;; lisp/new/config.el -*- lexical-binding: t; -*-
 ;;; config.el -*- lexical-binding: t; -*-
 (setenv "LC_ALL" "C.UTF-8")
 
@@ -6,6 +6,12 @@
 ;; (load "~/.config/doom/exwmmain.el")
 ;; (setq package-native-compile t)
 ;; Personal Information:2 ends here
+
+;; [[file:config.org::*Personal Information][Personal Information:3]]
+                                        ; default is 7200 (2h)
+;; Personal Information:3 ends here
+;;
+;; load configuration
 
 (load "~/.config/doom/lisp/setup-theme-magic.el")
 (load "~/.config/doom/lisp/setup-avy.el")
@@ -40,14 +46,14 @@
 
 (load "~/.config/doom/lisp/yt-org.el")
 
-(load "~/.config/doom/lisp/ui.el")
-(load "~/.config/doom/lisp/general.el")
-(load "~/.config/doom/lisp/helper-funcs.el")
-(load "~/.config/doom/lisp/coding.el")
-(load "~/.config/doom/lisp/editing.el")
-(load "~/.config/doom/lisp/binds.el")
-(load "~/.config/doom/lisp/setup-tmr.el")
-(load "~/.config/doom/lisp/tex.el")
+(load "~/.config/doom/lisp/new/ui.el")
+(load "~/.config/doom/lisp/new/general.el")
+(load "~/.config/doom/lisp/new/helper-funcs.el")
+(load "~/.config/doom/lisp/new/coding.el")
+(load "~/.config/doom/lisp/new/editing.el")
+(load "~/.config/doom/lisp/new/binds.el")
+(load "~/.config/doom/lisp/new/tex.el")
+(load "~/.config/doom/lisp/new/html-export.el")
 ;; launch telegram
 ;; Launch Telega in workspace 0 if we've logged in before
 ;; (when (file-exists-p "~/.telega/db.sqlite")
@@ -56,8 +62,56 @@
 ;;   (setq telega-notifications-mode t))
 ;; telega:2 ends here
 ;;
+(setq eww-download-directory "~/Downloads/")
+(setq eww-bookmarks-directory (expand-file-name "~/.config/eww-bookmarks/"))
+(setq bookmark-file (expand-file-name "~/.config/eww-bookmarks/emacs-bookmarks"))
+(defun ak/mpc-invidious-grabber (arg)
+  (interactive "P")
+  (let* ((query (replace-regexp-in-string " " "+" (read-string "Enter query: ")))
+         (url (shell-command-to-string (format "curl -s \"https://vid.puffyan.us/search?q=%s\" | grep -Eo \"watch\\?v=.{11}\" | head -n 1 | xargs -I {} echo \"https://youtube.com/{}\"" query))))
+    (if arg
+        (start-process-shell-command "yt" nil (format "mpv --no-video %s" url))
+      (start-process-shell-command "yt" nil (format "mpv %s" url))))
+  (message "Streaming started."))
+
+(setq pixel-scroll-positon-large-scroll-height 40)
+;; (after! projectile (setq projectile-project-root-files-bottom-up (remove ".git"
+;;           projectile-project-root-files-bottom-up)))
+
+;; [[file:config.org::*Auto-customisations][Auto-customisations:1]]
+;; Auto-customisations:1 ends here
 
 
+
+
+;; (setq doom-font (font-spec :family "JetBrains Mono" :size 18)
+;;       doom-big-font (font-spec :family "JetBrains Mono" :size 27)
+;;       doom-variable-pitch-font (font-spec :family "Overpass" :size 20)
+;;       doom-unicode-font (font-spec :family "JuliaMono")
+;; doom-unicode-font (font-spec :name "Noto Color Emoji"
+;;       doom-serif-font (font-spec :family "IBM Plex Mono" :size 17 :weight 'light))
+
+
+(use-package beframe ; another package of mine (work-in-progress)
+  :config
+  (setq beframe-functions-in-frames '(project-prompt-project-dir))
+
+  (beframe-mode 1)
+
+  (let ((map global-map))
+    (define-key map (kbd "C-x f") #'other-frame-prefix) ; override `set-fill-column'
+    ;; Also see `beframe-switch-buffer-in-frame'.
+    (define-key map (kbd "C-x B") #'beframe-switch-buffer)))
+
+(let ((map global-map))
+  (define-key map (kbd "C-x C-n") #'next-buffer)     ; override `set-goal-column'
+  (define-key map (kbd "C-x C-p") #'previous-buffer)) ; override `mark-page'
+
+;; [[file:config.org::*Abbrev][Abbrev:1]]
+;; Abbrev:1 ends here
+
+
+;;
 ;; (when (featurep! :completion corfu)
 ;;   (map! :map corfu-map
 ;;         :desc "insert separator" "C-SPC" #'corfu-insert-separator)
@@ -69,6 +123,16 @@
 ;;   (custom-set-faces! '((corfu-popupinfo) :height 0.9)))
 
 ;; [[file:config.org::*Eshell][Eshell:1]]
+(setq shell-file-name "/bin/bash"
+      vterm-max-scrollback 5000)
+(setq eshell-rc-script "~/.config/doom/eshell/profile"
+      eshell-aliases-file "~/.config/doom/eshell/aliases"
+      eshell-history-size 50000
+      eshell-buffer-maximum-lines 50000
+      eshell-hist-ignoredups t
+      eshell-scroll-to-bottom-on-input t
+      eshell-destroy-buffer-when-process-dies t
+      eshell-visual-commands'("bash" "fish" "htop" "ssh" "top" "zsh"))
 
 ;;; URLs
 (require 'url-util)
@@ -111,10 +175,54 @@
       )
 ;; ERC:1 ends here
 
+
 (use-package simple-httpd
   :defer t)
 ;; simple httpd:1 ends here
 
+
+(use-package! tmr
+  :config
+  (setq tmr-sound-file
+        "~/.config/doom/NotificationSound.opus")
+  (setq tmr-notification-urgency 'normal)
+  (setq tmr-descriptions-list (list "Boil water" "Prepare tea" "Bake bread"))
+  (let ((map global-map))
+    (define-key map (kbd "C-c n t") #'tmr)
+    (define-key map (kbd "C-c n c") #'tmr-cancel)))
+
+
+;; do some changes as I don't like the way notification is clutterd with usless stuff
+(defun tmr-notification-notify (timer)
+  "Dispatch a notification for TIMER.
+
+Read: (info \"(elisp) Desktop Notifications\") for details."
+  (if (featurep 'dbusbind)
+      (let ((title (tmr--long-description-for-finished-timer timer))
+            (body ""))
+        (notifications-notify
+         :title title
+         :body body
+         :app-name "GNU Emacs"
+         :urgency tmr-notification-urgency
+         :sound-file tmr-sound-file))
+    (warn "Emacs has no DBUS support, TMR notifications unavailable")))
+
+(defun tmr--long-description-for-finished-timer (timer)
+  "Return a human-readable description of finished TIMER.
+This includes the creation and completion dates as well as the
+optional `tmr--timer-description'."
+  (let ((start (tmr--format-creation-date timer))
+        (end (tmr--format-end-date timer))
+        (description (tmr--timer-description timer)))
+    ;; For the TMR prefix, see comment in `tmr--long-description'.
+    (format "Hey Akhil Time is up!\n%s%s %s\n%s %s"
+            (if description (format "%s\n" description) "")
+            (propertize "Started" 'face 'success)
+            start
+            (propertize "Ended" 'face 'error)
+            end)))
+;; tmr.el (TMR Must Recur):1 ends here
 ;; [[file:config.org::*org roam qutebrowser][org roam qutebrowser:1]]
 (require 'org-roam-protocol)
 (setq org-roam-capture-ref-templates
@@ -177,6 +285,22 @@
   :after graphviz-dot-mode)
 ;; Graph viz:2 ends here
 
+
+;; [[file:lang.org::*latex][latex:1]]
+(with-eval-after-load 'ox-latex
+  (add-to-list 'org-latex-classes
+               '("org-plain-latex"
+                 "\\documentclass{article}
+           [NO-DEFAULT-PACKAGES]
+           [PACKAGES]
+           [EXTRA]"
+                 ("\\section{%s}" . "\\section*{%s}")
+                 ("\\subsection{%s}" . "\\subsection*{%s}")
+                 ("\\subsubsection{%s}" . "\\subsubsection*{%s}")
+                 ("\\paragraph{%s}" . "\\paragraph*{%s}")
+                 ("\\subparagraph{%s}" . "\\subparagraph*{%s}"))))
+;; latex:1 ends here
+
 ;; ;; [[file:lang.org::*Org-roam-server][Org-roam-server:1]]
 ;; (use-package org-roam-server
 ;;   :config
@@ -198,6 +322,13 @@
 ;;     (browse-url-xdg-open (format "http://localhost:%d" org-roam-server-port))))
 ;; ;; Org-roam-server:1 ends here
 
+(setq gptel-directives (+gptel-build-directives(concat "~/myrepos/AIPIHKAL/system-prompts/")))
+;; (setq gptel-directives (+gptel-build-directives(concat "~/tmpexpdir/aitest/pre/")))
+(load-file "~/myrepos/hugging-chat-api-emacs/hugging-chat.el")
+
+
+
+
 ;; (use-package super-save)
 ;; (super-save-mode +1)
 ;; (setq super-save-auto-save-when-idle t)
@@ -215,12 +346,8 @@
 ;; 	(apply orig-fun args)))
 ;; (advice-add 'super-save-command-advice :around #'me/super-save-disable-advice)
 
+
 ;; (use-package keyfreq
 ;;   :config
 ;;     (keyfreq-mode 1)
 ;;     (keyfreq-autosave-mode 1))
-
-(setq gptel-directives (+gptel-build-directives(concat "~/myrepos/AIPIHKAL/system-prompts/")))
-;; (setq gptel-directives (+gptel-build-directives(concat "~/tmpexpdir/aitest/pre/")))
-(load-file "~/myrepos/hugging-chat-api-emacs/hugging-chat.el")
-(load "~/.config/doom/lisp/html-export.el")
