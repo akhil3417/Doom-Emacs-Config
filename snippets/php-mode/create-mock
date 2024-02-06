@@ -1,0 +1,7 @@
+# -*- mode: snippet -*-
+# name: create-mock
+# key: mock
+# group: phpunit
+# --
+$this->createMock($1::class);
+$0

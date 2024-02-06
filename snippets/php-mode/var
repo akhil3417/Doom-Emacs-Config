@@ -1,0 +1,7 @@
+# -*- mode: snippet -*-
+# name: var
+# uuid: 
+# key: var
+# condition: t
+# --
+/** @var ${0:`yas-selected-text`} */

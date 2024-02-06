@@ -1,0 +1,5 @@
+# key: sm
+# name: Service Manager call
+# group: application
+# --
+$this->getServiceManager()->$0

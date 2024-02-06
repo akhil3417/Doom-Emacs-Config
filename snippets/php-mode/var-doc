@@ -1,0 +1,5 @@
+# -*- mode: snippet -*-
+# name: var-doc
+# key: var
+# --
+/** @var $0 */

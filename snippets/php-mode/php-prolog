@@ -1,0 +1,17 @@
+# -*- mode: snippet -*-
+# name: php prolog
+# key: prolog
+# group: structure
+# --
+<?php
+
+declare(strict_types=1);
+
+namespace ${1:Exads};
+
+class ${2:`(yas-php-get-class-name-by-file-name)`}
+{
+    public function __construct(${3:})
+    {
+    }
+}

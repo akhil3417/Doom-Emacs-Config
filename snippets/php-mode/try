@@ -1,0 +1,8 @@
+# name: "try { ... } catch (Exception $e) { ... }"
+# key: try
+# group: control
+# --
+try {
+  ${0:`yas-selected-text`}
+} catch (${1:Exception} $e) {
+}

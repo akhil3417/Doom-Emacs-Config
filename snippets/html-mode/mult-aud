@@ -1,0 +1,29 @@
+# -*- mode: snippet -*-
+# name: mult-aud
+# key: trigger-key
+# condition: t
+# --
+
+
+<!-- audio options here -->
+<div>
+  <select id="audioSelect" onchange="changeAudio()">
+    <option value=".opus"> · </option>
+    <option value=".opus"> ·  </option>
+  </select>
+</div>
+
+<script>
+  function changeAudio() {
+    var audioSelect = document.getElementById("audioSelect");
+    var audioSource = document.getElementById("audioSource");
+    var audio = document.getElementById("myAudio");
+
+    // Get the selected value from the dropdown
+    var selectedAudio = audioSelect.value;
+
+    // Update the source and reload the audio
+    audioSource.src = "../audio/" + selectedAudio;
+    audio.load();
+  }
+</script>

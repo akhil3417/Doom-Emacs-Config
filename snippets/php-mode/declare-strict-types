@@ -1,0 +1,5 @@
+# name: declare strict types
+# key: dst
+# group: structure
+# --
+declare(strict_types=1);

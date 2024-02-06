@@ -1,0 +1,7 @@
+# -*- mode: snippet -*-
+# name: verse_sanskrit
+# key: vsan
+# --
+<div class="verse_sanskrit">
+`%`$0
+</div>

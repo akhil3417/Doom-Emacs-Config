@@ -1,0 +1,5 @@
+# -*- mode: snippet -*-
+# name: doc-param
+# key: doc-param
+# --
+@param $0

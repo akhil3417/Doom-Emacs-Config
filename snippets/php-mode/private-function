@@ -1,0 +1,11 @@
+# name: private function
+# key: pri
+# condition: t
+# --
+/**
+ * @return $3
+ */
+private function $1(): $2
+{
+    $0
+}

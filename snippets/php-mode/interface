@@ -1,0 +1,14 @@
+# name: interface
+# key: interface
+# group: structure
+# --
+/**
+ * ${2:undocumented class}
+ *
+ * @package ${3:default}
+ * @author ${4:`"Name"`}
+ */
+interface ${1:}
+{
+  ${0:`yas-selected-text`}
+}

@@ -1,0 +1,8 @@
+# name: expects
+# key: exp
+# group: phpunit
+# --
+expects($this->${1:once}())
+  ->method('$2')
+  ->with($3)
+  ->willReturn($4);

@@ -1,0 +1,12 @@
+# -*- mode: snippet -*-
+# name: constructor
+# key: constr
+# --
+/**
+ * Constructor
+ * @param $2
+ */
+public function __construct($1)
+{
+    $0
+}

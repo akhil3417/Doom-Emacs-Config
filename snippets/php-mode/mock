@@ -1,0 +1,4 @@
+# name: "$mock = $this->createMock(SomeClass::class);"
+# key: mock
+# --
+$${1:mock} = $this->createMock(${2:SomeClass}::class);

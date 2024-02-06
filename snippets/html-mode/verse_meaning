@@ -1,0 +1,8 @@
+# -*- mode: snippet -*-
+# name: verse_meaning
+# key: vmean
+# --
+
+<div class="verse_meaning">
+`%`$0
+</div>

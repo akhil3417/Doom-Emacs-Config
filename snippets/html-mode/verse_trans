@@ -1,0 +1,9 @@
+# -*- mode: snippet -*-
+# name: verse_trans
+# key: vtrans
+# --
+
+<div class="verse_trans">
+`%`$0
+
+</div>

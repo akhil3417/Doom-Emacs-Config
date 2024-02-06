@@ -1,0 +1,14 @@
+# -*- mode: snippet -*-
+# name: Measure time took a call with microtime
+# key: micro
+# group: application
+# --
+$start = microtime(true);
+${0:`yas-selected-text`}
+$time_elapsed_secs = microtime(true) - $start;
+if (openlog('MEASURE', LOG_PID, LOG_LOCAL3)) {
+    syslog(LOG_NOTICE, '$1 took: ' . $time_elapsed_secs);
+    closelog();
+}
+unset($start);
+unset($time_elapsed_secs);

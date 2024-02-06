@@ -1,0 +1,11 @@
+# -*- mode: snippet -*-
+# name: public method
+# key: pub
+# --
+/**
+ * @return ${4:void}
+ */
+public function ${2:name}($3): ${4:void}
+{
+    `%`$0
+}
