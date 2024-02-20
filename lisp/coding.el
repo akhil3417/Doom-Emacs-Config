@@ -160,6 +160,7 @@
 ;;   (add-hook! 'typescript-tsx-mode-hook 'prettier-mode)
 ;;   ))
 
+(when (featurep! :completion company)
 (use-package! lsp-ui
   :config
   (setq lsp-ui-doc-delay 2
@@ -192,7 +193,7 @@
 (after! company
   (map! :map company-active-map "<tab>" #'company-complete-selection)
   (map! "M-[" #'+company/complete)
-  (map! :map lsp-mode-map "<tab>" #'company-indent-or-complete-common))
+  (map! :map lsp-mode-map "<tab>" #'company-indent-or-complete-common)))
 
 ;; [[file:lang.org::*LAAS][LAAS:3]]
 (use-package! laas
