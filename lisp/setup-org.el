@@ -1390,3 +1390,20 @@ contextual information."
                     "C-M-e" (lambda () (interactive) (+emphasize-word-or-selection ?\=))) ;; code
 
 
+(defun +org-doom-config ()
+  "Jump to an Org headline in doom config."
+  (interactive)
+  (doom-completing-read-org-headings
+   "Jump to config: "
+   "~/.config/doom/"
+   :depth 10
+   :include-files t))
+
+(defun +org-notes ()
+  "Jump to an Org headline in personal notes."
+  (interactive)
+  (doom-completing-read-org-headings
+   "Jump to note: "
+   "~/org/org-roam2/Articles/"
+   :depth 10
+   :include-files t))
