@@ -288,3 +288,27 @@
         (start-process-shell-command "yt" nil (format "mpv --no-video %s" url))
       (start-process-shell-command "yt" nil (format "mpv %s" url))))
   (message "Streaming started."))
+
+;; tts
+(defun tts-piper (&optional arg)
+  "Send the text after point or the given TEXT to piper for tts.
+If a region is active, send the marked text. If TEXT is provided, that text is used.
+If a non-numeric prefix argument is provided, prompt for text input.
+If a numeric prefix argument is provided, send the number of lines."
+  (interactive "P")
+  (let ((text (cond
+               ((region-active-p) (buffer-substring-no-properties (region-beginning) (region-end)))
+               ((consp arg) (read-string "Enter text: "))
+               (arg (buffer-substring-no-properties (point) (save-excursion (forward-line arg) (point))))
+               (t (buffer-substring-no-properties (point) (point-max))))))
+    (start-process "piper" "/piper/" "sh" "-c"
+                   (format "echo '%s' | ~/gitclones/piper/piper --model ~/gitclones/piper/en_US-hfc_female-medium.onnx  --output-raw 2>/dev/null | aplay -r 22050 -f S16_LE -t raw - 2>/dev/null" text))))
+  (add-hook 'gptel-post-response-functions 'tts-piper)
+
+
+(defun sgpt-tts-piper (text)
+  "Send the given TEXT to spgt and pipe the response to the piper for tts."
+  (interactive "sEnter text: ")
+  (let ((cleaned-text (replace-regexp-in-string "[\"\'()]" "\\\\\\&" text)))
+    (start-process "piper" "/piper/" "sh" "-c"
+                   (format "sgpt --top-p '0.01' --temperature '0.32' --no-cache --role jarvis '%s' | ~/gitclones/piper/piper --model ~/gitclones/piper/en_US-hfc_female-medium.onnx  --output-raw 2>/dev/null | aplay -r 22050 -f S16_LE -t raw - 2>/dev/null" text))))
