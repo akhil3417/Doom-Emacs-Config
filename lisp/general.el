@@ -48,6 +48,8 @@
   :after '(evil-window-split evil-window-vsplit)
   (consult-buffer))
 
+(appendq! dirvish-attributes '(all-the-icons))
+(setq dirvish-hide-details t)
 
 (setq shell-file-name "/bin/bash"
       vterm-max-scrollback 5000)
