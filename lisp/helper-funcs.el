@@ -306,7 +306,7 @@ If a numeric prefix argument is provided, send the number of lines."
   (add-hook 'gptel-post-response-functions 'tts-piper)
 
 
-(defun sgpt-tts-piper (text)
+(defun jarvis (text)
   "Send the given TEXT to spgt and pipe the response to the piper for tts."
   (interactive "sEnter text: ")
   (let ((cleaned-text (replace-regexp-in-string "[\"\'()]" "\\\\\\&" text)))
