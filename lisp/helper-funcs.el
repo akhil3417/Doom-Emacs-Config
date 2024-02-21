@@ -294,16 +294,17 @@
   "Send the text after point or the given TEXT to piper for tts.
 If a region is active, send the marked text. If TEXT is provided, that text is used.
 If a non-numeric prefix argument is provided, prompt for text input.
-If a numeric prefix argument is provided, send the number of lines."
+If a numeric prefix argument is provided, send the number of lines.
+also filter the special chars that break the tts"
   (interactive "P")
-  (let ((text (cond
-               ((region-active-p) (buffer-substring-no-properties (region-beginning) (region-end)))
-               ((consp arg) (read-string "Enter text: "))
-               (arg (buffer-substring-no-properties (point) (save-excursion (forward-line arg) (point))))
-               (t (buffer-substring-no-properties (point) (point-max))))))
-    (start-process "piper" "/piper/" "sh" "-c"
-                   (format "echo '%s' | ~/gitclones/piper/piper --model ~/gitclones/piper/en_US-hfc_female-medium.onnx  --output-raw 2>/dev/null | aplay -r 22050 -f S16_LE -t raw - 2>/dev/null" text))))
-  (add-hook 'gptel-post-response-functions 'tts-piper)
+  (let* ((text (cond
+                ((region-active-p) (buffer-substring-no-properties (region-beginning) (region-end)))
+                ((consp arg) (read-string "Enter text: "))
+                (arg (buffer-substring-no-properties (point) (save-excursion (forward-line arg) (point))))
+                (t (buffer-substring-no-properties (point) (point-max)))))
+         (escaped-text (replace-regexp-in-string "\\([a-z]\\)'\\([a-z]\\)" "\\1 \\2" text)))
+    (start-process "piper" "*piper*" "sh" "-c"
+                   (format "echo '%s' | ~/gitclones/piper/piper --model ~/gitclones/piper/en_US-hfc_female-medium.onnx  --output-raw 2>/dev/null | aplay -r 22050 -f S16_LE -t raw - 2>/dev/null" escaped-text))))
 
 
 (defun jarvis (text)
