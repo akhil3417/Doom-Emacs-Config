@@ -311,5 +311,7 @@ also filter the special chars that break the tts"
   "Send the given TEXT to spgt and pipe the response to the piper for tts."
   (interactive "sEnter text: ")
   (let ((cleaned-text (replace-regexp-in-string "[\"\'()]" "\\\\\\&" text)))
-    (start-process "piper" "/piper/" "sh" "-c"
-                   (format "sgpt --top-p '0.01' --temperature '0.32' --no-cache --role jarvis '%s' | ~/gitclones/piper/piper --model ~/gitclones/piper/en_US-hfc_female-medium.onnx  --output-raw 2>/dev/null | aplay -r 22050 -f S16_LE -t raw - 2>/dev/null" text))))
+    (start-process "piper" "*piper*" "sh" "-c"
+                   (format "sgpt --top-p '0.01' --temperature '0.32' --no-cache --chat jarvis  '%s' | tee /dev/tty | ~/gitclones/piper/piper --model ~/gitclones/piper/en_US-hfc_female-medium.onnx  --output-raw 2>/dev/null | aplay -r 22050 -f S16_LE -t raw - 2>/dev/null" text))))
+
+
