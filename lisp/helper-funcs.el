@@ -290,12 +290,17 @@
   (message "Streaming started."))
 
 ;; tts
+
+(defvar piper-binary-path "~/myrepos/linux-assistant/extensions/piper/piper")
+(defvar piper-model-path "~/myrepos/linux-assistant/extensions/piper/models/en_US-libritts_r-medium.onnx")
+(defvar piper-aplay-parameters "-r 22050 -f S16_LE -t raw -")
+
 (defun tts-piper (&optional arg)
   "Send the text after point or the given TEXT to piper for tts.
 If a region is active, send the marked text. If TEXT is provided, that text is used.
 If a non-numeric prefix argument is provided, prompt for text input.
 If a numeric prefix argument is provided, send the number of lines.
-also filter the special chars that break the tts"
+Also filter the special chars that break the tts."
   (interactive "P")
   (let* ((text (cond
                 ((region-active-p) (buffer-substring-no-properties (region-beginning) (region-end)))
@@ -304,7 +309,7 @@ also filter the special chars that break the tts"
                 (t (buffer-substring-no-properties (point) (point-max)))))
          (escaped-text (replace-regexp-in-string "\\([a-z]\\)'\\([a-z]\\)" "\\1 \\2" text)))
     (start-process "piper" "*piper*" "sh" "-c"
-                   (format "echo '%s' | ~/myrepos/linux-assistant/extensions/piper/piper --model ~/myrepos/linux-assistant/extensions/piper/models/en_US-hfc_female-medium.onnx  --output-raw 2>/dev/null | aplay -r 22050 -f S16_LE -t raw - 2>/dev/null" escaped-text))))
+                   (format "echo '%s' | %s --model %s  --output-raw 2>/dev/null | aplay %s 2>/dev/null" escaped-text piper-binary-path piper-model-path piper-aplay-parameters))))
 
 
 (defun jarvis (text)
@@ -312,4 +317,4 @@ also filter the special chars that break the tts"
   (interactive "sEnter text: ")
   (let ((cleaned-text (replace-regexp-in-string "[\"\'()]" "\\\\\\&" text)))
     (start-process "piper" "*piper*" "sh" "-c"
-                   (format "sgpt --top-p '0.01' --temperature '0.32' --no-cache --chat jarvis  '%s' | tee /dev/tty | ~/myrepos/linux-assistant/extensions/piper/piper --model ~/myrepos/linux-assistant/extensions/piper/models/en_US-hfc_female-medium.onnx  --output-raw 2>/dev/null | aplay -r 22050 -f S16_LE -t raw - 2>/dev/null" text))))
+                   (format "sgpt --top-p '0.01' --temperature '0.32' --no-cache --chat jarvis  '%s' | tee /dev/tty | %s --model %s  --output-raw 2>/dev/null | aplay %s 2>/dev/null" text piper-binary-path piper-model-path piper-aplay-parameters))))
