@@ -1,4 +1,4 @@
-;;; lisp/new/config.el -*- lexical-binding: t; -*-
+;;; lisp/config.el -*- lexical-binding: t; -*-
 ;;; config.el -*- lexical-binding: t; -*-
 (setenv "LC_ALL" "C.UTF-8")
 
@@ -46,14 +46,14 @@
 
 (load "~/.config/doom/lisp/yt-org.el")
 
-(load "~/.config/doom/lisp/new/ui.el")
-(load "~/.config/doom/lisp/new/general.el")
-(load "~/.config/doom/lisp/new/helper-funcs.el")
-(load "~/.config/doom/lisp/new/coding.el")
-(load "~/.config/doom/lisp/new/editing.el")
-(load "~/.config/doom/lisp/new/binds.el")
-(load "~/.config/doom/lisp/new/tex.el")
-(load "~/.config/doom/lisp/new/html-export.el")
+(load "~/.config/doom/lisp/ui.el")
+(load "~/.config/doom/lisp/general.el")
+(load "~/.config/doom/lisp/helper-funcs.el")
+(load "~/.config/doom/lisp/coding.el")
+(load "~/.config/doom/lisp/editing.el")
+(load "~/.config/doom/lisp/binds.el")
+(load "~/.config/doom/lisp/tex.el")
+(load "~/.config/doom/lisp/html-export.el")
 ;; launch telegram
 ;; Launch Telega in workspace 0 if we've logged in before
 ;; (when (file-exists-p "~/.telega/db.sqlite")
@@ -121,18 +121,6 @@
 ;;   ;; the font size a little bit so that it doesn’t cover the screen too much and
 ;;   ;; makes it easier to skim for information:
 ;;   (custom-set-faces! '((corfu-popupinfo) :height 0.9)))
-
-;; [[file:config.org::*Eshell][Eshell:1]]
-(setq shell-file-name "/bin/bash"
-      vterm-max-scrollback 5000)
-(setq eshell-rc-script "~/.config/doom/eshell/profile"
-      eshell-aliases-file "~/.config/doom/eshell/aliases"
-      eshell-history-size 50000
-      eshell-buffer-maximum-lines 50000
-      eshell-hist-ignoredups t
-      eshell-scroll-to-bottom-on-input t
-      eshell-destroy-buffer-when-process-dies t
-      eshell-visual-commands'("bash" "fish" "htop" "ssh" "top" "zsh"))
 
 ;;; URLs
 (require 'url-util)
